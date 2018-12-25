@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using mshtml;
 using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core
 {
-    public class TransfermarktConnector : ITransfermarktConnector
+    public class TransfermarktConnection : IConnection
     {
-        
+        public IConnector Connector { get; set; }
 
-        public IList<Club> GetClubs()
+        public IList<Competition> GetCompetitions(int season, Nationality? nationality = null)
         {
             throw new NotImplementedException();
         }
 
-        public IList<Competition> GetCompetitions(int season, Nationality? nationality = null)
+        public IList<Club> GetClubs()
         {
             throw new NotImplementedException();
         }
@@ -25,8 +25,6 @@ namespace Transfermarkt.Core
         public IList<Player> GetPlayers(int season, Nationality? nationality = null)
         {
             IList<Player> players = new List<Player>();
-
-            HTMLDocument doc;
 
             return players;
         }
