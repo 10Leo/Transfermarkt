@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2016
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Core", "Transfermarkt.Core\Transfermarkt.Core.csproj", "{624D334A-662C-4B28-BB3F-C73E61850C93}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{D5E9BEDB-8EB2-4275-B9B5-6F3154C59CCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Console", "Transfermarkt.Console\Transfermarkt.Console.csproj", "{BA0BBD16-D971-4936-8697-96DB70BA8E52}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +19,16 @@ Global
 		{624D334A-662C-4B28-BB3F-C73E61850C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{624D334A-662C-4B28-BB3F-C73E61850C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{624D334A-662C-4B28-BB3F-C73E61850C93}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0BBD16-D971-4936-8697-96DB70BA8E52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0BBD16-D971-4936-8697-96DB70BA8E52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0BBD16-D971-4936-8697-96DB70BA8E52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0BBD16-D971-4936-8697-96DB70BA8E52}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BA0BBD16-D971-4936-8697-96DB70BA8E52} = {D5E9BEDB-8EB2-4275-B9B5-6F3154C59CCD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1E1A7316-0F99-4EAD-BC2A-E146E27399F9}
