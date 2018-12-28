@@ -8,5 +8,12 @@ namespace Transfermarkt.Core.Actors
 {
     public class Competition
     {
+        public int Season { get; set; }
+        public IList<Club> Clubs { get; set; }
+
+        public Competition()
+        {
+            Clubs = new List<Club>();
+        }
     }
 }
