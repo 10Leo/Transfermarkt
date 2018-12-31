@@ -9,9 +9,9 @@ namespace Transfermarkt.Core.Actors
     public enum Nationality
     {
         BRA,
-        PRT,
-        SPA,
         GBR,
         ITA,
+        PRT,
+        SPA
     }
 }

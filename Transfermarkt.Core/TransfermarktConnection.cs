@@ -25,29 +25,9 @@ namespace Transfermarkt.Core
             FootConverter = footConverter;
         }
 
-        public IList<Competition> GetCompetitions(int season, Nationality? nationality = null)
+        public Competition ParseSquadsFromCompetition(string url)
         {
             throw new NotImplementedException();
-        }
-
-        public IList<Club> GetClubs()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IList<Player> GetPlayers(int season, Nationality? nationality = null)
-        {
-            IList<Player> players = new List<Player>();
-
-            return players;
-        }
-
-        public Player ParsePlayer(string url)
-        {
-            Player player = new Player();
-
-
-            return player;
         }
 
         public Club ParseSquad(string url)
@@ -78,11 +58,6 @@ namespace Transfermarkt.Core
             }
 
             return club;
-        }
-
-        public Competition ParseSquadsFromCompetition(string url)
-        {
-            throw new NotImplementedException();
         }
     }
 }

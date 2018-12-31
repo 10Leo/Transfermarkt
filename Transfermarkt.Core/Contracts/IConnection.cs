@@ -11,12 +11,7 @@ namespace Transfermarkt.Core.Contracts
     {
         IConnector Connector { get; set; }
 
-        //IList<Competition> GetCompetitions(int season, Nationality? nationality = null);
-        //IList<Club> GetClubs();
-        //IList<Player> GetPlayers(int season, Nationality? nationality = null);
-
-        Player ParsePlayer(string url);
-        Club ParseSquad(string url);
         Competition ParseSquadsFromCompetition(string url);
+        Club ParseSquad(string url);
     }
 }
