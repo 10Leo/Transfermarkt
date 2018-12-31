@@ -11,7 +11,7 @@ namespace Transfermarkt.Core.Actors
         public string Name { get; set; }
         public string ShortName { get; set; }
         public DateTime BirthDate { get; set; }
-        public string Nationality { get; set; }
+        public Nationality? Nationality { get; set; }
         public string ImgUrl { get; set; }
     }
 }

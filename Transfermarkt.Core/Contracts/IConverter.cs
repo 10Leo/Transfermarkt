@@ -4,14 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transfermarkt.Core.Actors
+namespace Transfermarkt.Core.Contracts
 {
-    public enum Nationality
+    public interface IConverter<T>
     {
-        BRA,
-        PRT,
-        SPA,
-        GBR,
-        ITA,
+        T Convert(string stringToConvert);
     }
 }

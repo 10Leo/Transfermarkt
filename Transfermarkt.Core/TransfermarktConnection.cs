@@ -4,6 +4,7 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using System.Configuration;
 using System.Data;
+using Transfermarkt.Core.Converters;
 
 namespace Transfermarkt.Core
 {
@@ -12,10 +13,16 @@ namespace Transfermarkt.Core
         public string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
 
         public IConnector Connector { get; set; }
+        public INationalityConverter NationalityConverter { get; set; }
+        public IPositionConverter PositionConverter { get; set; }
+        public IFootConverter FootConverter { get; set; }
 
-        public TransfermarktConnection(IConnector connector)
+        public TransfermarktConnection(IConnector connector, INationalityConverter nationalityConverter, IPositionConverter positionConverter, IFootConverter footConverter)
         {
             Connector = connector;
+            NationalityConverter = nationalityConverter;
+            PositionConverter = positionConverter;
+            FootConverter = footConverter;
         }
 
         public IList<Competition> GetCompetitions(int season, Nationality? nationality = null)
@@ -53,17 +60,20 @@ namespace Transfermarkt.Core
             {
                 club.Squad.Add(new Player
                 {
+                    ProfileUrl = row[ColumnsEnum.profileUrl.ToString()].ToString(),
+                    ImgUrl = row[ColumnsEnum.imgUrl.ToString()].ToString(),
                     Name = row[ColumnsEnum.name.ToString()].ToString(),
-                    Number = int.Parse(row[ColumnsEnum.shirtNumber.ToString()].ToString()),
+                    ShortName = row[ColumnsEnum.shortName.ToString()].ToString(),
                     BirthDate = DateTime.Parse(row[ColumnsEnum.birthDate.ToString()].ToString()),
-                    Captain = row[ColumnsEnum.captain.ToString()].ToString(),
+                    Nationality = NationalityConverter.Convert(row[ColumnsEnum.nationality.ToString()].ToString()),
                     Height = int.Parse(row[ColumnsEnum.height.ToString()].ToString()),
-                    //Nationality = (Nationality)Enum.Parse(typeof(Nationality), row[ColumnsEnum.nationality.ToString()].ToString()),
-                    Nationality = row[ColumnsEnum.nationality.ToString()].ToString(),
-                    PreferredFoot = row[ColumnsEnum.preferredFoot.ToString()].ToString(),
+                    PreferredFoot = FootConverter.Convert(row[ColumnsEnum.preferredFoot.ToString()].ToString()),
+                    Position = PositionConverter.Convert(row[ColumnsEnum.position.ToString()].ToString()),
+                    Number = int.Parse(row[ColumnsEnum.shirtNumber.ToString()].ToString()),
+                    Captain = row[ColumnsEnum.captain.ToString()].ToString(),
                     ClubArrivalDate = DateTime.Parse(row[ColumnsEnum.clubArrivalDate.ToString()].ToString()),
                     ContractExpirationDate = DateTime.Parse(row[ColumnsEnum.contractExpirationDate.ToString()].ToString()),
-                    MarketValue = int.Parse(row[ColumnsEnum.marketValue.ToString()].ToString())
+                    MarketValue = decimal.Parse(row[ColumnsEnum.marketValue.ToString()].ToString())
                 });
             }
 

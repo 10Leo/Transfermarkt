@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.Actors
 {
-    public enum Nationality
+    public enum Foot
     {
-        BRA,
-        PRT,
-        SPA,
-        GBR,
-        ITA,
+        RIGHT = 1,
+        LEFT = 2
     }
 }

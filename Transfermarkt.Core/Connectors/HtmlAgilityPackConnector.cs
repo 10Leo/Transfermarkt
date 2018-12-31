@@ -137,7 +137,6 @@ namespace Transfermarkt.Core.Connectors
                 }
             }
 
-
             foreach (DataRow row in dataTable.Rows)
             {
                 foreach (string enumName in Enum.GetNames(typeof(ColumnsEnum)))
