@@ -15,8 +15,8 @@ namespace Transfermarkt.Core.Actors
         public Foot? PreferredFoot { get; set; }
         public Position? Position { get; set; }
         public string Captain { get; set; }
-        public DateTime ClubArrivalDate { get; set; }
-        public DateTime ContractExpirationDate { get; set; }
+        public DateTime? ClubArrivalDate { get; set; }
+        public DateTime? ContractExpirationDate { get; set; }
         public decimal MarketValue { get; set; }
 
         public override string ToString()
@@ -26,14 +26,14 @@ namespace Transfermarkt.Core.Actors
                 , Name
                 , ShortName
                 , Nationality
-                , BirthDate.ToString("yyyy.MM.dd")
+                , BirthDate?.ToString("yyyy.MM.dd")
                 , Height
                 , PreferredFoot
                 , Position
                 , Number
                 , Captain
-                , ClubArrivalDate.ToString("yyyy.MM.dd")
-                , ContractExpirationDate.ToString("yyyy.MM.dd")
+                , ClubArrivalDate?.ToString("yyyy.MM.dd")
+                , ContractExpirationDate?.ToString("yyyy.MM.dd")
                 , string.Format(cultureInfo, "{0:C0}", MarketValue)
                 , ProfileUrl
                 , ImgUrl

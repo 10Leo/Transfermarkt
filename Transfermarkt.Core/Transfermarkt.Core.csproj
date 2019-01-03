@@ -46,8 +46,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
-    <Compile Include="Actors\ColumnsEnum.cs" />
+    <Compile Include="Actors\ClubColumnsEnum.cs" />
     <Compile Include="Actors\Competition.cs" />
+    <Compile Include="Actors\CompetitionColumnsEnum.cs" />
     <Compile Include="Actors\Manager.cs" />
     <Compile Include="Actors\Nationality.cs" />
     <Compile Include="Actors\Person.cs" />

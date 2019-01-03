@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.Actors
 {
-    public enum ColumnsEnum
+    public enum ClubColumnsEnum
     {
           profileUrl
         , shirtNumber

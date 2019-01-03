@@ -39,6 +39,58 @@ namespace Transfermarkt.Core.Connectors
             }
         }
 
+        public DataTable GetCompetitionTable()
+        {
+            //Validate();
+
+            string id = "items";
+
+            HtmlNode table = doc.DocumentNode.SelectSingleNode("//div[@id='yw1']/table[@class='" + id + "']");
+
+            if (table == null)
+            {
+                return null;
+            }
+
+            DataTable dataTable = new DataTable();
+            
+            foreach (string enumName in Enum.GetNames(typeof(CompetitionColumnsEnum)))
+            {
+                dataTable.Columns.Add(enumName);
+            }
+
+            var rows = table.SelectNodes(".//tbody/tr[td]");
+            // each row is a player
+            foreach (var row in rows)
+            {
+                //each column is an attribute
+                HtmlNodeCollection cols = row.SelectNodes("td");
+
+                try
+                {
+                    string clubUrl = GetClubUrl(cols[2]);
+
+                    dataTable.Rows.Add(
+                         clubUrl
+                    );
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                foreach (string enumName in Enum.GetNames(typeof(CompetitionColumnsEnum)))
+                {
+                    Console.Write(row[enumName].ToString());
+                    Console.Write(", ");
+                }
+                Console.WriteLine("");
+            }
+            return dataTable;
+        }
+
         public DataTable GetTableByID(string id)
         {
             Validate();
@@ -72,25 +124,10 @@ namespace Transfermarkt.Core.Connectors
             //foreach (var row in r)
             //    dataTable.Rows.Add(row.SelectNodes("td").Select(td => td.InnerText).ToArray());
 
-            foreach (string enumName in Enum.GetNames(typeof(ColumnsEnum)))
+            foreach (string enumName in Enum.GetNames(typeof(ClubColumnsEnum)))
             {
                 dataTable.Columns.Add(enumName);
             }
-
-            string profileUrl = string.Empty
-                , shirtNumber = string.Empty
-                , name = string.Empty
-                , shortName = string.Empty
-                , imgUrl = string.Empty
-                , position = string.Empty
-                , captain = string.Empty
-                , nationality = string.Empty
-                , birthDate = string.Empty
-                , height = string.Empty
-                , preferredFoot = string.Empty
-                , clubArrivalDate = string.Empty
-                , contractExpirationDate = string.Empty
-                , marketValue = string.Empty;
 
             // each row is a player
             foreach (var row in rows)
@@ -100,20 +137,20 @@ namespace Transfermarkt.Core.Connectors
 
                 try
                 {
-                    profileUrl = GetProfileUrl(cols[1]);
-                    shirtNumber = GetShirtNumber(cols[0]);
-                    name = GetName(cols[1]);
-                    shortName = GetShortName(cols[1]);
-                    //imgUrl = GetImgUrl(cols[1]);
-                    position = GetPosition(cols[1]);
-                    captain = GetCaptain(cols[1]);
-                    nationality = GetNationality(cols[3])?[0];
-                    birthDate = GetBirthDate(cols[2]);
-                    height = GetHeight(cols[4]);
-                    preferredFoot = GetPreferredFoot(cols[5]);
-                    clubArrivalDate = GetClubArrivalDate(cols[6]);
-                    contractExpirationDate = GetContractExpirationDate(cols[8]);
-                    marketValue = GetMarketValue(cols[9]);
+                    string profileUrl = GetProfileUrl(cols[1]);
+                    string shirtNumber = GetShirtNumber(cols[0]);
+                    string name = GetName(cols[1]);
+                    string shortName = GetShortName(cols[1]);
+                    string imgUrl = GetImgUrl(cols[1]);
+                    string position = GetPosition(cols[1]);
+                    string captain = GetCaptain(cols[1]);
+                    string nationality = GetNationality(cols[3])?[0];
+                    string birthDate = GetBirthDate(cols[2]);
+                    string height = GetHeight(cols[4]);
+                    string preferredFoot = GetPreferredFoot(cols[5]);
+                    string clubArrivalDate = GetClubArrivalDate(cols[6]);
+                    string contractExpirationDate = GetContractExpirationDate(cols[8]);
+                    string marketValue = GetMarketValue(cols[9]);
 
                     dataTable.Rows.Add(
                           profileUrl
@@ -137,15 +174,15 @@ namespace Transfermarkt.Core.Connectors
                 }
             }
 
-            foreach (DataRow row in dataTable.Rows)
-            {
-                foreach (string enumName in Enum.GetNames(typeof(ColumnsEnum)))
-                {
-                    Console.Write(row[enumName].ToString());
-                    Console.Write(" - ");
-                }
-                Console.WriteLine("");
-            }
+            //foreach (DataRow row in dataTable.Rows)
+            //{
+            //    foreach (string enumName in Enum.GetNames(typeof(ClubColumnsEnum)))
+            //    {
+            //        Console.Write(row[enumName].ToString());
+            //        Console.Write(", ");
+            //    }
+            //    Console.WriteLine("");
+            //}
             return dataTable;
         }
 
@@ -185,7 +222,7 @@ namespace Transfermarkt.Core.Connectors
         }
         private string GetImgUrl(HtmlNode node)
         {
-            throw new NotImplementedException();
+            return "";
         }
         private string GetPosition(HtmlNode node)
         {
@@ -251,6 +288,13 @@ namespace Transfermarkt.Core.Connectors
             return n.ToString();
         }
 
+        private string GetClubUrl(HtmlNode node)
+        {
+            return node
+                .SelectNodes("a")
+                .FirstOrDefault(n => n.Attributes["class"]?.Value == "vereinprofil_tooltip")
+                .Attributes["href"].Value;
+        }
 
         private void Validate()
         {

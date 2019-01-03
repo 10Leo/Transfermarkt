@@ -15,5 +15,18 @@ namespace Transfermarkt.Core.Actors
         {
             Clubs = new List<Club>();
         }
+
+        public override string ToString()
+        {
+            return string.Format("{0}\n{1}"
+                , Season
+                , string.Join(
+                    "\n"
+                    , Clubs.Select(
+                        p => p.ToString()
+                    )
+                )
+            );
+        }
     }
 }
