@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core.Converters
 {
@@ -19,8 +20,9 @@ namespace Transfermarkt.Core.Converters
         {
             switch (str)
             {
-                case "direito": return Foot.RIGHT;
-                case "esquerdo": return Foot.LEFT;
+                case "direito": return Foot.R;
+                case "esquerdo": return Foot.L;
+                case "ambos": return Foot.A;
                 default: return null;
             }
         }

@@ -15,11 +15,11 @@ namespace Transfermarkt.Console
     class Program
     {
         private static string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
-        private static IConnection conn;
+        private static IParser conn;
 
         static void Main(string[] args)
         {
-            conn = new TransfermarktConnection(
+            conn = new Parser(
                 new HtmlAgilityPackConnector(),
                 new PTNationalityConverter(),
                 new PTPositionConverter(),
@@ -32,7 +32,7 @@ namespace Transfermarkt.Console
             TestCompetition(conn);
         }
 
-        static void TestCompetition(IConnection conn)
+        static void TestCompetition(IParser conn)
         {
             int season = 2018;
             string url = BaseURL + "/serie-a/startseite/wettbewerb/IT1/plus/?saison_id=" + season;
@@ -51,7 +51,7 @@ namespace Transfermarkt.Console
             }
         }
 
-        static void TestSquad(IConnection conn)
+        static void TestSquad(IParser conn)
         {
             string url = BaseURL + "/fc-barcelona/kader/verein/131/saison_id/2018/plus/1";
             url = BaseURL + "/cd-nacional/kader/verein/982/saison_id/2018/plus/1";

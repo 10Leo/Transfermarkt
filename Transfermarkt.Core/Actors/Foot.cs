@@ -8,7 +8,8 @@ namespace Transfermarkt.Core.Actors
 {
     public enum Foot
     {
-        RIGHT = 1,
-        LEFT = 2
+        R = 1,
+        L = 2,
+        A = 3
     }
 }

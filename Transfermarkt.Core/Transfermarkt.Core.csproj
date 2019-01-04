@@ -56,21 +56,20 @@
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="Connectors\HtmlAgilityPackConnector.cs" />
-    <Compile Include="Connectors\Util\AgilityPackUtil.cs" />
-    <Compile Include="Contracts\IConnector.cs" />
-    <Compile Include="Contracts\IConnection.cs" />
-    <Compile Include="Contracts\IFootConverter.cs" />
-    <Compile Include="Contracts\IPositionConverter.cs" />
+    <Compile Include="Contracts\IPageConnector.cs" />
+    <Compile Include="Contracts\IParser.cs" />
+    <Compile Include="Contracts\Converters\IFootConverter.cs" />
+    <Compile Include="Contracts\Converters\IPositionConverter.cs" />
     <Compile Include="Converters\Foot\ENFootConverter.cs" />
     <Compile Include="Converters\Foot\PTFootConverter.cs" />
     <Compile Include="Converters\Nationality\ENNationalityConverter.cs" />
-    <Compile Include="Contracts\INationalityConverter.cs" />
+    <Compile Include="Contracts\Converters\INationalityConverter.cs" />
     <Compile Include="Contracts\IConverter.cs" />
     <Compile Include="Converters\Nationality\PTNationalityConverter.cs" />
     <Compile Include="Converters\Position\ENPositionConverter.cs" />
     <Compile Include="Converters\Position\PTPositionConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TransfermarktConnection.cs" />
+    <Compile Include="Parser.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

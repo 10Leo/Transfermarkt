@@ -7,10 +7,11 @@ using System.Data;
 using Transfermarkt.Core.Converters;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core
 {
-    public class TransfermarktConnection : IConnection
+    public class Parser : IParser
     {
         private const string CLUB_STRING = "CLUB_STRING";
         private const string CLUB_ID = "CLUB_ID";
@@ -23,12 +24,12 @@ namespace Transfermarkt.Core
 
         public string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
 
-        public IConnector Connector { get; set; }
+        public IPageConnector Connector { get; set; }
         public INationalityConverter NationalityConverter { get; set; }
         public IPositionConverter PositionConverter { get; set; }
         public IFootConverter FootConverter { get; set; }
 
-        public TransfermarktConnection(IConnector connector, INationalityConverter nationalityConverter, IPositionConverter positionConverter, IFootConverter footConverter)
+        public Parser(IPageConnector connector, INationalityConverter nationalityConverter, IPositionConverter positionConverter, IFootConverter footConverter)
         {
             Connector = connector;
             NationalityConverter = nationalityConverter;
@@ -38,13 +39,24 @@ namespace Transfermarkt.Core
             //string f = "(?<ID>.*)";
         }
 
+        #region Contract
+
         public Competition ParseSquadsFromCompetition(string url)
         {
-            Competition competition = new Competition();
-
             Connector.ConnectToPage(url);
 
-            DataTable dt = Connector.GetCompetitionTable();
+            (string country, string countryImg, string Name, int Season, string ImgUrl) = Connector.GetCompetitionData();
+
+            Competition competition = new Competition
+            {
+                Name = Name,
+                Country = NationalityConverter.Convert(country),
+                CountryImg = countryImg,
+                Season = Season,
+                ImgUrl = ImgUrl
+            };
+
+            DataTable dt = Connector.GetCompetitionClubsTable();
             foreach (DataRow row in dt.Rows)
             {
                 var clubUrl = row[CompetitionColumnsEnum.clubUrl.ToString()].ToString();
@@ -68,10 +80,20 @@ namespace Transfermarkt.Core
 
         public Club ParseSquad(string url)
         {
-            Club club = new Club();
             Connector.ConnectToPage(url);
 
-            DataTable dt = Connector.GetTableByClass("items");
+            (string country, string countryImg, string Name, int Season, string ImgUrl) = Connector.GetClubData();
+
+            Club club = new Club
+            {
+                Name = Name,
+                Country = NationalityConverter.Convert(country),
+                CountryImg = countryImg,
+                Season = Season,
+                ImgUrl = ImgUrl
+            };
+
+            DataTable dt = Connector.GetClubSquadTable();
             foreach (DataRow row in dt.Rows)
             {
                 DateTime? d1 = null, d2 = null, d3 = null;
@@ -130,5 +152,7 @@ namespace Transfermarkt.Core
 
             return club;
         }
+
+        #endregion Contract
     }
 }

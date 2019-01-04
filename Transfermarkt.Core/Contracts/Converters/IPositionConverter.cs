@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
 
-namespace Transfermarkt.Core.Contracts
+namespace Transfermarkt.Core.Contracts.Converters
 {
-    public interface IFootConverter : IConverter<Foot?>
+    public interface IPositionConverter : IConverter<Position?>
     {
     }
 }

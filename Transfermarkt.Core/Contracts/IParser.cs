@@ -7,9 +7,9 @@ using Transfermarkt.Core.Actors;
 
 namespace Transfermarkt.Core.Contracts
 {
-    public interface IConnection
+    public interface IParser
     {
-        IConnector Connector { get; set; }
+        IPageConnector Connector { get; set; }
 
         Competition ParseSquadsFromCompetition(string url);
         Club ParseSquad(string url);

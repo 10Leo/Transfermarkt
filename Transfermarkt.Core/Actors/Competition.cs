@@ -8,7 +8,11 @@ namespace Transfermarkt.Core.Actors
 {
     public class Competition
     {
+        public string Name { get; set; }
+        public Nationality? Country { get; set; }
+        public string CountryImg { get; set; }
         public int Season { get; set; }
+        public string ImgUrl { get; set; }
         public IList<Club> Clubs { get; set; }
 
         public Competition()
@@ -18,7 +22,9 @@ namespace Transfermarkt.Core.Actors
 
         public override string ToString()
         {
-            return string.Format("{0}\n{1}"
+            return string.Format("{0} [{1}] {2}\n{3}"
+                , Name
+                , Country
                 , Season
                 , string.Join(
                     "\n"

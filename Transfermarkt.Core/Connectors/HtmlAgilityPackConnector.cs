@@ -10,12 +10,16 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Connectors
 {
-    public class HtmlAgilityPackConnector : IConnector
+    public class HtmlAgilityPackConnector : IPageConnector
     {
         private HtmlDocument doc;
+        private string url;
+
+        #region Contract
 
         public void ConnectToPage(string url)
         {
+            this.url = url;
             try
             {
                 string htmlCode = "";
@@ -39,7 +43,43 @@ namespace Transfermarkt.Core.Connectors
             }
         }
 
-        public DataTable GetCompetitionTable()
+        public (string country, string countryImg, string Name, int Season, string ImgUrl) GetCompetitionData()
+        {
+            string name = doc.DocumentNode.SelectSingleNode("//div[@id='wettbewerb_head']//h1[@class='spielername-profil']")?.InnerText;
+            string imgUrl = doc.DocumentNode.SelectSingleNode("//div[@id='wettbewerb_head']//div[@class='headerfoto']/img")?.GetAttributeValue<string>("src", null);
+
+            int? season = doc.DocumentNode.SelectSingleNode("//select[@name='saison_id']//option")?.GetAttributeValue<int>("value", 0);
+            if (!season.HasValue)
+            {
+                season = 0;
+            }
+
+            HtmlNode countryNode = doc.DocumentNode.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
+            string country = countryNode?.GetAttributeValue<string>("title", null);
+            string countryUrl = countryNode?.GetAttributeValue<string>("src", null);
+
+            return (country, countryUrl, name, (int)season, imgUrl);
+        }
+
+        public (string country, string countryImg, string Name, int Season, string ImgUrl) GetClubData()
+        {
+            string name = doc.DocumentNode.SelectSingleNode("//div[@id='verein_head']//h1[@itemprop='name']/span")?.InnerText;
+            string imgUrl = doc.DocumentNode.SelectSingleNode("//div[@id='verein_head']//div[@class='dataBild ']/img")?.GetAttributeValue<string>("src", null);
+
+            int? season = doc.DocumentNode.SelectSingleNode("//select[@name='saison_id']//option")?.GetAttributeValue<int>("value", 0);
+            if (!season.HasValue)
+            {
+                season = 0;
+            }
+
+            HtmlNode countryNode = doc.DocumentNode.SelectSingleNode("//div[@id='verein_head']//span[@class='mediumpunkt']//img[@class='flaggenrahmen vm']");
+            string country = countryNode?.GetAttributeValue<string>("title", null);
+            string countryUrl = countryNode?.GetAttributeValue<string>("src", null);
+
+            return (country, countryUrl, name, (int)season, imgUrl);
+        }
+
+        public DataTable GetCompetitionClubsTable()
         {
             //Validate();
 
@@ -91,24 +131,14 @@ namespace Transfermarkt.Core.Connectors
             return dataTable;
         }
 
-        public DataTable GetTableByID(string id)
+        public DataTable GetClubSquadTable()
         {
-            Validate();
+            //Validate();
 
-            HtmlNode table = doc.DocumentNode.SelectSingleNode("//table[@id='" + id + "']");
-            return ParseTable(table);
-        }
-
-        public DataTable GetTableByClass(string className)
-        {
-            Validate();
+            string className = "items";
 
             HtmlNode table = doc.DocumentNode.SelectSingleNode("//table[@class='" + className + "']");
-            return ParseTable(table);
-        }
 
-        private DataTable ParseTable(HtmlNode table)
-        {
             if (table == null)
             {
                 return null;
@@ -185,6 +215,22 @@ namespace Transfermarkt.Core.Connectors
             //}
             return dataTable;
         }
+
+        #endregion Contract
+
+        #region Competition Parsing
+
+        private string GetClubUrl(HtmlNode node)
+        {
+            return node
+                .SelectNodes("a")
+                .FirstOrDefault(n => n.Attributes["class"]?.Value == "vereinprofil_tooltip")
+                .Attributes["href"].Value;
+        }
+
+        #endregion Competition Parsing
+
+        #region Squads Parsing
 
         private string GetShirtNumber(HtmlNode node)
         {
@@ -288,13 +334,9 @@ namespace Transfermarkt.Core.Connectors
             return n.ToString();
         }
 
-        private string GetClubUrl(HtmlNode node)
-        {
-            return node
-                .SelectNodes("a")
-                .FirstOrDefault(n => n.Attributes["class"]?.Value == "vereinprofil_tooltip")
-                .Attributes["href"].Value;
-        }
+        #endregion Squads Parsing
+
+        #region Private methods
 
         private void Validate()
         {
@@ -308,6 +350,34 @@ namespace Transfermarkt.Core.Connectors
             {
                 throw new Exception("Document Node null");
             }
+        }
+
+        #endregion Private methods
+    }
+
+    static class HtmlAgilityPackUtil
+    {
+        public static T GetAttributeValue<T>(this HtmlNode td, string key, T defaultValue) where T : IConvertible
+        {
+            T result = defaultValue;//default(T);
+
+            if (td.Attributes[key] == null)// || String.IsNullOrEmpty(td.Attributes[key].Value) == false)
+            {
+                return defaultValue;
+            }
+
+            string value = td.Attributes[key].Value;
+
+            try
+            {
+                result = (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch
+            {
+                result = defaultValue;//default(T);
+            }
+
+            return result;
         }
     }
 }
