@@ -13,16 +13,13 @@ namespace Transfermarkt.Core
 {
     public class Parser : IParser
     {
-        private const string CLUB_STRING = "CLUB_STRING";
-        private const string CLUB_ID = "CLUB_ID";
-        private const string SEASON = "SEASON";
         private readonly string dateFormat = "dd/MM/yyyy";
 
-        //private readonly string simpleClubUrlFormat = "/{CLUB_STRING}/startseite/verein/{CLUB_ID}/saison_id/{SEASON}";
-        private readonly string plusClubUrlPattern = "/{1}/kader/verein/{2}/saison_id/{3}/plus/1";
-        private readonly string simpleClubUrlPattern = $"/(?<{CLUB_STRING}>.*)/startseite/verein/(?<{CLUB_ID}>.*)/saison_id/(?<{SEASON}>.*)";
-
         public string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
+        public string SimpleClubUrlFormat { get; } = ConfigurationManager.AppSettings["SimpleClubUrlFormat"].ToString();
+        public string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormat"].ToString();
+        public string IdentifiersGetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersGetterPattern"].ToString();
+        public string IdentifiersSetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersSetterPattern"].ToString();
 
         public IPageConnector Connector { get; set; }
         public INationalityConverter NationalityConverter { get; set; }
@@ -35,8 +32,6 @@ namespace Transfermarkt.Core
             NationalityConverter = nationalityConverter;
             PositionConverter = positionConverter;
             FootConverter = footConverter;
-
-            //string f = "(?<ID>.*)";
         }
 
         #region Contract
@@ -61,16 +56,7 @@ namespace Transfermarkt.Core
             {
                 var clubUrl = row[CompetitionColumnsEnum.clubUrl.ToString()].ToString();
 
-                string finalClubUrl = plusClubUrlPattern;
-                MatchCollection matches = Regex.Matches(clubUrl, simpleClubUrlPattern);
-                if (!(matches.Count > 0 && matches[0].Groups.Count >= 3))
-                {
-                    //TODO: logging
-                }
-
-                finalClubUrl = finalClubUrl.Replace("{1}", matches[0].Groups[CLUB_STRING].Value);
-                finalClubUrl = finalClubUrl.Replace("{2}", matches[0].Groups[CLUB_ID].Value);
-                finalClubUrl = finalClubUrl.Replace("{3}", matches[0].Groups[SEASON].Value);
+                string finalClubUrl = TransformUrl(clubUrl);
 
                 competition.Clubs.Add(ParseSquad($"{BaseURL}{finalClubUrl}"));
             }
@@ -154,5 +140,39 @@ namespace Transfermarkt.Core
         }
 
         #endregion Contract
+
+
+        private string TransformUrl(string url)
+        {
+            IList<string> identifiers = new List<string>();
+
+            string simpleClubUrlPattern = SimpleClubUrlFormat;
+            string finalClubUrl = PlusClubUrlFormat;
+
+            MatchCollection ids = Regex.Matches(SimpleClubUrlFormat, IdentifiersGetterPattern);
+            foreach (Match idMatch in ids)
+            {
+                identifiers.Add(idMatch.Groups[1].Value);
+            }
+
+            foreach (string identifier in identifiers)
+            {
+                simpleClubUrlPattern = simpleClubUrlPattern.Replace("{" + identifier + "}", IdentifiersSetterPattern.Replace("{ID}", identifier));
+            }
+
+            MatchCollection matches = Regex.Matches(url, simpleClubUrlPattern);
+            if (!(matches.Count > 0 && matches[0].Groups.Count >= identifiers.Count))
+            {
+                //TODO: logging
+            }
+
+            for (int i = 1; i < matches[0].Groups.Count; i++)
+            {
+                Group group = matches[0].Groups[i];
+                finalClubUrl = finalClubUrl.Replace("{" + group.Name + "}", group.Value);
+            }
+
+            return finalClubUrl;
+        }
     }
 }
