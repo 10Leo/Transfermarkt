@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,17 +11,19 @@ namespace Transfermarkt.Core.Exporter
 {
     public class JsonExporter
     {
-        private static readonly string format = ".json";
         private static readonly string dateFormat = "yyyy-MM-dd";
-        private static readonly string baseFolderPath = @"c:\TM";
-        private static readonly string baseFolderName = "TM";
+        private static readonly string format = ".json";
+        private static readonly string competitionFileFormat = "{COUNTRY}-{COMPETITION_NAME}_{SEASON}" + format;
+        private static readonly string clubFileFormat = "{COUNTRY}-{CLUB_NAME}_{SEASON}" + format;
 
-        private static readonly string competitionFileFormat = "{COUNTRY}-{COMPETITION_NAME}" + format;
-        private static readonly string clubFileFormat = "{COUNTRY}-{CLUB_NAME}" + format;
+        public static string BaseFolderPath { get; } = ConfigurationManager.AppSettings["BaseFolderPath"].ToString();
+        public static string Level1FolderFormat { get; } = ConfigurationManager.AppSettings["Level1FolderFormat"].ToString();
+
 
         private static JsonSerializerSettings settings;
 
-        static JsonExporter() {
+        static JsonExporter()
+        {
             settings = new JsonSerializerSettings
             {
                 DateFormatString = dateFormat,
@@ -33,9 +36,10 @@ namespace Transfermarkt.Core.Exporter
         {
             string pathString = CreateBaseDir();
 
-            string fileName = clubFileFormat;
-            fileName = clubFileFormat.Replace("{COUNTRY}", competition.Country?.ToString());
+            string fileName = competitionFileFormat;
+            fileName = fileName.Replace("{COUNTRY}", competition.Country?.ToString());
             fileName = fileName.Replace("{COMPETITION_NAME}", competition.Name);
+            fileName = fileName.Replace("{SEASON}", competition.Season.ToString());
 
             pathString = System.IO.Path.Combine(pathString, fileName);
 
@@ -52,8 +56,9 @@ namespace Transfermarkt.Core.Exporter
             System.IO.Directory.CreateDirectory(pathString);
 
             string fileName = clubFileFormat;
-            fileName = clubFileFormat.Replace("{COUNTRY}", club.Country?.ToString());
+            fileName = fileName.Replace("{COUNTRY}", club.Country?.ToString());
             fileName = fileName.Replace("{CLUB_NAME}", club.Name);
+            fileName = fileName.Replace("{SEASON}", club.Season.ToString());
 
             pathString = System.IO.Path.Combine(pathString, fileName);
 
@@ -64,10 +69,12 @@ namespace Transfermarkt.Core.Exporter
 
         private static string CreateBaseDir()
         {
-            string pathString = System.IO.Path.Combine(baseFolderPath, string.Format("{0}{1}", baseFolderName, DateTime.Today.ToString("yyyyMMdd")));
-            System.IO.Directory.CreateDirectory(pathString);
+            string level1FolderName = Level1FolderFormat.Replace("{0}", DateTime.Today.ToString("yyyyMMdd"));
+            string level1PathString = System.IO.Path.Combine(BaseFolderPath, level1FolderName);
 
-            return pathString;
+            System.IO.Directory.CreateDirectory(level1PathString);
+
+            return level1PathString;
         }
 
         private static void WriteToFile(string filePath, string output)
