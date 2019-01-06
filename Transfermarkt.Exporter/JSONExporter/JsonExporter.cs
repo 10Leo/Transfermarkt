@@ -6,10 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.Exporter;
 
-namespace Transfermarkt.Core.Exporter
+namespace Transfermarkt.Exporter.JSONExporter
 {
-    public class JsonExporter
+    public class JsonExporter : IExporter
     {
         private static readonly string dateFormat = "yyyy-MM-dd";
         private static readonly string format = ".json";
@@ -22,7 +23,7 @@ namespace Transfermarkt.Core.Exporter
 
         private static JsonSerializerSettings settings;
 
-        static JsonExporter()
+        public JsonExporter()
         {
             settings = new JsonSerializerSettings
             {
@@ -32,7 +33,7 @@ namespace Transfermarkt.Core.Exporter
             settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         }
 
-        public static void ExtractCompetition(Competition competition)
+        public void ExtractCompetition(Competition competition)
         {
             string pathString = CreateBaseDir();
 
@@ -48,7 +49,7 @@ namespace Transfermarkt.Core.Exporter
             WriteToFile(pathString, output);
         }
 
-        public static void ExtractClub(Club club)
+        public void ExtractClub(Club club)
         {
             string pathString = CreateBaseDir();
 
