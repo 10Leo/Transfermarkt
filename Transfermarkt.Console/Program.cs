@@ -9,6 +9,8 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Connectors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Converters;
+using Transfermarkt.Core.Exporter;
+using Transfermarkt.Exporter.JSONExporter;
 
 namespace Transfermarkt.Console
 {
@@ -16,6 +18,7 @@ namespace Transfermarkt.Console
     {
         private static string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
         private static IParser conn;
+        private static IExporter exporter;
 
         static void Main(string[] args)
         {
@@ -26,10 +29,11 @@ namespace Transfermarkt.Console
                 new PTFootConverter()
             );
 
-            //TestSquad(conn);
-
+            exporter = new JsonExporter();
+            
             System.Console.WriteLine("----------------------------------");
-            TestCompetition(conn);
+            //TestCompetition(conn);
+            TestSquad(conn);
         }
 
         static void TestCompetition(IParser conn)
@@ -42,6 +46,7 @@ namespace Transfermarkt.Console
                 Competition competition = conn.ParseSquadsFromCompetition(url);
 
                 System.Console.WriteLine(competition);
+                exporter.ExtractCompetition(competition);
             }
             catch (Exception ex)
             {
@@ -62,6 +67,7 @@ namespace Transfermarkt.Console
                 Club club = conn.ParseSquad(url);
 
                 System.Console.WriteLine(club);
+                exporter.ExtractClub(club);
             }
             catch (Exception ex)
             {
