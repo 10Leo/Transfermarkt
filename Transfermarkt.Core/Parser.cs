@@ -22,16 +22,12 @@ namespace Transfermarkt.Core
         public string IdentifiersSetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersSetterPattern"].ToString();
 
         public IPageConnector Connector { get; set; }
-        public INationalityConverter NationalityConverter { get; set; }
-        public IPositionConverter PositionConverter { get; set; }
-        public IFootConverter FootConverter { get; set; }
+        public ConvertersCollection Converters { get; set; }
 
-        public Parser(IPageConnector connector, INationalityConverter nationalityConverter, IPositionConverter positionConverter, IFootConverter footConverter)
+        public Parser(IPageConnector connector, ConvertersCollection converters)
         {
             Connector = connector;
-            NationalityConverter = nationalityConverter;
-            PositionConverter = positionConverter;
-            FootConverter = footConverter;
+            Converters = converters;
         }
 
         #region Contract
@@ -45,7 +41,7 @@ namespace Transfermarkt.Core
             Competition competition = new Competition
             {
                 Name = Name,
-                Country = NationalityConverter.Convert(country),
+                Country = Converters.NationalityConverter.Convert(country),
                 CountryImg = countryImg,
                 Season = Season,
                 ImgUrl = ImgUrl
@@ -73,7 +69,7 @@ namespace Transfermarkt.Core
             Club club = new Club
             {
                 Name = Name,
-                Country = NationalityConverter.Convert(country),
+                Country = Converters.NationalityConverter.Convert(country),
                 CountryImg = countryImg,
                 Season = Season,
                 ImgUrl = ImgUrl
@@ -124,10 +120,10 @@ namespace Transfermarkt.Core
                     Name = row[ClubColumnsEnum.name.ToString()].ToString(),
                     ShortName = row[ClubColumnsEnum.shortName.ToString()].ToString(),
                     BirthDate = d1,
-                    Nationality = NationalityConverter.Convert(row[ClubColumnsEnum.nationality.ToString()].ToString()),
+                    Nationality = Converters.NationalityConverter.Convert(row[ClubColumnsEnum.nationality.ToString()].ToString()),
                     Height = i1,
-                    PreferredFoot = FootConverter.Convert(row[ClubColumnsEnum.preferredFoot.ToString()].ToString()),
-                    Position = PositionConverter.Convert(row[ClubColumnsEnum.position.ToString()].ToString()),
+                    PreferredFoot = Converters.FootConverter.Convert(row[ClubColumnsEnum.preferredFoot.ToString()].ToString()),
+                    Position = Converters.PositionConverter.Convert(row[ClubColumnsEnum.position.ToString()].ToString()),
                     Number = i2,
                     Captain = row[ClubColumnsEnum.captain.ToString()].ToString(),
                     ClubArrivalDate = d2,

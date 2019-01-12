@@ -60,6 +60,7 @@
     <Compile Include="Contracts\IParser.cs" />
     <Compile Include="Contracts\Converters\IFootConverter.cs" />
     <Compile Include="Contracts\Converters\IPositionConverter.cs" />
+    <Compile Include="Converters\ConvertersCollection.cs" />
     <Compile Include="Converters\Foot\ENFootConverter.cs" />
     <Compile Include="Converters\Foot\PTFootConverter.cs" />
     <Compile Include="Converters\Nationality\ENNationalityConverter.cs" />

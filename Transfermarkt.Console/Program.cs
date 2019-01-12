@@ -24,13 +24,15 @@ namespace Transfermarkt.Console
         {
             conn = new Parser(
                 new HtmlAgilityPackConnector(),
-                new PTNationalityConverter(),
-                new PTPositionConverter(),
-                new PTFootConverter()
+                new ConvertersCollection(
+                    new PTNationalityConverter(),
+                    new PTPositionConverter(),
+                    new PTFootConverter()
+                )
             );
 
             exporter = new JsonExporter();
-            
+
             System.Console.WriteLine("----------------------------------");
             //TestCompetition(conn);
             TestSquad(conn);
