@@ -8,6 +8,7 @@ using Transfermarkt.Core.Converters;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.Contracts.Converters;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core
 {
@@ -21,6 +22,8 @@ namespace Transfermarkt.Core
         public string IdentifiersGetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersGetterPattern"].ToString();
         public string IdentifiersSetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersSetterPattern"].ToString();
 
+        private ILogger _logger;
+
         public IPageConnector Connector { get; set; }
         public ConvertersCollection Converters { get; set; }
 
@@ -28,6 +31,7 @@ namespace Transfermarkt.Core
         {
             Connector = connector;
             Converters = converters;
+            _logger = LoggerFactory.GetLogger();
         }
 
         #region Contract
@@ -50,11 +54,18 @@ namespace Transfermarkt.Core
             DataTable dt = Connector.GetCompetitionClubsTable();
             foreach (DataRow row in dt.Rows)
             {
-                var clubUrl = row[CompetitionColumnsEnum.clubUrl.ToString()].ToString();
+                try
+                {
+                    var clubUrl = row[CompetitionColumnsEnum.clubUrl.ToString()].ToString();
 
-                string finalClubUrl = TransformUrl(clubUrl);
+                    string finalClubUrl = TransformUrl(clubUrl);
 
-                competition.Clubs.Add(ParseSquad($"{BaseURL}{finalClubUrl}"));
+                    competition.Clubs.Add(ParseSquad($"{BaseURL}{finalClubUrl}"));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogException(ex);
+                }
             }
 
             return competition;
