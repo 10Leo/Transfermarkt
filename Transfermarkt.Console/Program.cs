@@ -20,6 +20,18 @@ namespace Transfermarkt.Console
         private static IParser conn;
         private static IExporter exporter;
 
+        private static IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
+        {
+            ["Barcelona"] = (131, "fc-barcelona"),
+            ["Nacional"] = (982, "cd-nacional"),
+            ["V. Guimarães"] = (2420, "vitoria-sc"),
+        };
+
+        private static IDictionary<string, (string internalName, string d1, string d2)> competitions = new Dictionary<string, (string internalName, string d1, string d2)>
+        {
+            ["ITA"] = ("serie-a", "IT1", "")
+        };
+
         static void Main(string[] args)
         {
             conn = new Parser(
@@ -34,14 +46,15 @@ namespace Transfermarkt.Console
             exporter = new JsonExporter();
 
             System.Console.WriteLine("----------------------------------");
-            //TestCompetition(conn);
-            TestSquad(conn);
+            //TestCompetition(conn, "ITA, 2018");
+            TestSquad(conn, "Barcelona", 2011);
         }
 
-        static void TestCompetition(IParser conn)
+        static void TestCompetition(IParser conn, string countryISO3, int season = 2018)
         {
-            int season = 2018;
-            string url = BaseURL + "/serie-a/startseite/wettbewerb/IT1/plus/?saison_id=" + season;
+            string detailsPageUrl = $"/{competitions[countryISO3].internalName}/startseite/wettbewerb/{competitions[countryISO3].d1}/plus/?saison_id={season}";
+            
+            string url = BaseURL + detailsPageUrl;
 
             try
             {
@@ -58,11 +71,14 @@ namespace Transfermarkt.Console
             }
         }
 
-        static void TestSquad(IParser conn)
+        static void TestSquad(IParser conn, string name, int season = 2018)
         {
-            string url = BaseURL + "/fc-barcelona/kader/verein/131/saison_id/2018/plus/1";
-            url = BaseURL + "/cd-nacional/kader/verein/982/saison_id/2018/plus/1";
-            url = BaseURL + "/vitoria-sc/kader/verein/2420/saison_id/2018/plus/1";
+            string detailsPageUrl = $"/{clubs[name].internalName}/kader/verein/{clubs[name].id}/plus/1/galerie/0?saison_id={season}";
+
+            string url = BaseURL + detailsPageUrl;
+
+            //url = BaseURL + $"/cd-nacional/kader/verein/982/saison_id/{season}/plus/1";
+            //url = BaseURL + $"/vitoria-sc/kader/verein/2420/saison_id/{season}/plus/1";
 
             try
             {
