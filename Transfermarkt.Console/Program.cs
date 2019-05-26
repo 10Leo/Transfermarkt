@@ -17,6 +17,9 @@ namespace Transfermarkt.Console
     class Program
     {
         private static string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
+        private static string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormatV2"].ToString();
+        private static string CompetitionUrlFormat { get; } = ConfigurationManager.AppSettings["CompetitionUrlFormat"].ToString();
+
         private static IParser conn;
         private static IExporter exporter;
 
@@ -27,9 +30,9 @@ namespace Transfermarkt.Console
             ["V. Guimarães"] = (2420, "vitoria-sc"),
         };
 
-        private static IDictionary<string, (string internalName, string d1, string d2)> competitions = new Dictionary<string, (string internalName, string d1, string d2)>
+        private static IDictionary<Nationality, (string internalName, string d1, string d2)> competitions = new Dictionary<Nationality, (string internalName, string d1, string d2)>
         {
-            ["ITA"] = ("serie-a", "IT1", "")
+            [Nationality.ITA] = ("serie-a", "IT1", "")
         };
 
         static void Main(string[] args)
@@ -45,17 +48,21 @@ namespace Transfermarkt.Console
 
             exporter = new JsonExporter();
 
+
+            //TestCompetition(conn, Nationality.ITA, 2018);
+
             System.Console.WriteLine("----------------------------------");
-            //TestCompetition(conn, "ITA, 2018");
             TestSquad(conn, "Barcelona", 2011);
         }
 
-        static void TestCompetition(IParser conn, string countryISO3, int season = 2018)
+        static void TestCompetition(IParser conn, Nationality nationality, int season = 2018)
         {
-            string detailsPageUrl = $"/{competitions[countryISO3].internalName}/startseite/wettbewerb/{competitions[countryISO3].d1}/plus/?saison_id={season}";
-            
-            string url = BaseURL + detailsPageUrl;
+            string detailsPageUrl = CompetitionUrlFormat;
+            detailsPageUrl = detailsPageUrl.Replace("{COMPETITION_NAME}", competitions[nationality].internalName);
+            detailsPageUrl = detailsPageUrl.Replace("{DIVISION}", competitions[nationality].d1);
+            detailsPageUrl = detailsPageUrl.Replace("{SEASON}", season.ToString());
 
+            string url = BaseURL + detailsPageUrl;
             try
             {
                 Competition competition = conn.ParseSquadsFromCompetition(url);
@@ -73,13 +80,12 @@ namespace Transfermarkt.Console
 
         static void TestSquad(IParser conn, string name, int season = 2018)
         {
-            string detailsPageUrl = $"/{clubs[name].internalName}/kader/verein/{clubs[name].id}/plus/1/galerie/0?saison_id={season}";
+            string detailsPageUrl = PlusClubUrlFormat;
+            detailsPageUrl = detailsPageUrl.Replace("{CLUB_STRING}", clubs[name].internalName);
+            detailsPageUrl = detailsPageUrl.Replace("{CLUB_ID}", clubs[name].id.ToString());
+            detailsPageUrl = detailsPageUrl.Replace("{SEASON}", season.ToString());
 
             string url = BaseURL + detailsPageUrl;
-
-            //url = BaseURL + $"/cd-nacional/kader/verein/982/saison_id/{season}/plus/1";
-            //url = BaseURL + $"/vitoria-sc/kader/verein/2420/saison_id/{season}/plus/1";
-
             try
             {
                 Club club = conn.ParseSquad(url);
