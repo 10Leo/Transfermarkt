@@ -176,11 +176,11 @@ namespace Transfermarkt.Core.Connectors
                     string captain = GetCaptain(cols[1]);
                     string nationality = GetNationality(cols[3])?[0];
                     string birthDate = GetBirthDate(cols[2]);
-                    string height = GetHeight(cols[4]);
-                    string preferredFoot = GetPreferredFoot(cols[5]);
-                    string clubArrivalDate = GetClubArrivalDate(cols[6]);
-                    string contractExpirationDate = GetContractExpirationDate(cols[8]);
-                    string marketValue = GetMarketValue(cols[9]);
+                    string height = GetHeight(cols[5]);
+                    string preferredFoot = GetPreferredFoot(cols[6]);
+                    string clubArrivalDate = GetClubArrivalDate(cols[7]);
+                    string contractExpirationDate = GetContractExpirationDate(cols[9]);
+                    string marketValue = GetMarketValue(cols[10]);
 
                     dataTable.Rows.Add(
                           profileUrl
