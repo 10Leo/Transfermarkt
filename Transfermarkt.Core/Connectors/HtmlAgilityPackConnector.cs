@@ -145,7 +145,8 @@ namespace Transfermarkt.Core.Connectors
             }
 
             DataTable dataTable = new DataTable();
-            var headers = table.SelectNodes(".//thead/tr/th");
+            //var headers = table.SelectNodes(".//thead/tr/th");
+            var headers = table.SelectNodes(".//thead/tr[th]");
             var rows = table.SelectNodes(".//tbody/tr[td]");
 
             //foreach (HtmlNode header in h)
@@ -153,6 +154,74 @@ namespace Transfermarkt.Core.Connectors
 
             //foreach (var row in r)
             //    dataTable.Rows.Add(row.SelectNodes("td").Select(td => td.InnerText).ToArray());
+
+            int? shirtNumberIndex = null;
+            int? profileUrlIndex = null;
+            int? nameIndex = null;
+            int? shortNameIndex = null;
+            int? imgUrlIndex = null;
+            int? positionIndex = null;
+            int? captainIndex = null;
+            int? birthDateIndex = null;
+            int? nationalityIndex = null;
+            int? heightIndex = null;
+            int? preferredFootIndex = null;
+            int? clubArrivalDateIndex = null;
+            int? contractExpirationDateIndex = null;
+            int? marketValueIndex = null;
+
+            if (headers != null && headers.Count > 0)
+            {
+                HtmlNodeCollection cols = headers[0].SelectNodes("th");
+
+                for (int i = 0; i < cols.Count; i++)
+                {
+                    var col = cols[i].InnerText.Trim(' ', '\t', '\n');
+                    if (col == "#")
+                    {
+                        shirtNumberIndex = i;
+                    }
+                    else if (col == "Jogadores")
+                    {
+                        profileUrlIndex = i;
+                        nameIndex = i;
+                        shortNameIndex = i;
+                        imgUrlIndex = i;
+                        positionIndex = i;
+                        captainIndex = i;
+                    }
+                    else if (col == "Nasc. / idade")
+                    {
+                        birthDateIndex = i;
+                    }
+                    else if (col == "Nac.")
+                    {
+                        nationalityIndex = i;
+                    }
+                    else if (col == "Clube atual") { }
+                    else if (col == "Altura")
+                    {
+                        heightIndex = i;
+                    }
+                    else if (col == "Pé")
+                    {
+                        preferredFootIndex = i;
+                    }
+                    else if (col == "Na equipa desde")
+                    {
+                        clubArrivalDateIndex = i;
+                    }
+                    else if (col == "Anterior") { }
+                    else if (col == "Contrato até")
+                    {
+                        contractExpirationDateIndex = i;
+                    }
+                    else if (col == "Valor de mercado")
+                    {
+                        marketValueIndex = i;
+                    }
+                }
+            }
 
             foreach (string enumName in Enum.GetNames(typeof(ClubColumnsEnum)))
             {
@@ -167,20 +236,62 @@ namespace Transfermarkt.Core.Connectors
 
                 try
                 {
-                    string profileUrl = GetProfileUrl(cols[1]);
-                    string shirtNumber = GetShirtNumber(cols[0]);
-                    string name = GetName(cols[1]);
-                    string shortName = GetShortName(cols[1]);
-                    string imgUrl = GetImgUrl(cols[1]);
-                    string position = GetPosition(cols[1]);
-                    string captain = GetCaptain(cols[1]);
-                    string nationality = GetNationality(cols[3])?[0];
-                    string birthDate = GetBirthDate(cols[2]);
-                    string height = GetHeight(cols[5]);
-                    string preferredFoot = GetPreferredFoot(cols[6]);
-                    string clubArrivalDate = GetClubArrivalDate(cols[7]);
-                    string contractExpirationDate = GetContractExpirationDate(cols[9]);
-                    string marketValue = GetMarketValue(cols[10]);
+                    string profileUrl = string.Empty;
+                    string shirtNumber = string.Empty;
+                    string name = string.Empty;
+                    string shortName = string.Empty;
+                    string imgUrl = string.Empty;
+                    string position = string.Empty;
+                    string captain = string.Empty;
+                    string nationality = string.Empty;
+                    string birthDate = string.Empty;
+                    string height = string.Empty;
+                    string preferredFoot = string.Empty;
+                    string clubArrivalDate = string.Empty;
+                    string contractExpirationDate = string.Empty;
+                    string marketValue = string.Empty;
+
+                    if (profileUrlIndex.HasValue)
+                    {
+                        profileUrl = GetProfileUrl(cols[profileUrlIndex.Value]);
+                    }
+                    if (shirtNumberIndex.HasValue)
+                    {
+                        shirtNumber = GetShirtNumber(cols[shirtNumberIndex.Value]);
+                        name = GetName(cols[nameIndex.Value]);
+                        shortName = GetShortName(cols[shortNameIndex.Value]);
+                        imgUrl = GetImgUrl(cols[imgUrlIndex.Value]);
+                        position = GetPosition(cols[positionIndex.Value]);
+                        captain = GetCaptain(cols[captainIndex.Value]);
+                    }
+                    if (birthDateIndex.HasValue)
+                    {
+                        birthDate = GetBirthDate(cols[birthDateIndex.Value]);
+                    }
+                    if (nationalityIndex.HasValue)
+                    {
+                        nationality = GetNationality(cols[nationalityIndex.Value])?[0];
+                    }
+                    if (heightIndex.HasValue)
+                    {
+                        height = GetHeight(cols[heightIndex.Value]);
+                    }
+                    if (preferredFootIndex.HasValue)
+                    {
+                        preferredFoot = GetPreferredFoot(cols[preferredFootIndex.Value]);
+                    }
+                    if (clubArrivalDateIndex.HasValue)
+                    {
+                        clubArrivalDate = GetClubArrivalDate(cols[clubArrivalDateIndex.Value]);
+                    }
+                    if (contractExpirationDateIndex.HasValue)
+                    {
+                        contractExpirationDate = GetContractExpirationDate(cols[contractExpirationDateIndex.Value]);
+                    }
+                    if (marketValueIndex.HasValue)
+                    {
+                        marketValue = GetMarketValue(cols[marketValueIndex.Value]);
+                    }
 
                     dataTable.Rows.Add(
                           profileUrl
@@ -201,6 +312,7 @@ namespace Transfermarkt.Core.Connectors
                 }
                 catch (Exception ex)
                 {
+                    //log
                 }
             }
 
@@ -279,8 +391,6 @@ namespace Transfermarkt.Core.Connectors
         }
         private string GetCaptain(HtmlNode node)
         {
-            var r = node
-                .SelectNodes("table//tr[1]/td[2]/span");
             var cap = node
                 .SelectNodes("table//tr[1]/td[2]/span")?
                 .FirstOrDefault(n => (n.Attributes["class"]?.Value).Contains("kapitaenicon-table"));

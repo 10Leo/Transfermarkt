@@ -18,7 +18,7 @@ namespace Transfermarkt.Core
 
         public string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
         public string SimpleClubUrlFormat { get; } = ConfigurationManager.AppSettings["SimpleClubUrlFormat"].ToString();
-        public string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormat"].ToString();
+        public string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormatV2"].ToString();
         public string IdentifiersGetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersGetterPattern"].ToString();
         public string IdentifiersSetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersSetterPattern"].ToString();
 
