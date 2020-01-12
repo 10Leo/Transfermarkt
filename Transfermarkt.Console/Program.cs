@@ -23,7 +23,7 @@ namespace Transfermarkt.Console
         private static IParser conn;
         private static IExporter exporter;
 
-        private static IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
+        private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
         {
             ["Barcelona"] = (131, "fc-barcelona"),
             ["Nacional"] = (982, "cd-nacional"),
@@ -34,6 +34,8 @@ namespace Transfermarkt.Console
         {
             [Nationality.ITA] = ("serie-a", "IT1", "")
         };
+
+        private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
         static void Main(string[] args)
         {
@@ -48,11 +50,51 @@ namespace Transfermarkt.Console
 
             exporter = new JsonExporter();
 
-
-            //TestCompetition(conn, Nationality.ITA, 2018);
-
             System.Console.WriteLine("----------------------------------");
-            TestSquad(conn, "Barcelona", 2011);
+
+            int option = 0;
+            if (args.Length > 0)
+            {
+                try
+                {
+                    option = int.Parse(args[0]);
+                }
+                catch (Exception)
+                {
+                    //log
+                }
+            }
+            switch (option)
+            {
+                case 0:
+                    TestCompetitions(conn);
+                    break;
+                case 1:
+                    TestCompetition(conn, Nationality.ITA, currentSeason);
+                    break;
+                case 2:
+                    TestSquad(conn, "Barcelona", 2011);
+                    break;
+                default: break;
+            }
+        }
+
+        static void TestCompetitions(IParser conn, int season = 2018)
+        {
+            //string url = BaseURL + detailsPageUrl;
+            //try
+            //{
+            //    Season s = conn.ParseCompetitions(url, season);
+
+            //    System.Console.WriteLine(competition);
+            //    exporter.ExtractCompetitions(competition);
+            //}
+            //catch (Exception ex)
+            //{
+            //    System.Console.WriteLine(ex.InnerException);
+            //    System.Console.WriteLine(ex.Message);
+            //    throw;
+            //}
         }
 
         static void TestCompetition(IParser conn, Nationality nationality, int season = 2018)
