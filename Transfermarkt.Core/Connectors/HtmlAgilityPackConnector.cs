@@ -93,7 +93,7 @@ namespace Transfermarkt.Core.Connectors
             }
 
             DataTable dataTable = new DataTable();
-            
+
             foreach (string enumName in Enum.GetNames(typeof(CompetitionColumnsEnum)))
             {
                 dataTable.Columns.Add(enumName);
@@ -234,86 +234,52 @@ namespace Transfermarkt.Core.Connectors
                 //each column is an attribute
                 HtmlNodeCollection cols = row.SelectNodes("td");
 
-                try
-                {
-                    string profileUrl = string.Empty;
-                    string shirtNumber = string.Empty;
-                    string name = string.Empty;
-                    string shortName = string.Empty;
-                    string imgUrl = string.Empty;
-                    string position = string.Empty;
-                    string captain = string.Empty;
-                    string nationality = string.Empty;
-                    string birthDate = string.Empty;
-                    string height = string.Empty;
-                    string preferredFoot = string.Empty;
-                    string clubArrivalDate = string.Empty;
-                    string contractExpirationDate = string.Empty;
-                    string marketValue = string.Empty;
+                string profileUrl = string.Empty;
+                string shirtNumber = string.Empty;
+                string name = string.Empty;
+                string shortName = string.Empty;
+                string imgUrl = string.Empty;
+                string position = string.Empty;
+                string captain = string.Empty;
+                string nationality = string.Empty;
+                string birthDate = string.Empty;
+                string height = string.Empty;
+                string preferredFoot = string.Empty;
+                string clubArrivalDate = string.Empty;
+                string contractExpirationDate = string.Empty;
+                string marketValue = string.Empty;
 
-                    if (profileUrlIndex.HasValue)
-                    {
-                        profileUrl = GetProfileUrl(cols[profileUrlIndex.Value]);
-                    }
-                    if (shirtNumberIndex.HasValue)
-                    {
-                        shirtNumber = GetShirtNumber(cols[shirtNumberIndex.Value]);
-                        name = GetName(cols[nameIndex.Value]);
-                        shortName = GetShortName(cols[shortNameIndex.Value]);
-                        imgUrl = GetImgUrl(cols[imgUrlIndex.Value]);
-                        position = GetPosition(cols[positionIndex.Value]);
-                        captain = GetCaptain(cols[captainIndex.Value]);
-                    }
-                    if (birthDateIndex.HasValue)
-                    {
-                        birthDate = GetBirthDate(cols[birthDateIndex.Value]);
-                    }
-                    if (nationalityIndex.HasValue)
-                    {
-                        nationality = GetNationality(cols[nationalityIndex.Value])?[0];
-                    }
-                    if (heightIndex.HasValue)
-                    {
-                        height = GetHeight(cols[heightIndex.Value]);
-                    }
-                    if (preferredFootIndex.HasValue)
-                    {
-                        preferredFoot = GetPreferredFoot(cols[preferredFootIndex.Value]);
-                    }
-                    if (clubArrivalDateIndex.HasValue)
-                    {
-                        clubArrivalDate = GetClubArrivalDate(cols[clubArrivalDateIndex.Value]);
-                    }
-                    if (contractExpirationDateIndex.HasValue)
-                    {
-                        contractExpirationDate = GetContractExpirationDate(cols[contractExpirationDateIndex.Value]);
-                    }
-                    if (marketValueIndex.HasValue)
-                    {
-                        marketValue = GetMarketValue(cols[marketValueIndex.Value]);
-                    }
+                profileUrl = TryGetValue(GetProfileUrl, cols, profileUrlIndex.Value);
+                shirtNumber = TryGetValue(GetShirtNumber, cols, shirtNumberIndex.Value);
+                name = TryGetValue(GetName, cols, nameIndex.Value);
+                shortName = TryGetValue(GetShortName, cols, shortNameIndex.Value);
+                imgUrl = TryGetValue(GetImgUrl, cols, imgUrlIndex.Value);
+                position = TryGetValue(GetPosition, cols, positionIndex.Value);
+                captain = TryGetValue(GetCaptain, cols, captainIndex.Value);
+                birthDate = TryGetValue(GetBirthDate, cols, birthDateIndex.Value);
+                nationality = TryGetValue(GetNationality, cols, nationalityIndex.Value);
+                height = TryGetValue(GetHeight, cols, heightIndex.Value);
+                preferredFoot = TryGetValue(GetPreferredFoot, cols, preferredFootIndex.Value);
+                clubArrivalDate = TryGetValue(GetClubArrivalDate, cols, clubArrivalDateIndex.Value);
+                contractExpirationDate = TryGetValue(GetContractExpirationDate, cols, contractExpirationDateIndex.Value);
+                marketValue = TryGetValue(GetMarketValue, cols, marketValueIndex.Value);
 
-                    dataTable.Rows.Add(
-                          profileUrl
-                        , shirtNumber
-                        , name
-                        , shortName
-                        , imgUrl
-                        , position
-                        , captain
-                        , nationality
-                        , birthDate
-                        , height
-                        , preferredFoot
-                        , clubArrivalDate
-                        , contractExpirationDate
-                        , marketValue
-                    );
-                }
-                catch (Exception ex)
-                {
-                    //log
-                }
+                dataTable.Rows.Add(
+                      profileUrl
+                    , shirtNumber
+                    , name
+                    , shortName
+                    , imgUrl
+                    , position
+                    , captain
+                    , nationality
+                    , birthDate
+                    , height
+                    , preferredFoot
+                    , clubArrivalDate
+                    , contractExpirationDate
+                    , marketValue
+                );
             }
 
             //foreach (DataRow row in dataTable.Rows)
@@ -396,12 +362,12 @@ namespace Transfermarkt.Core.Connectors
                 .FirstOrDefault(n => (n.Attributes["class"]?.Value).Contains("kapitaenicon-table"));
             return (cap == null) ? "" : "c";
         }
-        private string[] GetNationality(HtmlNode node)
+        private string GetNationality(HtmlNode node)
         {
             return node
                 .SelectNodes("img")
                 .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
-                .Select(n => n.Attributes["title"].Value)?.ToArray();
+                .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault();
         }
         private string GetBirthDate(HtmlNode node)
         {
@@ -437,7 +403,8 @@ namespace Transfermarkt.Core.Connectors
             if (sp[1] == "M")
             {
                 n = n * 1000000;
-            } else if (sp[1] == "mil")
+            }
+            else if (sp[1] == "mil")
             {
                 n = n * 1000;
             }
@@ -460,6 +427,24 @@ namespace Transfermarkt.Core.Connectors
             {
                 throw new Exception("Document Node null");
             }
+        }
+
+        private string TryGetValue(Func<HtmlNode, string> parserFunction, HtmlNodeCollection cols, int? columnIndex)
+        {
+            string value = null;
+            try
+            {
+                if (columnIndex.HasValue)
+                {
+                    value = parserFunction(cols[columnIndex.Value]);
+                }
+            }
+            catch (Exception ex)
+            {
+                //log
+            }
+
+            return value;
         }
 
         #endregion Private methods
