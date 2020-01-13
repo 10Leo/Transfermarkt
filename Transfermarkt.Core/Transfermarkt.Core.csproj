@@ -71,6 +71,7 @@
     <Compile Include="Contracts\IConverter.cs" />
     <Compile Include="Converters\Nationality\PTNationalityConverter.cs" />
     <Compile Include="Converters\Position\ENPositionConverter.cs" />
+    <Compile Include="Converters\Position\PositionConverter.cs" />
     <Compile Include="Converters\Position\PTPositionConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

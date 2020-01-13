@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,20 +12,21 @@ using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core.Converters
 {
-    public class ENPositionConverter : IPositionConverter
+    public class ENPositionConverter : Position.PositionConverter, IPositionConverter
     {
-        public Position? Convert(string stringToConvert)
+        public ENPositionConverter()
         {
-            throw new NotImplementedException();
+            positions = JsonConvert.DeserializeObject<PositionsJSON>(File.ReadAllText($@"{SettingsFolderPath}\EN\{SettingsPositionsFile}"));
+            positions.Positions.ToList().ForEach(p =>
+            {
+                Enum.TryParse(p.DO, out Actors.Position toDomainObject);
+                positionMapper.Add(p.Name, toDomainObject);
+            });
         }
 
-        private Position? Converter(string str)
+        public override Actors.Position? Convert(string stringToConvert)
         {
-            switch (str)
-            {
-                default:
-                    return null;
-            }
+            return base.Convert(stringToConvert);
         }
     }
 }
