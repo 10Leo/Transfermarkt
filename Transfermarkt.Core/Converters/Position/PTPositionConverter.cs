@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,18 +14,60 @@ namespace Transfermarkt.Core.Converters
 {
     public class PTPositionConverter : IPositionConverter
     {
-        public Position? Convert(string stringToConvert)
+        [JsonObject(Title = "Positions")]
+        private class PositionsJSON
         {
-            return Converter(stringToConvert);
+            public string Language { get; set; }
+            public IList<PositionJSON> Positions { get; set; }
         }
 
-        private Position? Converter(string str)
+        [JsonObject(Title = "Position")]
+        private class PositionJSON
         {
-            switch (str)
+            public string Name { get; set; }
+            public string DO { get; set; }
+        }
+
+        private static readonly string dateFormat = "yyyy-MM-dd";
+
+        public static string SettingsPTFolderPath { get; } = ConfigurationManager.AppSettings["SettingsPTFolderPath"].ToString();
+        public static string SettingsPTPositionsFile { get; } = ConfigurationManager.AppSettings["SettingsPTPositionsFile"].ToString();
+
+        private static JsonSerializerSettings settings;
+        private readonly PositionsJSON positions;
+
+        private readonly IDictionary<string, Position> positionMapper = new Dictionary<string, Position>();
+
+        public PTPositionConverter()
+        {
+            settings = new JsonSerializerSettings
             {
-                case "Guarda-Redes": return Position.GR;
-                default: return null;
+                DateFormatString = dateFormat,
+            };
+            settings.Formatting = Formatting.Indented;
+            settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+
+            positions = JsonConvert.DeserializeObject<PositionsJSON>(File.ReadAllText($@"{SettingsPTFolderPath}\{SettingsPTPositionsFile}"));
+            positions.Positions.ToList().ForEach(p =>
+            {
+                Enum.TryParse(p.DO, out Position toDomainObject);
+                positionMapper.Add(p.Name, toDomainObject);
+            });
+        }
+
+        public Position? Convert(string stringToConvert)
+        {
+            Position? p = null;
+            try
+            {
+                p = positionMapper[stringToConvert];
             }
+            catch (KeyNotFoundException ex)
+            {
+                //log
+            }
+            catch(ArgumentNullException ex) { }
+            return p;
         }
     }
 }

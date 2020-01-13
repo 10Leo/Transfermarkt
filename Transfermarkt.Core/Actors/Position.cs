@@ -8,17 +8,18 @@ namespace Transfermarkt.Core.Actors
 {
     public enum Position
     {
-        GR = 1,
-        RB,
-        LB,
-        RCB,
-        LCB,
-        CDM,
-        CM,
-        RM,
-        LM,
-        AM,
-        SS,
-        S
+        GR = 001,
+        RB = 002,
+        LB = 005,
+        CB = 004,
+        DM = 006,
+        CM = 008,
+        RM = 007,
+        LM = 011,
+        RW = 107,
+        LW = 111,
+        AM = 010,
+        SS = 109,
+        CF = 009
     }
 }
