@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2016
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Core", "Transfermarkt.Core\Transfermarkt.Core.csproj", "{624D334A-662C-4B28-BB3F-C73E61850C93}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Exporter", "Transfermarkt.Exporter\Transfermarkt.Exporter.csproj", "{51E667D6-B895-494F-95DA-EB080DD8EEBB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Logging", "Transfermarkt.Logging\Transfermarkt.Logging.csproj", "{3166B876-1387-4469-9B20-7BE12BCD105E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Core.Test", "Transfermarkt.Core.Test\Transfermarkt.Core.Test.csproj", "{F34E4173-F5A9-4675-B288-717D1DEF2E25}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{3166B876-1387-4469-9B20-7BE12BCD105E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3166B876-1387-4469-9B20-7BE12BCD105E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3166B876-1387-4469-9B20-7BE12BCD105E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F34E4173-F5A9-4675-B288-717D1DEF2E25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F34E4173-F5A9-4675-B288-717D1DEF2E25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F34E4173-F5A9-4675-B288-717D1DEF2E25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F34E4173-F5A9-4675-B288-717D1DEF2E25}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
