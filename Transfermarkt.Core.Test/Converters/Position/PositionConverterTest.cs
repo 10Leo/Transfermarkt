@@ -15,21 +15,30 @@ namespace Transfermarkt.Core.Test.Converters.Position
         public static string SettingsPTFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
         public static string SettingsPTPositionsFile { get; } = ConfigurationManager.AppSettings["SettingsPositionsFile"].ToString();
 
+        private IDictionary<string, Type> languages = new Dictionary<string, Type>();
+
+        public PositionConverterTest()
+        {
+            languages.Add("PT", typeof(PTPositionConverter));
+            languages.Add("EN", typeof(ENPositionConverter));
+
+            Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
+        }
+
         [TestMethod, TestCategory("Settings")]
         public void SettingsPositionIsCorrectlyRead()
         {
-            IPositionConverter converter = new PTPositionConverter();
+            IPositionConverter converter;
+
+            foreach (var language in languages)
+            {
+                converter = (IPositionConverter)Activator.CreateInstance(language.Value);
+            }
         }
 
         [TestMethod, TestCategory("Settings")]
         public void PositionStringsAreCorrectlyTransformedToDomainObjects()
         {
-            IDictionary<string, Type> languages = new Dictionary<string, Type>();
-            languages.Add("PT", typeof(PTPositionConverter));
-            languages.Add("EN", typeof(ENPositionConverter));
-
-            Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
-
             IPositionConverter converter;
 
             foreach (var language in languages)
@@ -38,9 +47,9 @@ namespace Transfermarkt.Core.Test.Converters.Position
 
                 string json = File.ReadAllText($@"{SettingsPTFolderPath}\{language.Key}\{SettingsPTPositionsFile}");
 
-                var definition = new { Language = default(string), Positions = new[] { new { Name = default(string), DO = default(string) } } };
+                var definition = new { Language = default(string), Set = new[] { new { Name = default(string), DO = default(string) } } };
                 var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
-                foreach (var item in deserializedJSON.Positions)
+                foreach (var item in deserializedJSON.Set)
                 {
                     Actors.Position? retValue = converter.Convert(item.Name);
 

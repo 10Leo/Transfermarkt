@@ -16,11 +16,11 @@ namespace Transfermarkt.Core.Converters
     {
         public ENPositionConverter()
         {
-            positions = JsonConvert.DeserializeObject<PositionsJSON>(File.ReadAllText($@"{SettingsFolderPath}\EN\{SettingsPositionsFile}"));
-            positions.Positions.ToList().ForEach(p =>
+            PositionsJSON positions = JsonConvert.DeserializeObject<PositionsJSON>(File.ReadAllText($@"{SettingsFolderPath}\EN\{SettingsPositionsFile}"));
+            positions.Set.ToList().ForEach(p =>
             {
                 Enum.TryParse(p.DO, out Actors.Position toDomainObject);
-                positionMapper.Add(p.Name, toDomainObject);
+                map.Add(p.Name, toDomainObject);
             });
         }
 

@@ -15,10 +15,10 @@ namespace Transfermarkt.Core.Converters.Position
         protected class PositionsJSON
         {
             public string Language { get; set; }
-            public IList<PositionJSON> Positions { get; set; }
+            public IList<PositionJSON> Set { get; set; }
         }
 
-        [JsonObject(Title = "Position")]
+        [JsonObject(Title = "Set")]
         protected class PositionJSON
         {
             public string Name { get; set; }
@@ -30,14 +30,11 @@ namespace Transfermarkt.Core.Converters.Position
         public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
         public static string SettingsPositionsFile { get; } = ConfigurationManager.AppSettings["SettingsPositionsFile"].ToString();
 
-        protected static JsonSerializerSettings settings;
-        protected PositionsJSON positions;
-
-        protected readonly IDictionary<string, Actors.Position> positionMapper = new Dictionary<string, Actors.Position>();
+        protected readonly IDictionary<string, Actors.Position> map = new Dictionary<string, Actors.Position>();
 
         public PositionConverter()
         {
-            settings = new JsonSerializerSettings
+            JsonSerializerSettings settings = new JsonSerializerSettings
             {
                 DateFormatString = dateFormat,
             };
@@ -50,7 +47,7 @@ namespace Transfermarkt.Core.Converters.Position
             Actors.Position? p = null;
             try
             {
-                p = positionMapper[stringToConvert];
+                p = map[stringToConvert];
             }
             catch (KeyNotFoundException)
             {
