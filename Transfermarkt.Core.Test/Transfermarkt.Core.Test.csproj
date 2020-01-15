@@ -53,6 +53,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\Nationality\NationalityConverterTest.cs" />
     <Compile Include="Converters\Position\PositionConverterTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

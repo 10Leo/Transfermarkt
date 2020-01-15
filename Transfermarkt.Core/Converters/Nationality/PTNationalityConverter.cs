@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.Converters
         private static readonly string dateFormat = "yyyy-MM-dd";
 
         public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsNationalitiesFile { get; } = ConfigurationManager.AppSettings["SettingsNationalitiesFile"].ToString();
+        public static string SettingsNationalityFile { get; } = ConfigurationManager.AppSettings["SettingsNationalityFile"].ToString();
 
         private readonly IDictionary<string, Actors.Nationality> map = new Dictionary<string, Actors.Nationality>();
 
@@ -31,7 +31,7 @@ namespace Transfermarkt.Core.Converters
             settings.Formatting = Formatting.Indented;
             settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
 
-            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsNationalitiesFile}");
+            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsNationalityFile}");
 
             var definition = new { Language = default(string), Set = new[] { new { Name = default(string), DO = default(string) } } };
             var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
