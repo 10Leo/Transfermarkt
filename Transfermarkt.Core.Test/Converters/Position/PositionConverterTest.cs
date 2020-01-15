@@ -12,8 +12,8 @@ namespace Transfermarkt.Core.Test.Converters.Position
     [TestClass]
     public class PositionConverterTest
     {
-        public static string SettingsPTFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsPTPositionsFile { get; } = ConfigurationManager.AppSettings["SettingsPositionsFile"].ToString();
+        public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
+        public static string SettingsPositionsFile { get; } = ConfigurationManager.AppSettings["SettingsPositionsFile"].ToString();
 
         private IDictionary<string, Type> languages = new Dictionary<string, Type>();
 
@@ -37,7 +37,7 @@ namespace Transfermarkt.Core.Test.Converters.Position
         }
 
         [TestMethod, TestCategory("Settings")]
-        public void PositionStringsAreCorrectlyTransformedToDomainObjects()
+        public void PositionStringsAreCorrectlyTransformedIntoDomainObjects()
         {
             IPositionConverter converter;
 
@@ -45,7 +45,7 @@ namespace Transfermarkt.Core.Test.Converters.Position
             {
                 converter = (IPositionConverter)Activator.CreateInstance(language.Value);
 
-                string json = File.ReadAllText($@"{SettingsPTFolderPath}\{language.Key}\{SettingsPTPositionsFile}");
+                string json = File.ReadAllText($@"{SettingsFolderPath}\{language.Key}\{SettingsPositionsFile}");
 
                 var definition = new { Language = default(string), Set = new[] { new { Name = default(string), DO = default(string) } } };
                 var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
@@ -59,7 +59,7 @@ namespace Transfermarkt.Core.Test.Converters.Position
         }
 
         [TestMethod, TestCategory("Settings")]
-        public void IncorrectPositionStringIsNotTransformedToDomainObjects()
+        public void IncorrectPositionStringIsNotTransformedIntoDomainObjects()
         {
             IPositionConverter converter = new PTPositionConverter();
             Actors.Position? retValue = converter.Convert("Stupid name that doesn't exist in the file");
