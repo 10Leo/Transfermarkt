@@ -22,7 +22,7 @@ namespace Transfermarkt.Core.Converters.Nationality
         public NationalityConverterTest()
         {
             languages.Add("PT", typeof(PTNationalityConverter));
-            //languages.Add("EN", typeof(ENNationalityConverter));
+            languages.Add("EN", typeof(ENNationalityConverter));
 
             Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
         }
