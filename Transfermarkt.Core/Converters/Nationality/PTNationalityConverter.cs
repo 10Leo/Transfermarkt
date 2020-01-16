@@ -15,7 +15,6 @@ namespace Transfermarkt.Core.Converters
     public class PTNationalityConverter : INationalityConverter
     {
         private static readonly string language = "PT";
-        private static readonly string dateFormat = "yyyy-MM-dd";
 
         public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
         public static string SettingsNationalityFile { get; } = ConfigurationManager.AppSettings["SettingsNationalityFile"].ToString();
@@ -24,13 +23,6 @@ namespace Transfermarkt.Core.Converters
 
         public PTNationalityConverter()
         {
-            JsonSerializerSettings settings = new JsonSerializerSettings
-            {
-                DateFormatString = dateFormat,
-            };
-            settings.Formatting = Formatting.Indented;
-            settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-
             string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsNationalityFile}");
 
             var definition = new { Language = default(string), Set = new[] { new { ID = default(string), Name = default(string), DO = default(string) } } };
