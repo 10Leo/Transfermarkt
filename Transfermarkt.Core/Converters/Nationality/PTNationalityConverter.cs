@@ -20,7 +20,7 @@ namespace Transfermarkt.Core.Converters
         public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
         public static string SettingsNationalityFile { get; } = ConfigurationManager.AppSettings["SettingsNationalityFile"].ToString();
 
-        private readonly IDictionary<string, Actors.Nationality> map = new Dictionary<string, Actors.Nationality>();
+        private readonly IDictionary<string, Nationality> map = new Dictionary<string, Nationality>();
 
         public PTNationalityConverter()
         {
@@ -33,18 +33,18 @@ namespace Transfermarkt.Core.Converters
 
             string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsNationalityFile}");
 
-            var definition = new { Language = default(string), Set = new[] { new { Name = default(string), DO = default(string) } } };
+            var definition = new { Language = default(string), Set = new[] { new { ID = default(string), Name = default(string), DO = default(string) } } };
             var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
             deserializedJSON.Set.ToList().ForEach(p =>
             {
-                Enum.TryParse(p.DO, out Actors.Nationality toDomainObject);
+                Enum.TryParse(p.DO, out Nationality toDomainObject);
                 map.Add(p.Name, toDomainObject);
             });
         }
 
         public Nationality? Convert(string stringToConvert)
         {
-            Actors.Nationality? p = null;
+            Nationality? p = null;
             try
             {
                 p = map[stringToConvert];
