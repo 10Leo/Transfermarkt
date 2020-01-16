@@ -22,7 +22,7 @@ namespace Transfermarkt.Core.Converters.Foot
         public FootConverterTest()
         {
             languages.Add("PT", typeof(PTFootConverter));
-            //languages.Add("EN", typeof(ENFootConverter));
+            languages.Add("EN", typeof(ENFootConverter));
 
             Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
         }
