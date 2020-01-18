@@ -59,6 +59,9 @@
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="Connectors\HtmlAgilityPackConnector.cs" />
+    <Compile Include="Contracts\IElementParser.cs" />
+    <Compile Include="Contracts\IMarketValueParser.cs" />
+    <Compile Include="Contracts\IPage.cs" />
     <Compile Include="Contracts\IPageConnector.cs" />
     <Compile Include="Contracts\IParser.cs" />
     <Compile Include="Contracts\Converters\IFootConverter.cs" />
