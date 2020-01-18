@@ -77,6 +77,8 @@
     <Compile Include="Converters\Position\PositionConverter.cs" />
     <Compile Include="Converters\Position\PTPositionConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
+    <Compile Include="Pages\PlayerPage.cs" />
+    <Compile Include="Parsers\Player\MarketValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parser.cs" />
   </ItemGroup>
@@ -88,6 +90,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Parsers\Competition\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
