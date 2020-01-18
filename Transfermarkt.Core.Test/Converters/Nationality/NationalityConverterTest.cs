@@ -44,7 +44,7 @@ namespace Transfermarkt.Core.Converters.Nationality
                 {
                     Actors.Nationality? retValue = converter.Convert(item.Name);
 
-                    Assert.IsNotNull(retValue, $"The Nationality string \"{item.Name}\" didn't translate into a Nationality type domain object.");
+                    Assert.IsTrue(retValue.HasValue, $"The Nationality string \"{item.Name}\" didn't translate into a Nationality type domain object.");
                 }
             }
         }
@@ -54,10 +54,10 @@ namespace Transfermarkt.Core.Converters.Nationality
         {
             INationalityConverter converter = new PTNationalityConverter();
             Actors.Nationality? retValue = converter.Convert("Stupid name that doesn't exist in the file");
-            Assert.IsNull(retValue, $"Value should have been null because the supplied name doesn't exist.");
+            Assert.IsFalse(retValue.HasValue, $"Value should have been false because the supplied name doesn't exist.");
 
             retValue = converter.Convert(null);
-            Assert.IsNull(retValue, $"Value should have been null because null was supplied as the value to translate.");
+            Assert.IsFalse(retValue.HasValue, $"Value should have been null because false was supplied as the value to translate.");
         }
     }
 }
