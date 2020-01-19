@@ -136,7 +136,7 @@ namespace Transfermarkt.Core
                     PreferredFoot = Converters.FootConverter.Convert(row[ClubColumnsEnum.preferredFoot.ToString()].ToString()),
                     Position = Converters.PositionConverter.Convert(row[ClubColumnsEnum.position.ToString()].ToString()),
                     Number = i2,
-                    Captain = row[ClubColumnsEnum.captain.ToString()].ToString(),
+                    //Captain = row[ClubColumnsEnum.captain.ToString()].ToString(),
                     ClubArrivalDate = d2,
                     ContractExpirationDate = d3,
                     MarketValue = i3

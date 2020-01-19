@@ -38,7 +38,8 @@ namespace Transfermarkt.Core.Test.Pages
         [TestMethod]
         public void TestClubParsing()
         {
-            IHAPClubPage page = new ClubPage("https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011");
+            string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
+            IHAPClubPage page = new ClubPage(url);
             page.Parse();
             page.Save();
         }

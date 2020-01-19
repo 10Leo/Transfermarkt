@@ -6,18 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
-using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 {
-    public class NationalityParser : INationalityParser<HtmlNode>
+    public class BirthDateParser : IElementParser<HtmlNode, DateTime?>
     {
-        public IConverter<Nationality?> Converter { get; set; }
-        
+        public IConverter<DateTime?> Converter { get; set; }
+
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
 
-        private string displayName = "Nationality";
+        private string displayName = "Birth Date";
         private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
@@ -30,7 +29,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
             var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
 
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            var equals = (headerName == "Nac.");
+            var equals = (headerName == "Nasc. / idade");
             if (equals)
             {
                 parsedAlready = true;
@@ -40,18 +39,15 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
             return equals;
         }
 
-        public Nationality? Parse(HtmlNode node)
+        public DateTime? Parse(HtmlNode node)
         {
-            Nationality? parsedObj = null;
+            DateTime? parsedObj = null;
 
             try
             {
-                var sp = node
-                    .SelectNodes("img")
-                    .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
-                    .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault();
+                var parsedStr = node.InnerText?.Split(new[] { " (" }, StringSplitOptions.None)?[0];
 
-                parsedObj = Converter.Convert(sp);
+                parsedObj = Converter.Convert(parsedStr);
 
                 OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
             }

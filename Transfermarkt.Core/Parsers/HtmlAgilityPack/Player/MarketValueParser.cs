@@ -8,14 +8,15 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 {
-    public class MarketValueParser : IHAPMarketValueParser
+    public class MarketValueParser : IMarketValueParser<HtmlNode>
     {
+        public IConverter<decimal?> Converter { get; set; }
+
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
 
+        private string displayName = "Market Value";
         private bool parsedAlready = false;
-
-        public IConverter<decimal> Converter { get; set; }
 
         public bool CanParse(HtmlNode node)
         {
@@ -36,9 +37,9 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
             return equals;
         }
 
-        public decimal Parse(HtmlNode node)
+        public decimal? Parse(HtmlNode node)
         {
-            decimal n = 0;
+            decimal? n = null;
 
             try
             {
@@ -47,7 +48,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
                 if (sp == null || sp.Length < 2)
                 {
                     OnFailure?.Invoke(this, new CustomEventArgs("Error parsing Market Value"));
-                    return 0;
+                    return null;
                 }
 
                 var spl = sp[0].Split(new[] { "," }, StringSplitOptions.None);

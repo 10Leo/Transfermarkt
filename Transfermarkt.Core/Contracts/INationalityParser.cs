@@ -1,8 +1,8 @@
-﻿using Transfermarkt.Core.Contracts.Converters;
+﻿using Transfermarkt.Core.Actors;
 
 namespace Transfermarkt.Core.Contracts
 {
-    public interface INationalityParser<TNode, TValue> : IElementParser<TNode, TValue>
+    public interface INationalityParser<TNode> : IElementParser<TNode, Nationality?>
     {
     }
 }

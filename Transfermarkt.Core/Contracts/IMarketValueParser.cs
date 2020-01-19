@@ -1,6 +1,6 @@
 ﻿namespace Transfermarkt.Core.Contracts
 {
-    public interface IMarketValueParser<TNode, TValue> : IElementParser<TNode, TValue>
+    public interface IMarketValueParser<TNode> : IElementParser<TNode, decimal?>
     {
     }
 }

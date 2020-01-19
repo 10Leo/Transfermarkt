@@ -20,6 +20,6 @@ namespace Transfermarkt.Core.Contracts
             Message = message;
         }
 
-        public string Message { get; set; }
+        public string Message { get; }
     }
 }

@@ -10,14 +10,14 @@ namespace Transfermarkt.Core.Actors
     public class Player : Person
     {
         public string ProfileUrl { get; set; }
-        public int Number { get; set; }
-        public int Height { get; set; }
+        public int? Number { get; set; }
+        public int? Height { get; set; }
         public Foot? PreferredFoot { get; set; }
         public Position? Position { get; set; }
-        public string Captain { get; set; }
+        public int? Captain { get; set; }
         public DateTime? ClubArrivalDate { get; set; }
         public DateTime? ContractExpirationDate { get; set; }
-        public decimal MarketValue { get; set; }
+        public decimal? MarketValue { get; set; }
 
         public override string ToString()
         {
@@ -31,7 +31,7 @@ namespace Transfermarkt.Core.Actors
                 , PreferredFoot
                 , Position
                 , Number
-                , Captain
+                , (Captain >= 1 ? "c" : "")
                 , ClubArrivalDate?.ToString("yyyy.MM.dd")
                 , ContractExpirationDate?.ToString("yyyy.MM.dd")
                 , string.Format(cultureInfo, "{0:C0}", MarketValue)
