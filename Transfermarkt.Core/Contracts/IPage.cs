@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.Contracts
 {
-    public interface IPage<TNode, TReturn>
+    public interface IPage
     {
-        IList<IElementParser<TNode, TReturn>> Elements { get; set; }
-
         void Parse();
         void Save();
     }

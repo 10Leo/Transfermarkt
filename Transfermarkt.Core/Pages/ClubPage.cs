@@ -8,25 +8,37 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
-using Transfermarkt.Core.Parsers.Player;
+using Transfermarkt.Core.Converters;
+using Transfermarkt.Core.Parsers.HtmlAgilityPack;
+using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.Pages
 {
-    public class PlayerPage : IPage<HtmlNode, string>
+    public class ClubPage : IHAPClubPage
     {
-        private HtmlDocument doc;
         private readonly string url;
-        private Player player = new Player();
+        private HtmlDocument doc;
 
-        public IList<IElementParser<HtmlNode, string>> Elements { get; set; } = new List<IElementParser<HtmlNode, string>>();
+        private Club club = new Club();
 
-        public PlayerPage(string url)
+        public IMarketValueParser<HtmlNode, decimal> MarketValue { get; set; }
+        public INationalityParser<HtmlNode, Nationality?> Nationality { get; set; }
+
+        public ClubPage(string url)
         {
             this.url = url;
+            this.Nationality = new NationalityParser();
+            this.MarketValue = new MarketValueParser();
+
+            //TODO: change converter initializer to instantiate according to the language defined on config. Like this is tied to the PT one.
+            this.Nationality.Converter = new PTNationalityConverter();
+            this.Nationality.OnSuccess += LogSuccess;
+            this.Nationality.OnFailure += LogFailure;
+
+            this.MarketValue.OnSuccess += LogSuccess;
+            this.MarketValue.OnFailure += LogFailure;
 
             Connect();
-
-            RegisterParsers();
         }
 
         #region Contract
@@ -43,24 +55,28 @@ namespace Transfermarkt.Core.Pages
             var rows = table.SelectNodes(".//tbody/tr[td]");
             HtmlNodeCollection headerCols = headers[0].SelectNodes("th");
 
+            //each row is a player
             foreach (var row in rows)
             {
+                Player player = new Player();
+                club.Squad.Add(player);
+
                 //each column is an attribute
                 HtmlNodeCollection cols = row.SelectNodes("td");
 
                 for (int i = 0; i < cols.Count; i++)
                 {
-                    Elements.ToList().ForEach(e => {
-                        var header = headerCols[i];
-                        var element = cols[i];
-                        if (e.CanParse(header))
-                        {
-                            if(e is IMarketValueParser<HtmlNode>)
-                            {
-                                //player.MarketValue = e.Parse(element);
-                            }
-                        }
-                    });
+                    var header = headerCols[i];
+                    var element = cols[i];
+
+                    if (MarketValue.CanParse(header))
+                    {
+                        player.MarketValue = MarketValue.Parse(element);
+                    }
+                    else if (Nationality.CanParse(header))
+                    {
+                        player.Nationality = Nationality.Parse(element);
+                    }
                 }
             }
         }
@@ -70,15 +86,6 @@ namespace Transfermarkt.Core.Pages
         }
 
         #endregion
-
-        private void RegisterParsers()
-        {
-            //TODO: Register parsers or let them regist themselfes?
-            var eParser = new MarketValueParser();
-            eParser.OnSuccess += (e, a) => Console.WriteLine(".");
-            eParser.OnFailure += (e, a) => Console.WriteLine("Error");
-            Elements.Add(eParser);
-        }
 
         private void Connect()
         {
@@ -109,6 +116,16 @@ namespace Transfermarkt.Core.Pages
         private HtmlNode GetTable()
         {
             return doc.DocumentNode.SelectSingleNode("//table[@class='items']");
+        }
+
+        private void LogSuccess(Object o, CustomEventArgs e)
+        {
+            Console.WriteLine(".");
+        }
+
+        private void LogFailure(Object o, CustomEventArgs e)
+        {
+            Console.WriteLine(e.Message);
         }
     }
 }

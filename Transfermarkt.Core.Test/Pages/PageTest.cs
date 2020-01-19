@@ -6,6 +6,8 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Exporter;
 using Transfermarkt.Core.Pages;
+using Transfermarkt.Core.Parsers.HtmlAgilityPack;
+using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.Test.Pages
 {
@@ -36,8 +38,7 @@ namespace Transfermarkt.Core.Test.Pages
         [TestMethod]
         public void TestClubParsing()
         {
-            PlayerPage page = new PlayerPage("https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011");
-
+            IHAPClubPage page = new ClubPage("https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011");
             page.Parse();
             page.Save();
         }
