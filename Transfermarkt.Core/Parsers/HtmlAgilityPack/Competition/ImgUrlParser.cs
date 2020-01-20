@@ -10,7 +10,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
 {
     class ImgUrlParser : IElementParser<HtmlNode, string>
     {
-        private string displayName = "Birth Date";
+        private string displayName = "Img Url";
         private bool parsedAlready = false;
 
         public IConverter<string> Converter { get; set; }

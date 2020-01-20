@@ -10,7 +10,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
 {
     class SeasonParser : IElementParser<HtmlNode, int?>
     {
-        private string displayName = "Birth Date";
+        private string displayName = "Season";
         private bool parsedAlready = false;
 
         public IConverter<int?> Converter { get; set; }
