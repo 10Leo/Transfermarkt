@@ -28,6 +28,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
             {
                 TValue value = OnParse();
                 OnSuccess?.Invoke(this, new CustomEventArgs("Success"));
+                parsedAlready = true;
                 return value;
             }
             catch (Exception)

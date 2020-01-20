@@ -29,10 +29,6 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
             var equals = (headerName == "Na equipa desde");
-            if (equals)
-            {
-                parsedAlready = true;
-            }
 
             //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
             return equals;
@@ -49,6 +45,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
                 parsedObj = Converter.Convert(parsedStr);
 
                 OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
+                parsedAlready = true;
             }
             catch (Exception)
             {

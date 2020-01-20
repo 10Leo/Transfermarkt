@@ -28,10 +28,6 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
             var headerName = node.InnerText.Trim(' ', '\t', '\n');
 
             var equals = (headerName == "Valor de mercado");
-            if (equals)
-            {
-                parsedAlready = true;
-            }
 
             //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
             return equals;
@@ -64,6 +60,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
                 }
 
                 OnSuccess?.Invoke(this, new CustomEventArgs("Success parsing Market Value"));
+                parsedAlready = true;
             }
             catch (Exception)
             {
