@@ -96,6 +96,7 @@ namespace Transfermarkt.Core.Pages
 
                     IClubPage<HtmlNode> page = new ClubPage($"{BaseURL}{finalClubUrl}");
                     page.Parse();
+                    competition.Clubs.Add(((ClubPage)page).Club);
                 }
                 catch (Exception ex)
                 {

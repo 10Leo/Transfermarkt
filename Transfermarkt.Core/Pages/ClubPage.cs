@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.Pages
         private readonly string url;
         private HtmlDocument doc;
 
-        private Club club = new Club();
+        public Club Club { get; set; } = new Club();
 
         public IElementParser<HtmlNode, string> ProfileUrl { get; set; }
         public IElementParser<HtmlNode, int?> ShirtNumber { get; set; }
@@ -132,7 +132,7 @@ namespace Transfermarkt.Core.Pages
             foreach (var row in rows)
             {
                 Player player = new Player();
-                club.Squad.Add(player);
+                Club.Squad.Add(player);
 
                 //each column is an attribute
                 HtmlNodeCollection cols = row.SelectNodes("td");
