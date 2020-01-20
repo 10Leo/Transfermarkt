@@ -15,11 +15,11 @@ namespace Transfermarkt.Core.Contracts
 
     public class CustomEventArgs : EventArgs
     {
+        public string Message { get; }
+
         public CustomEventArgs(string message)
         {
             Message = message;
         }
-
-        public string Message { get; }
     }
 }

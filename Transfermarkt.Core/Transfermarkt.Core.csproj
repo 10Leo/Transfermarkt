@@ -59,6 +59,7 @@
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="Connectors\HtmlAgilityPackConnector.cs" />
+    <Compile Include="Contracts\ICompetitionPage.cs" />
     <Compile Include="Contracts\IElementParser.cs" />
     <Compile Include="Contracts\IMarketValueParser.cs" />
     <Compile Include="Contracts\INationalityParser.cs" />
@@ -83,8 +84,14 @@
     <Compile Include="Converters\Position\PTPositionConverter.cs" />
     <Compile Include="Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
+    <Compile Include="Pages\CompetitionPage.cs" />
     <Compile Include="Pages\IHAPClubPage.cs" />
     <Compile Include="Pages\ClubPage.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Competition\CountryImgParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Competition\CountryParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Competition\ImgUrlParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Competition\NameParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Competition\SeasonParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\BirthDateParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\CaptainParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\ClubArrivalDateParser.cs" />
@@ -112,8 +119,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Parsers\HtmlAgilityPack\Competition\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

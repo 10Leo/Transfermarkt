@@ -43,5 +43,14 @@ namespace Transfermarkt.Core.Test.Pages
             page.Parse();
             page.Save();
         }
+
+        [TestMethod]
+        public void TestCompetitionParsing()
+        {
+            string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
+            CompetitionPage page = new CompetitionPage(url);
+            page.Parse();
+            page.Save();
+        }
     }
 }
