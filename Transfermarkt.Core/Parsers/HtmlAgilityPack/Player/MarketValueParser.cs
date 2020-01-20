@@ -8,7 +8,7 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 {
-    public class MarketValueParser : IMarketValueParser<HtmlNode>
+    class MarketValueParser : IMarketValueParser<HtmlNode>
     {
         public IConverter<decimal?> Converter { get; set; }
 

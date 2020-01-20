@@ -7,7 +7,7 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 {
-    public abstract class ElementParser<TNode, TValue> : IElementParser<TNode, TValue>
+    abstract class ElementParser<TNode, TValue> : IElementParser<TNode, TValue>
     {
         public IConverter<TValue> Converter { get; set; }
 
