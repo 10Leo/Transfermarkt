@@ -6,14 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Contracts;
 
-namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Club
 {
-    class SeasonParser : IElementParser<HtmlNode, int?>
+    class NameParser : IElementParser<HtmlNode, string>
     {
-        private string displayName = "Birth Date";
+        private string displayName = "Name";
         private bool parsedAlready = false;
 
-        public IConverter<int?> Converter { get; set; }
+        public IConverter<string> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
@@ -27,19 +27,15 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
             return true;
         }
 
-        public int? Parse(HtmlNode node)
+        public string Parse(HtmlNode node)
         {
-            int? parsedObj = null;
+            string parsedObj = null;
 
             try
             {
-                int? parsedStr = node.SelectSingleNode("//select[@name='saison_id']//option")?.GetAttributeValue<int>("value", 0);
-                if (!parsedStr.HasValue)
-                {
-                    parsedStr = 0;
-                }
-                //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
-                parsedObj = Converter.Convert(parsedStr.ToString());
+                var parsedStr = node.SelectSingleNode("//div[@id='verein_head']//h1[@itemprop='name']/span")?.InnerText;
+
+                parsedObj = Converter.Convert(parsedStr);
 
                 OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
                 parsedAlready = true;

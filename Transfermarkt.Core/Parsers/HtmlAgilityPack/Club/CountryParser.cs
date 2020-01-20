@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 
-namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Club
 {
-    class SeasonParser : IElementParser<HtmlNode, int?>
+    class CountryParser : IElementParser<HtmlNode, Nationality?>
     {
-        private string displayName = "Birth Date";
+        private string displayName = "Country";
         private bool parsedAlready = false;
 
-        public IConverter<int?> Converter { get; set; }
+        public IConverter<Nationality?> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
@@ -27,19 +28,16 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
             return true;
         }
 
-        public int? Parse(HtmlNode node)
+        public Nationality? Parse(HtmlNode node)
         {
-            int? parsedObj = null;
+            Nationality? parsedObj = null;
 
             try
             {
-                int? parsedStr = node.SelectSingleNode("//select[@name='saison_id']//option")?.GetAttributeValue<int>("value", 0);
-                if (!parsedStr.HasValue)
-                {
-                    parsedStr = 0;
-                }
-                //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
-                parsedObj = Converter.Convert(parsedStr.ToString());
+                HtmlNode countryNode = node.SelectSingleNode("//div[@id='verein_head']//span[@class='mediumpunkt']//img[@class='flaggenrahmen vm']");
+                string parsedStr = countryNode?.GetAttributeValue<string>("title", null);
+
+                parsedObj = Converter.Convert(parsedStr);
 
                 OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
                 parsedAlready = true;

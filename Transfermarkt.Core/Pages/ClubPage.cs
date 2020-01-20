@@ -10,6 +10,7 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Converters;
 using Transfermarkt.Core.Parsers.HtmlAgilityPack;
+using Transfermarkt.Core.Parsers.HtmlAgilityPack.Club;
 using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.Pages
@@ -21,11 +22,18 @@ namespace Transfermarkt.Core.Pages
 
         public Club Club { get; set; } = new Club();
 
+        public IElementParser<HtmlNode, int?> Season { get; set; }
+        public IElementParser<HtmlNode, Nationality?> Country { get; set; }
+        public IElementParser<HtmlNode, string> Name { get; set; }
+        public IElementParser<HtmlNode, string> CountryImg { get; set; }
+        public IElementParser<HtmlNode, string> ImgUrl { get; set; }
+
+        //Player
         public IElementParser<HtmlNode, string> ProfileUrl { get; set; }
         public IElementParser<HtmlNode, int?> ShirtNumber { get; set; }
-        public IElementParser<HtmlNode, string> Name { get; set; }
+        public IElementParser<HtmlNode, string> PlayerName { get; set; }
         public IElementParser<HtmlNode, string> ShortName { get; set; }
-        public IElementParser<HtmlNode, string> ImgUrl { get; set; }
+        public IElementParser<HtmlNode, string> PlayerImgUrl { get; set; }
         public IElementParser<HtmlNode, Position?> Position { get; set; }
         public IElementParser<HtmlNode, int?> Captain { get; set; }
         public IElementParser<HtmlNode, DateTime?> BirthDate { get; set; }
@@ -40,6 +48,32 @@ namespace Transfermarkt.Core.Pages
         {
             this.url = url;
 
+            this.Season = new SeasonParser();
+            this.Season.Converter = new IntConverter();
+            this.Season.OnSuccess += LogSuccess;
+            this.Season.OnFailure += LogFailure;
+
+            this.Country = new CountryParser();
+            this.Country.Converter = new PTNationalityConverter();
+            this.Country.OnSuccess += LogSuccess;
+            this.Country.OnFailure += LogFailure;
+
+            this.Name = new NameParser();
+            this.Name.Converter = new StringConverter();
+            this.Name.OnSuccess += LogSuccess;
+            this.Name.OnFailure += LogFailure;
+
+            this.CountryImg = new CountryImgParser();
+            this.CountryImg.Converter = new StringConverter();
+            this.CountryImg.OnSuccess += LogSuccess;
+            this.CountryImg.OnFailure += LogFailure;
+
+            this.ImgUrl = new ImgUrlParser();
+            this.ImgUrl.Converter = new StringConverter();
+            this.ImgUrl.OnSuccess += LogSuccess;
+            this.ImgUrl.OnFailure += LogFailure;
+
+            //Player
             this.ProfileUrl = new ProfileUrlParser();
             this.ProfileUrl.Converter = new StringConverter();
             this.ProfileUrl.OnSuccess += LogSuccess;
@@ -50,20 +84,20 @@ namespace Transfermarkt.Core.Pages
             this.ShirtNumber.OnSuccess += LogSuccess;
             this.ShirtNumber.OnFailure += LogFailure;
 
-            this.Name = new NameParser();
-            this.Name.Converter = new StringConverter();
-            this.Name.OnSuccess += LogSuccess;
-            this.Name.OnFailure += LogFailure;
+            this.PlayerName = new PlayerNameParser();
+            this.PlayerName.Converter = new StringConverter();
+            this.PlayerName.OnSuccess += LogSuccess;
+            this.PlayerName.OnFailure += LogFailure;
 
             this.ShortName = new ShortNameParser();
             this.ShortName.Converter = new StringConverter();
             this.ShortName.OnSuccess += LogSuccess;
             this.ShortName.OnFailure += LogFailure;
 
-            this.ImgUrl = new ImgUrlParser();
-            this.ImgUrl.Converter = new StringConverter();
-            this.ImgUrl.OnSuccess += LogSuccess;
-            this.ImgUrl.OnFailure += LogFailure;
+            this.PlayerImgUrl = new PlayerImgUrlParser();
+            this.PlayerImgUrl.Converter = new StringConverter();
+            this.PlayerImgUrl.OnSuccess += LogSuccess;
+            this.PlayerImgUrl.OnFailure += LogFailure;
 
             this.Position = new PositionParser();
             this.Position.Converter = new PTPositionConverter();
@@ -118,6 +152,13 @@ namespace Transfermarkt.Core.Pages
 
         public void Parse()
         {
+            Club.Country = Country.Parse(doc.DocumentNode);
+            Club.CountryImg = CountryImg.Parse(doc.DocumentNode);
+            Club.ImgUrl = ImgUrl.Parse(doc.DocumentNode);
+            Club.Name = Name.Parse(doc.DocumentNode);
+            Club.Season = Season.Parse(doc.DocumentNode);
+
+
             HtmlNode table = GetTable();
             if (table == null)
             {
@@ -150,17 +191,17 @@ namespace Transfermarkt.Core.Pages
                     {
                         player.Number = ShirtNumber.Parse(element);
                     }
-                    if (Name.CanParse(header))
+                    if (PlayerName.CanParse(header))
                     {
-                        player.Name = Name.Parse(element);
+                        player.Name = PlayerName.Parse(element);
                     }
                     if (ShortName.CanParse(header))
                     {
                         player.ShortName = ShortName.Parse(element);
                     }
-                    if (ImgUrl.CanParse(header))
+                    if (PlayerImgUrl.CanParse(header))
                     {
-                        player.ImgUrl = ImgUrl.Parse(element);
+                        player.ImgUrl = PlayerImgUrl.Parse(element);
                     }
                     if (Position.CanParse(header))
                     {

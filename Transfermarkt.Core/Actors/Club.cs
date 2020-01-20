@@ -8,7 +8,7 @@ namespace Transfermarkt.Core.Actors
         public string Name { get; set; }
         public Nationality? Country { get; set; }
         public string CountryImg { get; set; }
-        public int Season { get; set; }
+        public int? Season { get; set; }
         public string ImgUrl { get; set; }
         public IList<Player> Squad { get; set; }
 

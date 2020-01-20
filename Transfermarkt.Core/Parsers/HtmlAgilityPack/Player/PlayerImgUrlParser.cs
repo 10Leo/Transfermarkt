@@ -8,14 +8,14 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 {
-    class NameParser : IElementParser<HtmlNode, string>
+    class PlayerImgUrlParser : IElementParser<HtmlNode, string>
     {
         public IConverter<string> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
 
-        private string displayName = "Name";
+        private string displayName = "Img Url";
         private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
@@ -44,10 +44,8 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 
             try
             {
-                var parsedStr = node
-                    .SelectNodes("table//tr[1]/td[2]/div[1]")
-                    .FirstOrDefault()
-                    .InnerText;
+                //TODO
+                var parsedStr = "";
 
                 parsedObj = Converter.Convert(parsedStr);
 

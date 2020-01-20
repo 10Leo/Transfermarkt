@@ -5,11 +5,17 @@ namespace Transfermarkt.Core.Contracts
 {
     public interface IClubPage<TNode> : IPage
     {
+        IElementParser<TNode, int?> Season { get; set; }
+        IElementParser<TNode, Nationality?> Country { get; set; }
+        IElementParser<TNode, string> Name { get; set; }
+        IElementParser<TNode, string> CountryImg { get; set; }
+        IElementParser<TNode, string> ImgUrl { get; set; }
+
         IElementParser<TNode, string> ProfileUrl { get; set; }
         IElementParser<TNode, int?> ShirtNumber { get; set; }
-        IElementParser<TNode, string> Name { get; set; }
+        IElementParser<TNode, string> PlayerName { get; set; }
         IElementParser<TNode, string> ShortName { get; set; }
-        IElementParser<TNode, string> ImgUrl { get; set; }
+        IElementParser<TNode, string> PlayerImgUrl { get; set; }
         IElementParser<TNode, Position?> Position { get; set; }
         IElementParser<TNode, int?> Captain { get; set; }
         IElementParser<TNode, DateTime?> BirthDate { get; set; }

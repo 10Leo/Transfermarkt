@@ -87,6 +87,11 @@
     <Compile Include="Pages\CompetitionPage.cs" />
     <Compile Include="Pages\IHAPClubPage.cs" />
     <Compile Include="Pages\ClubPage.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Club\CountryImgParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Club\CountryParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Club\ImgUrlParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Club\NameParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Club\SeasonParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Competition\CountryImgParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Competition\CountryParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Competition\ImgUrlParser.cs" />
@@ -98,9 +103,9 @@
     <Compile Include="Parsers\HtmlAgilityPack\Player\ContractExpirationDateParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\ElementParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\HeightParser.cs" />
-    <Compile Include="Parsers\HtmlAgilityPack\Player\ImgUrlParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Player\PlayerImgUrlParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\MarketValueParser.cs" />
-    <Compile Include="Parsers\HtmlAgilityPack\Player\NameParser.cs" />
+    <Compile Include="Parsers\HtmlAgilityPack\Player\PlayerNameParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\NationalityParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\PositionParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\PreferredFootParser.cs" />

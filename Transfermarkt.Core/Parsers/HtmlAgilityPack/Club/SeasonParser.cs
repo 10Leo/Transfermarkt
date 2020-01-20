@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Contracts;
 
-namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Club
 {
     class SeasonParser : IElementParser<HtmlNode, int?>
     {
-        private string displayName = "Birth Date";
+        private string displayName = "Season";
         private bool parsedAlready = false;
 
         public IConverter<int?> Converter { get; set; }
@@ -38,7 +38,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition
                 {
                     parsedStr = 0;
                 }
-                //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
+
                 parsedObj = Converter.Convert(parsedStr.ToString());
 
                 OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));

@@ -6,17 +6,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Contracts;
 
-namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
+namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Club
 {
     class ImgUrlParser : IElementParser<HtmlNode, string>
     {
+        private string displayName = "ImgUrl";
+        private bool parsedAlready = false;
+
         public IConverter<string> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
-
-        private string displayName = "Img Url";
-        private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
         {
@@ -24,18 +24,7 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
             //{
             //    return false;
             //}
-
-            var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
-
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            var equals = (headerName == "Jogadores");
-            if (equals)
-            {
-                parsedAlready = true;
-            }
-
-            //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
-            return equals;
+            return true;
         }
 
         public string Parse(HtmlNode node)
@@ -44,12 +33,12 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 
             try
             {
-                //TODO
-                var parsedStr = "";
+                var parsedStr = node.SelectSingleNode("//div[@id='verein_head']//div[@class='dataBild ']/img")?.GetAttributeValue<string>("src", null);
 
                 parsedObj = Converter.Convert(parsedStr);
 
                 OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
+                parsedAlready = true;
             }
             catch (Exception)
             {
@@ -58,6 +47,32 @@ namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
             }
 
             return parsedObj;
+        }
+    }
+
+    static class HtmlAgilityPackUtil
+    {
+        public static T GetAttributeValue<T>(this HtmlNode td, string key, T defaultValue) where T : IConvertible
+        {
+            T result = defaultValue;//default(T);
+
+            if (td.Attributes[key] == null)// || String.IsNullOrEmpty(td.Attributes[key].Value) == false)
+            {
+                return defaultValue;
+            }
+
+            string value = td.Attributes[key].Value;
+
+            try
+            {
+                result = (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch
+            {
+                result = defaultValue;//default(T);
+            }
+
+            return result;
         }
     }
 }
