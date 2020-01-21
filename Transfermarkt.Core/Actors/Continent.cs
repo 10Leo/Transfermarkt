@@ -7,29 +7,25 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Competition : IDomain
+    public class Continent : IDomain
     {
         public string Name { get; set; }
-        public Nationality? Country { get; set; }
-        public string CountryImg { get; set; }
-        public int? Season { get; set; }
-        public string ImgUrl { get; set; }
-        public IList<Club> Clubs { get; set; }
+        public ContinentCode? ContinentCode { get; set; }
+        public IList<Competition> Competitions { get; set; }
 
-        public Competition()
+        public Continent()
         {
-            Clubs = new List<Club>();
+            Competitions = new List<Competition>();
         }
 
         public override string ToString()
         {
-            return string.Format("{0} [{1}] {2}\n{3}"
+            return string.Format("{0} [{1}]\n{2}"
                 , Name
-                , Country
-                , Season
+                , ContinentCode
                 , string.Join(
                     "\n"
-                    , Clubs.Select(
+                    , Competitions.Select(
                         p => p.ToString()
                     )
                 )

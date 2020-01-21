@@ -11,6 +11,7 @@ namespace Transfermarkt.Core.Actors
         GR = 001,
         RB = 002,
         LB = 005,
+        //TODO: separate CB in LCB and RCB according to dominant foot
         CB = 004,
         DM = 006,
         CM = 008,
