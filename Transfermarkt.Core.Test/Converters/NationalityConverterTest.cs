@@ -3,14 +3,11 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Transfermarkt.Core.Contracts;
-using Transfermarkt.Core.Contracts.Converters;
-using Transfermarkt.Core.Converters;
+using Transfermarkt.Core.ParseHandling.Contracts.Converter;
+using Transfermarkt.Core.ParseHandling.Converters;
 
-namespace Transfermarkt.Core.Test.Converters
+namespace Transfermarkt.Core.Test.ParseHandling.Converters
 {
     [TestClass]
     public class NationalityConverterTest

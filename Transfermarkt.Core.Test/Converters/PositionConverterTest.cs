@@ -4,10 +4,10 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Transfermarkt.Core.Contracts;
-using Transfermarkt.Core.Contracts.Converters;
-using Transfermarkt.Core.Converters;
+using Transfermarkt.Core.ParseHandling.Contracts.Converter;
+using Transfermarkt.Core.ParseHandling.Converters;
 
-namespace Transfermarkt.Core.Test.Converters
+namespace Transfermarkt.Core.Test.ParseHandling.Converters
 {
     [TestClass]
     public class PositionConverterTest
