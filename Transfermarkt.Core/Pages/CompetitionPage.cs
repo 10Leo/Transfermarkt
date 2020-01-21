@@ -1,7 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -16,11 +15,13 @@ namespace Transfermarkt.Core.Pages
 {
     public class CompetitionPage : ICompetitionPage<HtmlNode>
     {
-        public string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
-        public string SimpleClubUrlFormat { get; } = ConfigurationManager.AppSettings["SimpleClubUrlFormat"].ToString();
-        public string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormatV2"].ToString();
-        public string IdentifiersGetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersGetterPattern"].ToString();
-        public string IdentifiersSetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersSetterPattern"].ToString();
+        private static IConfigurationManager config = new ConfigManager();
+
+        public string BaseURL { get; } = config.GetAppSetting("BaseURL");
+        public string SimpleClubUrlFormat { get; } = config.GetAppSetting("SimpleClubUrlFormat");
+        public string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
+        public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
+        public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
 
         private readonly string url;
         private HtmlDocument doc;

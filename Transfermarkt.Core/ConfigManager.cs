@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core
@@ -12,7 +7,7 @@ namespace Transfermarkt.Core
     {
         public string GetAppSetting(string key)
         {
-            return ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
+            return ConfigurationManager.AppSettings[key]?.ToString();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
+using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Contracts.Converters;
 using Transfermarkt.Core.Converters;
 
@@ -12,8 +12,10 @@ namespace Transfermarkt.Core.Test.Converters
     [TestClass]
     public class PositionConverterTest
     {
-        public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsFile { get; } = ConfigurationManager.AppSettings["SettingsPositionFile"].ToString();
+        private static IConfigurationManager config = new ConfigManager();
+
+        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
+        public static string SettingsFile { get; } = config.GetAppSetting("SettingsPositionFile");
 
         private IDictionary<string, Type> languages = new Dictionary<string, Type>();
 

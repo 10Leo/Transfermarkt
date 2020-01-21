@@ -1,24 +1,23 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Exporter;
 
 namespace Transfermarkt.Exporter.JSONExporter
 {
     public class JsonExporter : IExporter
     {
+        private static IConfigurationManager config = new ConfigManager();
+
         private static readonly string dateFormat = "yyyy-MM-dd";
         private static readonly string format = ".json";
         private static readonly string competitionFileFormat = "{COUNTRY}-{COMPETITION_NAME}_{SEASON}" + format;
         private static readonly string clubFileFormat = "{COUNTRY}-{CLUB_NAME}_{SEASON}" + format;
 
-        public static string BaseFolderPath { get; } = ConfigurationManager.AppSettings["BaseFolderPath"].ToString();
-        public static string Level1FolderFormat { get; } = ConfigurationManager.AppSettings["Level1FolderFormat"].ToString();
+        public static string BaseFolderPath { get; } = config.GetAppSetting("BaseFolderPath");
+        public static string Level1FolderFormat { get; } = config.GetAppSetting("Level1FolderFormat");
 
 
         private static JsonSerializerSettings settings;
