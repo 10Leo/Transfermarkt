@@ -14,7 +14,7 @@ using Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition;
 
 namespace Transfermarkt.Core.Pages
 {
-    public class CompetitionPage : ICompetitionPage<HtmlNode, IDomain>
+    public class CompetitionPage : ICompetitionPage<HtmlNode>
     {
         public string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
         public string SimpleClubUrlFormat { get; } = ConfigurationManager.AppSettings["SimpleClubUrlFormat"].ToString();
@@ -32,7 +32,7 @@ namespace Transfermarkt.Core.Pages
         public IElementParser<HtmlNode, string> Name { get; set; }
         public IElementParser<HtmlNode, string> CountryImg { get; set; }
         public IElementParser<HtmlNode, string> ImgUrl { get; set; }
-        public IClubPage<HtmlNode, IDomain> Club { get; set; }
+        public IClubPage<HtmlNode> Club { get; set; }
 
         public CompetitionPage(string url)
         {
@@ -94,7 +94,7 @@ namespace Transfermarkt.Core.Pages
                     string clubUrl = GetClubUrl(cols[2]);
                     string finalClubUrl = TransformUrl(clubUrl);
 
-                    IClubPage<HtmlNode, IDomain> page = new ClubPage($"{BaseURL}{finalClubUrl}");
+                    IClubPage<HtmlNode> page = new ClubPage($"{BaseURL}{finalClubUrl}");
                     page.Parse();
 
                     competition.Clubs.Add((Club)(((ClubPage)page).Value));

@@ -10,7 +10,7 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Pages
 {
-    public class ContinentPage : IContinentPage<HtmlNode, IDomain>
+    public class ContinentPage : IContinentPage<HtmlNode>
     {
         private readonly string url;
         private HtmlDocument doc;
@@ -23,7 +23,7 @@ namespace Transfermarkt.Core.Pages
             this.url = url;
         }
 
-        public ICompetitionPage<HtmlNode, IDomain> Competition { get; set; }
+        public ICompetitionPage<HtmlNode> Competition { get; set; }
 
         public void Parse()
         {

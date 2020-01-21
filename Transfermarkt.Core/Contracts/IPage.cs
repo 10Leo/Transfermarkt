@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.Contracts
 {
-    public interface IPage<TReturn>
+    public interface IPage<IDomain>
     {
-        TReturn Value { get; set; }
+        IDomain Value { get; set; }
 
         void Parse();
         void Save();

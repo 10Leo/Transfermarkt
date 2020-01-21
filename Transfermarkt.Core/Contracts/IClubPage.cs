@@ -4,7 +4,7 @@ using Transfermarkt.Core.Contracts.Parsers;
 
 namespace Transfermarkt.Core.Contracts
 {
-    public interface IClubPage<TNode, TReturn> : IPage<TReturn>
+    public interface IClubPage<TNode> : IPage<IDomain>
     {
         //TODO: consider subpage to encapsulate logical parts together
         IElementParser<TNode, int?> Season { get; set; }

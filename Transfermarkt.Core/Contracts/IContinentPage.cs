@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.Contracts
 {
-    interface IContinentPage<TNode, TReturn> : IPage<TReturn>
+    interface IContinentPage<TNode> : IPage<IDomain>
     {
-        ICompetitionPage<TNode, TReturn> Competition { get; set; }
+        ICompetitionPage<TNode> Competition { get; set; }
     }
 }
