@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.Contracts
 {
-    public interface IPage<IDomain>
+    interface IContinentPage<TNode> : IPage<IDomain>
     {
-        IDomain Domain { get; set; }
-
-        void Parse();
-        void Save();
+        ICompetitionPage<TNode> Competition { get; set; }
     }
 }

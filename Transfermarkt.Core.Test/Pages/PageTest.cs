@@ -6,6 +6,8 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Exporter;
 using Transfermarkt.Core.Pages;
+using Transfermarkt.Core.Parsers.HtmlAgilityPack;
+using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.Test.Pages
 {
@@ -32,13 +34,42 @@ namespace Transfermarkt.Core.Test.Pages
 
         private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
-        [TestMethod]
+        [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
         {
-            PlayerPage page = new PlayerPage("https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011");
-
+            string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
+            ClubPage page = new ClubPage(url);
             page.Parse();
             page.Save();
+        }
+
+        [TestMethod, TestCategory("Page Parsing")]
+        public void TestCompetitionParsing()
+        {
+            string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
+            CompetitionPage page = new CompetitionPage(url);
+            page.Parse();
+            page.Save();
+        }
+
+        [TestMethod, TestCategory("Page Parsing")]
+        public void TestContinentParsing()
+        {
+            string[] urls = new string[]
+            {
+                "https://www.transfermarkt.pt/wettbewerbe/europa",
+                "https://www.transfermarkt.pt/wettbewerbe/amerika",
+                "https://www.transfermarkt.pt/wettbewerbe/asien",
+                "https://www.transfermarkt.pt/wettbewerbe/afrika"
+            };
+            var append = "/wettbewerbe?plus=1";
+
+            foreach (var url in urls)
+            {
+                ContinentPage page = new ContinentPage(url);
+                page.Parse();
+                page.Save();
+            }
         }
     }
 }
