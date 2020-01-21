@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.Contracts.Parsers;
 
 namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 {

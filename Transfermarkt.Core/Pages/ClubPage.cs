@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.Contracts.Parsers;
 using Transfermarkt.Core.Converters;
 using Transfermarkt.Core.Parsers.HtmlAgilityPack;
 using Transfermarkt.Core.Parsers.HtmlAgilityPack.Club;

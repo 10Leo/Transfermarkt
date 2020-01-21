@@ -1,5 +1,6 @@
 ﻿using System;
 using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.Contracts.Parsers;
 
 namespace Transfermarkt.Core.Contracts
 {

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Contracts.Converters;
+using Transfermarkt.Core.Contracts.Parsers;
 
 namespace Transfermarkt.Core.Parsers.HtmlAgilityPack.Player
 {
