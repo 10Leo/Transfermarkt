@@ -5,7 +5,7 @@ namespace Transfermarkt.Core.Contracts
 {
     public interface IClubPage<TNode> : IPage
     {
-        //TODO:consider subpage to encapsulate
+        //TODO: consider subpage to encapsulate logical parts together
         IElementParser<TNode, int?> Season { get; set; }
         IElementParser<TNode, Nationality?> Country { get; set; }
         IElementParser<TNode, string> Name { get; set; }
