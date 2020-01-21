@@ -8,7 +8,7 @@ namespace Transfermarkt.Core.Contracts
 {
     public interface IPage<IDomain>
     {
-        IDomain Value { get; set; }
+        IDomain Domain { get; set; }
 
         void Parse();
         void Save();

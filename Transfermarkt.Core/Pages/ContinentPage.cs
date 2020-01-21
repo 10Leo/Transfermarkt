@@ -15,15 +15,16 @@ namespace Transfermarkt.Core.Pages
         private readonly string url;
         private HtmlDocument doc;
 
-        public IDomain Value { get; set; } = new Continent();
+        public IDomain Domain { get; set; }
 
+        public ICompetitionPage<HtmlNode> Competition { get; set; }
 
         public ContinentPage(string url)
         {
             this.url = url;
-        }
 
-        public ICompetitionPage<HtmlNode> Competition { get; set; }
+            this.Domain = new Continent();
+        }
 
         public void Parse()
         {

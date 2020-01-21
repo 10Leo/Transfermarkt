@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.Pages
         private readonly string url;
         private HtmlDocument doc;
 
-        public IDomain Value { get; set; } = new Competition();
+        public IDomain Domain { get; set; }
 
         public IElementParser<HtmlNode, int?> Season { get; set; }
         public IElementParser<HtmlNode, Nationality?> Country { get; set; }
@@ -37,6 +37,8 @@ namespace Transfermarkt.Core.Pages
         public CompetitionPage(string url)
         {
             this.url = url;
+
+            this.Domain = new Competition();
 
             this.Season = new SeasonParser();
             this.Season.Converter = new IntConverter();
@@ -68,7 +70,7 @@ namespace Transfermarkt.Core.Pages
 
         public void Parse()
         {
-            var competition = ((Competition)Value);
+            var competition = ((Competition)Domain);
             competition.Country = Country.Parse(doc.DocumentNode);
             competition.CountryImg = CountryImg.Parse(doc.DocumentNode);
             competition.ImgUrl = ImgUrl.Parse(doc.DocumentNode);
@@ -97,7 +99,7 @@ namespace Transfermarkt.Core.Pages
                     IClubPage<HtmlNode> page = new ClubPage($"{BaseURL}{finalClubUrl}");
                     page.Parse();
 
-                    competition.Clubs.Add((Club)(((ClubPage)page).Value));
+                    competition.Clubs.Add((Club)(((ClubPage)page).Domain));
                 }
                 catch (Exception ex)
                 {

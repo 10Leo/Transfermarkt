@@ -21,7 +21,7 @@ namespace Transfermarkt.Core.Pages
         private readonly string url;
         private HtmlDocument doc;
 
-        public IDomain Value { get; set; } = new Club();
+        public IDomain Domain { get; set; }
 
         public IElementParser<HtmlNode, int?> Season { get; set; }
         public IElementParser<HtmlNode, Nationality?> Country { get; set; }
@@ -48,6 +48,8 @@ namespace Transfermarkt.Core.Pages
         public ClubPage(string url)
         {
             this.url = url;
+
+            this.Domain = new Club();
 
             this.Season = new SeasonParser();
             this.Season.Converter = new IntConverter();
@@ -153,7 +155,7 @@ namespace Transfermarkt.Core.Pages
 
         public void Parse()
         {
-            var club = (Club)Value;
+            var club = (Club)Domain;
             club.Country = Country.Parse(doc.DocumentNode);
             club.CountryImg = CountryImg.Parse(doc.DocumentNode);
             club.ImgUrl = ImgUrl.Parse(doc.DocumentNode);
