@@ -7,23 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core.Converters
 {
-    public class PTFootConverter : IFootConverter
+    public class FootConverter : IFootConverter
     {
-        private static readonly string language = "PT";
-
+        public static string Language { get; } = ConfigurationManager.AppSettings["Language"].ToString();
         public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsFootFile { get; } = ConfigurationManager.AppSettings["SettingsFootFile"].ToString();
+        public static string SettingsFile { get; } = ConfigurationManager.AppSettings["SettingsFootFile"].ToString();
 
         private readonly IDictionary<string, Foot> map = new Dictionary<string, Foot>();
 
-        public PTFootConverter()
+        public FootConverter()
         {
-            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFootFile}");
+            string language = GetLanguageFolder(Language);
+            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
 
             var definition = new { Language = default(string), Set = new[] { new { ID = default(int), Name = default(string), DO = default(string) } } };
             var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
@@ -43,13 +42,26 @@ namespace Transfermarkt.Core.Converters
             }
             catch (KeyNotFoundException)
             {
-                //log
+                //TODO: log
             }
             catch (ArgumentNullException)
             {
-                //log
+                //TODO: log
             }
             return p;
+        }
+
+        private string GetLanguageFolder(string language)
+        {
+            switch (language.ToLowerInvariant())
+            {
+                case "pt":
+                    return "PT";
+                case "en":
+                    return "EN";
+                default:
+                    return null;
+            }
         }
     }
 }

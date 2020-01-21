@@ -46,7 +46,7 @@ namespace Transfermarkt.Core.Pages
             this.Season.OnFailure += LogFailure;
 
             this.Country = new CountryParser();
-            this.Country.Converter = new PTNationalityConverter();
+            this.Country.Converter = new NationalityConverter();
             this.Country.OnSuccess += LogSuccess;
             this.Country.OnFailure += LogFailure;
 

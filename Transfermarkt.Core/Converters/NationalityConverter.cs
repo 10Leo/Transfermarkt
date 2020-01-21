@@ -7,23 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core.Converters
 {
-    public class ENNationalityConverter : INationalityConverter
+    public class NationalityConverter : INationalityConverter
     {
-        private static readonly string language = "EN";
-
+        public static string Language { get; } = ConfigurationManager.AppSettings["Language"].ToString();
         public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsNationalityFile { get; } = ConfigurationManager.AppSettings["SettingsNationalityFile"].ToString();
+        public static string SettingsFile { get; } = ConfigurationManager.AppSettings["SettingsNationalityFile"].ToString();
 
         private readonly IDictionary<string, Nationality> map = new Dictionary<string, Nationality>();
 
-        public ENNationalityConverter()
+        public NationalityConverter()
         {
-            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsNationalityFile}");
+            string language = GetLanguageFolder(Language);
+            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
 
             var definition = new { Language = default(string), Set = new[] { new { ID = default(string), Name = default(string), DO = default(string) } } };
             var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
@@ -43,13 +42,26 @@ namespace Transfermarkt.Core.Converters
             }
             catch (KeyNotFoundException)
             {
-                //log
+                //TODO: log
             }
             catch (ArgumentNullException)
             {
-                //log
+                //TODO: log
             }
             return p;
+        }
+
+        private string GetLanguageFolder(string language)
+        {
+            switch (language.ToLowerInvariant())
+            {
+                case "pt":
+                    return "PT";
+                case "en":
+                    return "EN";
+                default:
+                    return null;
+            }
         }
     }
 }
