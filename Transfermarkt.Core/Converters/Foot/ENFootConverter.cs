@@ -12,7 +12,7 @@ using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core.Converters
 {
-    public class ENFootConverter : IFootConverter
+    class ENFootConverter : IFootConverter
     {
         private static readonly string language = "EN";
 

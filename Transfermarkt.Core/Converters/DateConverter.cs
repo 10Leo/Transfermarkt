@@ -8,7 +8,7 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Converters
 {
-    public class DateConverter : IConverter<DateTime?>
+    class DateConverter : IConverter<DateTime?>
     {
         private readonly string dateFormat = "dd/MM/yyyy";
 
