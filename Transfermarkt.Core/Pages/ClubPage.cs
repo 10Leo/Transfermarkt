@@ -21,7 +21,7 @@ namespace Transfermarkt.Core.Pages
         private readonly string url;
         private HtmlDocument doc;
 
-        public Club Club { get; set; } = new Club();
+        public IDomain Value { get; set; } = new Club();
 
         public IElementParser<HtmlNode, int?> Season { get; set; }
         public IElementParser<HtmlNode, Nationality?> Country { get; set; }
@@ -153,11 +153,12 @@ namespace Transfermarkt.Core.Pages
 
         public void Parse()
         {
-            Club.Country = Country.Parse(doc.DocumentNode);
-            Club.CountryImg = CountryImg.Parse(doc.DocumentNode);
-            Club.ImgUrl = ImgUrl.Parse(doc.DocumentNode);
-            Club.Name = Name.Parse(doc.DocumentNode);
-            Club.Season = Season.Parse(doc.DocumentNode);
+            var club = (Club)Value;
+            club.Country = Country.Parse(doc.DocumentNode);
+            club.CountryImg = CountryImg.Parse(doc.DocumentNode);
+            club.ImgUrl = ImgUrl.Parse(doc.DocumentNode);
+            club.Name = Name.Parse(doc.DocumentNode);
+            club.Season = Season.Parse(doc.DocumentNode);
 
 
             HtmlNode table = GetTable();
@@ -174,7 +175,7 @@ namespace Transfermarkt.Core.Pages
             foreach (var row in rows)
             {
                 Player player = new Player();
-                Club.Squad.Add(player);
+                club.Squad.Add(player);
 
                 //each column is an attribute
                 HtmlNodeCollection cols = row.SelectNodes("td");

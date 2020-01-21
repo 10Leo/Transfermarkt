@@ -60,6 +60,7 @@
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="Contracts\ICompetitionPage.cs" />
     <Compile Include="Contracts\IContinentPage.cs" />
+    <Compile Include="Contracts\IDomain.cs" />
     <Compile Include="Contracts\IElementParser.cs" />
     <Compile Include="Contracts\Parsers\IMarketValueParser.cs" />
     <Compile Include="Contracts\Parsers\INationalityParser.cs" />

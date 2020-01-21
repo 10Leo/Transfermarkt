@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Continent
+    public class Continent : IDomain
     {
         public string Name { get; set; }
         public ContinentCode? ContinentCode { get; set; }

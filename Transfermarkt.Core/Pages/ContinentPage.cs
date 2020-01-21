@@ -10,19 +10,20 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Pages
 {
-    public class ContinentPage : IContinentPage<HtmlNode>
+    public class ContinentPage : IContinentPage<HtmlNode, IDomain>
     {
         private readonly string url;
         private HtmlDocument doc;
 
-        public Continent Continent { get; set; }
+        public IDomain Value { get; set; } = new Continent();
+
 
         public ContinentPage(string url)
         {
             this.url = url;
         }
 
-        public ICompetitionPage<HtmlNode> Competition { get; set; }
+        public ICompetitionPage<HtmlNode, IDomain> Competition { get; set; }
 
         public void Parse()
         {

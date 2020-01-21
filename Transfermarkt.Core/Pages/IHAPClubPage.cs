@@ -8,7 +8,7 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.Pages
 {
-    public interface IHAPClubPage : IClubPage<HtmlNode>
+    public interface IHAPClubPage : IClubPage<HtmlNode, IDomain>
     {
     }
 }

@@ -14,7 +14,7 @@ using Transfermarkt.Core.Parsers.HtmlAgilityPack.Competition;
 
 namespace Transfermarkt.Core.Pages
 {
-    public class CompetitionPage : ICompetitionPage<HtmlNode>
+    public class CompetitionPage : ICompetitionPage<HtmlNode, IDomain>
     {
         public string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
         public string SimpleClubUrlFormat { get; } = ConfigurationManager.AppSettings["SimpleClubUrlFormat"].ToString();
@@ -22,18 +22,17 @@ namespace Transfermarkt.Core.Pages
         public string IdentifiersGetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersGetterPattern"].ToString();
         public string IdentifiersSetterPattern { get; } = ConfigurationManager.AppSettings["IdentifiersSetterPattern"].ToString();
 
-
         private readonly string url;
         private HtmlDocument doc;
 
-        private Competition competition = new Competition();
+        public IDomain Value { get; set; } = new Competition();
 
         public IElementParser<HtmlNode, int?> Season { get; set; }
         public IElementParser<HtmlNode, Nationality?> Country { get; set; }
         public IElementParser<HtmlNode, string> Name { get; set; }
         public IElementParser<HtmlNode, string> CountryImg { get; set; }
         public IElementParser<HtmlNode, string> ImgUrl { get; set; }
-        public IClubPage<HtmlNode> Club { get; set; }
+        public IClubPage<HtmlNode, IDomain> Club { get; set; }
 
         public CompetitionPage(string url)
         {
@@ -69,6 +68,7 @@ namespace Transfermarkt.Core.Pages
 
         public void Parse()
         {
+            var competition = ((Competition)Value);
             competition.Country = Country.Parse(doc.DocumentNode);
             competition.CountryImg = CountryImg.Parse(doc.DocumentNode);
             competition.ImgUrl = ImgUrl.Parse(doc.DocumentNode);
@@ -94,9 +94,10 @@ namespace Transfermarkt.Core.Pages
                     string clubUrl = GetClubUrl(cols[2]);
                     string finalClubUrl = TransformUrl(clubUrl);
 
-                    IClubPage<HtmlNode> page = new ClubPage($"{BaseURL}{finalClubUrl}");
+                    IClubPage<HtmlNode, IDomain> page = new ClubPage($"{BaseURL}{finalClubUrl}");
                     page.Parse();
-                    competition.Clubs.Add(((ClubPage)page).Club);
+
+                    competition.Clubs.Add((Club)(((ClubPage)page).Value));
                 }
                 catch (Exception ex)
                 {

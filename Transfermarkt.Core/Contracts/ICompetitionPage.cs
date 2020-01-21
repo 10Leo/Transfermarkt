@@ -7,7 +7,7 @@ using Transfermarkt.Core.Actors;
 
 namespace Transfermarkt.Core.Contracts
 {
-    public interface ICompetitionPage<TNode> : IPage
+    public interface ICompetitionPage<TNode, TReturn> : IPage<TReturn>
     {
         IElementParser<TNode, int?> Season { get; set; }
         IElementParser<TNode, Nationality?> Country { get; set; }
@@ -15,6 +15,6 @@ namespace Transfermarkt.Core.Contracts
         IElementParser<TNode, string> CountryImg { get; set; }
         IElementParser<TNode, string> ImgUrl { get; set; }
 
-        IClubPage<TNode> Club { get; set; }
+        IClubPage<TNode, TReturn> Club { get; set; }
     }
 }
