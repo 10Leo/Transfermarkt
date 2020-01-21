@@ -1,21 +1,21 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Contracts.Converters;
 
 namespace Transfermarkt.Core.Converters
 {
     public class NationalityConverter : INationalityConverter
     {
-        public static string Language { get; } = ConfigurationManager.AppSettings["Language"].ToString();
-        public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsFile { get; } = ConfigurationManager.AppSettings["SettingsNationalityFile"].ToString();
+        private static IConfigurationManager config = new ConfigManager();
+
+        public static string Language { get; } = config.GetAppSetting("Language");
+        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
+        public static string SettingsFile { get; } = config.GetAppSetting("SettingsNationalityFile");
 
         private readonly IDictionary<string, Nationality> map = new Dictionary<string, Nationality>();
 

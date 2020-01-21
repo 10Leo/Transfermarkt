@@ -2,11 +2,11 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Contracts.Converters;
 using Transfermarkt.Core.Converters;
 
@@ -15,8 +15,10 @@ namespace Transfermarkt.Core.Test.Converters
     [TestClass]
     public class NationalityConverterTest
     {
-        public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsFile { get; } = ConfigurationManager.AppSettings["SettingsNationalityFile"].ToString();
+        private static IConfigurationManager config = new ConfigManager();
+
+        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
+        public static string SettingsFile { get; } = config.GetAppSetting("SettingsNationalityFile");
 
         private IDictionary<string, Type> languages = new Dictionary<string, Type>();
 

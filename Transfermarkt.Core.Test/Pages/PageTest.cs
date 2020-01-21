@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Exporter;
 using Transfermarkt.Core.Pages;
-using Transfermarkt.Core.Parsers.HtmlAgilityPack;
-using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.Test.Pages
 {
     [TestClass]
     public class PageTest
     {
-        private static string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
-        private static string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormatV2"].ToString();
-        private static string CompetitionUrlFormat { get; } = ConfigurationManager.AppSettings["CompetitionUrlFormat"].ToString();
+        private static IConfigurationManager config = new ConfigManager();
 
-        private static IExporter exporter;
+        private static string BaseURL { get; } = config.GetAppSetting("BaseURL");
+        private static string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
+        private static string CompetitionUrlFormat { get; } = config.GetAppSetting("CompetitionUrlFormat");
 
         private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
         {
