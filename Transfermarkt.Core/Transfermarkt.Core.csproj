@@ -113,7 +113,6 @@
     <Compile Include="Parsers\HtmlAgilityPack\Player\ShirtNumberParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Player\ShortNameParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Parser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Transfermarkt.Logging\Transfermarkt.Logging.csproj">

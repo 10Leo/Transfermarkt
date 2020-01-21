@@ -18,7 +18,6 @@ namespace Transfermarkt.Core.Test.Pages
         private static string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormatV2"].ToString();
         private static string CompetitionUrlFormat { get; } = ConfigurationManager.AppSettings["CompetitionUrlFormat"].ToString();
 
-        private static IParser conn;
         private static IExporter exporter;
 
         private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
