@@ -84,7 +84,6 @@
     <Compile Include="Exporter\IExporter.cs" />
     <Compile Include="Pages\CompetitionPage.cs" />
     <Compile Include="Pages\ContinentPage.cs" />
-    <Compile Include="Pages\IHAPClubPage.cs" />
     <Compile Include="Pages\ClubPage.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Club\CountryImgParser.cs" />
     <Compile Include="Parsers\HtmlAgilityPack\Club\CountryParser.cs" />

@@ -16,7 +16,7 @@ using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.Pages
 {
-    public class ClubPage : IHAPClubPage
+    public class ClubPage : IClubPage<HtmlNode>
     {
         private readonly string url;
         private HtmlDocument doc;
