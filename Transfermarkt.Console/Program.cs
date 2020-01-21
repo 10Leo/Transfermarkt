@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Connectors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Converters;
 using Transfermarkt.Core.Exporter;
@@ -20,7 +19,6 @@ namespace Transfermarkt.Console
         private static string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormatV2"].ToString();
         private static string CompetitionUrlFormat { get; } = ConfigurationManager.AppSettings["CompetitionUrlFormat"].ToString();
 
-        private static IParser conn;
         private static IExporter exporter;
 
         private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
@@ -39,15 +37,6 @@ namespace Transfermarkt.Console
 
         static void Main(string[] args)
         {
-            conn = new Parser(
-                new HtmlAgilityPackConnector(),
-                new ConvertersCollection(
-                    new PTNationalityConverter(),
-                    new PTPositionConverter(),
-                    new PTFootConverter()
-                )
-            );
-
             exporter = new JsonExporter();
 
             System.Console.WriteLine("----------------------------------");
@@ -67,19 +56,19 @@ namespace Transfermarkt.Console
             switch (option)
             {
                 case 0:
-                    TestCompetitions(conn);
+                    TestCompetitions();
                     break;
                 case 1:
-                    TestCompetition(conn, Nationality.ITA, currentSeason);
+                    TestCompetition(Nationality.ITA, currentSeason);
                     break;
                 case 2:
-                    TestSquad(conn, "Barcelona", 2011);
+                    TestSquad("Barcelona", 2011);
                     break;
                 default: break;
             }
         }
 
-        static void TestCompetitions(IParser conn, int season = 2018)
+        static void TestCompetitions(int season = 2018)
         {
             //string url = BaseURL + detailsPageUrl;
             //try
@@ -97,7 +86,7 @@ namespace Transfermarkt.Console
             //}
         }
 
-        static void TestCompetition(IParser conn, Nationality nationality, int season = 2018)
+        static void TestCompetition(Nationality nationality, int season = 2018)
         {
             string detailsPageUrl = CompetitionUrlFormat;
             detailsPageUrl = detailsPageUrl.Replace("{COMPETITION_NAME}", competitions[nationality].internalName);
@@ -107,10 +96,6 @@ namespace Transfermarkt.Console
             string url = BaseURL + detailsPageUrl;
             try
             {
-                Competition competition = conn.ParseSquadsFromCompetition(url);
-
-                System.Console.WriteLine(competition);
-                exporter.ExtractCompetition(competition);
             }
             catch (Exception ex)
             {
@@ -120,7 +105,7 @@ namespace Transfermarkt.Console
             }
         }
 
-        static void TestSquad(IParser conn, string name, int season = 2018)
+        static void TestSquad(string name, int season = 2018)
         {
             string detailsPageUrl = PlusClubUrlFormat;
             detailsPageUrl = detailsPageUrl.Replace("{CLUB_STRING}", clubs[name].internalName);
@@ -130,10 +115,6 @@ namespace Transfermarkt.Console
             string url = BaseURL + detailsPageUrl;
             try
             {
-                Club club = conn.ParseSquad(url);
-
-                System.Console.WriteLine(club);
-                exporter.ExtractClub(club);
             }
             catch (Exception ex)
             {

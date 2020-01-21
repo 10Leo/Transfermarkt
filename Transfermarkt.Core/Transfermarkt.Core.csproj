@@ -49,9 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
-    <Compile Include="Actors\ClubColumnsEnum.cs" />
     <Compile Include="Actors\Competition.cs" />
-    <Compile Include="Actors\CompetitionColumnsEnum.cs" />
     <Compile Include="Actors\Continent.cs" />
     <Compile Include="Actors\ContinentCode.cs" />
     <Compile Include="Actors\Manager.cs" />
@@ -60,21 +58,17 @@
     <Compile Include="Actors\Player.cs" />
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
-    <Compile Include="Connectors\HtmlAgilityPackConnector.cs" />
     <Compile Include="Contracts\ICompetitionPage.cs" />
     <Compile Include="Contracts\IContinentPage.cs" />
     <Compile Include="Contracts\IElementParser.cs" />
     <Compile Include="Contracts\IMarketValueParser.cs" />
     <Compile Include="Contracts\INationalityParser.cs" />
     <Compile Include="Contracts\IPage.cs" />
-    <Compile Include="Contracts\IPageConnector.cs" />
-    <Compile Include="Contracts\IParser.cs" />
     <Compile Include="Contracts\Converters\IFootConverter.cs" />
     <Compile Include="Contracts\Converters\IPositionConverter.cs" />
     <Compile Include="Contracts\IClubPage.cs" />
     <Compile Include="Converters\DateConverter.cs" />
     <Compile Include="Converters\StringConverter.cs" />
-    <Compile Include="Converters\ConvertersCollection.cs" />
     <Compile Include="Converters\Foot\ENFootConverter.cs" />
     <Compile Include="Converters\Foot\PTFootConverter.cs" />
     <Compile Include="Converters\DecimalConverter.cs" />
