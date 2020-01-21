@@ -35,7 +35,7 @@ namespace Transfermarkt.Core.Test.Pages
 
         private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
-        [TestMethod]
+        [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
         {
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
@@ -44,7 +44,7 @@ namespace Transfermarkt.Core.Test.Pages
             page.Save();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Page Parsing")]
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
@@ -53,7 +53,7 @@ namespace Transfermarkt.Core.Test.Pages
             page.Save();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Page Parsing")]
         public void TestContinentParsing()
         {
             string[] urls = new string[]
