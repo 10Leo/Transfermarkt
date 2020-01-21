@@ -8,26 +8,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Contracts.Converters;
+using Transfermarkt.Core.Converters;
 
-namespace Transfermarkt.Core.Converters.Foot
+namespace Transfermarkt.Core.Test.Converters
 {
     [TestClass]
     public class FootConverterTest
     {
         public static string SettingsFolderPath { get; } = ConfigurationManager.AppSettings["SettingsFolderPath"].ToString();
-        public static string SettingsFootFile { get; } = ConfigurationManager.AppSettings["SettingsFootFile"].ToString();
+        public static string SettingsFile { get; } = ConfigurationManager.AppSettings["SettingsFootFile"].ToString();
 
         private IDictionary<string, Type> languages = new Dictionary<string, Type>();
 
         public FootConverterTest()
         {
-            languages.Add("PT", typeof(PTFootConverter));
-            languages.Add("EN", typeof(ENFootConverter));
+            languages.Add("PT", typeof(FootConverter));
+            //languages.Add("EN", typeof(FootConverter));
 
             Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
         }
 
-        [TestMethod, TestCategory("Settings")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Foot Converter")]
         public void FootStringsAreCorrectlyTransformedIntoDomainObjects()
         {
             IFootConverter converter;
@@ -36,7 +37,7 @@ namespace Transfermarkt.Core.Converters.Foot
             {
                 converter = (IFootConverter)Activator.CreateInstance(language.Value);
 
-                string json = File.ReadAllText($@"{SettingsFolderPath}\{language.Key}\{SettingsFootFile}");
+                string json = File.ReadAllText($@"{SettingsFolderPath}\{language.Key}\{SettingsFile}");
 
                 var definition = new { Language = default(string), Set = new[] { new { Name = default(string), DO = default(string) } } };
                 var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
@@ -49,10 +50,10 @@ namespace Transfermarkt.Core.Converters.Foot
             }
         }
 
-        [TestMethod, TestCategory("Settings")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Foot Converter")]
         public void IncorrectFootStringIsNotTransformedIntoDomainObjects()
         {
-            IFootConverter converter = new PTFootConverter();
+            IFootConverter converter = new FootConverter();
             Actors.Foot? retValue = converter.Convert("Stupid name that doesn't exist in the file");
             Assert.IsFalse(retValue.HasValue, $"Value should have been null because the supplied name doesn't exist.");
 

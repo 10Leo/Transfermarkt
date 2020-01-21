@@ -57,7 +57,7 @@ namespace Transfermarkt.Core.Pages
             this.Season.OnFailure += LogFailure;
 
             this.Country = new CountryParser();
-            this.Country.Converter = new PTNationalityConverter();
+            this.Country.Converter = new NationalityConverter();
             this.Country.OnSuccess += LogSuccess;
             this.Country.OnFailure += LogFailure;
 
@@ -103,7 +103,7 @@ namespace Transfermarkt.Core.Pages
             this.PlayerImgUrl.OnFailure += LogFailure;
 
             this.Position = new PositionParser();
-            this.Position.Converter = new PTPositionConverter();
+            this.Position.Converter = new PositionConverter();
             this.Position.OnSuccess += LogSuccess;
             this.Position.OnFailure += LogFailure;
 
@@ -119,7 +119,7 @@ namespace Transfermarkt.Core.Pages
 
             this.Nationality = new NationalityParser();
             //TODO: change converter initializer to instantiate according to the language defined on config. Like this is tied to the PT one.
-            this.Nationality.Converter = new PTNationalityConverter();
+            this.Nationality.Converter = new NationalityConverter();
             this.Nationality.OnSuccess += LogSuccess;
             this.Nationality.OnFailure += LogFailure;
 
@@ -129,7 +129,7 @@ namespace Transfermarkt.Core.Pages
             this.Height.OnFailure += LogFailure;
 
             this.PreferredFoot = new PreferredFootParser();
-            this.PreferredFoot.Converter = new PTFootConverter();
+            this.PreferredFoot.Converter = new FootConverter();
             this.PreferredFoot.OnSuccess += LogSuccess;
             this.PreferredFoot.OnFailure += LogFailure;
 
