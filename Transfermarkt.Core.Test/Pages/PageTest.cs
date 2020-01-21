@@ -52,5 +52,25 @@ namespace Transfermarkt.Core.Test.Pages
             page.Parse();
             page.Save();
         }
+
+        [TestMethod]
+        public void TestContinentParsing()
+        {
+            string[] urls = new string[]
+            {
+                "https://www.transfermarkt.pt/wettbewerbe/europa",
+                "https://www.transfermarkt.pt/wettbewerbe/amerika",
+                "https://www.transfermarkt.pt/wettbewerbe/asien",
+                "https://www.transfermarkt.pt/wettbewerbe/afrika"
+            };
+            var append = "/wettbewerbe?plus=1";
+
+            foreach (var url in urls)
+            {
+                ContinentPage page = new ContinentPage(url);
+                page.Parse();
+                page.Save();
+            }
+        }
     }
 }
