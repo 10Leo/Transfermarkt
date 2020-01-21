@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transfermarkt.Core.Actors
+namespace Transfermarkt.Core.Contracts
 {
-    public enum CompetitionColumnsEnum
+    public interface IMarketValueParser<TNode> : IElementParser<TNode, string>
     {
-        clubUrl
     }
 }
