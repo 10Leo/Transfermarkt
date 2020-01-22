@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
-using Transfermarkt.Core.Converters;
 using Transfermarkt.Core.Exporter;
 using Transfermarkt.Exporter.JSONExporter;
 

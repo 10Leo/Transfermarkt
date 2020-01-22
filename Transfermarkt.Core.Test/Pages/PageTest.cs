@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
-using Transfermarkt.Core.Exporter;
-using Transfermarkt.Core.Pages;
+using Transfermarkt.Core.ParseHandling.Pages;
 
-namespace Transfermarkt.Core.Test.Pages
+namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {
     [TestClass]
     public class PageTest
