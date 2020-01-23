@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
+    <Compile Include="Actors\DPlayer.cs" />
     <Compile Include="Actors\Competition.cs" />
     <Compile Include="Actors\Continent.cs" />
     <Compile Include="Actors\ContinentCode.cs" />
