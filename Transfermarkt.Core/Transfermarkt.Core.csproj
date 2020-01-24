@@ -59,6 +59,7 @@
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="ConfigManager.cs" />
+    <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
     <Compile Include="ParseHandling\Contracts\Page\ICompetitionPage.cs" />
     <Compile Include="IConfigurationManager.cs" />
     <Compile Include="ParseHandling\Contracts\Page\IContinentPage.cs" />
@@ -99,7 +100,6 @@
     <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\CaptainParser.cs" />
     <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ClubArrivalDateParser.cs" />
     <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ContractExpirationDateParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ElementParser.cs" />
     <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\HeightParser.cs" />
     <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\PlayerImgUrlParser.cs" />
     <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\MarketValueParser.cs" />
