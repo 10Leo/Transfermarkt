@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts.Element
 {
-    public interface INationalityParser<TNode> : IElementParser<TNode, Nationality?>
-    {
-    }
+    //public interface INationalityParser<TNode> : IElementParser<TNode, Nationality?>
+    //{
+    //}
 }

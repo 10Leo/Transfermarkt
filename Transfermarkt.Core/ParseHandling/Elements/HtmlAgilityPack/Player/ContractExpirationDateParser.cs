@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 {
-    class ContractExpirationDateParser : IElementParser<HtmlNode, DateTime?>
+    class ContractExpirationDateParser// : IElementParser<HtmlNode, DateTime?>
     {
         public IConverter<DateTime?> Converter { get; set; }
 

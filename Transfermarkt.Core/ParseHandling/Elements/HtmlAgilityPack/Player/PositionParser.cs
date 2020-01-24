@@ -6,7 +6,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 {
-    class PositionParser : IElementParser<HtmlNode, Position?>
+    class PositionParser// : IElementParser<HtmlNode, Position?>
     {
         public IConverter<Position?> Converter { get; set; }
 

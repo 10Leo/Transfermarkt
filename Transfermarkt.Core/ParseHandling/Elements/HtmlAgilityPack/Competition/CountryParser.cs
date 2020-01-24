@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
 {
-    class CountryParser : IElementParser<HtmlNode, Nationality?>
+    class CountryParser// : IElementParser<HtmlNode, Nationality?>
     {
         private string displayName = "Country";
         private bool parsedAlready = false;

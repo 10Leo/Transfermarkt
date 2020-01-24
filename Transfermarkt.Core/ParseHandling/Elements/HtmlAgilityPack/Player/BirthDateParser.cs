@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 {
-    class BirthDateParser : IElementParser<HtmlNode, DateTime?>
+    class BirthDateParser// : IElementParser<HtmlNode, DateTime?>
     {
         public IConverter<DateTime?> Converter { get; set; }
 

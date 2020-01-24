@@ -7,7 +7,7 @@ using Transfermarkt.Core.ParseHandling.Contracts.Element;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 {
-    class NationalityParser : INationalityParser<HtmlNode>
+    class NationalityParser// : INationalityParser<HtmlNode>
     {
         public IConverter<Nationality?> Converter { get; set; }
         

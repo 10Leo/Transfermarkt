@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
 {
-    class SeasonParser : IElementParser<HtmlNode, int?>
+    class SeasonParser// : IElementParser<HtmlNode, int?>
     {
         private string displayName = "Season";
         private bool parsedAlready = false;

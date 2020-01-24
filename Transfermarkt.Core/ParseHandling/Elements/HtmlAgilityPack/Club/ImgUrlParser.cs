@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club
 {
-    class ImgUrlParser : IElementParser<HtmlNode, string>
+    class ImgUrlParser// : IElementParser<HtmlNode, string>
     {
         private string displayName = "ImgUrl";
         private bool parsedAlready = false;

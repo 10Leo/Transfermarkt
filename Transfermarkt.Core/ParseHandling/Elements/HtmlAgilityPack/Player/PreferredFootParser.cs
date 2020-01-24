@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 {
-    class PreferredFootParser : IElementParser<HtmlNode, Foot?>
+    class PreferredFootParser// : IElementParser<HtmlNode, Foot?>
     {
         public IConverter<Foot?> Converter { get; set; }
 

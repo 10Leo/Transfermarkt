@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club
 {
-    class NameParser : IElementParser<HtmlNode, string>
+    class NameParser// : IElementParser<HtmlNode, string>
     {
         private string displayName = "Name";
         private bool parsedAlready = false;
