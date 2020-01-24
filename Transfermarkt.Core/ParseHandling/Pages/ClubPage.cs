@@ -13,23 +13,24 @@ using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
-    public class ClubPage : IPage<IDomain, HtmlNode, object>
+    public class ClubPage : IPage<ID, HtmlNode, IElement>
     {
         private readonly string url;
         private HtmlDocument doc;
 
-        public IDomain Domain { get; set; }
+        public ID Domain { get; set; }
 
-        public IList<IElementParser<HtmlNode, object>> Elements { get; set; }
+        public IList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
 
         public ClubPage(string url)
         {
             this.url = url;
 
-            this.Domain = new Club();
+            IConverter<object> c = new IntConverter();
 
-            this.Elements = new List<IElementParser<HtmlNode, object>>() {
-                (IElementParser<HtmlNode, object>)new HeightParser()
+            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new HeightParser{ Converter = new IntConverter() },
+                new MarketValueParser { Converter = new DecimalConverter() }
             };
 
             Connect();
@@ -39,7 +40,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public void Parse()
         {
-            var club = (Club)Domain;
+            this.Domain = new DClub();
             //club.Season = Season.Parse(doc.DocumentNode);
 
 
@@ -56,8 +57,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             //each row is a player
             foreach (var row in rows)
             {
-                Player player = new Player();
-                club.Squad.Add(player);
+                DPlayer player = new DPlayer();
+                this.Domain.Children.Add(player);
 
                 //each column is an attribute
                 HtmlNodeCollection cols = row.SelectNodes("td");
@@ -69,10 +70,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     foreach (var elementParser in Elements)
                     {
-                        if (elementParser.CanParse(element))
+                        if (elementParser.CanParse(header))
                         {
-                            player.Height = 1;
                             var parsedObj = elementParser.Parse(element);
+                            var e = player.SetElement(parsedObj);
                         }
                     }
                 }

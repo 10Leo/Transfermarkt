@@ -37,6 +37,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             ClubPage page = new ClubPage(url);
             page.Parse();
             page.Save();
+            var s = page.Domain.ToString();
         }
 
         [TestMethod, TestCategory("Page Parsing")]

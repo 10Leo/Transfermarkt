@@ -1,13 +1,14 @@
 ﻿using HtmlAgilityPack;
 using System;
+using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Element;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 {
-    class MarketValueParser : IMarketValueParser<HtmlNode>
+    class MarketValueParser : IElementParser<HtmlNode, IElement, object>
     {
-        public IConverter<decimal?> Converter { get; set; }
+        public IConverter<object> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
@@ -30,7 +31,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
             return equals;
         }
 
-        public decimal? Parse(HtmlNode node)
+        public IElement Parse(HtmlNode node)
         {
             decimal? n = null;
 
@@ -65,7 +66,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
                 throw;
             }
             
-            return n;
+            return new MarketValue { Value = n };
         }
     }
 }

@@ -1,13 +1,14 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Text.RegularExpressions;
+using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 {
-    class HeightParser : IElementParser<HtmlNode, int?>
+    class HeightParser : IElementParser<HtmlNode, IElement, object>
     {
-        public IConverter<int?> Converter { get; set; }
+        public IConverter<object> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
@@ -31,9 +32,9 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
             return equals;
         }
 
-        public int? Parse(HtmlNode node)
+        public IElement Parse(HtmlNode node)
         {
-            int? parsedObj = null;
+            object parsedObj = null;
 
             try
             {
@@ -50,7 +51,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
                 throw;
             }
 
-            return parsedObj;
+            return new Height { Value = parsedObj };
         }
     }
 }
