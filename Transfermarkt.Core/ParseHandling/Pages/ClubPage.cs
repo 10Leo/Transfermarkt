@@ -34,12 +34,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public IElementParser<HtmlNode, Position?> Position { get; set; }
         public IElementParser<HtmlNode, int?> Captain { get; set; }
         public IElementParser<HtmlNode, DateTime?> BirthDate { get; set; }
-        public INationalityParser<HtmlNode> Nationality { get; set; }
+        public IElementParser<HtmlNode, Nationality?> Nationality { get; set; }
         public IElementParser<HtmlNode, int?> Height { get; set; }
         public IElementParser<HtmlNode, Foot?> PreferredFoot { get; set; }
         public IElementParser<HtmlNode, DateTime?> ClubArrivalDate { get; set; }
         public IElementParser<HtmlNode, DateTime?> ContractExpirationDate { get; set; }
-        public IMarketValueParser<HtmlNode> MarketValue { get; set; }
+        public IElementParser<HtmlNode, decimal?> MarketValue { get; set; }
 
         public ClubPage(string url)
         {

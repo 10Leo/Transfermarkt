@@ -5,21 +5,20 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Continent
 {
-    class ContinentCodeParser : IElementParser<HtmlNode, ContinentCode?>
+    class ContinentCodeParser : ElementParser<HtmlNode, ContinentCode?>
     {
-        public IConverter<ContinentCode?> Converter { get; set; }
+        public override string DisplayName { get; set; } = "Continent Code";
 
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        public bool CanParse(HtmlNode node)
+        public ContinentCodeParser()
         {
-            return true;
-        }
+            //TODO: change so that this value comes from a settings json file according to what's defined on config.
+            this.CanParsePredicate = node => false;
 
-        public ContinentCode? Parse(HtmlNode node)
-        {
-            return null;
+            this.ParseFunc = node =>
+            {
+                ContinentCode? parsedObj = null;
+                return parsedObj;
+            };
         }
     }
 }

@@ -4,30 +4,16 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
 {
-    class SeasonParser : IElementParser<HtmlNode, int?>
+    class SeasonParser : ElementParser<HtmlNode, int?>
     {
-        private string displayName = "Season";
-        private bool parsedAlready = false;
+        public override string DisplayName { get; set; } = "Season";
 
-        public IConverter<int?> Converter { get; set; }
-
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        public bool CanParse(HtmlNode node)
+        public SeasonParser()
         {
-            //if (parsedAlready)
-            //{
-            //    return false;
-            //}
-            return true;
-        }
+            //TODO: change so that this value comes from a settings json file according to what's defined on config.
+            this.CanParsePredicate = node => true;
 
-        public int? Parse(HtmlNode node)
-        {
-            int? parsedObj = null;
-
-            try
+            this.ParseFunc = node =>
             {
                 int? parsedStr = node.SelectSingleNode("//select[@name='saison_id']//option")?.GetAttributeValue<int>("value", 0);
                 if (!parsedStr.HasValue)
@@ -35,18 +21,9 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
                     parsedStr = 0;
                 }
                 //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
-                parsedObj = Converter.Convert(parsedStr.ToString());
-
-                OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
-                parsedAlready = true;
-            }
-            catch (Exception)
-            {
-                OnFailure?.Invoke(this, new CustomEventArgs($"Error parsing {displayName}."));
-                throw;
-            }
-
-            return parsedObj;
+                int? parsedObj = Converter.Convert(parsedStr.ToString());
+                return parsedObj;
+            };
         }
     }
 }
