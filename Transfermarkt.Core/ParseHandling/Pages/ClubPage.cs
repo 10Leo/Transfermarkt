@@ -159,7 +159,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             club.Season = Season.Parse(doc.DocumentNode);
 
 
-            HtmlNode table = GetTable();
+            HtmlNode table = doc.DocumentNode.SelectSingleNode("//table[@class='items']");
             if (table == null)
             {
                 return;
@@ -264,20 +264,15 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(htmlCode);
             }
-            catch (System.Net.WebException ex)
+            catch (WebException)
             {
                 //Debug.WriteLine(ex.StackTrace);
-                System.Environment.Exit(-1);
+                Environment.Exit(-1);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Debug.WriteLine(ex.StackTrace);
             }
-        }
-
-        private HtmlNode GetTable()
-        {
-            return doc.DocumentNode.SelectSingleNode("//table[@class='items']");
         }
 
         private void LogSuccess(Object o, CustomEventArgs e)
