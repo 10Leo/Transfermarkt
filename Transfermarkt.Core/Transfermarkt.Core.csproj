@@ -65,8 +65,6 @@
     <Compile Include="ParseHandling\Contracts\Page\IContinentPage.cs" />
     <Compile Include="ParseHandling\Contracts\IDomain.cs" />
     <Compile Include="ParseHandling\Contracts\IElementParser.cs" />
-    <Compile Include="ParseHandling\Contracts\Element\IMarketValueParser.cs" />
-    <Compile Include="ParseHandling\Contracts\Element\INationalityParser.cs" />
     <Compile Include="ParseHandling\Contracts\IPage.cs" />
     <Compile Include="ParseHandling\Contracts\Converter\IFootConverter.cs" />
     <Compile Include="ParseHandling\Contracts\Converter\IPositionConverter.cs" />
