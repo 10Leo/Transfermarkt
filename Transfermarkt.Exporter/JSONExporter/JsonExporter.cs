@@ -50,21 +50,21 @@ namespace Transfermarkt.Exporter.JSONExporter
 
         public void ExtractClub(Club club)
         {
-            string pathString = CreateBaseDir();
+            //string pathString = CreateBaseDir();
 
-            pathString = System.IO.Path.Combine(pathString, string.Format("{0}", club.Country));
-            System.IO.Directory.CreateDirectory(pathString);
+            //pathString = System.IO.Path.Combine(pathString, string.Format("{0}", club.Country));
+            //System.IO.Directory.CreateDirectory(pathString);
 
-            string fileName = clubFileFormat;
-            fileName = fileName.Replace("{COUNTRY}", club.Country?.ToString());
-            fileName = fileName.Replace("{CLUB_NAME}", club.Name);
-            fileName = fileName.Replace("{SEASON}", club.Season.ToString());
+            //string fileName = clubFileFormat;
+            //fileName = fileName.Replace("{COUNTRY}", club.Country?.ToString());
+            //fileName = fileName.Replace("{CLUB_NAME}", club.Name);
+            //fileName = fileName.Replace("{SEASON}", club.Season.ToString());
 
-            pathString = System.IO.Path.Combine(pathString, fileName);
+            //pathString = System.IO.Path.Combine(pathString, fileName);
 
-            string output = JsonConvert.SerializeObject(club, settings);
+            //string output = JsonConvert.SerializeObject(club, settings);
 
-            WriteToFile(pathString, output);
+            //WriteToFile(pathString, output);
         }
 
         private static string CreateBaseDir()

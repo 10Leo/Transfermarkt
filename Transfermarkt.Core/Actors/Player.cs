@@ -1,38 +1,60 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using Transfermarkt.Core.Elements.Player;
+using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Player : Person
+    class Player : IDomain
     {
-        public string ProfileUrl { get; set; }
-        public int? Number { get; set; }
-        public int? Height { get; set; }
-        public Foot? PreferredFoot { get; set; }
-        public Position? Position { get; set; }
-        public int? Captain { get; set; }
-        public DateTime? ClubArrivalDate { get; set; }
-        public DateTime? ContractExpirationDate { get; set; }
-        public decimal? MarketValue { get; set; }
+        public IList<IElement> Elements { get; set; }
+        public IList<IDomain> Children { get; set; } = null;
+
+        public Player()
+        {
+            Elements = new List<IElement>();
+            Children = new List<IDomain>();
+            Elements.Add(new MarketValue());
+            Elements.Add(new Height());
+        }
+
+        public IElement SetElement(IElement element)
+        {
+            if (element == null)
+            {
+                return null;
+            }
+            var elementType = element.GetType();
+
+            foreach (var e in Elements)
+            {
+                if (e.GetType() == elementType)
+                {
+                    e.Value = element.Value;
+                    return e;
+                }
+            }
+
+            return null;
+        }
 
         public override string ToString()
         {
-            var cultureInfo = CultureInfo.GetCultureInfo("pt-PT");
-            return string.Format("{0} ({1}) {2} {3} {4}cm {5} {6} [{7}] {8} {9}-{10} [{11}] {12} {13}"
-                , Name
-                , ShortName
-                , Nationality
-                , BirthDate?.ToString("yyyy.MM.dd")
-                , Height
-                , PreferredFoot
-                , Position
-                , Number
-                , (Captain >= 1 ? "c" : "")
-                , ClubArrivalDate?.ToString("yyyy.MM.dd")
-                , ContractExpirationDate?.ToString("yyyy.MM.dd")
-                , string.Format(cultureInfo, "{0:C0}", MarketValue)
-                , ProfileUrl
-                , ImgUrl
+            return string.Format("{0}\n{1}"
+                , string.Join(
+                    ", "
+                    , Children.Select(
+                        p => p.ToString()
+                    )
+                )
+                , string.Join(
+                    ", "
+                    , Elements.Select(
+                        p => p.ToString()
+                    )
+                )
             );
         }
     }

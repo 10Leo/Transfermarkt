@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Continent : IDomain
+    public class Continent// : IDomain
     {
         public string Name { get; set; }
         public ContinentCode? ContinentCode { get; set; }

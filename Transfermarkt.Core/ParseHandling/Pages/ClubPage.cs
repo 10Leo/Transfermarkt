@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Net;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Element;
 using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
 using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club;
@@ -13,12 +12,12 @@ using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
-    public class ClubPage : IPage<ID, HtmlNode, IElement>
+    public class ClubPage : IPage<IDomain, HtmlNode, IElement>
     {
         private readonly string url;
         private HtmlDocument doc;
 
-        public ID Domain { get; set; }
+        public IDomain Domain { get; set; }
 
         public IList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
 
@@ -40,7 +39,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public void Parse()
         {
-            this.Domain = new DClub();
+            this.Domain = new Club();
             //club.Season = Season.Parse(doc.DocumentNode);
 
 
@@ -57,7 +56,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             //each row is a player
             foreach (var row in rows)
             {
-                DPlayer player = new DPlayer();
+                Player player = new Player();
                 this.Domain.Children.Add(player);
 
                 //each column is an attribute

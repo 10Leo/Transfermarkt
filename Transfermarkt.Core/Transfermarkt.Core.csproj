@@ -49,10 +49,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
-    <Compile Include="Actors\DPlayer.cs" />
+    <Compile Include="ParseHandling\Contracts\Element.cs" />
+    <Compile Include="ParseHandling\Elements\Player\MarketValue.cs" />
+    <Compile Include="ParseHandling\Elements\Player\Height.cs" />
     <Compile Include="Actors\Competition.cs" />
     <Compile Include="Actors\Continent.cs" />
     <Compile Include="Actors\ContinentCode.cs" />
+    <Compile Include="ParseHandling\Contracts\IElement.cs" />
     <Compile Include="Actors\Manager.cs" />
     <Compile Include="Actors\Nationality.cs" />
     <Compile Include="Actors\Person.cs" />
@@ -79,6 +82,7 @@
     <Compile Include="ParseHandling\Contracts\IConverter.cs" />
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
+    <Compile Include="ParseHandling\Elements\Player\PlayerName.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />
     <Compile Include="ParseHandling\Pages\ContinentPage.cs" />
     <Compile Include="ParseHandling\Pages\ClubPage.cs" />
@@ -119,6 +123,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ParseHandling\Elements\Competition\" />
+    <Folder Include="ParseHandling\Elements\Continent\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

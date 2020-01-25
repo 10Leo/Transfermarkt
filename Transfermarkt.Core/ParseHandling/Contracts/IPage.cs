@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Transfermarkt.Core.Actors;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IPage<TDomain, TNode, TElement> where TDomain : ID where TElement : IElement
+    public interface IPage<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
     {
         TDomain Domain { get; set; }
 
