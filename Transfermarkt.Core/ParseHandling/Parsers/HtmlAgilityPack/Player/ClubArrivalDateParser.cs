@@ -1,19 +1,17 @@
 ﻿using HtmlAgilityPack;
 using System;
-using System.Linq;
-using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class PositionParser// : IElementParser<HtmlNode, Position?>
+    class ClubArrivalDateParser// : IElementParser<HtmlNode, DateTime?>
     {
-        public IConverter<Position?> Converter { get; set; }
+        public IConverter<DateTime?> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
 
-        private string displayName = "Position";
+        private string displayName = "Club Arrival Date";
         private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
@@ -26,22 +24,19 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
             var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
 
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            var equals = (headerName == "Jogadores");
+            var equals = (headerName == "Na equipa desde");
 
             //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
             return equals;
         }
 
-        public Position? Parse(HtmlNode node)
+        public DateTime? Parse(HtmlNode node)
         {
-            Position? parsedObj = null;
+            DateTime? parsedObj = null;
 
             try
             {
-                var parsedStr = node
-                    .SelectNodes("table//tr[2]/td[1]")
-                    .FirstOrDefault()
-                    .InnerText;
+                var parsedStr = node.InnerText;
 
                 parsedObj = Converter.Convert(parsedStr);
 

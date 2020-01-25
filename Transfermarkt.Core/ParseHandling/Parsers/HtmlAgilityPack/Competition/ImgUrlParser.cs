@@ -2,11 +2,11 @@
 using System;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class CountryImgParser// : IElementParser<HtmlNode, string>
+    class ImgUrlParser// : IElementParser<HtmlNode, string>
     {
-        private string displayName = "Country Img";
+        private string displayName = "Img Url";
         private bool parsedAlready = false;
 
         public IConverter<string> Converter { get; set; }
@@ -29,8 +29,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
 
             try
             {
-                HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
-                var parsedStr = countryNode?.GetAttributeValue<string>("src", null);
+                var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//div[@class='headerfoto']/img")?.GetAttributeValue<string>("src", null);
 
                 parsedObj = Converter.Convert(parsedStr);
 
@@ -44,6 +43,32 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
             }
 
             return parsedObj;
+        }
+    }
+
+    static class HtmlAgilityPackUtil
+    {
+        public static T GetAttributeValue<T>(this HtmlNode td, string key, T defaultValue) where T : IConvertible
+        {
+            T result = defaultValue;//default(T);
+
+            if (td.Attributes[key] == null)// || String.IsNullOrEmpty(td.Attributes[key].Value) == false)
+            {
+                return defaultValue;
+            }
+
+            string value = td.Attributes[key].Value;
+
+            try
+            {
+                result = (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch
+            {
+                result = defaultValue;//default(T);
+            }
+
+            return result;
         }
     }
 }

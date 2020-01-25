@@ -3,7 +3,7 @@ using System;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Continent
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
     class ContinentCodeParser// : IElementParser<HtmlNode, ContinentCode?>
     {

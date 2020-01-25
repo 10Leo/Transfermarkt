@@ -9,7 +9,7 @@ using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition;
+using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {

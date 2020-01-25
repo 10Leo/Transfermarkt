@@ -1,19 +1,18 @@
 ﻿using HtmlAgilityPack;
 using System;
-using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class PreferredFootParser// : IElementParser<HtmlNode, Foot?>
+    class CountryImgParser// : IElementParser<HtmlNode, string>
     {
-        public IConverter<Foot?> Converter { get; set; }
+        private string displayName = "Country Img";
+        private bool parsedAlready = false;
+
+        public IConverter<string> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
-
-        private string displayName = "Preferred Foot";
-        private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
         {
@@ -21,24 +20,17 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
             //{
             //    return false;
             //}
-
-            var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
-
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            var equals = (headerName == "Pé");
-
-            //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
-            return equals;
+            return true;
         }
 
-        public Foot? Parse(HtmlNode node)
+        public string Parse(HtmlNode node)
         {
-            Foot? parsedObj = null;
+            string parsedObj = null;
 
             try
             {
-                var parsedStr = node
-                    .InnerText;
+                HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
+                var parsedStr = countryNode?.GetAttributeValue<string>("src", null);
 
                 parsedObj = Converter.Convert(parsedStr);
 

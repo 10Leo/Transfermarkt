@@ -1,10 +1,9 @@
 ﻿using HtmlAgilityPack;
 using System;
-using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.Elements.Player;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Element;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class MarketValueParser : IElementParser<HtmlNode, IElement, object>
     {

@@ -2,7 +2,7 @@
 using System;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     class NameParser// : IElementParser<HtmlNode, string>
     {

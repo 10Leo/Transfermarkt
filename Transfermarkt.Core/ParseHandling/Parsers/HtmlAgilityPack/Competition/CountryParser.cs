@@ -1,18 +1,19 @@
 ﻿using HtmlAgilityPack;
 using System;
+using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class PlayerImgUrlParser// : IElementParser<HtmlNode, string>
+    class CountryParser// : IElementParser<HtmlNode, Nationality?>
     {
-        public IConverter<string> Converter { get; set; }
+        private string displayName = "Country";
+        private bool parsedAlready = false;
+
+        public IConverter<Nationality?> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
-
-        private string displayName = "Img Url";
-        private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
         {
@@ -20,24 +21,17 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
             //{
             //    return false;
             //}
-
-            var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
-
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            var equals = (headerName == "Jogadores");
-
-            //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
-            return equals;
+            return true;
         }
 
-        public string Parse(HtmlNode node)
+        public Nationality? Parse(HtmlNode node)
         {
-            string parsedObj = null;
+            Nationality? parsedObj = null;
 
             try
             {
-                //TODO
-                var parsedStr = "";
+                HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
+                var parsedStr = countryNode?.GetAttributeValue<string>("title", null);
 
                 parsedObj = Converter.Convert(parsedStr);
 

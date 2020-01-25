@@ -3,7 +3,7 @@ using System;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
     class CountryParser// : IElementParser<HtmlNode, Nationality?>
     {

@@ -2,7 +2,7 @@
 using System;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
     class SeasonParser// : IElementParser<HtmlNode, int?>
     {
@@ -34,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
                 {
                     parsedStr = 0;
                 }
-                //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
+
                 parsedObj = Converter.Convert(parsedStr.ToString());
 
                 OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));

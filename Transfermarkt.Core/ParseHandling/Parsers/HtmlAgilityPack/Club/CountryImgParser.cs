@@ -1,16 +1,15 @@
 ﻿using HtmlAgilityPack;
 using System;
-using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class CountryParser// : IElementParser<HtmlNode, Nationality?>
+    class CountryImgParser// : IElementParser<HtmlNode, string>
     {
-        private string displayName = "Country";
+        private string displayName = "Country Img";
         private bool parsedAlready = false;
 
-        public IConverter<Nationality?> Converter { get; set; }
+        public IConverter<string> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
@@ -24,14 +23,14 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
             return true;
         }
 
-        public Nationality? Parse(HtmlNode node)
+        public string Parse(HtmlNode node)
         {
-            Nationality? parsedObj = null;
+            string parsedObj = null;
 
             try
             {
-                HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
-                var parsedStr = countryNode?.GetAttributeValue<string>("title", null);
+                HtmlNode countryNode = node.SelectSingleNode("//div[@id='verein_head']//span[@class='mediumpunkt']//img[@class='flaggenrahmen vm']");
+                string parsedStr = countryNode?.GetAttributeValue<string>("src", null);
 
                 parsedObj = Converter.Convert(parsedStr);
 

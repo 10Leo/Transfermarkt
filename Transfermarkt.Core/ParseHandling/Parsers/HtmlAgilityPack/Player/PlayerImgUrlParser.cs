@@ -1,18 +1,17 @@
 ﻿using HtmlAgilityPack;
 using System;
-using System.Linq;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ProfileUrlParser// : IElementParser<HtmlNode, string>
+    class PlayerImgUrlParser// : IElementParser<HtmlNode, string>
     {
         public IConverter<string> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
 
-        private string displayName = "Profile Url";
+        private string displayName = "Img Url";
         private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
@@ -37,10 +36,8 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
 
             try
             {
-                var parsedStr = node
-                    .SelectNodes("table//td//a")
-                    .FirstOrDefault(n => n.Attributes["class"]?.Value == "spielprofil_tooltip")
-                    .Attributes["href"].Value;
+                //TODO
+                var parsedStr = "";
 
                 parsedObj = Converter.Convert(parsedStr);
 

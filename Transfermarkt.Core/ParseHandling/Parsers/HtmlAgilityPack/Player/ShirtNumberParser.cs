@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class ShirtNumberParser// : IElementParser<HtmlNode, int?>
     {

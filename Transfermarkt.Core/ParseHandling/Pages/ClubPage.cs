@@ -7,8 +7,8 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Element;
 using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club;
-using Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Player;
+using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club;
+using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player;
 using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Pages

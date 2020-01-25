@@ -1,18 +1,19 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Linq;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class CountryImgParser// : IElementParser<HtmlNode, string>
+    class ProfileUrlParser// : IElementParser<HtmlNode, string>
     {
-        private string displayName = "Country Img";
-        private bool parsedAlready = false;
-
         public IConverter<string> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
+
+        private string displayName = "Profile Url";
+        private bool parsedAlready = false;
 
         public bool CanParse(HtmlNode node)
         {
@@ -20,7 +21,14 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club
             //{
             //    return false;
             //}
-            return true;
+
+            var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
+
+            //TODO: change so that this value comes from a settings json file according to what's defined on config.
+            var equals = (headerName == "Jogadores");
+
+            //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
+            return equals;
         }
 
         public string Parse(HtmlNode node)
@@ -29,8 +37,10 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club
 
             try
             {
-                HtmlNode countryNode = node.SelectSingleNode("//div[@id='verein_head']//span[@class='mediumpunkt']//img[@class='flaggenrahmen vm']");
-                string parsedStr = countryNode?.GetAttributeValue<string>("src", null);
+                var parsedStr = node
+                    .SelectNodes("table//td//a")
+                    .FirstOrDefault(n => n.Attributes["class"]?.Value == "spielprofil_tooltip")
+                    .Attributes["href"].Value;
 
                 parsedObj = Converter.Convert(parsedStr);
 

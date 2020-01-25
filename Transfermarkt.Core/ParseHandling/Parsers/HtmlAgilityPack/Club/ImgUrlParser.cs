@@ -2,11 +2,11 @@
 using System;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
+namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
     class ImgUrlParser// : IElementParser<HtmlNode, string>
     {
-        private string displayName = "Img Url";
+        private string displayName = "ImgUrl";
         private bool parsedAlready = false;
 
         public IConverter<string> Converter { get; set; }
@@ -29,7 +29,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition
 
             try
             {
-                var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//div[@class='headerfoto']/img")?.GetAttributeValue<string>("src", null);
+                var parsedStr = node.SelectSingleNode("//div[@id='verein_head']//div[@class='dataBild ']/img")?.GetAttributeValue<string>("src", null);
 
                 parsedObj = Converter.Convert(parsedStr);
 
