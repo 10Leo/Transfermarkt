@@ -53,9 +53,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Converters\Foot\FootConverterTest.cs" />
-    <Compile Include="Converters\Nationality\NationalityConverterTest.cs" />
-    <Compile Include="Converters\Position\PositionConverterTest.cs" />
+    <Compile Include="Converters\FootConverterTest.cs" />
+    <Compile Include="Converters\NationalityConverterTest.cs" />
+    <Compile Include="Converters\PositionConverterTest.cs" />
     <Compile Include="Pages\PageTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -70,7 +70,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Parsers\" />
+    <Folder Include="Elements\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
