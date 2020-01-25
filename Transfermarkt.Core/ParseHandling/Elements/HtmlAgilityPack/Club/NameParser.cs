@@ -4,45 +4,20 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Club
 {
-    class NameParser : IElementParser<HtmlNode, string>
+    class NameParser : ElementParser<HtmlNode, string>
     {
-        private string displayName = "Name";
-        private bool parsedAlready = false;
+        public override string DisplayName { get; set; } = "Name";
 
-        public IConverter<string> Converter { get; set; }
-
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        public bool CanParse(HtmlNode node)
+        public NameParser()
         {
-            //if (parsedAlready)
-            //{
-            //    return false;
-            //}
-            return true;
-        }
+            //TODO: change so that this value comes from a settings json file according to what's defined on config.
+            this.CanParsePredicate = node => true;
 
-        public string Parse(HtmlNode node)
-        {
-            string parsedObj = null;
-
-            try
+            this.ParseFunc = node =>
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='verein_head']//h1[@itemprop='name']/span")?.InnerText;
-
-                parsedObj = Converter.Convert(parsedStr);
-
-                OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
-                parsedAlready = true;
-            }
-            catch (Exception)
-            {
-                OnFailure?.Invoke(this, new CustomEventArgs($"Error parsing {displayName}."));
-                throw;
-            }
-
-            return parsedObj;
+                return Converter.Convert(parsedStr);
+            };
         }
     }
 }

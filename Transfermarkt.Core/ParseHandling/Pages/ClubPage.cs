@@ -34,12 +34,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public IElementParser<HtmlNode, Position?> Position { get; set; }
         public IElementParser<HtmlNode, int?> Captain { get; set; }
         public IElementParser<HtmlNode, DateTime?> BirthDate { get; set; }
-        public INationalityParser<HtmlNode> Nationality { get; set; }
+        public IElementParser<HtmlNode, Nationality?> Nationality { get; set; }
         public IElementParser<HtmlNode, int?> Height { get; set; }
         public IElementParser<HtmlNode, Foot?> PreferredFoot { get; set; }
         public IElementParser<HtmlNode, DateTime?> ClubArrivalDate { get; set; }
         public IElementParser<HtmlNode, DateTime?> ContractExpirationDate { get; set; }
-        public IMarketValueParser<HtmlNode> MarketValue { get; set; }
+        public IElementParser<HtmlNode, decimal?> MarketValue { get; set; }
 
         public ClubPage(string url)
         {
@@ -159,7 +159,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             club.Season = Season.Parse(doc.DocumentNode);
 
 
-            HtmlNode table = GetTable();
+            HtmlNode table = doc.DocumentNode.SelectSingleNode("//table[@class='items']");
             if (table == null)
             {
                 return;
@@ -264,20 +264,15 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 doc = new HtmlAgilityPack.HtmlDocument();
                 doc.LoadHtml(htmlCode);
             }
-            catch (System.Net.WebException ex)
+            catch (WebException)
             {
                 //Debug.WriteLine(ex.StackTrace);
-                System.Environment.Exit(-1);
+                Environment.Exit(-1);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //Debug.WriteLine(ex.StackTrace);
             }
-        }
-
-        private HtmlNode GetTable()
-        {
-            return doc.DocumentNode.SelectSingleNode("//table[@class='items']");
         }
 
         private void LogSuccess(Object o, CustomEventArgs e)

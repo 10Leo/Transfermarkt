@@ -21,11 +21,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts.Page
         IElementParser<TNode, Position?> Position { get; set; }
         IElementParser<TNode, int?> Captain { get; set; }
         IElementParser<TNode, DateTime?> BirthDate { get; set; }
-        INationalityParser<TNode> Nationality { get; set; }
+        IElementParser<TNode, Nationality?> Nationality { get; set; }
         IElementParser<TNode, int?> Height { get; set; }
         IElementParser<TNode, Foot?> PreferredFoot { get; set; }
         IElementParser<TNode, DateTime?> ClubArrivalDate { get; set; }
         IElementParser<TNode, DateTime?> ContractExpirationDate { get; set; }
-        IMarketValueParser<TNode> MarketValue { get; set; }
+        IElementParser<TNode, decimal?> MarketValue { get; set; }
     }
 }
