@@ -15,9 +15,10 @@ namespace Transfermarkt.Core.Actors
         public Player()
         {
             Elements = new List<IElement>();
-            Children = new List<IDomain>();
             Elements.Add(new MarketValue());
             Elements.Add(new Height());
+
+            Children = new List<IDomain>();
         }
 
         public IElement SetElement(IElement element)

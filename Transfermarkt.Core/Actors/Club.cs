@@ -13,11 +13,11 @@ namespace Transfermarkt.Core.Actors
 
         public Club()
         {
-            Children = new List<IDomain>();
-
             Elements = new List<IElement>();
-            Elements.Add(new Name());
-            Elements.Add(new Height());
+            Elements.Add(new Transfermarkt.Core.ParseHandling.Elements.Club.Name());
+
+            Children = new List<IDomain>();
+            Children.Add(new Player());
         }
 
         public IElement SetElement(IElement element)
@@ -48,13 +48,13 @@ namespace Transfermarkt.Core.Actors
             return string.Format("{0}\n{1}"
                 , string.Join(
                     ", "
-                    , Children.Select(
+                    , Elements.Select(
                         p => p.ToString()
                     )
                 )
                 , string.Join(
                     ", "
-                    , Elements.Select(
+                    , Children.Select(
                         p => p.ToString()
                     )
                 )
