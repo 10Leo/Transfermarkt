@@ -37,9 +37,9 @@ namespace Transfermarkt.Exporter.JSONExporter
             string pathString = CreateBaseDir();
 
             string fileName = competitionFileFormat;
-            fileName = fileName.Replace("{COUNTRY}", competition.Country?.ToString());
-            fileName = fileName.Replace("{COMPETITION_NAME}", competition.Name);
-            fileName = fileName.Replace("{SEASON}", competition.Season.ToString());
+            //fileName = fileName.Replace("{COUNTRY}", competition.Country?.ToString());
+            //fileName = fileName.Replace("{COMPETITION_NAME}", competition.Name);
+            //fileName = fileName.Replace("{SEASON}", competition.Season.ToString());
 
             pathString = System.IO.Path.Combine(pathString, fileName);
 

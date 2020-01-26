@@ -44,9 +44,9 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
-            //CompetitionPage page = new CompetitionPage(url);
-            //page.Parse();
-            //page.Save();
+            CompetitionPage page = new CompetitionPage(url);
+            page.Parse();
+            page.Save();
         }
 
         [TestMethod, TestCategory("Page Parsing")]
