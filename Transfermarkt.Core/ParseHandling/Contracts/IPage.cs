@@ -6,7 +6,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     {
         TDomain Domain { get; set; }
 
-        IList<IElementParser<TNode, TElement, object>> Elements { get; set; }
+        IReadOnlyList<ISection<TNode, TElement>> Sections { get; set; }
 
         void Parse();
         void Save();

@@ -2,9 +2,9 @@
 
 namespace Transfermarkt.Core.Elements.Player
 {
-    class PlayerName : Element
+    class Name : Element
     {
-        public PlayerName() : base("Name", "Name")
+        public Name() : base("Name", "Name")
         {
         }
     }

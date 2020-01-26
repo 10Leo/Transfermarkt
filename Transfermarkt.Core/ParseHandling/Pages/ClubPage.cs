@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club;
-using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player;
-using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
@@ -19,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public IDomain Domain { get; set; }
 
-        public IList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+        public IReadOnlyList<ISection<HtmlNode, IElement>> Sections { get; set; }
 
         public ClubPage(string url)
         {
@@ -27,9 +23,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             IConverter<object> c = new IntConverter();
 
-            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
-                new HeightParser{ Converter = new IntConverter() },
-                new MarketValueParser { Converter = new DecimalConverter() }
+            this.Sections = new List<ISection<HtmlNode, IElement>>
+            {
+                new ClubPageSection(),
+                new ClubPlayersPageSection()
             };
 
             Connect();
@@ -40,7 +37,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public void Parse()
         {
             this.Domain = new Club();
-            //club.Season = Season.Parse(doc.DocumentNode);
+
+            foreach (var elementParser in Sections[0].Elements)
+            {
+                var parsedObj = elementParser.Parse(doc.DocumentNode);
+                var e = this.Domain.SetElement(parsedObj);
+            }
 
 
             HtmlNode table = GetTable();
@@ -67,7 +69,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     var header = headerCols[i];
                     var element = cols[i];
 
-                    foreach (var elementParser in Elements)
+                    foreach (var elementParser in Sections[1].Elements)
                     {
                         if (elementParser.CanParse(header))
                         {
@@ -124,6 +126,32 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         private void LogFailure(Object o, CustomEventArgs e)
         {
             Console.WriteLine(e.Message);
+        }
+    }
+
+    class ClubPageSection : ISection<HtmlNode, IElement>
+    {
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+
+        public ClubPageSection()
+        {
+            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new Parsers.HtmlAgilityPack.Club.NameParser{ Converter = new StringConverter() }
+            };
+        }
+    }
+
+    class ClubPlayersPageSection : ISection<HtmlNode, IElement>
+    {
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+
+        public ClubPlayersPageSection()
+        {
+            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.HeightParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() }
+            };
         }
     }
 }

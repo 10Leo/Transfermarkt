@@ -50,6 +50,11 @@
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
     <Compile Include="ParseHandling\Contracts\Element.cs" />
+    <Compile Include="ParseHandling\Contracts\ISection.cs" />
+    <Compile Include="ParseHandling\ElementParser.cs" />
+    <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
+    <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
+    <Compile Include="ParseHandling\Elements\Continent\ContinentElements.cs" />
     <Compile Include="ParseHandling\Elements\Player\MarketValue.cs" />
     <Compile Include="ParseHandling\Elements\Player\Height.cs" />
     <Compile Include="Actors\Competition.cs" />
@@ -82,7 +87,7 @@
     <Compile Include="ParseHandling\Contracts\IConverter.cs" />
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
-    <Compile Include="ParseHandling\Elements\Player\PlayerName.cs" />
+    <Compile Include="ParseHandling\Elements\Player\Name.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />
     <Compile Include="ParseHandling\Pages\ContinentPage.cs" />
     <Compile Include="ParseHandling\Pages\ClubPage.cs" />
@@ -103,9 +108,9 @@
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ClubArrivalDateParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ContractExpirationDateParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\HeightParser.cs" />
-    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\PlayerImgUrlParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ImgUrlParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\MarketValueParser.cs" />
-    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\PlayerNameParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\NameParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\NationalityParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\PositionParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\PreferredFootParser.cs" />
@@ -123,9 +128,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ParseHandling\Elements\Competition\" />
-    <Folder Include="ParseHandling\Elements\Continent\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

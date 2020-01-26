@@ -2,9 +2,9 @@
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
-    class StringConverter : IConverter<string>
+    class StringConverter : IConverter<object>
     {
-        public string Convert(string stringToConvert)
+        public object Convert(string stringToConvert)
         {
             return stringToConvert;
         }
