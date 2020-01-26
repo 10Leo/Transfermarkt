@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Transfermarkt.Core.Elements.Player;
 using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.Actors
 {
@@ -13,11 +13,12 @@ namespace Transfermarkt.Core.Actors
 
         public Club()
         {
-            Children = new List<IDomain>();
+            Elements = new List<IElement>
+            {
+                new Name()
+            };
 
-            Elements = new List<IElement>();
-            Elements.Add(new Name());
-            Elements.Add(new Height());
+            Children = new List<IDomain>();
         }
 
         public IElement SetElement(IElement element)
@@ -48,13 +49,13 @@ namespace Transfermarkt.Core.Actors
             return string.Format("{0}\n{1}"
                 , string.Join(
                     ", "
-                    , Children.Select(
+                    , Elements.Select(
                         p => p.ToString()
                     )
                 )
                 , string.Join(
                     ", "
-                    , Elements.Select(
+                    , Children.Select(
                         p => p.ToString()
                     )
                 )

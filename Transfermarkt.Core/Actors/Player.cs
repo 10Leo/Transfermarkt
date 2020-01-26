@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Core.Elements.Player;
 using Transfermarkt.Core.ParseHandling.Contracts;
@@ -14,10 +12,14 @@ namespace Transfermarkt.Core.Actors
 
         public Player()
         {
-            Elements = new List<IElement>();
+            Elements = new List<IElement>
+            {
+                new Name(),
+                new Height(),
+                new MarketValue()
+            };
+
             Children = new List<IDomain>();
-            Elements.Add(new MarketValue());
-            Elements.Add(new Height());
         }
 
         public IElement SetElement(IElement element)
