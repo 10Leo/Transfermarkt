@@ -140,7 +140,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public ClubPageSection()
         {
             this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
-                new NameParser{ Converter = new StringConverter() }
+                new Parsers.HtmlAgilityPack.Club.NameParser{ Converter = new StringConverter() }
             };
         }
     }
@@ -152,7 +152,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public ClubPlayersPageSection()
         {
             this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
-                new NameParser{ Converter = new StringConverter() }
+                new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new IntConverter() },
             };
         }
     }
