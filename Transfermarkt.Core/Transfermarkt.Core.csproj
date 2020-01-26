@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
     <Compile Include="ParseHandling\Contracts\Element.cs" />
+    <Compile Include="ParseHandling\Contracts\ISection.cs" />
     <Compile Include="ParseHandling\ElementParser.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
     <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />

@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public IDomain Domain { get; set; }
 
-        public IList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+        public IReadOnlyList<ISection<HtmlNode, IElement>> Sections { get; set; }
 
         public ClubPage(string url)
         {
@@ -27,10 +27,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             IConverter<object> c = new IntConverter();
 
-            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
-                new NameParser{ Converter = new StringConverter() },
-                new HeightParser{ Converter = new IntConverter() },
-                new MarketValueParser { Converter = new DecimalConverter() }
+            this.Sections = new List<ISection<HtmlNode, IElement>>
+            {
+                new ClubPageSection(),
+                new ClubPlayersPageSection()
             };
 
             Connect();
@@ -41,7 +41,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public void Parse()
         {
             this.Domain = new Club();
-            //club.Season = Season.Parse(doc.DocumentNode);
+
+            foreach (var elementParser in Sections[0].Elements)
+            {
+                var parsedObj = elementParser.Parse(doc.DocumentNode);
+                var e = this.Domain.SetElement(parsedObj);
+            }
 
 
             HtmlNode table = GetTable();
@@ -68,7 +73,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     var header = headerCols[i];
                     var element = cols[i];
 
-                    foreach (var elementParser in Elements)
+                    foreach (var elementParser in Sections[1].Elements)
                     {
                         if (elementParser.CanParse(header))
                         {
@@ -125,6 +130,30 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         private void LogFailure(Object o, CustomEventArgs e)
         {
             Console.WriteLine(e.Message);
+        }
+    }
+
+    class ClubPageSection : ISection<HtmlNode, IElement>
+    {
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+
+        public ClubPageSection()
+        {
+            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new NameParser{ Converter = new StringConverter() }
+            };
+        }
+    }
+
+    class ClubPlayersPageSection : ISection<HtmlNode, IElement>
+    {
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+
+        public ClubPlayersPageSection()
+        {
+            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new NameParser{ Converter = new StringConverter() }
+            };
         }
     }
 }
