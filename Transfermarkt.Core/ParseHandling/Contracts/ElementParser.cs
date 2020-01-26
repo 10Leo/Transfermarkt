@@ -1,7 +1,5 @@
 ﻿using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
-
-namespace Transfermarkt.Core.ParseHandling
+namespace Transfermarkt.Core.ParseHandling.Contracts
 {
     abstract class ElementParser<TNode> : IElementParser<TNode, IElement, object>
     {
