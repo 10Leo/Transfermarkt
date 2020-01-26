@@ -4,11 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club;
-using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player;
-using Transfermarkt.Core.Parsers.HtmlAgilityPack.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
@@ -152,7 +148,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public ClubPlayersPageSection()
         {
             this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
-                new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.HeightParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() }
             };
         }
     }
