@@ -28,6 +28,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             IConverter<object> c = new IntConverter();
 
             this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new NameParser{ Converter = new StringConverter() },
                 new HeightParser{ Converter = new IntConverter() },
                 new MarketValueParser { Converter = new DecimalConverter() }
             };
