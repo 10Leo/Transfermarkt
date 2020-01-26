@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.Actors
             Children = new List<IDomain>();
 
             Elements = new List<IElement>();
-            Elements.Add(new PlayerName());
+            Elements.Add(new Name());
             Elements.Add(new Height());
         }
 
