@@ -1,47 +1,26 @@
 ﻿using HtmlAgilityPack;
 using System;
-using Transfermarkt.Core.Elements.Player;
-using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class MarketValueParser : IElementParser<HtmlNode, IElement, object>
+    class MarketValueParser : ElementParser<HtmlNode>
     {
-        public IConverter<object> Converter { get; set; }
+        public override string DisplayName { get; set; } = "Market Value";
 
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        private string displayName = "Market Value";
-        private bool parsedAlready = false;
-
-        public bool CanParse(HtmlNode node)
+        public MarketValueParser()
         {
-            //if (parsedAlready)
-            //{
-            //    return false;
-            //}
+            //TODO: change so that this value comes from a settings json file according to what's defined on config.
+            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "Valor de mercado";
 
-            var headerName = node.InnerText.Trim(' ', '\t', '\n');
-
-            var equals = (headerName == "Valor de mercado");
-
-            //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
-            return equals;
-        }
-
-        public IElement Parse(HtmlNode node)
-        {
-            decimal? n = null;
-
-            try
+            this.ParseFunc = node =>
             {
+                decimal? n = null;
                 var sp = node.InnerText?.Split(new[] { " " }, StringSplitOptions.None);
 
                 if (sp == null || sp.Length < 2)
                 {
-                    OnFailure?.Invoke(this, new CustomEventArgs("Error parsing Market Value"));
-                    return null;
+                    throw new Exception("Invalid number of splits");
                 }
 
                 var spl = sp[0].Split(new[] { "," }, StringSplitOptions.None);
@@ -55,17 +34,8 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 {
                     n = n * 1000;
                 }
-
-                OnSuccess?.Invoke(this, new CustomEventArgs("Success parsing Market Value"));
-                parsedAlready = true;
-            }
-            catch (Exception)
-            {
-                OnFailure?.Invoke(this, new CustomEventArgs("Error parsing Market Value"));
-                throw;
-            }
-            
-            return new MarketValue { Value = n };
+                return new MarketValue { Value = Converter.Convert(n.ToString()) };
+            };
         }
     }
 }

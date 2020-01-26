@@ -55,8 +55,6 @@
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
     <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
     <Compile Include="ParseHandling\Elements\Continent\ContinentElements.cs" />
-    <Compile Include="ParseHandling\Elements\Player\MarketValue.cs" />
-    <Compile Include="ParseHandling\Elements\Player\Height.cs" />
     <Compile Include="Actors\Competition.cs" />
     <Compile Include="Actors\Continent.cs" />
     <Compile Include="Actors\ContinentCode.cs" />
@@ -87,7 +85,7 @@
     <Compile Include="ParseHandling\Contracts\IConverter.cs" />
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
-    <Compile Include="ParseHandling\Elements\Player\Name.cs" />
+    <Compile Include="ParseHandling\Elements\Player\PlayerElements.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />
     <Compile Include="ParseHandling\Pages\ContinentPage.cs" />
     <Compile Include="ParseHandling\Pages\ClubPage.cs" />

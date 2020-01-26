@@ -1,55 +1,23 @@
 ﻿using HtmlAgilityPack;
 using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class BirthDateParser// : IElementParser<HtmlNode, DateTime?>
+    class BirthDateParser : ElementParser<HtmlNode>
     {
-        public IConverter<DateTime?> Converter { get; set; }
+        public override string DisplayName { get; set; } = "Birth Date";
 
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        private string displayName = "Birth Date";
-        private bool parsedAlready = false;
-
-        public bool CanParse(HtmlNode node)
+        public BirthDateParser()
         {
-            //if (parsedAlready)
-            //{
-            //    return false;
-            //}
-
-            var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
-
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            var equals = (headerName == "Nasc. / idade");
-            
-            //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
-            return equals;
-        }
+            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "Nasc. / idade";
 
-        public DateTime? Parse(HtmlNode node)
-        {
-            DateTime? parsedObj = null;
-
-            try
+            this.ParseFunc = node =>
             {
                 var parsedStr = node.InnerText?.Split(new[] { " (" }, StringSplitOptions.None)?[0];
-
-                parsedObj = Converter.Convert(parsedStr);
-
-                OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
-                parsedAlready = true;
-            }
-            catch (Exception)
-            {
-                OnFailure?.Invoke(this, new CustomEventArgs($"Error parsing {displayName}."));
-                throw;
-            }
-
-            return parsedObj;
+                return new BirthDate { Value = Converter.Convert(parsedStr) };
+            };
         }
     }
 }

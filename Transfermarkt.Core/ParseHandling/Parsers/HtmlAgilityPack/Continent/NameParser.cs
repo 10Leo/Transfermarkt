@@ -4,21 +4,19 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
-    class NameParser// : IElementParser<HtmlNode, string>
+    class NameParser : ElementParser<HtmlNode>
     {
-        public IConverter<string> Converter { get; set; }
+        public override string DisplayName { get; set; } = "Name";
 
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        public bool CanParse(HtmlNode node)
+        public NameParser()
         {
-            return true;
-        }
+            //TODO: change so that this value comes from a settings json file according to what's defined on config.
+            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "";
 
-        public string Parse(HtmlNode node)
-        {
-            return null;
+            this.ParseFunc = node =>
+            {
+                return null;
+            };
         }
     }
 }

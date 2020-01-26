@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
@@ -33,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             });
         }
 
-        public Nationality? Convert(string stringToConvert)
+        public object Convert(string stringToConvert)
         {
             Nationality? p = null;
             try

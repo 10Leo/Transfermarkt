@@ -15,7 +15,11 @@ namespace Transfermarkt.Core.Actors
         {
             Elements = new List<IElement>
             {
-                new Name()
+                new Country(),
+                new Name(),
+                new Season(),
+                new ImgUrl(),
+                new CountryImg()
             };
 
             Children = new List<IDomain>();

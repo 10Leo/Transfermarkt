@@ -1,56 +1,23 @@
 ﻿using HtmlAgilityPack;
-using System;
 using System.Text.RegularExpressions;
-using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ContractExpirationDateParser// : IElementParser<HtmlNode, DateTime?>
+    class ContractExpirationDateParser : ElementParser<HtmlNode>
     {
-        public IConverter<DateTime?> Converter { get; set; }
+        public override string DisplayName { get; set; } = "Contract Expiration Date";
 
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        private string displayName = "Contract Expiration Date";
-        private bool parsedAlready = false;
-
-        public bool CanParse(HtmlNode node)
+        public ContractExpirationDateParser()
         {
-            //if (parsedAlready)
-            //{
-            //    return false;
-            //}
-
-            var headerName = node?.InnerText?.Trim(' ', '\t', '\n');
-
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            var equals = (headerName == "Contrato até");
+            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "Contrato até";
 
-            //TODO: está em PT. Ir buscar a ficheiro de settings de acordo com a linguagem escolhida.
-            return equals;
-        }
-
-        public DateTime? Parse(HtmlNode node)
-        {
-            DateTime? parsedObj = null;
-
-            try
+            this.ParseFunc = node =>
             {
                 var parsedStr = Regex.Replace(node.InnerText, @"\.", "/");
-
-                parsedObj = Converter.Convert(parsedStr);
-
-                OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
-                parsedAlready = true;
-            }
-            catch (Exception)
-            {
-                OnFailure?.Invoke(this, new CustomEventArgs($"Error parsing {displayName}."));
-                throw;
-            }
-
-            return parsedObj;
+                return new ContractExpirationDate { Value = Converter.Convert(parsedStr) };
+            };
         }
     }
 }

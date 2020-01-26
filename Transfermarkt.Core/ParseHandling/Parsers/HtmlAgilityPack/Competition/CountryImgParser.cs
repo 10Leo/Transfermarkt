@@ -1,49 +1,25 @@
 ﻿using HtmlAgilityPack;
 using System;
 using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class CountryImgParser// : IElementParser<HtmlNode, string>
+    class CountryImgParser : ElementParser<HtmlNode>
     {
-        private string displayName = "Country Img";
-        private bool parsedAlready = false;
+        public override string DisplayName { get; set; } = "Country Img";
 
-        public IConverter<string> Converter { get; set; }
-
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
-
-        public bool CanParse(HtmlNode node)
+        public CountryImgParser()
         {
-            //if (parsedAlready)
-            //{
-            //    return false;
-            //}
-            return true;
-        }
+            //TODO: change so that this value comes from a settings json file according to what's defined on config.
+            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "";
 
-        public string Parse(HtmlNode node)
-        {
-            string parsedObj = null;
-
-            try
+            this.ParseFunc = node =>
             {
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
                 var parsedStr = countryNode?.GetAttributeValue<string>("src", null);
-
-                parsedObj = Converter.Convert(parsedStr);
-
-                OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {displayName}."));
-                parsedAlready = true;
-            }
-            catch (Exception)
-            {
-                OnFailure?.Invoke(this, new CustomEventArgs($"Error parsing {displayName}."));
-                throw;
-            }
-
-            return parsedObj;
+                return new CountryImg { Value = Converter.Convert(parsedStr) };
+            };
         }
     }
 }

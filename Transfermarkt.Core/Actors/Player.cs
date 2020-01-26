@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Transfermarkt.Core.Elements.Player;
 using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.Actors
 {
@@ -14,9 +14,24 @@ namespace Transfermarkt.Core.Actors
         {
             Elements = new List<IElement>
             {
-                new Name(),
-                new Height(),
-                new MarketValue()
+                new Transfermarkt.Core.ParseHandling.Elements.Player.Name(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.ShortName(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.BirthDate(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.Nationality(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.Height(),
+
+                new Transfermarkt.Core.ParseHandling.Elements.Player.PreferredFoot(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.Position(),
+
+                new Transfermarkt.Core.ParseHandling.Elements.Player.ShirtNumber(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.Captain(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.ClubArrivalDate(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.ContractExpirationDate(),
+
+                new Transfermarkt.Core.ParseHandling.Elements.Player.MarketValue(),
+
+                new Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl(),
+                new Transfermarkt.Core.ParseHandling.Elements.Player.ProfileUrl(),
             };
 
             Children = new List<IDomain>();
