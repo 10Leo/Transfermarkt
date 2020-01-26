@@ -21,8 +21,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         {
             this.url = url;
 
-            IConverter<object> c = new IntConverter();
-
             this.Sections = new List<ISection<HtmlNode, IElement>>
             {
                 new ClubPageSection(),
