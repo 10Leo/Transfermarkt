@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Transfermarkt.Core.ParseHandling.Contracts;
+
 namespace Transfermarkt.Core.Actors
 {
     class Player : Domain

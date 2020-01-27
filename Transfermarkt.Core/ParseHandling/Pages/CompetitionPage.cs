@@ -81,8 +81,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     this.Domain.Children.Add(page.Domain);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
+                    //TODO
                 }
             }
         }
