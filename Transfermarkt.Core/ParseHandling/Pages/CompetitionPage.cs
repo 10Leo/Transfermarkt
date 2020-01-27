@@ -23,69 +23,71 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
         public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
 
-        private readonly string url;
-        private HtmlDocument doc;
-
         public IDomain Domain { get; set; }
 
-        public IReadOnlyList<ISection<HtmlNode, IElement>> Sections { get; set; }
+        public IReadOnlyList<ISection<IDomain, HtmlNode, IElement>> Sections { get; set; }
 
-        public CompetitionPage(string url)
+        public CompetitionPage()
         {
-            this.url = url;
-
-            this.Sections = new List<ISection<HtmlNode, IElement>>
+            this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
                 new CompetitionPageSection(),
                 //new CompetitionClubsPageSection()
             };
-
-            Connect();
         }
 
         #region Contract
 
-        public void Parse()
+        public IDomain Parse(string url)
         {
+            var doc = Connect(url);
+
             this.Domain = new Competition();
 
-            if (Sections[0].Elements != null)
+            if (Sections[0].Parsers != null)
             {
-                foreach (var elementParser in Sections[0].Elements)
+                foreach (var elementParser in Sections[0].Parsers)
                 {
                     var parsedObj = elementParser.Parse(doc.DocumentNode);
                     var e = this.Domain.SetElement(parsedObj);
                 }
             }
 
-            HtmlNode table = doc.DocumentNode.SelectSingleNode("//div[@id='yw1']/table[@class='items']");
-            if (table == null)
+
+            if (Sections[0].Pages != null)
             {
-                return;
+                foreach (var childPage in Sections[0].Pages)
+                {
+
+                    HtmlNode table = doc.DocumentNode.SelectSingleNode("//div[@id='yw1']/table[@class='items']");
+                    if (table == null)
+                    {
+                        return null;
+                    }
+
+                    var rows = table.SelectNodes(".//tbody/tr[td]");
+                    // each row is a club
+                    foreach (var row in rows)
+                    {
+                        //each column is an attribute
+                        HtmlNodeCollection cols = row.SelectNodes("td");
+
+                        try
+                        {
+                            string clubUrl = GetClubUrl(cols[2]);
+                            string finalClubUrl = TransformUrl(clubUrl);
+                            
+                            this.Domain?.Children.Add(childPage.Parse($"{BaseURL}{finalClubUrl}"));
+                        }
+                        catch (Exception ex)
+                        {
+                            //TODO
+                        }
+                    }
+                }
             }
 
-            var rows = table.SelectNodes(".//tbody/tr[td]");
-            // each row is a club
-            foreach (var row in rows)
-            {
-                //each column is an attribute
-                HtmlNodeCollection cols = row.SelectNodes("td");
-
-                try
-                {
-                    string clubUrl = GetClubUrl(cols[2]);
-                    string finalClubUrl = TransformUrl(clubUrl);
-
-                    var page = new ClubPage($"{BaseURL}{finalClubUrl}");
-                    page.Parse();
-
-                    this.Domain.Children.Add(page.Domain);
-                }
-                catch (Exception)
-                {
-                    //TODO
-                }
-            }
+            return this.Domain;
         }
 
         public void Save()
@@ -94,8 +96,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         #endregion Contract
 
-        private void Connect()
+        private HtmlDocument Connect(string url)
         {
+            HtmlDocument doc = null;
             //TODO: transform this in a service (generic) that connects to the page
             try
             {
@@ -118,6 +121,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             {
                 //Debug.WriteLine(ex.StackTrace);
             }
+            return doc;
         }
 
         private string GetClubUrl(HtmlNode node)
@@ -172,18 +176,24 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionPageSection : ISection<HtmlNode, IElement>
+    class CompetitionPageSection : ISection<IDomain, HtmlNode, IElement>
     {
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, object>> Elements { get; set; }
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, object>> Parsers { get; set; }
+        public IReadOnlyList<IPage<IDomain, HtmlNode, IElement>> Pages { get; set; }
 
         public CompetitionPageSection()
         {
-            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
                 new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
                 new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Competition.CountryImgParser{ Converter = new StringConverter() },
+            };
+
+            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>
+            {
+                new ClubPage()
             };
         }
     }

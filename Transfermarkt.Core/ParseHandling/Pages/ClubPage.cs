@@ -10,43 +10,38 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ClubPage : IPage<IDomain, HtmlNode, IElement>
     {
-        private readonly string url;
-        private HtmlDocument doc;
-
         public IDomain Domain { get; set; }
 
-        public IReadOnlyList<ISection<HtmlNode, IElement>> Sections { get; set; }
+        public IReadOnlyList<ISection<IDomain, HtmlNode, IElement>> Sections { get; set; }
 
-        public ClubPage(string url)
+        public ClubPage()
         {
-            this.url = url;
-
-            this.Sections = new List<ISection<HtmlNode, IElement>>
+            this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
                 new ClubPageSection(),
                 new ClubPlayersPageSection()
             };
-
-            Connect();
         }
 
         #region Contract
 
-        public void Parse()
+        public IDomain Parse(string url)
         {
+            var doc = Connect(url);
+
             this.Domain = new Club();
 
-            foreach (var elementParser in Sections[0].Elements)
+            foreach (var elementParser in Sections[0].Parsers)
             {
                 var parsedObj = elementParser.Parse(doc.DocumentNode);
                 var e = this.Domain.SetElement(parsedObj);
             }
 
 
-            HtmlNode table = GetTable();
+            HtmlNode table = doc.DocumentNode.SelectSingleNode("//table[@class='items']");
             if (table == null)
             {
-                return;
+                return null;
             }
 
             var headers = table.SelectNodes(".//thead/tr[th]");
@@ -67,7 +62,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     var header = headerCols[i];
                     var element = cols[i];
 
-                    foreach (var elementParser in Sections[1].Elements)
+                    foreach (var elementParser in Sections[1].Parsers)
                     {
                         if (elementParser.CanParse(header))
                         {
@@ -77,6 +72,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     }
                 }
             }
+
+            return this.Domain;
         }
 
         public void Save()
@@ -85,8 +82,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         #endregion
 
-        private void Connect()
+        private HtmlDocument Connect(string url)
         {
+            HtmlDocument doc = null;
+
             //TODO: transform this in a service (generic) that connects to the page
             try
             {
@@ -109,11 +108,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             {
                 //Debug.WriteLine(ex.StackTrace);
             }
-        }
 
-        private HtmlNode GetTable()
-        {
-            return doc.DocumentNode.SelectSingleNode("//table[@class='items']");
+            return doc;
         }
 
         private void LogSuccess(Object o, CustomEventArgs e)
@@ -127,29 +123,33 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPageSection : ISection<HtmlNode, IElement>
+    class ClubPageSection : ISection<IDomain, HtmlNode, IElement>
     {
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Parsers { get; set; }
+        public IReadOnlyList<IPage<IDomain, HtmlNode, IElement>> Pages { get; set; }
 
         public ClubPageSection()
         {
-            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
                 new Parsers.HtmlAgilityPack.Club.NameParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Club.SeasonParser{ Converter = new IntConverter() },
                 new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
             };
+
+            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>();
         }
     }
 
-    class ClubPlayersPageSection : ISection<HtmlNode, IElement>
+    class ClubPlayersPageSection : ISection<IDomain, HtmlNode, IElement>
     {
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Elements { get; set; }
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Parsers { get; set; }
+        public IReadOnlyList<IPage<IDomain, HtmlNode, IElement>> Pages { get; set; }
 
         public ClubPlayersPageSection()
         {
-            this.Elements = new List<IElementParser<HtmlNode, IElement, object>>() {
+            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Player.ShortNameParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Player.BirthDateParser{ Converter = new DateConverter() },
@@ -166,6 +166,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
             };
+
+            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>();
         }
     }
 }

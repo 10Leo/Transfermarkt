@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface ISection<TNode, TElement> where TElement : IElement
+    public interface ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
     {
-        IReadOnlyList<IElementParser<TNode, TElement, object>> Elements { get; set; }
+        IReadOnlyList<IElementParser<TNode, TElement, object>> Parsers { get; set; }
+        IReadOnlyList<IPage<TDomain, TNode, TElement>> Pages { get; set; }
     }
 }

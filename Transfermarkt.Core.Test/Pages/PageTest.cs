@@ -34,8 +34,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestClubParsing()
         {
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
-            ClubPage page = new ClubPage(url);
-            page.Parse();
+            ClubPage page = new ClubPage();
+            page.Parse(url);
             page.Save();
             var s = page.Domain.ToString();
         }
@@ -44,8 +44,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
-            CompetitionPage page = new CompetitionPage(url);
-            page.Parse();
+            CompetitionPage page = new CompetitionPage();
+            page.Parse(url);
             page.Save();
         }
 
