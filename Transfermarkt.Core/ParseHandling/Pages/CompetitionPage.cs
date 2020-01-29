@@ -15,20 +15,51 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<HtmlNode>
     {
-        public string BaseURL { get; } = config.GetAppSetting("BaseURL");
-        public string SimpleClubUrlFormat { get; } = config.GetAppSetting("SimpleClubUrlFormat");
-        public string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
-        public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
-        public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
-
         public CompetitionPage(HAPConnection connection) : base(connection)
         {
             this.Domain = new Competition();
 
             this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
-                new CompetitionPageSection(),
-                //new CompetitionClubsPageSection()
+                new CompetitionPageSection(connection),
+                //new CompetitionClubsPageSection(connection)
+            };
+        }
+        
+        private void LogSuccess(Object o, CustomEventArgs e)
+        {
+            Console.WriteLine(".");
+        }
+
+        private void LogFailure(Object o, CustomEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    class CompetitionPageSection : Section<HtmlNode>
+    {
+        protected static IConfigurationManager config = new ConfigManager();
+
+        public string BaseURL { get; } = config.GetAppSetting("BaseURL");
+        public string SimpleClubUrlFormat { get; } = config.GetAppSetting("SimpleClubUrlFormat");
+        public string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
+        public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
+        public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
+
+        public CompetitionPageSection(HAPConnection connection) : base(connection)
+        {
+            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
+                new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Competition.CountryImgParser{ Converter = new StringConverter() },
+            };
+
+            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>
+            {
+                new ClubPage()
             };
 
             this.GetElementsNodes = () =>
@@ -36,7 +67,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
 
-                foreach (var elementParser in Sections[0].Parsers)
+                foreach (var elementParser in Parsers)
                 {
                     elements.Add((connection.GetNode(), connection.GetNode()));
                 }
@@ -64,7 +95,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     try
                     {
                         string clubUrl = GetClubUrl(cols[2]);
-                        string finalClubUrl = TransformUrl(clubUrl);
+                        string finalClubUrl = TransformUrl(clubUrl, BaseURL, SimpleClubUrlFormat, PlusClubUrlFormat, IdentifiersGetterPattern, IdentifiersSetterPattern);
 
                         urls.Add(finalClubUrl);
                     }
@@ -78,7 +109,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
         }
 
-
         private string GetClubUrl(HtmlNode node)
         {
             return node
@@ -87,14 +117,14 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 .Attributes["href"].Value;
         }
 
-        private string TransformUrl(string url)
+        private string TransformUrl(string url, string baseURL, string simpleClubUrlFormat, string plusClubUrlFormat, string identifiersGetterPattern, string identifiersSetterPattern)
         {
             IList<string> identifiers = new List<string>();
 
-            string simpleClubUrlPattern = SimpleClubUrlFormat;
-            string finalClubUrl = PlusClubUrlFormat;
+            string simpleClubUrlPattern = simpleClubUrlFormat;
+            string finalClubUrl = plusClubUrlFormat;
 
-            MatchCollection ids = Regex.Matches(SimpleClubUrlFormat, IdentifiersGetterPattern);
+            MatchCollection ids = Regex.Matches(simpleClubUrlFormat, identifiersGetterPattern);
             foreach (Match idMatch in ids)
             {
                 identifiers.Add(idMatch.Groups[1].Value);
@@ -102,7 +132,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             foreach (string identifier in identifiers)
             {
-                simpleClubUrlPattern = simpleClubUrlPattern.Replace("{" + identifier + "}", IdentifiersSetterPattern.Replace("{ID}", identifier));
+                simpleClubUrlPattern = simpleClubUrlPattern.Replace("{" + identifier + "}", identifiersSetterPattern.Replace("{ID}", identifier));
             }
 
             MatchCollection matches = Regex.Matches(url, simpleClubUrlPattern);
@@ -117,44 +147,32 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 finalClubUrl = finalClubUrl.Replace("{" + group.Name + "}", group.Value);
             }
 
-            return string.Format("{0}{1}", BaseURL, finalClubUrl);
+            return string.Format("{0}{1}", baseURL, finalClubUrl);
         }
 
-        private void LogSuccess(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(".");
-        }
-
-        private void LogFailure(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(e.Message);
-        }
     }
 
-    class CompetitionPageSection : ISection<IDomain, HtmlNode, IElement>
-    {
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, object>> Parsers { get; set; }
-        public IReadOnlyList<IPage<IDomain, HtmlNode, IElement>> Pages { get; set; }
-
-        public CompetitionPageSection()
-        {
-            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
-                new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
-                new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
-                new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Competition.CountryImgParser{ Converter = new StringConverter() },
-            };
-
-            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>
-            {
-                new ClubPage()
-            };
-        }
-    }
-
-    //class CompetitionClubsPageSection : ISection<HtmlNode, IElement>
+    //class CompetitionClubsPageSection : Section<HtmlNode>
     //{
-    //    public IReadOnlyList<IElementParser<HtmlNode, IElement, object>> Elements { get; set; }
+    //    public CompetitionClubsPageSection(HAPConnection connection) : base(connection)
+    //    {
+    //        this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
+    //            new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
+    //            new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() }
+    //        };
+
+    //        this.GetElementsNodes = () =>
+    //        {
+    //            IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
+    //            connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+
+    //            foreach (var elementParser in Parsers)
+    //            {
+    //                elements.Add((connection.GetNode(), connection.GetNode()));
+    //            }
+
+    //            return elements;
+    //        };
+    //    }
     //}
 }
