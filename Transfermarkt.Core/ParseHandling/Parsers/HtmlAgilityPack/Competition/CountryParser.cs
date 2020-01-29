@@ -13,7 +13,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
         public CountryParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "";
+            this.CanParsePredicate = node => true;
 
             this.ParseFunc = node =>
             {
