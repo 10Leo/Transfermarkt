@@ -37,8 +37,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
             ClubPage page = new ClubPage();
             page.Parse(url);
-            page.Save();
-            var s = page.Domain.ToString();
         }
 
         [TestMethod, TestCategory("Page Parsing")]
@@ -47,7 +45,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
             CompetitionPage page = new CompetitionPage(new HAPConnection());
             page.Parse(url);
-            page.Save();
         }
 
         [TestMethod, TestCategory("Page Parsing")]
@@ -66,7 +63,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             {
                 //ContinentPage page = new ContinentPage(url);
                 //page.Parse();
-                //page.Save();
             }
         }
     }
