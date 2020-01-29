@@ -89,6 +89,7 @@
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
     <Compile Include="ParseHandling\Elements\Player\PlayerElements.cs" />
+    <Compile Include="ParseHandling\HAPConnection.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />
     <Compile Include="ParseHandling\Pages\ContinentPage.cs" />
     <Compile Include="ParseHandling\Pages\ClubPage.cs" />
