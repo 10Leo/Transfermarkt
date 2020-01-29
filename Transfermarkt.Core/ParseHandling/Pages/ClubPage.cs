@@ -11,11 +11,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     public class ClubPage : IPage<IDomain, HtmlNode, IElement>
     {
         public IDomain Domain { get; set; }
-
+        public IConnection<HtmlNode> Connection { get; set; }
         public IReadOnlyList<ISection<IDomain, HtmlNode, IElement>> Sections { get; set; }
 
         public ClubPage()
         {
+            this.Connection = new HAPConnection();
+
             this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
                 new ClubPageSection(),
@@ -27,18 +29,22 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public IDomain Parse(string url)
         {
-            var doc = Connect(url);
+            var node = this.Connection.Connect(url);
+            ((HAPConnection)this.Connection).GetNodeFunc = () => node;
+
 
             this.Domain = new Club();
 
             foreach (var elementParser in Sections[0].Parsers)
             {
-                var parsedObj = elementParser.Parse(doc.DocumentNode);
+                var parsedObj = elementParser.Parse(this.Connection.GetNode());
                 var e = this.Domain.SetElement(parsedObj);
             }
 
 
-            HtmlNode table = doc.DocumentNode.SelectSingleNode("//table[@class='items']");
+            ((HAPConnection)this.Connection).GetNodeFunc = () => node;
+
+            HtmlNode table = this.Connection.GetNode().SelectSingleNode("//table[@class='items']");
             if (table == null)
             {
                 return null;
@@ -81,36 +87,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
 
         #endregion
-
-        private HtmlDocument Connect(string url)
-        {
-            HtmlDocument doc = null;
-
-            //TODO: transform this in a service (generic) that connects to the page
-            try
-            {
-                string htmlCode = "";
-                using (WebClient client = new WebClient())
-                {
-                    client.Encoding = System.Text.Encoding.GetEncoding("UTF-8");
-                    client.Headers.Add(HttpRequestHeader.UserAgent, "AvoidError");
-                    htmlCode = client.DownloadString(url);
-                }
-                doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(htmlCode);
-            }
-            catch (System.Net.WebException ex)
-            {
-                //Debug.WriteLine(ex.StackTrace);
-                System.Environment.Exit(-1);
-            }
-            catch (Exception ex)
-            {
-                //Debug.WriteLine(ex.StackTrace);
-            }
-
-            return doc;
-        }
 
         private void LogSuccess(Object o, CustomEventArgs e)
         {

@@ -6,6 +6,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     {
         TDomain Domain { get; set; }
 
+        IConnection<TNode> Connection { get; set; }
+
         IReadOnlyList<ISection<TDomain, TNode, TElement>> Sections { get; set; }
 
         TDomain Parse(string url);

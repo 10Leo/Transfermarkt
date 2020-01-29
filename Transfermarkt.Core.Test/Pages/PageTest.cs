@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Pages;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
@@ -44,7 +45,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
-            CompetitionPage page = new CompetitionPage();
+            CompetitionPage page = new CompetitionPage(new HAPConnection());
             page.Parse(url);
             page.Save();
         }
