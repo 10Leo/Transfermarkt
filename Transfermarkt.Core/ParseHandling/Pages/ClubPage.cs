@@ -102,7 +102,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     class ClubPageSection : ISection<IDomain, HtmlNode, IElement>
     {
         public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Parsers { get; set; }
-        public IReadOnlyList<IPage<IDomain, HtmlNode, IElement>> Pages { get; set; }
+        public IPage<IDomain, HtmlNode, IElement> Page { get; set; }
 
         public ClubPageSection()
         {
@@ -113,15 +113,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
             };
-
-            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>();
         }
     }
 
     class ClubPlayersPageSection : ISection<IDomain, HtmlNode, IElement>
     {
         public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Parsers { get; set; }
-        public IReadOnlyList<IPage<IDomain, HtmlNode, IElement>> Pages { get; set; }
+        public IPage<IDomain, HtmlNode, IElement> Page { get; set; }
 
         public ClubPlayersPageSection()
         {
@@ -142,8 +140,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
             };
-
-            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>();
         }
     }
 }

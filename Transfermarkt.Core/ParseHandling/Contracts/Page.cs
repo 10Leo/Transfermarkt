@@ -30,31 +30,35 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             {
                 foreach (var section in Sections)
                 {
-                    if (section.Parsers != null)
+                    //if (section.Parsers != null && section.Parsers.Count > 0)
                     {
                         IList<(TNode key, TNode value)> elementsNodes = ((Section<TNode>)section).GetElementsNodes?.Invoke();
-                        foreach (var (key, value) in elementsNodes)
+
+                        if (elementsNodes != null && elementsNodes.Count > 0)
                         {
-                            foreach (var parser in section.Parsers)
+                            foreach (var (key, value) in elementsNodes)
                             {
-                                if (parser.CanParse(key))
+                                foreach (var parser in section.Parsers)
                                 {
-                                    var parsedObj = parser.Parse(value);
-                                    var e = this.Domain.SetElement(parsedObj);
+                                    if (parser.CanParse(key))
+                                    {
+                                        var parsedObj = parser.Parse(value);
+                                        var e = this.Domain.SetElement(parsedObj);
+                                    }
                                 }
                             }
                         }
                     }
 
-                    if (section.Pages != null)
+                    //if (section.Page != null)
                     {
                         IList<string> pagesNodes = ((Section<TNode>)section).GetUrls?.Invoke();
 
-                        foreach (var page in section.Pages)
+                        if (pagesNodes != null && pagesNodes.Count > 0)
                         {
                             foreach (var pageUrl in pagesNodes)
                             {
-                                this.Domain?.Children.Add(page.Parse(pageUrl));
+                                this.Domain?.Children.Add(section.Page.Parse(pageUrl));
                             }
                         }
                     }

@@ -22,7 +22,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
                 new CompetitionPageSection(connection),
-                //new CompetitionClubsPageSection(connection)
+                new CompetitionClubsPageSection(connection)
             };
         }
         
@@ -39,14 +39,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionPageSection : Section<HtmlNode>
     {
-        protected static IConfigurationManager config = new ConfigManager();
-
-        public string BaseURL { get; } = config.GetAppSetting("BaseURL");
-        public string SimpleClubUrlFormat { get; } = config.GetAppSetting("SimpleClubUrlFormat");
-        public string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
-        public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
-        public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
-
         public CompetitionPageSection(HAPConnection connection) : base(connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
@@ -55,11 +47,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
                 new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Competition.CountryImgParser{ Converter = new StringConverter() },
-            };
-
-            this.Pages = new List<IPage<IDomain, HtmlNode, IElement>>
-            {
-                new ClubPage()
             };
 
             this.GetElementsNodes = () =>
@@ -74,6 +61,22 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                 return elements;
             };
+        }
+    }
+
+    class CompetitionClubsPageSection : Section<HtmlNode>
+    {
+        protected static IConfigurationManager config = new ConfigManager();
+
+        public string BaseURL { get; } = config.GetAppSetting("BaseURL");
+        public string SimpleClubUrlFormat { get; } = config.GetAppSetting("SimpleClubUrlFormat");
+        public string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
+        public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
+        public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
+
+        public CompetitionClubsPageSection(HAPConnection connection) : base(connection)
+        {
+            this.Page = new ClubPage();
 
             this.GetUrls = () =>
             {
@@ -149,30 +152,5 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             return string.Format("{0}{1}", baseURL, finalClubUrl);
         }
-
     }
-
-    //class CompetitionClubsPageSection : Section<HtmlNode>
-    //{
-    //    public CompetitionClubsPageSection(HAPConnection connection) : base(connection)
-    //    {
-    //        this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
-    //            new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
-    //            new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() }
-    //        };
-
-    //        this.GetElementsNodes = () =>
-    //        {
-    //            IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
-    //            connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
-
-    //            foreach (var elementParser in Parsers)
-    //            {
-    //                elements.Add((connection.GetNode(), connection.GetNode()));
-    //            }
-
-    //            return elements;
-    //        };
-    //    }
-    //}
 }
