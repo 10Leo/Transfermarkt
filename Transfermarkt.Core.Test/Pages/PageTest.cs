@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Pages;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
@@ -34,19 +35,16 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestClubParsing()
         {
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
-            ClubPage page = new ClubPage(url);
-            page.Parse();
-            page.Save();
-            var s = page.Domain.ToString();
+            ClubPage page = new ClubPage();
+            page.Parse(url);
         }
 
         [TestMethod, TestCategory("Page Parsing")]
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
-            CompetitionPage page = new CompetitionPage(url);
-            page.Parse();
-            page.Save();
+            CompetitionPage page = new CompetitionPage(new HAPConnection());
+            page.Parse(url);
         }
 
         [TestMethod, TestCategory("Page Parsing")]
@@ -65,7 +63,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             {
                 //ContinentPage page = new ContinentPage(url);
                 //page.Parse();
-                //page.Save();
             }
         }
     }

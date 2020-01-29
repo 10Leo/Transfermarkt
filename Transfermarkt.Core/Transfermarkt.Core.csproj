@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.8.11.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.8.11\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.18.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.18\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -49,10 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
+    <Compile Include="ParseHandling\Contracts\Connection.cs" />
     <Compile Include="ParseHandling\Contracts\Element.cs" />
+    <Compile Include="ParseHandling\Contracts\IConnection.cs" />
     <Compile Include="ParseHandling\Contracts\ISection.cs" />
     <Compile Include="ParseHandling\Contracts\Domain.cs" />
     <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
+    <Compile Include="ParseHandling\Contracts\Page.cs" />
+    <Compile Include="ParseHandling\Contracts\Section.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
     <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
     <Compile Include="ParseHandling\Elements\Continent\ContinentElements.cs" />
@@ -87,6 +91,7 @@
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
     <Compile Include="ParseHandling\Elements\Player\PlayerElements.cs" />
+    <Compile Include="ParseHandling\HAPConnection.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />
     <Compile Include="ParseHandling\Pages\ContinentPage.cs" />
     <Compile Include="ParseHandling\Pages\ClubPage.cs" />
