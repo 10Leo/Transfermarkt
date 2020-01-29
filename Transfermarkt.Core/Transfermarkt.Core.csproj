@@ -49,7 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
+    <Compile Include="ParseHandling\Contracts\Connection.cs" />
     <Compile Include="ParseHandling\Contracts\Element.cs" />
+    <Compile Include="ParseHandling\Contracts\IConnection.cs" />
     <Compile Include="ParseHandling\Contracts\ISection.cs" />
     <Compile Include="ParseHandling\Contracts\Domain.cs" />
     <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
