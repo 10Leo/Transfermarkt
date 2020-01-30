@@ -60,6 +60,9 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                             {
                                 var r = section.Page.Parse(pageUrl);
                                 this.Domain?.Children.Add(r);
+
+                                Type t = section.Page.Domain.GetType();
+                                section.Page.Domain = (IDomain)Activator.CreateInstance(t);
                             }
                         }
                     }
