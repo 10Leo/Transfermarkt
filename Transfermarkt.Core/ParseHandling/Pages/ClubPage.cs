@@ -8,85 +8,18 @@ using Transfermarkt.Core.ParseHandling.Converters;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
-    public class ClubPage : IPage<IDomain, HtmlNode, IElement>
+    public class ClubPage : Page<HtmlNode>
     {
-        public IDomain Domain { get; set; }
-        public IConnection<HtmlNode> Connection { get; set; }
-        public IReadOnlyList<ISection<IDomain, HtmlNode, IElement>> Sections { get; set; }
-
-        public ClubPage()
+        public ClubPage(HAPConnection connection) : base(connection)
         {
-            this.Connection = new HAPConnection();
+            this.Domain = new Club();
 
             this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
-                new ClubPageSection(),
-                new ClubPlayersPageSection()
+                new ClubPageSection(connection),
+                new ClubPlayersPageSection(connection)
             };
         }
-
-        #region Contract
-
-        public IDomain Parse(string url)
-        {
-            var node = this.Connection.Connect(url);
-            ((HAPConnection)this.Connection).GetNodeFunc = () => node;
-
-
-            this.Domain = new Club();
-
-            foreach (var elementParser in Sections[0].Parsers)
-            {
-                var parsedObj = elementParser.Parse(this.Connection.GetNode());
-                var e = this.Domain.SetElement(parsedObj);
-            }
-
-
-            ((HAPConnection)this.Connection).GetNodeFunc = () => node;
-
-            HtmlNode table = this.Connection.GetNode().SelectSingleNode("//table[@class='items']");
-            if (table == null)
-            {
-                return null;
-            }
-
-            var headers = table.SelectNodes(".//thead/tr[th]");
-            var rows = table.SelectNodes(".//tbody/tr[td]");
-            HtmlNodeCollection headerCols = headers[0].SelectNodes("th");
-
-            //each row is a player
-            foreach (var row in rows)
-            {
-                Player player = new Player();
-                this.Domain.Children.Add(player);
-
-                //each column is an attribute
-                HtmlNodeCollection cols = row.SelectNodes("td");
-
-                for (int i = 0; i < cols.Count; i++)
-                {
-                    var header = headerCols[i];
-                    var element = cols[i];
-
-                    foreach (var elementParser in Sections[1].Parsers)
-                    {
-                        if (elementParser.CanParse(header))
-                        {
-                            var parsedObj = elementParser.Parse(element);
-                            var e = player.SetElement(parsedObj);
-                        }
-                    }
-                }
-            }
-
-            return this.Domain;
-        }
-
-        public void Save()
-        {
-        }
-
-        #endregion
 
         private void LogSuccess(Object o, CustomEventArgs e)
         {
@@ -99,12 +32,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPageSection : ISection<IDomain, HtmlNode, IElement>
+    class ClubPageSection : Section<HtmlNode>
     {
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Parsers { get; set; }
-        public IPage<IDomain, HtmlNode, IElement> Page { get; set; }
-
-        public ClubPageSection()
+        public ClubPageSection(HAPConnection connection) : base(connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
@@ -113,15 +43,25 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
             };
+
+            this.GetElementsNodes = () =>
+            {
+                IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
+                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+
+                foreach (var elementParser in Parsers)
+                {
+                    elements.Add((connection.GetNode(), connection.GetNode()));
+                }
+
+                return elements;
+            };
         }
     }
 
-    class ClubPlayersPageSection : ISection<IDomain, HtmlNode, IElement>
+    class ClubPlayersPageSection : Section<HtmlNode>
     {
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, dynamic>> Parsers { get; set; }
-        public IPage<IDomain, HtmlNode, IElement> Page { get; set; }
-
-        public ClubPlayersPageSection()
+        public ClubPlayersPageSection(HAPConnection connection) : base(connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
@@ -139,6 +79,45 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() },
                 new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
+            };
+
+            this.GetChildsNodes = () =>
+            {
+                IList<(IDomain child, List<(HtmlNode key, HtmlNode value)>)> playersNodes = new List<(IDomain, List<(HtmlNode, HtmlNode)>)>();
+                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+
+
+                HtmlNode table = this.Connection.GetNode().SelectSingleNode("//table[@class='items']");
+                if (table == null)
+                {
+                    return playersNodes;
+                }
+
+                var headers = table.SelectNodes(".//thead/tr[th]");
+                var rows = table.SelectNodes(".//tbody/tr[td]");
+                HtmlNodeCollection headerCols = headers[0].SelectNodes("th");
+
+                //each row is a player
+                foreach (var row in rows)
+                {
+
+                    List<(HtmlNode key, HtmlNode value)> attribs = new List<(HtmlNode key, HtmlNode value)>();
+
+                    playersNodes.Add((new Player(), attribs));
+
+                    //each column is an attribute
+                    HtmlNodeCollection cols = row.SelectNodes("td");
+
+                    for (int i = 0; i < cols.Count; i++)
+                    {
+                        var header = headerCols[i];
+                        var element = cols[i];
+
+                        attribs.Add((header, element));
+                    }
+                }
+
+                return playersNodes;
             };
         }
     }

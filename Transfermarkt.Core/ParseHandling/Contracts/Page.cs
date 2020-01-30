@@ -30,7 +30,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             {
                 foreach (var section in Sections)
                 {
-                    //if (section.Parsers != null && section.Parsers.Count > 0)
+                    if (section.Parsers != null && section.Parsers.Count > 0)
                     {
                         IList<(TNode key, TNode value)> elementsNodes = ((Section<TNode>)section).GetElementsNodes?.Invoke();
 
@@ -50,7 +50,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                         }
                     }
 
-                    //if (section.Page != null)
+                    if (section.Page != null)
                     {
                         IList<string> pagesNodes = ((Section<TNode>)section).GetUrls?.Invoke();
 
@@ -58,7 +58,33 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                         {
                             foreach (var pageUrl in pagesNodes)
                             {
-                                this.Domain?.Children.Add(section.Page.Parse(pageUrl));
+                                var r = section.Page.Parse(pageUrl);
+                                this.Domain?.Children.Add(r);
+                            }
+                        }
+                    }
+
+                    {
+                        IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = ((Section<TNode>)section).GetChildsNodes?.Invoke();
+
+                        if (childDomainNodes != null && childDomainNodes.Count > 0)
+                        {
+                            foreach ((IDomain, List<(TNode key, TNode value)>) childDomainNode in childDomainNodes)
+                            {
+                                IDomain t = childDomainNode.Item1;
+                                this.Domain.Children.Add(t);
+
+                                foreach ((TNode key, TNode value) in childDomainNode.Item2)
+                                {
+                                    foreach (var parser in section.Parsers)
+                                    {
+                                        if (parser.CanParse(key))
+                                        {
+                                            var parsedObj = parser.Parse(value);
+                                            var e = t.SetElement(parsedObj);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

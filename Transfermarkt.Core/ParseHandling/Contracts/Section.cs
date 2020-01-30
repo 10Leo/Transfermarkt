@@ -10,6 +10,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     {
         public Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
         public Func<IList<string>> GetUrls { get; set; }
+        public Func<IList<(IDomain child, List<(TNode key, TNode value)>)>> GetChildsNodes { get; set; }
 
         public IConnection<TNode> Connection { get; set; }
 

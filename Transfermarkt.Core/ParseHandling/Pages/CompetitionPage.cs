@@ -76,7 +76,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public CompetitionClubsPageSection(HAPConnection connection) : base(connection)
         {
-            this.Page = new ClubPage();
+            this.Page = new ClubPage(connection);
 
             this.GetUrls = () =>
             {
