@@ -31,15 +31,9 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         IEnumerable<IElement> ParseElements();
 
         /// <summary>
-        /// For <see cref="IDomain"/>s on same page.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IDomain> ParseDomainsOnPage();
-
-        /// <summary>
         /// For <see cref="IDomain"/>s on different <see cref="IPage{TDomain, TNode, TElement}"/> accessible from the current one.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<IDomain> ParseDomainsOnChildPages();
+        IEnumerable<IDomain> ParseChilds();
     }
 }

@@ -36,16 +36,10 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                         var e = this.Domain.SetElement(element);
                     }
 
-                    var pagesNodes = section.ParseDomainsOnChildPages();
-                    foreach (var pageNode in pagesNodes)
-                    {
-                        this.Domain?.Children.Add(pageNode);
-                    }
-
-                    var childDomainNodes = section.ParseDomainsOnPage();
+                    var childDomainNodes = section.ParseChilds();
                     foreach (var child in childDomainNodes)
                     {
-                        this.Domain.Children.Add(child);
+                        this.Domain?.Children.Add(child);
                     }
                 }
             }

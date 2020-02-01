@@ -50,7 +50,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             return parsedElements;
         }
 
-        public IEnumerable<IDomain> ParseDomainsOnChildPages()
+        public IEnumerable<IDomain> ParseChilds()
         {
             IList<IDomain> parsedDomains = new List<IDomain>();
 
@@ -71,13 +71,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 }
             }
 
-            return parsedDomains;
-        }
-
-        public IEnumerable<IDomain> ParseDomainsOnPage()
-        {
-            IList<IDomain> parsedChilds = new List<IDomain>();
-
             {
                 IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = GetChildsNodes?.Invoke();
 
@@ -86,7 +79,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                     foreach ((IDomain, List<(TNode key, TNode value)>) childDomainNode in childDomainNodes)
                     {
                         IDomain t = childDomainNode.Item1;
-                        parsedChilds.Add(t);
+                        parsedDomains.Add(t);
 
                         foreach ((TNode key, TNode value) in childDomainNode.Item2)
                         {
@@ -103,7 +96,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 }
             }
 
-            return parsedChilds;
+            return parsedDomains;
         }
     }
 }
