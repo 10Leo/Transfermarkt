@@ -30,66 +30,22 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             {
                 foreach (var section in Sections)
                 {
-                    if (section.Parsers != null && section.Parsers.Count > 0)
+                    var elementsNodes = section.ParseElements();
+                    foreach (var element in elementsNodes)
                     {
-                        IList<(TNode key, TNode value)> elementsNodes = section.ElementsNodes();
-
-                        if (elementsNodes != null && elementsNodes.Count > 0)
-                        {
-                            foreach (var (key, value) in elementsNodes)
-                            {
-                                foreach (var parser in section.Parsers)
-                                {
-                                    if (parser.CanParse(key))
-                                    {
-                                        var parsedObj = parser.Parse(value);
-                                        var e = this.Domain.SetElement(parsedObj);
-                                    }
-                                }
-                            }
-                        }
+                        var e = this.Domain.SetElement(element);
                     }
 
-                    if (section.Page != null)
+                    var pagesNodes = section.ParseUrls();
+                    foreach (var pageNode in pagesNodes)
                     {
-                        IList<string> pagesNodes = section.Urls();
-
-                        if (pagesNodes != null && pagesNodes.Count > 0)
-                        {
-                            foreach (var pageUrl in pagesNodes)
-                            {
-                                var r = section.Page.Parse(pageUrl);
-                                this.Domain?.Children.Add(r);
-
-                                Type t = section.Page.Domain.GetType();
-                                section.Page.Domain = (IDomain)Activator.CreateInstance(t);
-                            }
-                        }
+                        this.Domain?.Children.Add(pageNode);
                     }
 
+                    var childDomainNodes = section.ParseChilds();
+                    foreach (var child in childDomainNodes)
                     {
-                        IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = section.ChildsNodes();
-
-                        if (childDomainNodes != null && childDomainNodes.Count > 0)
-                        {
-                            foreach ((IDomain, List<(TNode key, TNode value)>) childDomainNode in childDomainNodes)
-                            {
-                                IDomain t = childDomainNode.Item1;
-                                this.Domain.Children.Add(t);
-
-                                foreach ((TNode key, TNode value) in childDomainNode.Item2)
-                                {
-                                    foreach (var parser in section.Parsers)
-                                    {
-                                        if (parser.CanParse(key))
-                                        {
-                                            var parsedObj = parser.Parse(value);
-                                            var e = t.SetElement(parsedObj);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        this.Domain.Children.Add(child);
                     }
                 }
             }

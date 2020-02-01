@@ -14,5 +14,23 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         IList<(TNode key, TNode value)> ElementsNodes();
         IList<string> Urls();
         IList<(IDomain child, List<(TNode key, TNode value)>)> ChildsNodes();
+
+        /// <summary>
+        /// For <see cref="IDomain"/>s on same <see cref="IPage{TDomain, TNode, TElement}"/>.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IElement> ParseElements();
+
+        /// <summary>
+        /// For <see cref="IDomain"/>s on different <see cref="IPage{T}"/> accessible from the current one.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IDomain> ParseUrls();
+
+        /// <summary>
+        /// For <see cref="IDomain"/>s on same page.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerable<IDomain> ParseChilds();
     }
 }

@@ -17,7 +17,14 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         public IReadOnlyList<IElementParser<TNode, IElement, object>> Parsers { get; set; }
         public IPage<IDomain, TNode, IElement> Page { get; set; }
 
-        public IList<(TNode key, TNode value)> ElementsNodes() {
+        public Section(IConnection<TNode> connection)
+        {
+            this.Connection = connection;
+            this.Parsers = new List<IElementParser<TNode, IElement, object>>();
+        }
+
+        public IList<(TNode key, TNode value)> ElementsNodes()
+        {
             return GetElementsNodes?.Invoke();
         }
 
@@ -31,10 +38,87 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             return GetChildsNodes?.Invoke();
         }
 
-        public Section(IConnection<TNode> connection)
+        public IEnumerable<IElement> ParseElements()
         {
-            this.Connection = connection;
-            this.Parsers = new List<IElementParser<TNode, IElement, object>>();
+            IList<IElement> parsedElements = new List<IElement>();
+
+            if (Parsers != null && Parsers.Count > 0)
+            {
+                IList<(TNode key, TNode value)> elementsNodes = ElementsNodes();
+
+                if (elementsNodes != null && elementsNodes.Count > 0)
+                {
+                    foreach (var (key, value) in elementsNodes)
+                    {
+                        foreach (var parser in Parsers)
+                        {
+                            if (parser.CanParse(key))
+                            {
+                                var parsedObj = parser.Parse(value);
+                                parsedElements.Add(parsedObj);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return parsedElements;
+        }
+
+        public IEnumerable<IDomain> ParseUrls()
+        {
+            IList<IDomain> parsedUrls = new List<IDomain>();
+
+            if (Page != null)
+            {
+                IList<string> pagesNodes = Urls();
+
+                if (pagesNodes != null && pagesNodes.Count > 0)
+                {
+                    foreach (var pageUrl in pagesNodes)
+                    {
+                        var r = Page.Parse(pageUrl);
+                        parsedUrls.Add(r);
+
+                        Type t = Page.Domain.GetType();
+                        Page.Domain = (IDomain)Activator.CreateInstance(t);
+                    }
+                }
+            }
+
+            return parsedUrls;
+        }
+
+        public IEnumerable<IDomain> ParseChilds()
+        {
+            IList<IDomain> parsedChilds = new List<IDomain>();
+
+            {
+                IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = ChildsNodes();
+
+                if (childDomainNodes != null && childDomainNodes.Count > 0)
+                {
+                    foreach ((IDomain, List<(TNode key, TNode value)>) childDomainNode in childDomainNodes)
+                    {
+                        IDomain t = childDomainNode.Item1;
+                        parsedChilds.Add(t);
+
+                        foreach ((TNode key, TNode value) in childDomainNode.Item2)
+                        {
+                            foreach (var parser in Parsers)
+                            {
+                                if (parser.CanParse(key))
+                                {
+                                    var parsedObj = parser.Parse(value);
+                                    var e = t.SetElement(parsedObj);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return parsedChilds;
         }
     }
 }
