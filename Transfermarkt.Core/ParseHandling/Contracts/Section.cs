@@ -17,6 +17,20 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         public IReadOnlyList<IElementParser<TNode, IElement, object>> Parsers { get; set; }
         public IPage<IDomain, TNode, IElement> Page { get; set; }
 
+        public IList<(TNode key, TNode value)> ElementsNodes() {
+            return GetElementsNodes?.Invoke();
+        }
+
+        public IList<string> Urls()
+        {
+            return GetUrls?.Invoke();
+        }
+
+        public IList<(IDomain child, List<(TNode key, TNode value)>)> ChildsNodes()
+        {
+            return GetChildsNodes?.Invoke();
+        }
+
         public Section(IConnection<TNode> connection)
         {
             this.Connection = connection;

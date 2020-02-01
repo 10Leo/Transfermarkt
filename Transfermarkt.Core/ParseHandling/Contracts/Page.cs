@@ -32,7 +32,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 {
                     if (section.Parsers != null && section.Parsers.Count > 0)
                     {
-                        IList<(TNode key, TNode value)> elementsNodes = ((Section<TNode>)section).GetElementsNodes?.Invoke();
+                        IList<(TNode key, TNode value)> elementsNodes = section.ElementsNodes();
 
                         if (elementsNodes != null && elementsNodes.Count > 0)
                         {
@@ -52,7 +52,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
                     if (section.Page != null)
                     {
-                        IList<string> pagesNodes = ((Section<TNode>)section).GetUrls?.Invoke();
+                        IList<string> pagesNodes = section.Urls();
 
                         if (pagesNodes != null && pagesNodes.Count > 0)
                         {
@@ -68,7 +68,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                     }
 
                     {
-                        IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = ((Section<TNode>)section).GetChildsNodes?.Invoke();
+                        IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = section.ChildsNodes();
 
                         if (childDomainNodes != null && childDomainNodes.Count > 0)
                         {
