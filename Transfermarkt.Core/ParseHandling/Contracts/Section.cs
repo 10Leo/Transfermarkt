@@ -8,34 +8,19 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 {
     public abstract class Section<TNode> : ISection<IDomain, TNode, IElement>
     {
-        public Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
-        public Func<IList<string>> GetUrls { get; set; }
-        public Func<IList<(IDomain child, List<(TNode key, TNode value)>)>> GetChildsNodes { get; set; }
-
         public IConnection<TNode> Connection { get; set; }
 
         public IReadOnlyList<IElementParser<TNode, IElement, object>> Parsers { get; set; }
         public IPage<IDomain, TNode, IElement> Page { get; set; }
 
+        public Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
+        public Func<IList<string>> GetUrls { get; set; }
+        public Func<IList<(IDomain child, List<(TNode key, TNode value)>)>> GetChildsNodes { get; set; }
+
         public Section(IConnection<TNode> connection)
         {
             this.Connection = connection;
             this.Parsers = new List<IElementParser<TNode, IElement, object>>();
-        }
-
-        public IList<(TNode key, TNode value)> ElementsNodes()
-        {
-            return GetElementsNodes?.Invoke();
-        }
-
-        public IList<string> Urls()
-        {
-            return GetUrls?.Invoke();
-        }
-
-        public IList<(IDomain child, List<(TNode key, TNode value)>)> ChildsNodes()
-        {
-            return GetChildsNodes?.Invoke();
         }
 
         public IEnumerable<IElement> ParseElements()
@@ -44,7 +29,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
             if (Parsers != null && Parsers.Count > 0)
             {
-                IList<(TNode key, TNode value)> elementsNodes = ElementsNodes();
+                IList<(TNode key, TNode value)> elementsNodes = GetElementsNodes?.Invoke();
 
                 if (elementsNodes != null && elementsNodes.Count > 0)
                 {
@@ -67,18 +52,18 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public IEnumerable<IDomain> ParseUrls()
         {
-            IList<IDomain> parsedUrls = new List<IDomain>();
+            IList<IDomain> parsedDomains = new List<IDomain>();
 
             if (Page != null)
             {
-                IList<string> pagesNodes = Urls();
+                IList<string> pagesNodes = GetUrls?.Invoke();
 
                 if (pagesNodes != null && pagesNodes.Count > 0)
                 {
                     foreach (var pageUrl in pagesNodes)
                     {
-                        var r = Page.Parse(pageUrl);
-                        parsedUrls.Add(r);
+                        var pageDomain = Page.Parse(pageUrl);
+                        parsedDomains.Add(pageDomain);
 
                         Type t = Page.Domain.GetType();
                         Page.Domain = (IDomain)Activator.CreateInstance(t);
@@ -86,7 +71,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 }
             }
 
-            return parsedUrls;
+            return parsedDomains;
         }
 
         public IEnumerable<IDomain> ParseChilds()
@@ -94,7 +79,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             IList<IDomain> parsedChilds = new List<IDomain>();
 
             {
-                IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = ChildsNodes();
+                IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = GetChildsNodes?.Invoke();
 
                 if (childDomainNodes != null && childDomainNodes.Count > 0)
                 {

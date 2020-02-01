@@ -11,10 +11,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         IReadOnlyList<IElementParser<TNode, TElement, object>> Parsers { get; set; }
         IPage<TDomain, TNode, TElement> Page { get; set; }
 
-        IList<(TNode key, TNode value)> ElementsNodes();
-        IList<string> Urls();
-        IList<(IDomain child, List<(TNode key, TNode value)>)> ChildsNodes();
-
         /// <summary>
         /// For <see cref="IDomain"/>s on same <see cref="IPage{TDomain, TNode, TElement}"/>.
         /// </summary>
