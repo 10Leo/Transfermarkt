@@ -50,7 +50,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             return parsedElements;
         }
 
-        public IEnumerable<IDomain> ParseUrls()
+        public IEnumerable<IDomain> ParseDomainsOnChildPages()
         {
             IList<IDomain> parsedDomains = new List<IDomain>();
 
@@ -74,7 +74,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             return parsedDomains;
         }
 
-        public IEnumerable<IDomain> ParseChilds()
+        public IEnumerable<IDomain> ParseDomainsOnPage()
         {
             IList<IDomain> parsedChilds = new List<IDomain>();
 
