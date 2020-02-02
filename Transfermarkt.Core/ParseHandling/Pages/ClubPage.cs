@@ -32,9 +32,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPageSection : Section<HtmlNode>
+    class ClubPageSection : ElementsSection<HtmlNode>
     {
-        public ClubPageSection(HAPConnection connection) : base(connection)
+        public ClubPageSection(HAPConnection connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
@@ -59,9 +59,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPlayersPageSection : Section<HtmlNode>
+    class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode>
     {
-        public ClubPlayersPageSection(HAPConnection connection) : base(connection)
+        public ClubPlayersPageSection(HAPConnection connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
@@ -83,11 +83,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.GetChildsNodes = () =>
             {
-                IList<(IDomain child, List<(HtmlNode key, HtmlNode value)>)> playersNodes = new List<(IDomain, List<(HtmlNode, HtmlNode)>)>();
+                IList<List<(HtmlNode key, HtmlNode value)>> playersNodes = new List<List<(HtmlNode, HtmlNode)>>();
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
 
-
-                HtmlNode table = this.Connection.GetNode().SelectSingleNode("//table[@class='items']");
+                HtmlNode table = connection.GetNode().SelectSingleNode("//table[@class='items']");
                 if (table == null)
                 {
                     return playersNodes;
@@ -103,7 +102,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     List<(HtmlNode key, HtmlNode value)> attribs = new List<(HtmlNode key, HtmlNode value)>();
 
-                    playersNodes.Add((new Player(), attribs));
+                    playersNodes.Add(attribs);
 
                     //each column is an attribute
                     HtmlNodeCollection cols = row.SelectNodes("td");

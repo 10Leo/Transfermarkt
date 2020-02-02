@@ -37,9 +37,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionPageSection : Section<HtmlNode>
+    class CompetitionPageSection : ElementsSection<HtmlNode>
     {
-        public CompetitionPageSection(HAPConnection connection) : base(connection)
+        public CompetitionPageSection(HAPConnection connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -64,7 +64,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionClubsPageSection : Section<HtmlNode>
+    class CompetitionClubsPageSection : ChildsSection<HtmlNode>
     {
         protected static IConfigurationManager config = new ConfigManager();
 
@@ -74,7 +74,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
         public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
 
-        public CompetitionClubsPageSection(HAPConnection connection) : base(connection)
+        public CompetitionClubsPageSection(HAPConnection connection)
         {
             this.Page = new ClubPage(connection);
 
