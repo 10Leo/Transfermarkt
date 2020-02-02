@@ -31,8 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.8.11.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.8.11\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="HtmlAgilityPack, Version=1.11.18.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.11.18\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -49,9 +49,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
+    <Compile Include="ParseHandling\Contracts\Connection.cs" />
+    <Compile Include="ParseHandling\Contracts\Element.cs" />
+    <Compile Include="ParseHandling\Contracts\IConnection.cs" />
+    <Compile Include="ParseHandling\Contracts\ISection.cs" />
+    <Compile Include="ParseHandling\Contracts\Domain.cs" />
+    <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
+    <Compile Include="ParseHandling\Contracts\Page.cs" />
+    <Compile Include="ParseHandling\Contracts\Section.cs" />
+    <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
+    <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
+    <Compile Include="ParseHandling\Elements\Continent\ContinentElements.cs" />
     <Compile Include="Actors\Competition.cs" />
     <Compile Include="Actors\Continent.cs" />
     <Compile Include="Actors\ContinentCode.cs" />
+    <Compile Include="ParseHandling\Contracts\IElement.cs" />
     <Compile Include="Actors\Manager.cs" />
     <Compile Include="Actors\Nationality.cs" />
     <Compile Include="Actors\Person.cs" />
@@ -59,14 +71,11 @@
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="ConfigManager.cs" />
-    <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
     <Compile Include="ParseHandling\Contracts\Page\ICompetitionPage.cs" />
     <Compile Include="IConfigurationManager.cs" />
     <Compile Include="ParseHandling\Contracts\Page\IContinentPage.cs" />
     <Compile Include="ParseHandling\Contracts\IDomain.cs" />
     <Compile Include="ParseHandling\Contracts\IElementParser.cs" />
-    <Compile Include="ParseHandling\Contracts\Element\IMarketValueParser.cs" />
-    <Compile Include="ParseHandling\Contracts\Element\INationalityParser.cs" />
     <Compile Include="ParseHandling\Contracts\IPage.cs" />
     <Compile Include="ParseHandling\Contracts\Converter\IFootConverter.cs" />
     <Compile Include="ParseHandling\Contracts\Converter\IPositionConverter.cs" />
@@ -81,36 +90,37 @@
     <Compile Include="ParseHandling\Contracts\IConverter.cs" />
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\HtmlAgilityPackUtil.cs" />
+    <Compile Include="ParseHandling\Elements\Player\PlayerElements.cs" />
+    <Compile Include="ParseHandling\HAPConnection.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />
     <Compile Include="ParseHandling\Pages\ContinentPage.cs" />
     <Compile Include="ParseHandling\Pages\ClubPage.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Club\CountryImgParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Club\CountryParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Club\ImgUrlParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Club\NameParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Club\SeasonParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Competition\CountryImgParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Competition\CountryParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Competition\ImgUrlParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Competition\NameParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Competition\SeasonParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Continent\ContinentCodeParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Continent\NameParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\BirthDateParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\CaptainParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ClubArrivalDateParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ContractExpirationDateParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\HeightParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\PlayerImgUrlParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\MarketValueParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\PlayerNameParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\NationalityParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\PositionParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\PreferredFootParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ProfileUrlParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ShirtNumberParser.cs" />
-    <Compile Include="ParseHandling\Elements\HtmlAgilityPack\Player\ShortNameParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\CountryImgParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\CountryParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\ImgUrlParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\NameParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\SeasonParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Competition\CountryImgParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Competition\CountryParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Competition\ImgUrlParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Competition\NameParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Competition\SeasonParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Continent\ContinentCodeParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Continent\NameParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\BirthDateParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\CaptainParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ClubArrivalDateParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ContractExpirationDateParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\HeightParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ImgUrlParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\MarketValueParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\NameParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\NationalityParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\PositionParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\PreferredFootParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ProfileUrlParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ShirtNumberParser.cs" />
+    <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ShortNameParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

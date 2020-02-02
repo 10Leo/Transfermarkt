@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IElementParser<TNode, TValue>
+    public interface IElementParser<TNode, TElement, TValue> where TElement : IElement
     {
         IConverter<TValue> Converter { get; set; }
 
@@ -10,7 +10,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         event EventHandler<CustomEventArgs> OnFailure;
 
         bool CanParse(TNode node);
-        TValue Parse(TNode node);
+        TElement Parse(TNode node);
     }
 
     public class CustomEventArgs : EventArgs

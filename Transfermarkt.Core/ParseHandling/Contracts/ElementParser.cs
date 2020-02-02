@@ -1,41 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    abstract class ElementParser<TNode, TValue> : IElementParser<TNode, TValue>
+    abstract class ElementParser<TNode> : IElementParser<TNode, IElement, object>
     {
         private bool parsedAlready = false;
         public abstract string DisplayName { get; set; }
 
         public Predicate<TNode> CanParsePredicate { get; set; }
-        public Func<TNode, TValue> ParseFunc { get; set; }
+        public Func<TNode, IElement> ParseFunc { get; set; }
 
-        public IConverter<TValue> Converter { get; set; }
+        public IConverter<object> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;
         public event EventHandler<CustomEventArgs> OnFailure;
 
         public virtual bool CanParse(TNode node)
         {
-            //if (parsedAlready)
-            //{
-            //    return false;
-            //}
-
-            if (CanParsePredicate != null)
-            {
-                return CanParsePredicate(node);
-            }
-            return false;
+            //if (parsedAlready) { return false; }
+            return (CanParsePredicate != null) ? CanParsePredicate(node) : false;
         }
 
-        public virtual TValue Parse(TNode node)
+        public virtual IElement Parse(TNode node)
         {
-            TValue parsedObj = default;
+            IElement parsedObj = default;
 
             try
             {
