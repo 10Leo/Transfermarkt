@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
@@ -43,8 +45,37 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
+            url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2019";
             CompetitionPage page = new CompetitionPage(new HAPConnection());
             page.Parse(url);
+
+            var domain = page.Domain;
+            Assert.IsNotNull(domain, "The returned Domain is null.");
+
+            var mock = new Competition();
+            mock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Country() { Value = "[a-zA-Z]{3}" });
+            mock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Name() { Value = "[a-zA-Z0-9 ]+" });
+            mock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Season() { Value = "[0-9]{4}" });
+            mock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.ImgUrl() { Value = "[a-zA-Z0-9 ]+" });
+            mock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.CountryImg() { Value = "[a-zA-Z0-9 ]+" });
+
+            for (int i = 0; i < domain.Elements.Count; i++)
+            {
+                Regex rgx = new Regex(mock.Elements[i].Value);
+                var str = string.Format("{0}", domain.Elements[i].Value);
+
+                var m = rgx.Match(str);
+                //Assert.IsTrue(rgx.Match(str), $"{domain.Elements[i].Value} is not a match.");
+            }
+
+            //foreach (var children in domain.Children)
+            //{
+            //    for (int i = 0; i < domain.Elements.Count; i++)
+            //    {
+            //        Regex rgx = new Regex(mock.Elements[i].Value);
+            //        Assert.IsTrue(domain.Elements[i].Value == mock.Elements[i], "");
+            //    }
+            //}
         }
 
         [TestMethod, TestCategory("Page Parsing")]
