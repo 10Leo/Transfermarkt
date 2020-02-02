@@ -37,9 +37,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionPageSection : Section<HtmlNode>
+    class CompetitionPageSection : IElementsSection<IDomain, HtmlNode, IElement>
     {
-        public CompetitionPageSection(HAPConnection connection) : base(connection)
+        public Func<IList<(HtmlNode key, HtmlNode value)>> GetElementsNodes { get; set; }
+
+        public IReadOnlyList<IElementParser<HtmlNode, IElement, object>> Parsers { get; set; }
+
+        public CompetitionPageSection(HAPConnection connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -62,9 +66,33 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 return elements;
             };
         }
+
+
+        public void Parse(IPage<IDomain, HtmlNode, IElement> page)
+        {
+            if (Parsers != null && Parsers.Count > 0)
+            {
+                IList<(HtmlNode key, HtmlNode value)> elementsNodes = GetElementsNodes?.Invoke();
+
+                if (elementsNodes != null && elementsNodes.Count > 0)
+                {
+                    foreach (var (key, value) in elementsNodes)
+                    {
+                        foreach (var parser in Parsers)
+                        {
+                            if (parser.CanParse(key))
+                            {
+                                var parsedObj = parser.Parse(value);
+                                var e = page.Domain.SetElement(parsedObj);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
-    class CompetitionClubsPageSection : Section<HtmlNode>
+    class CompetitionClubsPageSection : IChildsSection<IDomain, HtmlNode, IElement>
     {
         protected static IConfigurationManager config = new ConfigManager();
 
@@ -73,8 +101,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
         public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
         public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
+        public IPage<IDomain, HtmlNode, IElement> Page { get; set; }
 
-        public CompetitionClubsPageSection(HAPConnection connection) : base(connection)
+        public Func<IList<string>> GetUrls { get; set; }
+        public Func<IList<(IDomain child, List<(HtmlNode key, HtmlNode value)>)>> GetChildsNodes { get; set; }
+
+        public CompetitionClubsPageSection(HAPConnection connection)
         {
             this.Page = new ClubPage(connection);
 
@@ -151,6 +183,26 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             }
 
             return string.Format("{0}{1}", baseURL, finalClubUrl);
+        }
+
+        public void Parse(IPage<IDomain, HtmlNode, IElement> page)
+        {
+            if (Page != null)
+            {
+                IList<string> pagesNodes = GetUrls?.Invoke();
+
+                if (pagesNodes != null && pagesNodes.Count > 0)
+                {
+                    foreach (var pageUrl in pagesNodes)
+                    {
+                        var pageDomain = Page.Parse(pageUrl);
+                        page.Domain?.Children.Add(pageDomain);
+
+                        Type t = Page.Domain.GetType();
+                        Page.Domain = (IDomain)Activator.CreateInstance(t);
+                    }
+                }
+            }
         }
     }
 }

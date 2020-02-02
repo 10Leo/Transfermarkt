@@ -30,17 +30,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             {
                 foreach (var section in Sections)
                 {
-                    var elementsNodes = section.ParseElements();
-                    foreach (var element in elementsNodes)
-                    {
-                        var e = this.Domain.SetElement(element);
-                    }
-
-                    var childDomainNodes = section.ParseChilds();
-                    foreach (var child in childDomainNodes)
-                    {
-                        this.Domain?.Children.Add(child);
-                    }
+                    section.Parse(this);
                 }
             }
 

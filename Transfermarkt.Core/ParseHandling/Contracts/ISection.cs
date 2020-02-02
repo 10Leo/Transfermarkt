@@ -15,25 +15,33 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     public interface ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="page"></param>
+        void Parse(IPage<IDomain, TNode, TElement> page);
+    }
+
+    public interface IElementsSection<TDomain, TNode, TElement> : ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    {
+        /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
         IReadOnlyList<IElementParser<TNode, TElement, object>> Parsers { get; set; }
+    }
 
+    public interface IChildsSection<TDomain, TNode, TElement> : ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    {
         /// <summary>
         /// A kind of Page that might be accessible from the Section.
         /// </summary>
         IPage<TDomain, TNode, TElement> Page { get; set; }
+    }
 
+    public interface IChildsSamePageSection<TDomain, TNode, TElement> : ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    {
         /// <summary>
-        /// For <see cref="IElement"/>s that migh exist on the current Section.
+        /// Parsers that parse the Elements of the Section.
         /// </summary>
-        /// <returns></returns>
-        IEnumerable<IElement> ParseElements();
-
-        /// <summary>
-        /// For <see cref="IDomain"/>s on different <see cref="IPage{TDomain, TNode, TElement}"/> accessible from the current one.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerable<IDomain> ParseChilds();
+        IReadOnlyList<IElementParser<TNode, TElement, object>> Parsers { get; set; }
     }
 }
