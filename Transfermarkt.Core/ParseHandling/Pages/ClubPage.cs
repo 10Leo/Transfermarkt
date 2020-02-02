@@ -59,7 +59,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPlayersPageSection : ChildsSamePageSection<HtmlNode>
+    class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode>
     {
         public ClubPlayersPageSection(HAPConnection connection)
         {
@@ -83,7 +83,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.GetChildsNodes = () =>
             {
-                IList<(IDomain child, List<(HtmlNode key, HtmlNode value)>)> playersNodes = new List<(IDomain, List<(HtmlNode, HtmlNode)>)>();
+                IList<List<(HtmlNode key, HtmlNode value)>> playersNodes = new List<List<(HtmlNode, HtmlNode)>>();
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
 
                 HtmlNode table = connection.GetNode().SelectSingleNode("//table[@class='items']");
@@ -102,7 +102,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     List<(HtmlNode key, HtmlNode value)> attribs = new List<(HtmlNode key, HtmlNode value)>();
 
-                    playersNodes.Add((new Player(), attribs));
+                    playersNodes.Add(attribs);
 
                     //each column is an attribute
                     HtmlNodeCollection cols = row.SelectNodes("td");

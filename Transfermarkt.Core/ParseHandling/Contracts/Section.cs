@@ -151,25 +151,25 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         }
     }
 
-    public abstract class ChildsSamePageSection<TNode> : IChildsSamePageSection<IDomain, TNode, IElement>
+    public abstract class ChildsSamePageSection<TDomain, TNode> : IChildsSamePageSection<IDomain, TNode, IElement> where TDomain : IDomain, new()
     {
         public IReadOnlyList<IElementParser<TNode, IElement, object>> Parsers { get; set; }
 
-        public Func<IList<(IDomain child, List<(TNode key, TNode value)>)>> GetChildsNodes { get; set; }
+        public Func<IList<List<(TNode key, TNode value)>>> GetChildsNodes { get; set; }
 
         public void Parse(IPage<IDomain, TNode, IElement> page)
         {
             {
-                IList<(IDomain child, List<(TNode key, TNode value)>)> childDomainNodes = GetChildsNodes?.Invoke();
+                IList<List<(TNode key, TNode value)>> childDomainNodes = GetChildsNodes?.Invoke();
 
                 if (childDomainNodes != null && childDomainNodes.Count > 0)
                 {
-                    foreach ((IDomain, List<(TNode key, TNode value)>) childDomainNode in childDomainNodes)
+                    foreach (List<(TNode key, TNode value)> childDomainNode in childDomainNodes)
                     {
-                        IDomain childType = childDomainNode.Item1;
+                        TDomain childType = new TDomain();
                         page.Domain?.Children.Add(childType);
 
-                        foreach ((TNode key, TNode value) in childDomainNode.Item2)
+                        foreach ((TNode key, TNode value) in childDomainNode)
                         {
                             foreach (var parser in Parsers)
                             {
