@@ -32,12 +32,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPageSection : IElementsSection<IDomain, HtmlNode, IElement>
+    class ClubPageSection : ElementsSection<HtmlNode>
     {
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, object>> Parsers { get; set; }
-
-        public Func<IList<(HtmlNode key, HtmlNode value)>> GetElementsNodes { get; set; }
-
         public ClubPageSection(HAPConnection connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
@@ -61,38 +57,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 return elements;
             };
         }
-
-        public void Parse(IPage<IDomain, HtmlNode, IElement> page)
-        {
-            if (Parsers != null && Parsers.Count > 0)
-            {
-                IList<(HtmlNode key, HtmlNode value)> elementsNodes = GetElementsNodes?.Invoke();
-
-                if (elementsNodes != null && elementsNodes.Count > 0)
-                {
-                    foreach (var (key, value) in elementsNodes)
-                    {
-                        foreach (var parser in Parsers)
-                        {
-                            if (parser.CanParse(key))
-                            {
-                                var parsedObj = parser.Parse(value);
-                                var e = page.Domain.SetElement(parsedObj);
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
-    class ClubPlayersPageSection : IChildsSamePageSection<IDomain, HtmlNode, IElement>
+    class ClubPlayersPageSection : ChildsSamePageSection<HtmlNode>
     {
-        public IPage<IDomain, HtmlNode, IElement> Page { get; set; }
-
-        public Func<IList<(IDomain child, List<(HtmlNode key, HtmlNode value)>)>> GetChildsNodes { get; set; }
-        public IReadOnlyList<IElementParser<HtmlNode, IElement, object>> Parsers { get; set; }
-
         public ClubPlayersPageSection(HAPConnection connection)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
@@ -117,7 +85,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             {
                 IList<(IDomain child, List<(HtmlNode key, HtmlNode value)>)> playersNodes = new List<(IDomain, List<(HtmlNode, HtmlNode)>)>();
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
-
 
                 HtmlNode table = connection.GetNode().SelectSingleNode("//table[@class='items']");
                 if (table == null)
@@ -151,34 +118,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                 return playersNodes;
             };
-        }
-
-        public void Parse(IPage<IDomain, HtmlNode, IElement> page)
-        {
-            {
-                IList<(IDomain child, List<(HtmlNode key, HtmlNode value)>)> childDomainNodes = GetChildsNodes?.Invoke();
-
-                if (childDomainNodes != null && childDomainNodes.Count > 0)
-                {
-                    foreach ((IDomain, List<(HtmlNode key, HtmlNode value)>) childDomainNode in childDomainNodes)
-                    {
-                        IDomain childType = childDomainNode.Item1;
-                        page.Domain?.Children.Add(childType);
-
-                        foreach ((HtmlNode key, HtmlNode value) in childDomainNode.Item2)
-                        {
-                            foreach (var parser in Parsers)
-                            {
-                                if (parser.CanParse(key))
-                                {
-                                    var parsedObj = parser.Parse(value);
-                                    var e = childType.SetElement(parsedObj);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     }
 }
