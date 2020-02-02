@@ -1,10 +1,16 @@
-﻿namespace Transfermarkt.Core.ParseHandling.Contracts
-{
-    public interface IPage<IDomain>
-    {
-        IDomain Domain { get; set; }
+﻿using System.Collections.Generic;
 
-        void Parse();
+namespace Transfermarkt.Core.ParseHandling.Contracts
+{
+    public interface IPage<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    {
+        TDomain Domain { get; set; }
+
+        IConnection<TNode> Connection { get; set; }
+
+        IReadOnlyList<ISection<TDomain, TNode, TElement>> Sections { get; set; }
+
+        TDomain Parse(string url);
         void Save();
     }
 }

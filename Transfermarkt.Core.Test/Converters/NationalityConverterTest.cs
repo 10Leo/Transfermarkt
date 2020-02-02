@@ -42,7 +42,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
                 var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
                 foreach (var item in deserializedJSON.Set)
                 {
-                    Actors.Nationality? retValue = converter.Convert(item.Name);
+                    Actors.Nationality? retValue = (Actors.Nationality?)converter.Convert(item.Name);
 
                     Assert.IsTrue(retValue.HasValue, $"The Nationality string \"{item.Name}\" didn't translate into a Nationality type domain object.");
                 }
@@ -53,10 +53,10 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
         public void IncorrectNationalityStringIsNotTransformedIntoDomainObjects()
         {
             INationalityConverter converter = new NationalityConverter();
-            Actors.Nationality? retValue = converter.Convert("Stupid name that doesn't exist in the file");
+            Actors.Nationality? retValue = (Actors.Nationality?)converter.Convert("Stupid name that doesn't exist in the file");
             Assert.IsFalse(retValue.HasValue, $"Value should have been false because the supplied name doesn't exist.");
 
-            retValue = converter.Convert(null);
+            retValue = (Actors.Nationality?)converter.Convert(null);
             Assert.IsFalse(retValue.HasValue, $"Value should have been null because false was supplied as the value to translate.");
         }
     }

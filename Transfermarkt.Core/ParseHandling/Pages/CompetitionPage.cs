@@ -9,13 +9,64 @@ using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Core.ParseHandling.Elements.HtmlAgilityPack.Competition;
+using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
-    public class CompetitionPage : ICompetitionPage<HtmlNode>
+    public class CompetitionPage : Page<HtmlNode>
     {
-        private static IConfigurationManager config = new ConfigManager();
+        public CompetitionPage(HAPConnection connection) : base(connection)
+        {
+            this.Domain = new Competition();
+
+            this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
+            {
+                new CompetitionPageSection(connection),
+                new CompetitionClubsPageSection(connection)
+            };
+        }
+        
+        private void LogSuccess(Object o, CustomEventArgs e)
+        {
+            Console.WriteLine(".");
+        }
+
+        private void LogFailure(Object o, CustomEventArgs e)
+        {
+            Console.WriteLine(e.Message);
+        }
+    }
+
+    class CompetitionPageSection : ElementsSection<HtmlNode>
+    {
+        public CompetitionPageSection(HAPConnection connection)
+        {
+            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
+                new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
+                new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Competition.CountryImgParser{ Converter = new StringConverter() },
+            };
+
+            this.GetElementsNodes = () =>
+            {
+                IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
+                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+
+                foreach (var elementParser in Parsers)
+                {
+                    elements.Add((connection.GetNode(), connection.GetNode()));
+                }
+
+                return elements;
+            };
+        }
+    }
+
+    class CompetitionClubsPageSection : ChildsSection<HtmlNode>
+    {
+        protected static IConfigurationManager config = new ConfigManager();
 
         public string BaseURL { get; } = config.GetAppSetting("BaseURL");
         public string SimpleClubUrlFormat { get; } = config.GetAppSetting("SimpleClubUrlFormat");
@@ -23,119 +74,42 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
         public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
 
-        private readonly string url;
-        private HtmlDocument doc;
-
-        public IDomain Domain { get; set; }
-
-        public IElementParser<HtmlNode, int?> Season { get; set; }
-        public IElementParser<HtmlNode, Nationality?> Country { get; set; }
-        public IElementParser<HtmlNode, string> Name { get; set; }
-        public IElementParser<HtmlNode, string> CountryImg { get; set; }
-        public IElementParser<HtmlNode, string> ImgUrl { get; set; }
-        public IClubPage<HtmlNode> Club { get; set; }
-
-        public CompetitionPage(string url)
+        public CompetitionClubsPageSection(HAPConnection connection)
         {
-            this.url = url;
+            this.Page = new ClubPage(connection);
 
-            this.Domain = new Competition();
-
-            this.Season = new SeasonParser();
-            this.Season.Converter = new IntConverter();
-            this.Season.OnSuccess += LogSuccess;
-            this.Season.OnFailure += LogFailure;
-
-            this.Country = new CountryParser();
-            this.Country.Converter = new NationalityConverter();
-            this.Country.OnSuccess += LogSuccess;
-            this.Country.OnFailure += LogFailure;
-
-            this.Name = new NameParser();
-            this.Name.Converter = new StringConverter();
-            this.Name.OnSuccess += LogSuccess;
-            this.Name.OnFailure += LogFailure;
-
-            this.CountryImg = new CountryImgParser();
-            this.CountryImg.Converter = new StringConverter();
-            this.CountryImg.OnSuccess += LogSuccess;
-            this.CountryImg.OnFailure += LogFailure;
-
-            this.ImgUrl = new ImgUrlParser();
-            this.ImgUrl.Converter = new StringConverter();
-            this.ImgUrl.OnSuccess += LogSuccess;
-            this.ImgUrl.OnFailure += LogFailure;
-
-            Connect();
-        }
-
-        public void Parse()
-        {
-            var competition = ((Competition)Domain);
-            competition.Country = Country.Parse(doc.DocumentNode);
-            competition.CountryImg = CountryImg.Parse(doc.DocumentNode);
-            competition.ImgUrl = ImgUrl.Parse(doc.DocumentNode);
-            competition.Name = Name.Parse(doc.DocumentNode);
-            competition.Season = Season.Parse(doc.DocumentNode);
-
-
-            HtmlNode table = doc.DocumentNode.SelectSingleNode("//div[@id='yw1']/table[@class='items']");
-            if (table == null)
+            this.GetUrls = () =>
             {
-                return;
-            }
+                IList<string> urls = new List<string>();
 
-            var rows = table.SelectNodes(".//tbody/tr[td]");
-            // each row is a player
-            foreach (var row in rows)
-            {
-                //each column is an attribute
-                HtmlNodeCollection cols = row.SelectNodes("td");
-
-                try
+                HtmlNode table = connection.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
+                if (table == null)
                 {
-                    string clubUrl = GetClubUrl(cols[2]);
-                    string finalClubUrl = TransformUrl(clubUrl);
-
-                    IClubPage<HtmlNode> page = new ClubPage($"{BaseURL}{finalClubUrl}");
-                    page.Parse();
-
-                    competition.Clubs.Add((Club)(((ClubPage)page).Domain));
+                    return null;
                 }
-                catch (Exception ex)
+
+                var rows = table.SelectNodes(".//tbody/tr[td]");
+                // each row is a club
+                foreach (var row in rows)
                 {
-                }
-            }
-        }
+                    //each column is an attribute
+                    HtmlNodeCollection cols = row.SelectNodes("td");
 
-        public void Save()
-        {
-        }
+                    try
+                    {
+                        string clubUrl = GetClubUrl(cols[2]);
+                        string finalClubUrl = TransformUrl(clubUrl, BaseURL, SimpleClubUrlFormat, PlusClubUrlFormat, IdentifiersGetterPattern, IdentifiersSetterPattern);
 
-        private void Connect()
-        {
-            //TODO: transform this in a service (generic) that connects to the page
-            try
-            {
-                string htmlCode = "";
-                using (WebClient client = new WebClient())
-                {
-                    client.Encoding = System.Text.Encoding.GetEncoding("UTF-8");
-                    client.Headers.Add(HttpRequestHeader.UserAgent, "AvoidError");
-                    htmlCode = client.DownloadString(url);
+                        urls.Add(finalClubUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        //TODO
+                    }
                 }
-                doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(htmlCode);
-            }
-            catch (System.Net.WebException ex)
-            {
-                //Debug.WriteLine(ex.StackTrace);
-                System.Environment.Exit(-1);
-            }
-            catch (Exception ex)
-            {
-                //Debug.WriteLine(ex.StackTrace);
-            }
+
+                return urls;
+            };
         }
 
         private string GetClubUrl(HtmlNode node)
@@ -146,14 +120,14 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 .Attributes["href"].Value;
         }
 
-        private string TransformUrl(string url)
+        private string TransformUrl(string url, string baseURL, string simpleClubUrlFormat, string plusClubUrlFormat, string identifiersGetterPattern, string identifiersSetterPattern)
         {
             IList<string> identifiers = new List<string>();
 
-            string simpleClubUrlPattern = SimpleClubUrlFormat;
-            string finalClubUrl = PlusClubUrlFormat;
+            string simpleClubUrlPattern = simpleClubUrlFormat;
+            string finalClubUrl = plusClubUrlFormat;
 
-            MatchCollection ids = Regex.Matches(SimpleClubUrlFormat, IdentifiersGetterPattern);
+            MatchCollection ids = Regex.Matches(simpleClubUrlFormat, identifiersGetterPattern);
             foreach (Match idMatch in ids)
             {
                 identifiers.Add(idMatch.Groups[1].Value);
@@ -161,7 +135,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             foreach (string identifier in identifiers)
             {
-                simpleClubUrlPattern = simpleClubUrlPattern.Replace("{" + identifier + "}", IdentifiersSetterPattern.Replace("{ID}", identifier));
+                simpleClubUrlPattern = simpleClubUrlPattern.Replace("{" + identifier + "}", identifiersSetterPattern.Replace("{ID}", identifier));
             }
 
             MatchCollection matches = Regex.Matches(url, simpleClubUrlPattern);
@@ -176,17 +150,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 finalClubUrl = finalClubUrl.Replace("{" + group.Name + "}", group.Value);
             }
 
-            return finalClubUrl;
-        }
-
-        private void LogSuccess(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(".");
-        }
-
-        private void LogFailure(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(e.Message);
+            return string.Format("{0}{1}", baseURL, finalClubUrl);
         }
     }
 }
