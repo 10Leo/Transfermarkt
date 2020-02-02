@@ -17,7 +17,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public Page(IConnection<TNode> connection)
         {
-            this.Connection = connection ?? throw new Exception("Can't pass a null connection.");
+            this.Connection = connection ?? throw new Exception("Can't use a null connection.");
         }
 
         #region Contract
