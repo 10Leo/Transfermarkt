@@ -4,35 +4,35 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 {
     #region Person related
 
-    class Name : Element
+    public class Name : Element
     {
         public Name() : base("Name", "Name")
         {
         }
     }
 
-    class ShortName : Element
+    public class ShortName : Element
     {
         public ShortName() : base("ShortName", "Short Name")
         {
         }
     }
 
-    class BirthDate : Element
+    public class BirthDate : Element
     {
         public BirthDate() : base("BirthDate", "Birth Date")
         {
         }
     }
 
-    class Nationality : Element
+    public class Nationality : Element
     {
         public Nationality() : base("Nat", "Nationality")
         {
         }
     }
 
-    class Height : Element
+    public class Height : Element
     {
         public Height() : base("H", "Height")
         {
@@ -43,14 +43,14 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
     #region Football related
 
-    class PreferredFoot : Element
+    public class PreferredFoot : Element
     {
         public PreferredFoot() : base("Foot", "Preferred Foot")
         {
         }
     }
 
-    class Position : Element
+    public class Position : Element
     {
         public Position() : base("Pos", "Position")
         {
@@ -62,28 +62,28 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
     #region Club related
 
-    class ShirtNumber : Element
+    public class ShirtNumber : Element
     {
         public ShirtNumber() : base("#", "Shirt Number")
         {
         }
     }
 
-    class Captain : Element
+    public class Captain : Element
     {
         public Captain() : base("Cap", "Captain")
         {
         }
     }
 
-    class ClubArrivalDate : Element
+    public class ClubArrivalDate : Element
     {
         public ClubArrivalDate() : base("ClubArrivalDate", "Club Arrival Date")
         {
         }
     }
 
-    class ContractExpirationDate : Element
+    public class ContractExpirationDate : Element
     {
         public ContractExpirationDate() : base("ContractExpirationDate", "Contract Expiration Date")
         {
@@ -94,7 +94,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
     #region Business related
 
-    class MarketValue : Element
+    public class MarketValue : Element
     {
         public MarketValue() : base("MV", "Market Value")
         {
@@ -105,14 +105,14 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
     #region Links
 
-    class ImgUrl : Element
+    public class ImgUrl : Element
     {
         public ImgUrl() : base("ImgUrl", "Img Url")
         {
         }
     }
 
-    class ProfileUrl : Element
+    public class ProfileUrl : Element
     {
         public ProfileUrl() : base("ProfileUrl", "Profile Url")
         {
