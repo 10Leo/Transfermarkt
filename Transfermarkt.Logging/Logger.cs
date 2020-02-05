@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,20 +10,49 @@ namespace Transfermarkt.Logging
 {
     public class Logger : ILogger
     {
+        private string m_exePath = string.Empty;
+
         public void WriteMessage(string message)
         {
-            Console.WriteLine(message);
+            LogWrite(message);
         }
 
         public void LogException(Exception ex)
         {
             if (ex.InnerException == null)
             {
-                Console.WriteLine(ex.Message);
+                LogWrite(ex.Message);
             }
             else
             {
-                Console.WriteLine(ex.InnerException.Message);
+                LogWrite(ex.InnerException.Message);
+            }
+        }
+
+        private void LogWrite(string logMessage)
+        {
+            m_exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            try
+            {
+                using (StreamWriter w = File.AppendText(m_exePath + "\\" + $"log_{DateTime.Now.ToString("yyyyMMdd")}.txt"))
+                {
+                    Log(logMessage, w);
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void Log(string logMessage, TextWriter txtWriter)
+        {
+            try
+            {
+                txtWriter.Write("[{0}] ", DateTime.Now);
+                txtWriter.WriteLine("{0}", logMessage);
+            }
+            catch (Exception)
+            {
             }
         }
     }
