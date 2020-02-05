@@ -3,7 +3,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    class Player : Domain
+    public class Player : Domain
     {
         public Player()
         {
@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.Actors
 
                 new Transfermarkt.Core.ParseHandling.Elements.Player.MarketValue(),
 
-                new Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl(),
+                //new Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl(),
                 new Transfermarkt.Core.ParseHandling.Elements.Player.ProfileUrl(),
             };
         }
