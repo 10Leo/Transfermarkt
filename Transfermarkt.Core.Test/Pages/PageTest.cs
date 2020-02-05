@@ -44,29 +44,12 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
 
-            var mock = GetDomain();
+            var mock = GetMockDomain();
 
-            for (int i = 0; i < domain.Elements.Count; i++)
-            {
-                Regex rgx = new Regex(mock.Children[0].Elements[i].Value);
-                var str = string.Format("{0}", domain.Elements[i].Value);
-
-                var m = rgx.Match(str);
-                Assert.IsTrue(rgx.IsMatch(str), $"{domain.Elements[i].InternalName} returned an unexpected value: {domain.Elements[i].Value}");
-            }
-
+            DomainElementsCheck(domain, mock.Children[0]);
             for (int i = 0; i < domain.Children.Count; i++)
             {
-                for (int j = 0; j < domain.Children[i].Elements.Count; j++)
-                {
-                    if (domain.Children[i].Elements[j].Value != null)
-                    {
-                        Regex rgx = new Regex(mock.Children[0].Children[0].Elements[j].Value);
-                        var str = string.Format("{0}", domain.Children[i].Elements[j].Value);
-                        var m = rgx.Match(str);
-                        Assert.IsTrue(rgx.IsMatch(str), "");
-                    }
-                }
+                DomainElementsCheck(domain.Children[i], mock.Children[0].Children[0]);
             }
         }
 
@@ -81,48 +64,20 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
 
-            var mock = GetDomain();
+            var mock = GetMockDomain();
+
+            DomainElementsCheck(domain, mock);
             
-
-            for (int i = 0; i < domain.Elements.Count; i++)
-            {
-                Regex rgx = new Regex(mock.Elements[i].Value);
-                var str = string.Format("{0}", domain.Elements[i].Value);
-                var m = rgx.Match(str);
-                Assert.IsTrue(rgx.IsMatch(str), $"{domain.Elements[i].InternalName} returned an unexpected value: {domain.Elements[i].Value}");
-            }
-
             // Clubs
             for (int i = 0; i < domain.Children.Count; i++)
             {
                 var clubChild = domain.Children[i];
-
-                for (int j = 0; j < clubChild.Elements.Count; j++)
-                {
-                    var clubElement = clubChild.Elements[j];
-                    if (clubElement.Value != null)
-                    {
-                        Regex rgx = new Regex(mock.Children[0].Elements[j].Value);
-                        var str = string.Format("{0}", clubElement.Value);
-                        var m = rgx.Match(str);
-                        Assert.IsTrue(rgx.IsMatch(str), "");
-                    }
-                }
+                DomainElementsCheck(clubChild, mock.Children[0]);
 
                 for (int j = 0; j < clubChild.Children.Count; j++)
                 {
                     var playerChild = clubChild.Children[j];
-                    for (int k = 0; k < playerChild.Elements.Count; k++)
-                    {
-                        var playerElement = playerChild.Elements[k];
-                        if (playerElement.Value != null)
-                        {
-                            Regex rgx = new Regex(mock.Children[0].Children[0].Elements[k].Value);
-                            var str = string.Format("{0}", playerElement.Value);
-                            var m = rgx.Match(str);
-                            Assert.IsTrue(rgx.IsMatch(str), "");
-                        }
-                    }
+                    DomainElementsCheck(playerChild, mock.Children[0].Children[0]);
                 }
             }
         }
@@ -146,7 +101,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             }
         }
 
-        private IDomain GetDomain()
+        private IDomain GetMockDomain()
         {
             var datePattern = @"^((0[1-9]|[12]\d|3[01])-(0[1-9]|1[0-2])-[12]\d{3} 00:00:00)$";
             var isoPattern = @"^[a-zA-Z]{3}$";
@@ -194,6 +149,21 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             clubMock.Children.Add(playerMock);
 
             return competitionMock;
+        }
+
+        private void DomainElementsCheck(IDomain domain, IDomain mock)
+        {
+            for (int i = 0; i < domain.Elements.Count; i++)
+            {
+                var e = domain.Elements[i];
+                if (e.Value != null)
+                {
+                    Regex rgx = new Regex(mock.Elements[i].Value);
+                    var str = string.Format("{0}", e.Value);
+                    var m = rgx.Match(str);
+                    Assert.IsTrue(rgx.IsMatch(str), $"{e.InternalName} returned an unexpected value: {e.Value}");
+                }
+            }
         }
     }
 }

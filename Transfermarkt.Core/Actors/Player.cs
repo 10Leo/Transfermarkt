@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.Actors
 
                 new Transfermarkt.Core.ParseHandling.Elements.Player.MarketValue(),
 
-                new Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl(),
+                //new Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl(),
                 new Transfermarkt.Core.ParseHandling.Elements.Player.ProfileUrl(),
             };
         }
