@@ -2,14 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
