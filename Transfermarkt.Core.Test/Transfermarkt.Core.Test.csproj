@@ -75,6 +75,10 @@
       <Project>{624d334a-662c-4b28-bb3f-c73e61850c93}</Project>
       <Name>Transfermarkt.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Transfermarkt.Logging\Transfermarkt.Logging.csproj">
+      <Project>{3166B876-1387-4469-9B20-7BE12BCD105E}</Project>
+      <Name>Transfermarkt.Logging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

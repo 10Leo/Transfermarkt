@@ -8,6 +8,7 @@ using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {
@@ -34,11 +35,13 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
         private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
+        private static ILogger logger = LoggerFactory.GetLogger();
+
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
         {
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
-            ClubPage page = new ClubPage(new HAPConnection());
+            ClubPage page = new ClubPage(new HAPConnection(), logger);
             page.Parse(url);
 
             var domain = page.Domain;
@@ -58,7 +61,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
             url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2019";
-            CompetitionPage page = new CompetitionPage(new HAPConnection());
+            CompetitionPage page = new CompetitionPage(new HAPConnection(), logger);
             page.Parse(url);
 
             var domain = page.Domain;

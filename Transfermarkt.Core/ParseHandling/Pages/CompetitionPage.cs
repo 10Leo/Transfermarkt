@@ -7,36 +7,37 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<HtmlNode>
     {
-        public CompetitionPage(HAPConnection connection) : base(connection)
+        public CompetitionPage(HAPConnection connection, ILogger logger) : base(connection)
         {
             this.Domain = new Competition();
 
             this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
-                new CompetitionPageSection(connection),
-                new CompetitionClubsPageSection(connection)
+                new CompetitionPageSection(connection, logger),
+                new CompetitionClubsPageSection(connection, logger)
             };
         }
         
-        private void LogSuccess(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(".");
-        }
+        //private void LogSuccess(Object o, CustomEventArgs<HtmlNode, IElement> e)
+        //{
+        //    Console.WriteLine(".");
+        //}
 
-        private void LogFailure(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(e.Message);
-        }
+        //private void LogFailure(Object o, CustomEventArgs<HtmlNode, IElement> e)
+        //{
+        //    Console.WriteLine(e.Message);
+        //}
     }
 
     class CompetitionPageSection : ElementsSection<HtmlNode>
     {
-        public CompetitionPageSection(HAPConnection connection)
+        public CompetitionPageSection(HAPConnection connection, ILogger logger)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -58,6 +59,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                 return elements;
             };
+
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage($"Success parsing {e.Element.InternalName}."));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException($"Error parsing {e.Element.InternalName} on node {e.Node.Name}.", e.Exception));
         }
     }
 
@@ -71,9 +75,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
         public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
 
-        public CompetitionClubsPageSection(HAPConnection connection)
+        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger)
         {
-            this.Page = new ClubPage(connection);
+            this.Page = new ClubPage(connection, logger);
 
             this.GetUrls = () =>
             {

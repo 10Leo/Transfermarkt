@@ -1,40 +1,32 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Net;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ClubPage : Page<HtmlNode>
     {
-        public ClubPage(HAPConnection connection) : base(connection)
+        public ClubPage(HAPConnection connection, ILogger logger) : base(connection)
         {
             this.Domain = new Club();
 
             this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
             {
-                new ClubPageSection(connection),
-                new ClubPlayersPageSection(connection)
+                new ClubPageSection(connection, logger),
+                new ClubPlayersPageSection(connection, logger)
             };
-        }
-
-        private void LogSuccess(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(".");
-        }
-
-        private void LogFailure(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(e.Message);
         }
     }
 
     class ClubPageSection : ElementsSection<HtmlNode>
     {
-        public ClubPageSection(HAPConnection connection)
+        public ClubPageSection(HAPConnection connection, ILogger logger)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
@@ -56,12 +48,15 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                 return elements;
             };
+
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage($"Success parsing {e.Element.InternalName}."));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException($"Error parsing {e.Element.InternalName} on node {e.Node.Name}.", e.Exception));
         }
     }
 
     class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode>
     {
-        public ClubPlayersPageSection(HAPConnection connection)
+        public ClubPlayersPageSection(HAPConnection connection, ILogger logger)
         {
             this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
                 new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
@@ -118,6 +113,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                 return playersNodes;
             };
+
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage($"Success parsing {e.Element.InternalName}."));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException($"Error parsing {e.Element.InternalName} on node {e.Node.Name}.", e.Exception));
         }
     }
 }
