@@ -12,20 +12,20 @@ namespace Transfermarkt.Logging
     {
         private string m_exePath = string.Empty;
 
-        public void WriteMessage(string message)
+        public void LogMessage(string message)
         {
             LogWrite(message);
         }
 
-        public void LogException(Exception ex)
+        public void LogException(string message, Exception ex)
         {
-            if (ex.InnerException == null)
+            if (ex?.InnerException == null)
             {
-                LogWrite(ex.Message);
+                LogWrite($"[{message}] {ex.Message}");
             }
             else
             {
-                LogWrite(ex.InnerException.Message);
+                LogWrite($"[{message}] {ex.InnerException.Message}");
             }
         }
 

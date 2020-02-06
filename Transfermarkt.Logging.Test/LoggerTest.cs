@@ -12,7 +12,7 @@ namespace Transfermarkt.Logging.Test
             var logger = LoggerFactory.GetLogger();
             for (int i = 0; i < 10; i++)
             {
-                logger.LogException(new Exception("this is supposed to be an exception"));
+                logger.LogException("this message", new Exception("this is supposed to be an exception"));
             }
         }
 
@@ -22,7 +22,7 @@ namespace Transfermarkt.Logging.Test
             var logger = LoggerFactory.GetLogger();
             for (int i = 0; i < 10; i++)
             {
-                logger.WriteMessage("this is a message from the future me");
+                logger.LogMessage("this is a message from the future me");
             }
         }
     }

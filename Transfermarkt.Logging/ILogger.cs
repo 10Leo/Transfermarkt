@@ -8,7 +8,7 @@ namespace Transfermarkt.Logging
 {
     public interface ILogger
     {
-        void WriteMessage(string message);
-        void LogException(Exception ex);
+        void LogMessage(string message);
+        void LogException(string message, Exception ex);
     }
 }
