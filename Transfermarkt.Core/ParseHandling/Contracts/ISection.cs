@@ -26,7 +26,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IReadOnlyList<IElementParser<TNode, TElement, object>> Parsers { get; set; }
+        IEnumerable<IElementParser<TNode, TElement, object>> Parsers { get; set; }
     }
 
     public interface IChildsSection<TDomain, TNode, TElement> : ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
@@ -42,6 +42,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IReadOnlyList<IElementParser<TNode, TElement, object>> Parsers { get; set; }
+        IEnumerable<IElementParser<TNode, TElement, object>> Parsers { get; set; }
     }
 }
