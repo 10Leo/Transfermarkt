@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class ShirtNumberParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Shirt Number";
+        public override IElement Element { get; } = new ShirtNumber();
 
         public ShirtNumberParser()
         {
@@ -21,7 +21,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .Where(n => n.Attributes["class"].Value == "rn_nummer")
                     .FirstOrDefault()
                     .InnerText;
-                return new ShirtNumber { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }

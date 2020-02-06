@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class NameParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Name";
+        public override IElement Element { get; } = new Name();
 
         public NameParser()
         {
@@ -20,7 +20,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("table//tr[1]/td[2]/div[1]")
                     .FirstOrDefault()
                     .InnerText;
-                return new Name { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }

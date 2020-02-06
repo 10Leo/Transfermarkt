@@ -6,7 +6,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class ImgUrlParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Img Url";
+        public override IElement Element { get; } = new ImgUrl();
 
         public ImgUrlParser()
         {
@@ -17,7 +17,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 //TODO
                 var parsedStr = string.Empty;
-                return new ImgUrl { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }

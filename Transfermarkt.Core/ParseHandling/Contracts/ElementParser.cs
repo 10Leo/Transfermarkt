@@ -4,11 +4,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     abstract class ElementParser<TNode> : IElementParser<TNode, IElement, object>
     {
         private bool parsedAlready = false;
-        public abstract string DisplayName { get; set; }
 
         public Predicate<TNode> CanParsePredicate { get; set; }
         public Func<TNode, IElement> ParseFunc { get; set; }
 
+        public abstract IElement Element { get; }
         public IConverter<object> Converter { get; set; }
 
         public event EventHandler<CustomEventArgs> OnSuccess;

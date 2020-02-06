@@ -6,7 +6,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
     class NameParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Name";
+        public override IElement Element { get; } = new Transfermarkt.Core.ParseHandling.Elements.Continent.Name();
 
         public NameParser()
         {
@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 
             this.ParseFunc = node =>
             {
-                return null;
+                return Element;
             };
         }
     }

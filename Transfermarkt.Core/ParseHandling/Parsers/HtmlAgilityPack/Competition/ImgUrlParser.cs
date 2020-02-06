@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     class ImgUrlParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Img Url";
+        public override IElement Element { get; } = new ImgUrl();
 
         public ImgUrlParser()
         {
@@ -17,7 +17,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
             this.ParseFunc = node =>
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//div[@class='headerfoto']/img")?.GetAttributeValue<string>("src", null);
-                return new ImgUrl { Value = Converter.Convert(parsedStr) };
+                
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }

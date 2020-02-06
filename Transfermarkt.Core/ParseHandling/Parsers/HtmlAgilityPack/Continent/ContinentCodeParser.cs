@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
     class ContinentCodeParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Continent Code";
+        public override IElement Element { get; } = new Transfermarkt.Core.ParseHandling.Elements.Continent.ContinentCode();
 
         public ContinentCodeParser()
         {
@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 
             this.ParseFunc = node =>
             {
-                return null;
+                return Element;
             };
         }
     }

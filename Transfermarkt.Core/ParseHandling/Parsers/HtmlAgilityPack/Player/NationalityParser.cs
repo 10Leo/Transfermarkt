@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class NationalityParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Nationality";
+        public override IElement Element { get; } = new Nationality();
 
         public NationalityParser()
         {
@@ -20,7 +20,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("img")
                     .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
                     .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault();
-                return new Nationality { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }

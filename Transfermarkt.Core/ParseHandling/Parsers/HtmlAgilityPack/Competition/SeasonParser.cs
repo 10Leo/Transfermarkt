@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     class SeasonParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Season";
+        public override IElement Element { get; } = new Season();
 
         public SeasonParser()
         {
@@ -21,8 +21,10 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
                 {
                     parsedStr = 0;
                 }
+
                 //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
-                return new Season { Value = Converter.Convert(parsedStr.ToString()) };
+                Element.Value = Converter.Convert(parsedStr.ToString());
+                return Element;
             };
         }
     }

@@ -4,6 +4,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 {
     public interface IElementParser<TNode, TElement, TValue> where TElement : IElement
     {
+        TElement Element { get; }
         IConverter<TValue> Converter { get; set; }
 
         event EventHandler<CustomEventArgs> OnSuccess;

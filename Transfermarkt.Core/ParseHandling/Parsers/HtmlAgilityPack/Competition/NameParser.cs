@@ -6,7 +6,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     class NameParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Name";
+        public override IElement Element { get; } = new Name();
 
         public NameParser()
         {
@@ -16,7 +16,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
             this.ParseFunc = node =>
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//h1[@class='spielername-profil']")?.InnerText;
-                return new Name { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }
