@@ -23,21 +23,20 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public virtual IElement Parse(TNode node)
         {
-            IElement parsedObj = default;
-
             try
             {
-                parsedObj = ParseFunc(node);
+                var e = ParseFunc(node);
+                Element.Value = e.Value;
 
-                OnSuccess?.Invoke(this, new CustomEventArgs<TNode, IElement>(node, parsedObj));
+                OnSuccess?.Invoke(this, new CustomEventArgs<TNode, IElement>(node, Element));
                 parsedAlready = true;
             }
             catch (Exception ex)
             {
-                OnFailure?.Invoke(this, new CustomEventArgs<TNode, IElement>(node, parsedObj, ex));
+                OnFailure?.Invoke(this, new CustomEventArgs<TNode, IElement>(node, Element, ex));
             }
 
-            return parsedObj;
+            return Element;
         }
     }
 }
