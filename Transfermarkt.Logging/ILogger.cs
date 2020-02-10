@@ -15,7 +15,7 @@ namespace Transfermarkt.Logging
     public enum LogLevel
     {
         Info = 1,
-        Important,
+        Milestone,
         Warning,
         Error,
         Fatal
