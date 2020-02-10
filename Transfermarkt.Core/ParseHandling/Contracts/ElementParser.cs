@@ -12,8 +12,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public IConverter<object> Converter { get; set; }
 
-        public event EventHandler<CustomEventArgs<TNode, IElement>> OnSuccess;
-        public event EventHandler<CustomEventArgs<TNode, IElement>> OnFailure;
+        public event EventHandler<ParserEventArgs<TNode, IElement>> OnSuccess;
+        public event EventHandler<ParserEventArgs<TNode, IElement>> OnFailure;
 
         public virtual bool CanParse(TNode node)
         {
@@ -28,12 +28,12 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 var e = ParseFunc(node);
                 Element.Value = e.Value;
 
-                OnSuccess?.Invoke(this, new CustomEventArgs<TNode, IElement>(node, Element));
+                OnSuccess?.Invoke(this, new ParserEventArgs<TNode, IElement>(node, Element));
                 parsedAlready = true;
             }
             catch (Exception ex)
             {
-                OnFailure?.Invoke(this, new CustomEventArgs<TNode, IElement>(node, Element, ex));
+                OnFailure?.Invoke(this, new ParserEventArgs<TNode, IElement>(node, Element, ex));
             }
 
             return Element;
