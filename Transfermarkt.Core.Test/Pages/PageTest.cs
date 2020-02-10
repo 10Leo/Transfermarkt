@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
@@ -18,9 +20,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         //consider create enum to retrieve configs and a generic GetAppSettings<T> to retrive it as a type
         private static IConfigurationManager config = new ConfigManager();
 
-        private static string BaseURL { get; } = config.GetAppSetting("BaseURL");
-        private static string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
-        private static string CompetitionUrlFormat { get; } = config.GetAppSetting("CompetitionUrlFormat");
         private static string MinimumLoggingLevel { get; } = config.GetAppSetting("MinimumLoggingLevel");
         private static string LogPath { get; } = config.GetAppSetting("LogPath");
 
@@ -36,7 +35,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             [Nationality.ITA] = ("serie-a", "IT1", "")
         };
 
-        private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+        private static readonly int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
         private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, int.Parse(MinimumLoggingLevel));
 
