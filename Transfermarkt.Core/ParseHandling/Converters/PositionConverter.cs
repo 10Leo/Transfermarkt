@@ -51,6 +51,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             return p;
         }
 
+        //TODO: move to settings file
         private string GetLanguageFolder(string language)
         {
             switch (language.ToLowerInvariant())

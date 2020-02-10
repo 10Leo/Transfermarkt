@@ -15,6 +15,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
     [TestClass]
     public class PageTest
     {
+        //consider create enum to retrieve configs and a generic GetAppSettings<T> to retrive it as a type
         private static IConfigurationManager config = new ConfigManager();
 
         private static string BaseURL { get; } = config.GetAppSetting("BaseURL");
