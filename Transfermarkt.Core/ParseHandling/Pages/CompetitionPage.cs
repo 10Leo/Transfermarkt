@@ -22,17 +22,15 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new CompetitionPageSection(connection, logger),
                 new CompetitionClubsPageSection(connection, logger)
             };
-        }
-        
-        //private void LogSuccess(Object o, CustomEventArgs<HtmlNode, IElement> e)
-        //{
-        //    Console.WriteLine(".");
-        //}
 
-        //private void LogFailure(Object o, CustomEventArgs<HtmlNode, IElement> e)
-        //{
-        //    Console.WriteLine(e.Message);
-        //}
+            this.OnBeforeParse += (o, e) => {
+                logger.LogMessage(LogLevel.Milestone, $"Started parsing {e.Url}.");
+            };
+
+            this.OnAfterParse += (o, e) => {
+                logger.LogMessage(LogLevel.Milestone, $"Finished parsing {e.Url}.");
+            };
+        }
     }
 
     class CompetitionPageSection : ElementsSection<HtmlNode>

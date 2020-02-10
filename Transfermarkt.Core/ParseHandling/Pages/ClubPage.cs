@@ -21,6 +21,14 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new ClubPageSection(connection, logger),
                 new ClubPlayersPageSection(connection, logger)
             };
+
+            this.OnBeforeParse += (o, e) => {
+                logger.LogMessage(LogLevel.Milestone, $"Started parsing {e.Url}.");
+            };
+
+            this.OnAfterParse += (o, e) => {
+                logger.LogMessage(LogLevel.Milestone, $"Finished parsing {e.Url}.");
+            };
         }
     }
 
