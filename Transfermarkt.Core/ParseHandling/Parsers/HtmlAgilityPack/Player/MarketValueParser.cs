@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class MarketValueParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Market Value";
+        public override IElement Element { get; } = new MarketValue();
 
         public MarketValueParser()
         {
@@ -35,7 +35,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 {
                     n = n * 1000;
                 }
-                return new MarketValue { Value = Converter.Convert(n.ToString()) };
+
+                Element.Value = Converter.Convert(n.ToString());
+                return Element;
             };
         }
     }

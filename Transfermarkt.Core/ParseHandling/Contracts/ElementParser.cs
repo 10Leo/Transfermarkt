@@ -4,15 +4,16 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     abstract class ElementParser<TNode> : IElementParser<TNode, IElement, object>
     {
         private bool parsedAlready = false;
-        public abstract string DisplayName { get; set; }
 
         public Predicate<TNode> CanParsePredicate { get; set; }
         public Func<TNode, IElement> ParseFunc { get; set; }
 
+        public abstract IElement Element { get; }
+
         public IConverter<object> Converter { get; set; }
 
-        public event EventHandler<CustomEventArgs> OnSuccess;
-        public event EventHandler<CustomEventArgs> OnFailure;
+        public event EventHandler<ParserEventArgs<TNode, IElement>> OnSuccess;
+        public event EventHandler<ParserEventArgs<TNode, IElement>> OnFailure;
 
         public virtual bool CanParse(TNode node)
         {
@@ -22,21 +23,20 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public virtual IElement Parse(TNode node)
         {
-            IElement parsedObj = default;
-
             try
             {
-                parsedObj = ParseFunc(node);
+                var e = ParseFunc(node);
+                Element.Value = e.Value;
 
-                OnSuccess?.Invoke(this, new CustomEventArgs($"Success parsing {DisplayName}."));
+                OnSuccess?.Invoke(this, new ParserEventArgs<TNode, IElement>(node, Element));
                 parsedAlready = true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                OnFailure?.Invoke(this, new CustomEventArgs($"Error parsing {DisplayName}."));
+                OnFailure?.Invoke(this, new ParserEventArgs<TNode, IElement>(node, Element, ex));
             }
 
-            return parsedObj;
+            return Element;
         }
     }
 }

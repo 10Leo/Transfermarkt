@@ -15,6 +15,9 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public IReadOnlyList<ISection<IDomain, TNode, IElement>> Sections { get; set; }
 
+        public event EventHandler<PageEventArgs> OnAfterParse;
+        public event EventHandler<PageEventArgs> OnBeforeParse;
+
         public Page(IConnection<TNode> connection)
         {
             this.Connection = connection ?? throw new Exception("Can't use a null connection.");
@@ -26,6 +29,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         {
             this.Connection.Connect(url);
 
+            OnBeforeParse?.Invoke(this, new PageEventArgs(url));
+
             if (Sections != null)
             {
                 foreach (var section in Sections)
@@ -33,6 +38,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                     section.Parse(this);
                 }
             }
+
+            OnAfterParse?.Invoke(this, new PageEventArgs(url));
 
             return this.Domain;
         }

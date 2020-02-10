@@ -6,7 +6,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class PreferredFootParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Preferred Foot";
+        public override IElement Element { get; } = new PreferredFoot();
 
         public PreferredFootParser()
         {
@@ -17,7 +17,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = node
                     .InnerText;
-                return new PreferredFoot { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }

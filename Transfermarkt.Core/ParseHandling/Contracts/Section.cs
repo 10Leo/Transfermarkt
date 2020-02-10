@@ -20,7 +20,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public abstract class ElementsSection<TNode> : IElementsSection<IDomain, TNode, IElement>
     {
-        public IReadOnlyList<IElementParser<TNode, IElement, object>> Parsers { get; set; }
+        public IEnumerable<IElementParser<TNode, IElement, object>> Parsers { get; set; }
 
         public Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
 
@@ -31,7 +31,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public void Parse(IPage<IDomain, TNode, IElement> page)
         {
-            if (Parsers != null && Parsers.Count > 0)
+            if (Parsers != null)
             {
                 IList<(TNode key, TNode value)> elementsNodes = GetElementsNodes?.Invoke();
 
@@ -82,7 +82,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public abstract class ChildsSamePageSection<TDomain, TNode> : IChildsSamePageSection<IDomain, TNode, IElement> where TDomain : IDomain, new()
     {
-        public IReadOnlyList<IElementParser<TNode, IElement, object>> Parsers { get; set; }
+        public IEnumerable<IElementParser<TNode, IElement, object>> Parsers { get; set; }
 
         public Func<IList<List<(TNode key, TNode value)>>> GetChildsNodes { get; set; }
 

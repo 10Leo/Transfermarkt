@@ -6,7 +6,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class ClubArrivalDateParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Club Arrival Date";
+        public override IElement Element { get; } = new ClubArrivalDate();
 
         public ClubArrivalDateParser()
         {
@@ -16,7 +16,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             this.ParseFunc = node =>
             {
                 var parsedStr = node.InnerText;
-                return new ClubArrivalDate { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }

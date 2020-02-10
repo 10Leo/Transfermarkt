@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
     class SeasonParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Season";
+        public override IElement Element { get; } = new Season();
 
         public SeasonParser()
         {
@@ -21,7 +21,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
                 {
                     parsedStr = 0;
                 }
-                return new Season { Value = Converter.Convert(parsedStr.ToString()) };
+
+                Element.Value = Converter.Convert(parsedStr.ToString());
+                return Element;
             };
         }
     }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
@@ -8,17 +10,18 @@ using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {
     [TestClass]
     public class PageTest
     {
+        //consider create enum to retrieve configs and a generic GetAppSettings<T> to retrive it as a type
         private static IConfigurationManager config = new ConfigManager();
 
-        private static string BaseURL { get; } = config.GetAppSetting("BaseURL");
-        private static string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
-        private static string CompetitionUrlFormat { get; } = config.GetAppSetting("CompetitionUrlFormat");
+        private static string MinimumLoggingLevel { get; } = config.GetAppSetting("MinimumLoggingLevel");
+        private static string LogPath { get; } = config.GetAppSetting("LogPath");
 
         private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
         {
@@ -32,13 +35,15 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             [Nationality.ITA] = ("serie-a", "IT1", "")
         };
 
-        private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+        private static readonly int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+
+        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, int.Parse(MinimumLoggingLevel));
 
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
         {
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
-            ClubPage page = new ClubPage(new HAPConnection());
+            ClubPage page = new ClubPage(new HAPConnection(), logger);
             page.Parse(url);
 
             var domain = page.Domain;
@@ -58,7 +63,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
             url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2019";
-            CompetitionPage page = new CompetitionPage(new HAPConnection());
+            CompetitionPage page = new CompetitionPage(new HAPConnection(), logger);
             page.Parse(url);
 
             var domain = page.Domain;

@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class ProfileUrlParser : ElementParser<HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Profile Url";
+        public override IElement Element { get; } = new ProfileUrl();
 
         public ProfileUrlParser()
         {
@@ -20,7 +20,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("table//td//a")
                     .FirstOrDefault(n => n.Attributes["class"]?.Value == "spielprofil_tooltip")
                     .Attributes["href"].Value;
-                return new ProfileUrl { Value = Converter.Convert(parsedStr) };
+
+                Element.Value = Converter.Convert(parsedStr);
+                return Element;
             };
         }
     }
