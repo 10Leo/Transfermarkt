@@ -15,8 +15,17 @@ namespace Transfermarkt.Logging
 
         public Logger(string path, int minimumLevel)
         {
-            this.path = path;
+            this.path = path + "\\" + $"log_{DateTime.Now.ToString("yyyyMMdd")}.txt";
             this.minimumLevel = minimumLevel;
+
+            //if (!File.Exists(this.path))
+            {
+                using (FileStream fs = File.Create(this.path))
+                {
+                    byte[] info = new UTF8Encoding(true).GetBytes(string.Format("[{0} {1,10}]\n", DateTime.Now.ToString("yyyyMMdd HH:mm:ss"), "Init"));
+                    fs.Write(info, 0, info.Length);
+                }
+            }
         }
 
         public void LogMessage(LogLevel level, string message)
@@ -45,7 +54,7 @@ namespace Transfermarkt.Logging
 
             try
             {
-                using (StreamWriter w = File.AppendText(path + "\\" + $"log_{DateTime.Now.ToString("yyyyMMdd")}.txt"))
+                using (StreamWriter w = File.AppendText(path))
                 {
                     Log(level, logMessage, w);
                 }
