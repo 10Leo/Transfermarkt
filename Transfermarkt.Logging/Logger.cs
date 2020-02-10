@@ -30,7 +30,7 @@ namespace Transfermarkt.Logging
 
         public void LogMessage(LogLevel level, string message)
         {
-            LogWrite(level, message);
+            LogWrite(level, $"[{message}]");
         }
 
         public void LogException(LogLevel level, string message, Exception ex)
@@ -68,7 +68,7 @@ namespace Transfermarkt.Logging
         {
             try
             {
-                txtWriter.Write("[{0} {1,10}] ", DateTime.Now, level.ToString());
+                txtWriter.Write("[{0} {1,10}] ", DateTime.Now.ToString("yyyyMMdd HH:mm:ss"), level.ToString());
                 txtWriter.WriteLine("{0}", logMessage);
             }
             catch (Exception)
