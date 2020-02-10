@@ -15,7 +15,7 @@ namespace Transfermarkt.Logging
         {
         }
 
-        public static ILogger GetLogger()
+        public static ILogger GetLogger(string path, int minimumLevel)
         {
             if (_logger == null)
             {
@@ -23,7 +23,7 @@ namespace Transfermarkt.Logging
                 {
                     if (_logger == null)
                     {
-                        _logger = new Logger();
+                        _logger = new Logger(path, minimumLevel);
                     }
                 }
             }

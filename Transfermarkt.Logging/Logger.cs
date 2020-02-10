@@ -10,33 +10,44 @@ namespace Transfermarkt.Logging
 {
     public class Logger : ILogger
     {
-        private string m_exePath = string.Empty;
+        private string path = string.Empty;
+        private readonly int minimumLevel = 0;
 
-        public void LogMessage(string message)
+        public Logger(string path, int minimumLevel)
         {
-            LogWrite(message);
+            this.path = path;
+            this.minimumLevel = minimumLevel;
         }
 
-        public void LogException(string message, Exception ex)
+        public void LogMessage(LogLevel level, string message)
+        {
+            LogWrite(level, message);
+        }
+
+        public void LogException(LogLevel level, string message, Exception ex)
         {
             if (ex?.InnerException == null)
             {
-                LogWrite($"[{message}] {ex.Message}");
+                LogWrite(level, $"[{message}] {ex.Message}");
             }
             else
             {
-                LogWrite($"[{message}] {ex.InnerException.Message}");
+                LogWrite(level, $"[{message}] {ex.InnerException.Message}");
             }
         }
 
-        private void LogWrite(string logMessage)
+        private void LogWrite(LogLevel level, string logMessage)
         {
-            m_exePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if ((int)level < this.minimumLevel)
+            {
+                return;
+            }
+
             try
             {
-                using (StreamWriter w = File.AppendText(m_exePath + "\\" + $"log_{DateTime.Now.ToString("yyyyMMdd")}.txt"))
+                using (StreamWriter w = File.AppendText(path + "\\" + $"log_{DateTime.Now.ToString("yyyyMMdd")}.txt"))
                 {
-                    Log(logMessage, w);
+                    Log(level, logMessage, w);
                 }
             }
             catch (Exception)
@@ -44,11 +55,11 @@ namespace Transfermarkt.Logging
             }
         }
 
-        private void Log(string logMessage, TextWriter txtWriter)
+        private void Log(LogLevel level, string logMessage, TextWriter txtWriter)
         {
             try
             {
-                txtWriter.Write("[{0}] ", DateTime.Now);
+                txtWriter.Write("[{0} {1,10}] ", DateTime.Now, level.ToString());
                 txtWriter.WriteLine("{0}", logMessage);
             }
             catch (Exception)

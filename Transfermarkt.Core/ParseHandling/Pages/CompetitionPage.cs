@@ -60,8 +60,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 return elements;
             };
 
-            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage($"Success parsing {e.Element.InternalName}."));
-            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException($"Error parsing {e.Element.InternalName} on node {e.Node.Name}.", e.Exception));
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"Success parsing {e.Element.InternalName}."));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"Error parsing {e.Element.InternalName} on node {e.Node.Name}.", e.Exception));
         }
     }
 

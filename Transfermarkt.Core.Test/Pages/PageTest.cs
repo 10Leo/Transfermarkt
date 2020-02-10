@@ -21,6 +21,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         private static string BaseURL { get; } = config.GetAppSetting("BaseURL");
         private static string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
         private static string CompetitionUrlFormat { get; } = config.GetAppSetting("CompetitionUrlFormat");
+        private static string MinimumLoggingLevel { get; } = config.GetAppSetting("MinimumLoggingLevel");
+        private static string LogPath { get; } = config.GetAppSetting("LogPath");
 
         private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
         {
@@ -36,7 +38,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
         private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
-        private static ILogger logger = LoggerFactory.GetLogger();
+        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, int.Parse(MinimumLoggingLevel));
 
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
