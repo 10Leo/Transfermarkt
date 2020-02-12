@@ -38,10 +38,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public CompetitionPageSection(HAPConnection connection, ILogger logger)
         {
             this.Parsers = new List<IElementParser<IElement, HtmlNode, object>>() {
-                //new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
-                //new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
-                //new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
+                new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Competition.CountryImgParser(),
             };
 

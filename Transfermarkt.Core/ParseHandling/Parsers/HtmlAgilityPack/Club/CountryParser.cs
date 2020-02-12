@@ -6,9 +6,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class CountryParser : ElementParser<HtmlNode>
+    class CountryParser : ElementParser<Country, HtmlNode>
     {
-        public override IElement Element { get; } = new Country();
+        public override Country Element { get; } = new Country();
 
         public CountryParser()
         {

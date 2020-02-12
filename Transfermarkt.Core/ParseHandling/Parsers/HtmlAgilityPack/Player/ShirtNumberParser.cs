@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ShirtNumberParser : ElementParser<HtmlNode>
+    class ShirtNumberParser : ElementParser<ShirtNumber, HtmlNode>
     {
-        public override IElement Element { get; } = new ShirtNumber();
+        public override ShirtNumber Element { get; } = new ShirtNumber();
 
         public ShirtNumberParser()
         {

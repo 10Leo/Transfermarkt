@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
-    class ContinentCodeParser : ElementParser<HtmlNode>
+    class ContinentCodeParser : ElementParser<Elements.Continent.ContinentCode, HtmlNode>
     {
-        public override IElement Element { get; } = new Transfermarkt.Core.ParseHandling.Elements.Continent.ContinentCode();
+        public override Elements.Continent.ContinentCode Element { get; } = new Transfermarkt.Core.ParseHandling.Elements.Continent.ContinentCode();
 
         public ContinentCodeParser()
         {

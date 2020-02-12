@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class PositionParser : ElementParser<HtmlNode>
+    class PositionParser : ElementParser<Position, HtmlNode>
     {
-        public override IElement Element { get; } = new Position();
+        public override Position Element { get; } = new Position();
 
         public PositionParser()
         {

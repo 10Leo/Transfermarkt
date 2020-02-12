@@ -4,9 +4,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ClubArrivalDateParser : ElementParser<HtmlNode>
+    class ClubArrivalDateParser : ElementParser<ClubArrivalDate, HtmlNode>
     {
-        public override IElement Element { get; } = new ClubArrivalDate();
+        public override ClubArrivalDate Element { get; } = new ClubArrivalDate();
 
         public ClubArrivalDateParser()
         {

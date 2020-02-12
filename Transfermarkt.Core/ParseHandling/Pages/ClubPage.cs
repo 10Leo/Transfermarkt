@@ -37,11 +37,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public ClubPageSection(HAPConnection connection, ILogger logger)
         {
             this.Parsers = new List<IElementParser<IElement, HtmlNode, object>>() {
-                //new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
-                //new Parsers.HtmlAgilityPack.Club.NameParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Club.SeasonParser{ Converter = new IntConverter() },
-                //new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
+                new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
+                new Parsers.HtmlAgilityPack.Club.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Club.SeasonParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
             };
 
             this.GetElementsNodes = () =>
@@ -67,21 +67,21 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public ClubPlayersPageSection(HAPConnection connection, ILogger logger)
         {
             this.Parsers = new List<IElementParser<IElement, HtmlNode, object>>() {
-                //new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ShortNameParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Player.BirthDateParser{ Converter = new DateConverter() },
-                //new Parsers.HtmlAgilityPack.Player.NationalityParser{ Converter = new NationalityConverter() },
-                //new Parsers.HtmlAgilityPack.Player.HeightParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.ShortNameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.BirthDateParser{ Converter = new DateConverter() },
+                new Parsers.HtmlAgilityPack.Player.NationalityParser{ Converter = new NationalityConverter() },
+                new Parsers.HtmlAgilityPack.Player.HeightParser{ Converter = new IntConverter() },
 
-                //new Parsers.HtmlAgilityPack.Player.PreferredFootParser{ Converter = new FootConverter() },
-                //new Parsers.HtmlAgilityPack.Player.PositionParser{ Converter = new PositionConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ShirtNumberParser{ Converter = new IntConverter() },
-                //new Parsers.HtmlAgilityPack.Player.CaptainParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ClubArrivalDateParser{ Converter = new DateConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ContractExpirationDateParser{ Converter = new DateConverter() },
-                //new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() },
-                ////new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
+                new Parsers.HtmlAgilityPack.Player.PreferredFootParser{ Converter = new FootConverter() },
+                new Parsers.HtmlAgilityPack.Player.PositionParser{ Converter = new PositionConverter() },
+                new Parsers.HtmlAgilityPack.Player.ShirtNumberParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.CaptainParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.ClubArrivalDateParser{ Converter = new DateConverter() },
+                new Parsers.HtmlAgilityPack.Player.ContractExpirationDateParser{ Converter = new DateConverter() },
+                new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() },
+                //new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
             };
 
             this.GetChildsNodes = () =>

@@ -4,9 +4,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ImgUrlParser : ElementParser<HtmlNode>
+    class ImgUrlParser : ElementParser<ImgUrl, HtmlNode>
     {
-        public override IElement Element { get; } = new ImgUrl();
+        public override ImgUrl Element { get; } = new ImgUrl();
 
         public ImgUrlParser()
         {

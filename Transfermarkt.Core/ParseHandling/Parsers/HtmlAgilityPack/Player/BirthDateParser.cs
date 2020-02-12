@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class BirthDateParser : ElementParser<HtmlNode>
+    class BirthDateParser : ElementParser<BirthDate, HtmlNode>
     {
-        public override IElement Element { get; } = new BirthDate();
+        public override BirthDate Element { get; } = new BirthDate();
 
         public BirthDateParser()
         {

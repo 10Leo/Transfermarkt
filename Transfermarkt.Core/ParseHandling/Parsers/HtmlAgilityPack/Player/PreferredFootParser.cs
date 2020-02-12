@@ -4,9 +4,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class PreferredFootParser : ElementParser<HtmlNode>
+    class PreferredFootParser : ElementParser<PreferredFoot, HtmlNode>
     {
-        public override IElement Element { get; } = new PreferredFoot();
+        public override PreferredFoot Element { get; } = new PreferredFoot();
 
         public PreferredFootParser()
         {

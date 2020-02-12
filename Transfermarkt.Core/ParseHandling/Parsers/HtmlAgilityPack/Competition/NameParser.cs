@@ -4,9 +4,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class NameParser : ElementParser<HtmlNode>
+    class NameParser : ElementParser<Name, HtmlNode>
     {
-        public override IElement Element { get; } = new Name();
+        public override Name Element { get; } = new Name();
 
         public NameParser()
         {

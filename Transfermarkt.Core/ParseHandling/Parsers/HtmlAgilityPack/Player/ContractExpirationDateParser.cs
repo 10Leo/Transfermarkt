@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ContractExpirationDateParser : ElementParser<HtmlNode>
+    class ContractExpirationDateParser : ElementParser<ContractExpirationDate, HtmlNode>
     {
-        public override IElement Element { get; } = new ContractExpirationDate();
+        public override ContractExpirationDate Element { get; } = new ContractExpirationDate();
 
         public ContractExpirationDateParser()
         {

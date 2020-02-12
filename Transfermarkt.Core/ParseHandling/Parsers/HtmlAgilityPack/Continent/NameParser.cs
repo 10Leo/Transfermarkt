@@ -4,9 +4,9 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
-    class NameParser : ElementParser<HtmlNode>
+    class NameParser : ElementParser<Elements.Continent.Name, HtmlNode>
     {
-        public override IElement Element { get; } = new Transfermarkt.Core.ParseHandling.Elements.Continent.Name();
+        public override Elements.Continent.Name Element { get; } = new Transfermarkt.Core.ParseHandling.Elements.Continent.Name();
 
         public NameParser()
         {

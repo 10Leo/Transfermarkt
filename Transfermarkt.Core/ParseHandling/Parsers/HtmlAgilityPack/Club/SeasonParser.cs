@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class SeasonParser : ElementParser<HtmlNode>
+    class SeasonParser : ElementParser<Season, HtmlNode>
     {
-        public override IElement Element { get; } = new Season();
+        public override Season Element { get; } = new Season();
 
         public SeasonParser()
         {

@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class NationalityParser : ElementParser<HtmlNode>
+    class NationalityParser : ElementParser<Nationality, HtmlNode>
     {
-        public override IElement Element { get; } = new Nationality();
+        public override Nationality Element { get; } = new Nationality();
 
         public NationalityParser()
         {

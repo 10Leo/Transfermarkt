@@ -5,9 +5,9 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class HeightParser : ElementParser<HtmlNode>
+    class HeightParser : ElementParser<Height, HtmlNode>
     {
-        public override IElement Element { get; } = new Height();
+        public override Height Element { get; } = new Height();
 
         public HeightParser()
         {
