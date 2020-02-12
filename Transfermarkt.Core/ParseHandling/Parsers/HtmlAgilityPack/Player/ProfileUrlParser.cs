@@ -7,8 +7,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class ProfileUrlParser : ElementParser<ProfileUrl, HtmlNode>
     {
-        public override ProfileUrl Element { get; } = new ProfileUrl();
-
         public ProfileUrlParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -21,8 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault(n => n.Attributes["class"]?.Value == "spielprofil_tooltip")
                     .Attributes["href"].Value;
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new ProfileUrl { Value = Converter.Convert(parsedStr) };
             };
         }
     }

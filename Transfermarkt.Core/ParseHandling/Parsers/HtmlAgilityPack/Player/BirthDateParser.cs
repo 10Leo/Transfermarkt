@@ -7,8 +7,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class BirthDateParser : ElementParser<BirthDate, HtmlNode>
     {
-        public override BirthDate Element { get; } = new BirthDate();
-
         public BirthDateParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -18,8 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = node.InnerText?.Split(new[] { " (" }, StringSplitOptions.None)?[0];
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new BirthDate { Value = Converter.Convert(parsedStr) };
             };
         }
     }

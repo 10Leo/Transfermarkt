@@ -7,8 +7,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class CaptainParser : ElementParser<Captain, HtmlNode>
     {
-        public override Captain Element { get; } = new Captain();
-
         public CaptainParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -21,8 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault(n => (n.Attributes["class"]?.Value).Contains("kapitaenicon-table"));
                 var parsedStr = (cap == null) ? "0" : "1";
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new Captain { Value = Converter.Convert(parsedStr) };
             };
         }
     }

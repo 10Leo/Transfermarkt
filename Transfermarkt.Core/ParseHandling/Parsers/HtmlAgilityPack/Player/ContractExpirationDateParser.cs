@@ -7,8 +7,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class ContractExpirationDateParser : ElementParser<ContractExpirationDate, HtmlNode>
     {
-        public override ContractExpirationDate Element { get; } = new ContractExpirationDate();
-
         public ContractExpirationDateParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -18,8 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = Regex.Replace(node.InnerText, @"\.", "/");
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new ContractExpirationDate { Value = Converter.Convert(parsedStr) };
             };
         }
     }

@@ -8,8 +8,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     class CountryParser : ElementParser<Country, HtmlNode>
     {
-        public override Country Element { get; } = new Country();
-
         public CountryParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -20,8 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
                 var parsedStr = countryNode?.GetAttributeValue<string>("title", null);
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new Country { Value = Converter.Convert(parsedStr) };
             };
         }
     }

@@ -7,8 +7,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     class SeasonParser : ElementParser<Season, HtmlNode>
     {
-        public override Season Element { get; } = new Season();
-
         public SeasonParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -23,8 +21,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
                 }
 
                 //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
-                Element.Value = Converter.Convert(parsedStr.ToString());
-                return Element;
+                return new Season { Value = Converter.Convert(parsedStr.ToString()) };
             };
         }
     }

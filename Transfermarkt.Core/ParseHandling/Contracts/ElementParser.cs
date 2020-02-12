@@ -8,7 +8,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         public Predicate<TNode> CanParsePredicate { get; set; }
         public Func<TNode, TElement> ParseFunc { get; set; }
 
-        public abstract TElement Element { get; }
 
         public IConverter<object> Converter { get; set; }
 
@@ -23,10 +22,10 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public virtual TElement Parse(TNode node)
         {
+            TElement e = default;
             try
             {
-                var e = ParseFunc(node);
-                Element.Value = e.Value;
+                e.Value = ParseFunc(node).Value;
 
                 OnSuccess?.Invoke(this, new ParserEventArgs<TNode, TElement>(node, Element));
                 parsedAlready = true;
@@ -36,7 +35,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 OnFailure?.Invoke(this, new ParserEventArgs<TNode, TElement>(node, Element, ex));
             }
 
-            return Element;
+            return e;
         }
     }
 }

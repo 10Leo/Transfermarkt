@@ -4,7 +4,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 {
     public interface IElementParser<out TElement, TNode, TValue> where TElement : IElement
     {
-        TElement Element { get; }
         IConverter<TValue> Converter { get; set; }
 
         bool CanParse(TNode node);

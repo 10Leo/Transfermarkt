@@ -7,8 +7,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class MarketValueParser : ElementParser<MarketValue, HtmlNode>
     {
-        public override MarketValue Element { get; } = new MarketValue();
-
         public MarketValueParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -36,8 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     n = n * 1000;
                 }
 
-                Element.Value = Converter.Convert(n.ToString());
-                return Element;
+                return new MarketValue { Value = Converter.Convert(n.ToString()) };
             };
         }
     }

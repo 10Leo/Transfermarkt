@@ -7,8 +7,6 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class PositionParser : ElementParser<Position, HtmlNode>
     {
-        public override Position Element { get; } = new Position();
-
         public PositionParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -21,8 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault()
                     .InnerText;
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new Position { Value = Converter.Convert(parsedStr) };
             };
         }
     }
