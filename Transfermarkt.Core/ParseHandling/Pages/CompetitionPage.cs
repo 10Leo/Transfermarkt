@@ -17,7 +17,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         {
             this.Domain = new Competition();
 
-            this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
+            this.Sections = new List<ISection<HtmlNode, IElement>>
             {
                 new CompetitionPageSection(connection, logger),
                 new CompetitionClubsPageSection(connection, logger)
@@ -37,12 +37,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     {
         public CompetitionPageSection(HAPConnection connection, ILogger logger)
         {
-            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
-                new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
-                new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
-                new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Competition.CountryImgParser{ Converter = new StringConverter() },
+            this.Parsers = new List<IElementParser<IElement, HtmlNode, object>>() {
+                //new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
+                //new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
+                //new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
+                //new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Competition.CountryImgParser(),
             };
 
             this.GetElementsNodes = () =>

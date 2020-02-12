@@ -9,7 +9,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         IConnection<TNode> Connection { get; set; }
 
-        IReadOnlyList<ISection<TDomain, TNode, TElement>> Sections { get; set; }
+        IReadOnlyList<ISection<TNode, TElement>> Sections { get; set; }
 
         event EventHandler<PageEventArgs> OnBeforeParse;
         event EventHandler<PageEventArgs> OnAfterParse;

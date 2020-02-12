@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TNode"></typeparam>
     /// <typeparam name="TElement"></typeparam>
-    public interface ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    public interface ISection<TNode, TElement> where TElement : IElement
     {
         /// <summary>
         /// 
@@ -21,15 +21,15 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         void Parse(IPage<IDomain, TNode, TElement> page);
     }
 
-    public interface IElementsSection<TDomain, TNode, TElement> : ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    public interface IElementsSection<TNode, TElement> : ISection<TNode, TElement> where TElement : IElement
     {
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IEnumerable<IElementParser<TNode, TElement, object>> Parsers { get; set; }
+        IEnumerable<IElementParser<TElement, TNode, object>> Parsers { get; set; }
     }
 
-    public interface IChildsSection<TDomain, TNode, TElement> : ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    public interface IChildsSection<TDomain, TNode, TElement> : ISection<TNode, TElement> where TDomain : IDomain where TElement : IElement
     {
         /// <summary>
         /// A kind of Page that might be accessible from the Section.
@@ -37,11 +37,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         IPage<TDomain, TNode, TElement> Page { get; set; }
     }
 
-    public interface IChildsSamePageSection<TDomain, TNode, TElement> : ISection<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+    public interface IChildsSamePageSection<TNode, TElement> : ISection<TNode, TElement> where TElement : IElement
     {
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IEnumerable<IElementParser<TNode, TElement, object>> Parsers { get; set; }
+        IEnumerable<IElementParser<TElement, TNode, object>> Parsers { get; set; }
     }
 }

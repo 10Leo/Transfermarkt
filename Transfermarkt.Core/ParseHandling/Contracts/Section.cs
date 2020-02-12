@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Section<TNode> : ISection<IDomain, TNode, IElement>
+    public abstract class Section<TNode> : ISection<TNode, IElement>
     {
         public IConnection<TNode> Connection { get; set; }
 
@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         public abstract void Parse(IPage<IDomain, TNode, IElement> page);
     }
 
-    public abstract class ElementsSection<TNode> : IElementsSection<IDomain, TNode, IElement>
+    public abstract class ElementsSection<TNode> : IElementsSection<TNode, IElement>
     {
         public IEnumerable<IElementParser<TNode, IElement, object>> Parsers { get; set; }
 
@@ -80,7 +80,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         }
     }
 
-    public abstract class ChildsSamePageSection<TDomain, TNode> : IChildsSamePageSection<IDomain, TNode, IElement> where TDomain : IDomain, new()
+    public abstract class ChildsSamePageSection<TDomain, TNode> : IChildsSamePageSection<TNode, IElement> where TDomain : IDomain, new()
     {
         public IEnumerable<IElementParser<TNode, IElement, object>> Parsers { get; set; }
 
