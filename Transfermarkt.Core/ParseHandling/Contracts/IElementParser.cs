@@ -6,21 +6,24 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     {
         IConverter<TValue> Converter { get; set; }
 
+        event EventHandler<ParserEventArgs<TNode>> OnSuccess;
+        event EventHandler<ParserEventArgs<TNode>> OnFailure;
+
         bool CanParse(TNode node);
         TElement Parse(TNode node);
     }
 
-    public class ParserEventArgs<TNode, TElement> : EventArgs
+    public class ParserEventArgs<TNode> : EventArgs
     {
         public TNode Node { get; }
-        public TElement Element { get; }
+        public IElement Element { get; }
         public string Message { get; }
         public Exception Exception { get; }
 
-        public ParserEventArgs(TNode node, TElement parsedObj, Exception exception = null, string message = null)
+        public ParserEventArgs(TNode node, IElement parsedElement, Exception exception = null, string message = null)
         {
             this.Node = node;
-            this.Element = parsedObj;
+            this.Element = parsedElement;
             this.Message = message;
             this.Exception = exception;
         }
