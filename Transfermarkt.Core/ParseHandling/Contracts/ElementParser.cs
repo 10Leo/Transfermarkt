@@ -21,7 +21,9 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public virtual TElement Parse(TNode node)
         {
-            TElement e = default;
+            //TODO: consider change this to a new instance of the generic parameter TElement. This requires the new() keyword in the where constraint at the interface level: where TElement: IElement, new()
+            Type t = typeof(TElement);
+            TElement e = (TElement)Activator.CreateInstance(t);
             try
             {
                 e.Value = ParseFunc(node).Value;
