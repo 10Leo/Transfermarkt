@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    abstract class ElementParser<TElement, TNode> : IElementParser<TElement, TNode, object> where TElement: IElement
+    abstract class ElementParser<TElement, TNode> : IElementParser<TElement, TNode, object> where TElement: IElement, new()
     {
         private bool parsedAlready = false;
 
@@ -21,9 +21,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public virtual TElement Parse(TNode node)
         {
-            //TODO: consider change this to a new instance of the generic parameter TElement. This requires the new() keyword in the where constraint at the interface level: where TElement: IElement, new()
-            Type t = typeof(TElement);
-            TElement e = (TElement)Activator.CreateInstance(t);
+            TElement e = new TElement();
+
             try
             {
                 e.Value = ParseFunc(node).Value;
