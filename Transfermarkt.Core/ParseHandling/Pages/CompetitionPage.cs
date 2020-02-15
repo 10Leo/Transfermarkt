@@ -11,13 +11,13 @@ using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
-    public class CompetitionPage : Page<HtmlNode>
+    public class CompetitionPage : Page<HtmlNode, IValue<object>>
     {
         public CompetitionPage(HAPConnection connection, ILogger logger) : base(connection)
         {
             this.Domain = new Competition();
 
-            this.Sections = new List<ISection<HtmlNode, IElement>>
+            this.Sections = new List<ISection<HtmlNode, IElement<IValue<object>>, IValue<object>>>
             {
                 new CompetitionPageSection(connection, logger),
                 new CompetitionClubsPageSection(connection, logger)
@@ -33,11 +33,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionPageSection : ElementsSection<HtmlNode>
+    class CompetitionPageSection : ElementsSection<HtmlNode, IValue<object>>
     {
         public CompetitionPageSection(HAPConnection connection, ILogger logger)
         {
-            this.Parsers = new List<IElementParser<IElement, HtmlNode, object>>() {
+            this.Parsers = new List<IElementParser<IElement<IValue<object>>, HtmlNode, IValue<object>>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
                 new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
@@ -63,7 +63,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionClubsPageSection : ChildsSection<HtmlNode>
+    class CompetitionClubsPageSection : ChildsSection<HtmlNode, IValue<object>>
     {
         protected static IConfigurationManager config = new ConfigManager();
 

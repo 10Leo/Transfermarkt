@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class NameParser : ElementParser<Name, HtmlNode>
+    class NameParser : ElementParser<Name, string, HtmlNode>
     {
         public NameParser()
         {
@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='verein_head']//h1[@itemprop='name']/span")?.InnerText;
 
-                return new Name { Value = Converter.Convert(parsedStr) };
+                return new Name { /*Value = Converter.Convert(parsedStr)*/ };
             };
         }
     }

@@ -8,7 +8,7 @@ namespace Transfermarkt.Core.Actors
     {
         public Club()
         {
-            Elements = new List<IElement>
+            Elements = new List<IElement<object>>
             {
                 new Country(),
                 new Name(),

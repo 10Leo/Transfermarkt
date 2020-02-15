@@ -1,10 +1,10 @@
 ﻿namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Element : IElement
+    public abstract class Element<TValue> : IElement<TValue>
     {
         public string InternalName { get; }
         public string Name { get; }
-        public dynamic Value { get; set; }
+        public TValue Value { get; }
 
         public Element(string internalName, string name)
         {
