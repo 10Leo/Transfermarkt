@@ -1,11 +1,12 @@
 ﻿using HtmlAgilityPack;
+using System;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ContractExpirationDateParser : ElementParser<ContractExpirationDate, HtmlNode>
+    class ContractExpirationDateParser : ElementParser<ContractExpirationDate, DateTime, HtmlNode>
     {
         public ContractExpirationDateParser()
         {

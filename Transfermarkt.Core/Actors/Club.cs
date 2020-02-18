@@ -13,8 +13,8 @@ namespace Transfermarkt.Core.Actors
                 new Country(),
                 new Name(),
                 new Season(),
-                new ImgUrl(),
-                new CountryImg()
+                //new ImgUrl(),
+                //new CountryImg()
             };
         }
     }

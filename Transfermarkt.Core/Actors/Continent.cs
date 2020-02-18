@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.Actors
     {
         public Continent()
         {
-            Elements = new List<IElement>
+            Elements = new List<IElement<object>>
             {
                 new Transfermarkt.Core.ParseHandling.Elements.Continent.Name(),
                 new Transfermarkt.Core.ParseHandling.Elements.Continent.ContinentCode()

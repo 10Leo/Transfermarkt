@@ -8,13 +8,13 @@ namespace Transfermarkt.Core.Actors
     {
         public Competition()
         {
-            Elements = new List<IElement>
+            Elements = new List<IElement<object>>
             {
-                new Country(),
-                new Name(),
-                new Season(),
-                new ImgUrl(),
-                new CountryImg()
+                //new Country(),
+                //new Name(),
+                //new Season(),
+                //new ImgUrl(),
+                //new CountryImg()
             };
         }
     }

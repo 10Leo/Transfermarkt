@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ProfileUrlParser : ElementParser<ProfileUrl, HtmlNode>
+    class ProfileUrlParser : ElementParser<ProfileUrl, string, HtmlNode>
     {
         public ProfileUrlParser()
         {

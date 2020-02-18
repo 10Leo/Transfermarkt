@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ShirtNumberParser : ElementParser<ShirtNumber, HtmlNode>
+    class ShirtNumberParser : ElementParser<ShirtNumber, int, HtmlNode>
     {
         public ShirtNumberParser()
         {

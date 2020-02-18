@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
             try
             {
-                e.Value = ParseFunc(node).Value;
+                e = ParseFunc(node);
 
                 OnSuccess?.Invoke(this, new ParserEventArgs<TNode, TValue>(node, e));
                 parsedAlready = true;

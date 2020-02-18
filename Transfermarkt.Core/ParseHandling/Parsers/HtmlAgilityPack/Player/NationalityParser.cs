@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class NationalityParser : ElementParser<Nationality, HtmlNode>
+    class NationalityParser : ElementParser<Nationality, Actors.Nationality, HtmlNode>
     {
         public NationalityParser()
         {

@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
-    class ContinentCodeParser : ElementParser<Elements.Continent.ContinentCode, HtmlNode>
+    class ContinentCodeParser : ElementParser<Elements.Continent.ContinentCode, object, HtmlNode>
     {
         public ContinentCodeParser()
         {

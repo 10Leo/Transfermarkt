@@ -3,7 +3,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Player : Domain<object>
+    public class Player : Domain
     {
         public Player()
         {
@@ -11,14 +11,14 @@ namespace Transfermarkt.Core.Actors
             {
                 new Transfermarkt.Core.ParseHandling.Elements.Player.Name(),
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.ShortName(),
-                new Transfermarkt.Core.ParseHandling.Elements.Player.BirthDate(),
+                //new Transfermarkt.Core.ParseHandling.Elements.Player.BirthDate(),
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.Nationality(),
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.Height(),
 
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.PreferredFoot(),
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.Position(),
 
-                new Transfermarkt.Core.ParseHandling.Elements.Player.ShirtNumber(),
+                //new Transfermarkt.Core.ParseHandling.Elements.Player.ShirtNumber(),
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.Captain(),
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.ClubArrivalDate(),
                 //new Transfermarkt.Core.ParseHandling.Elements.Player.ContractExpirationDate(),

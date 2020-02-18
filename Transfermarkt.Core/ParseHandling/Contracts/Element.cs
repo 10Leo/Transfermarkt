@@ -4,7 +4,7 @@
     {
         public string InternalName { get; }
         public string Name { get; }
-        public TValue Value { get; }
+        public TValue Value { get; set; }
 
         public Element(string internalName, string name)
         {
