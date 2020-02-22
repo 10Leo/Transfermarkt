@@ -3,28 +3,34 @@ using System.Linq;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Domain : IDomain<object>
+    public abstract class Domain : IDomain
     {
-        public IEnumerable<IElement<object>> Elements { get; set; }
+        public IList<IElement> Elements { get; set; }
 
-        public IEnumerable<IDomain<object>> Children { get; set; }
+        public IList<IDomain> Children { get; set; }
 
         public Domain()
         {
-            Elements = new List<IElement<object>>();
-            Children = new List<IDomain<object>>();
+            Elements = new List<IElement>();
+            Children = new List<IDomain>();
         }
 
-        public IElement<object> SetElement(IElement<object> element)
+        public IElement SetElement(IElement element)
         {
             if (element == null)
             {
                 return null;
             }
-            var elementType = element.GetType();
 
-            //var thisElement = Elements.FirstOrDefault(p => p.GetType() == elementType);
-            //thisElement.Value = element.Value;
+            var elementType = element.GetType();
+            var thisElement = Elements.FirstOrDefault(e => e.GetType() == elementType);
+
+            if (thisElement == null)
+            {
+                return null;
+            }
+            thisElement.Value = element.Value;
+            return thisElement;
 
             //foreach (var e in Elements)
             //{
@@ -35,7 +41,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             //    }
             //}
 
-            return null;
+            //return null;
         }
 
         public override string ToString()

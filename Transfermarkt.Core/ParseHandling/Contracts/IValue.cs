@@ -6,23 +6,81 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    //public interface IVal : IValue<>
-    //{
-
-    //}
-
-    public interface IValue<T>
+    public interface IValue
     {
-        T Value { get; set; }
+        Type Type { get; }
+        string ToString();
     }
 
-    public interface StringValue: IValue<string> { }
-    public interface IntValue: IValue<int> { }
-
-    interface ITyp { }
-
-    public class Int : ITyp
+    public class StringValue : IValue
     {
-        int Value { get; set; }
+        public Type Type => typeof(string);
+        public string Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
+    }
+    public class IntValue : IValue
+    {
+        public Type Type => typeof(int?);
+
+        public int? Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
+    }
+    public class DecimalValue : IValue
+    {
+        public Type Type => typeof(decimal?);
+        public decimal? Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
+    }
+    public class DatetimeValue : IValue
+    {
+        public Type Type => typeof(DateTime?);
+        public DateTime? Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
+    }
+    public class NationalityValue : IValue
+    {
+        public Type Type => typeof(Actors.Nationality?);
+        public Actors.Nationality? Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
+    }
+    public class PositionValue : IValue
+    {
+        public Type Type => typeof(Actors.Position?);
+        public Actors.Position? Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
+    }
+    public class FootValue : IValue
+    {
+        public Type Type => typeof(Actors.Foot?);
+        public Actors.Foot? Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
     }
 }

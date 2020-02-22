@@ -1,9 +1,9 @@
 ﻿namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IElement<out TValue>
+    public interface IElement
     {
         string Name { get; }
         string InternalName { get; }
-        TValue Value { get; }
+        IValue Value { get; set; }
     }
 }

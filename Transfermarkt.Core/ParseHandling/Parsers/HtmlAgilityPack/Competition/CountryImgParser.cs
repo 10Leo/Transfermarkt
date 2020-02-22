@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
                 var parsedStr = countryNode?.GetAttributeValue<string>("src", null);
 
-                return new CountryImg { Value = Converter.Convert(parsedStr) };
+                return new CountryImg { Value = new StringValue { Value = Converter.Convert(parsedStr) } };
             };
         }
     }

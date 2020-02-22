@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 //TODO
                 var parsedStr = string.Empty;
 
-                return new ImgUrl { Value = Converter.Convert(parsedStr) };
+                return new ImgUrl { Value = new StringValue { Value = Converter.Convert(parsedStr) } };
             };
         }
     }

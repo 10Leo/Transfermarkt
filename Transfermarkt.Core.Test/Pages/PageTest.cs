@@ -72,7 +72,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             var mock = GetMockDomain();
 
             DomainElementsCheck(domain, mock);
-            
+
             // Clubs
             for (int i = 0; i < domain.Children.Count; i++)
             {
@@ -122,35 +122,35 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             var abbrevName = @"^(\D)*$";
 
             var competitionMock = new Competition();
-            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Country() { Value = isoPattern });
-            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Name() { Value = namePattern });
-            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Season() { Value = yearPattern });
-            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.ImgUrl() { Value = linkPattern });
-            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.CountryImg() { Value = linkPattern });
+            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Country() { Value = new StringValue { Value = isoPattern } });
+            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Name() { Value = new StringValue { Value = namePattern } });
+            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Season() { Value = new StringValue { Value = yearPattern } });
+            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.ImgUrl() { Value = new StringValue { Value = linkPattern } });
+            competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.CountryImg() { Value = new StringValue { Value = linkPattern } });
 
             var clubMock = new Club();
-            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Country() { Value = isoPattern });
-            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Name() { Value = namePattern });
-            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Season() { Value = yearPattern });
-            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.ImgUrl() { Value = linkPattern });
-            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.CountryImg() { Value = linkPattern });
+            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Country() { Value = new StringValue { Value = isoPattern } });
+            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Name() { Value = new StringValue { Value = namePattern } });
+            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Season() { Value = new StringValue { Value = yearPattern } });
+            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.ImgUrl() { Value = new StringValue { Value = linkPattern } });
+            clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.CountryImg() { Value = new StringValue { Value = linkPattern } });
             competitionMock.Children.Add(clubMock);
 
             var playerMock = new Player();
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Name() { Value = namePattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ShortName() { Value = abbrevName });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.BirthDate() { Value = datePattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Nationality() { Value = isoPattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Height() { Value = heightPattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.PreferredFoot() { Value = footPattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Position() { Value = positionPattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ShirtNumber() { Value = shirtPattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Captain() { Value = captainPattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ClubArrivalDate() { Value = datePattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ContractExpirationDate() { Value = datePattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.MarketValue() { Value = mvPattern });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Name() { Value = new StringValue { Value = namePattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ShortName() { Value = new StringValue { Value = abbrevName } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.BirthDate() { Value = new StringValue { Value = datePattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Nationality() { Value = new StringValue { Value = isoPattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Height() { Value = new StringValue { Value = heightPattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.PreferredFoot() { Value = new StringValue { Value = footPattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Position() { Value = new StringValue { Value = positionPattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ShirtNumber() { Value = new StringValue { Value = shirtPattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Captain() { Value = new StringValue { Value = captainPattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ClubArrivalDate() { Value = new StringValue { Value = datePattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ContractExpirationDate() { Value = new StringValue { Value = datePattern } });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.MarketValue() { Value = new StringValue { Value = mvPattern } });
             //playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl() { Value = linkPattern });
-            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ProfileUrl() { Value = linkPattern });
+            playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ProfileUrl() { Value = new StringValue { Value = linkPattern } });
             clubMock.Children.Add(playerMock);
 
             return competitionMock;
@@ -160,13 +160,43 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         {
             for (int i = 0; i < domain.Elements.Count; i++)
             {
+                string value = null;
                 var e = domain.Elements[i];
-                if (e.Value != null)
+                if (e.Value.Type == typeof(string))
                 {
-                    Regex rgx = new Regex(mock.Elements[i].Value);
-                    var str = string.Format("{0}", e.Value);
+                    value = ((StringValue)e.Value).Value;
+                }
+                else if (e.Value.Type == typeof(int?))
+                {
+                    value = ((IntValue)e.Value).Value?.ToString();
+                }
+                else if (e.Value.Type == typeof(decimal?))
+                {
+                    value = ((DecimalValue)e.Value).Value?.ToString();
+                }
+                else if (e.Value.Type == typeof(DateTime?))
+                {
+                    value = ((DatetimeValue)e.Value).Value?.ToString();
+                }
+                else if (e.Value.Type == typeof(Nationality?))
+                {
+                    value = ((NationalityValue)e.Value).Value?.ToString();
+                }
+                else if (e.Value.Type == typeof(Position?))
+                {
+                    value = ((PositionValue)e.Value).Value?.ToString();
+                }
+                else if (e.Value.Type == typeof(Foot?))
+                {
+                    value = ((FootValue)e.Value).Value?.ToString();
+                }
+
+                if (value != null)
+                {
+                    Regex rgx = new Regex(((StringValue)mock.Elements[i].Value).Value);
+                    var str = string.Format("{0}", value);
                     var m = rgx.Match(str);
-                    Assert.IsTrue(rgx.IsMatch(str), $"{e.InternalName} returned an unexpected value: {e.Value}");
+                    Assert.IsTrue(rgx.IsMatch(str), $"{e.InternalName} returned an unexpected value: {value}");
                 }
             }
         }

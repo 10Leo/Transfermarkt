@@ -34,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             });
         }
 
-        public object Convert(string stringToConvert)
+        public Nationality? Convert(string stringToConvert)
         {
             Nationality? p = null;
             try

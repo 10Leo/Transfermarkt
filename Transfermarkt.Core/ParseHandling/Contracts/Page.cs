@@ -7,13 +7,13 @@ using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Page<TNode, TValue> : IPage<IDomain<TValue>, TNode, IElement<TValue>, TValue>
+    public abstract class Page<TNode> : IPage<IDomain, IElement, TNode>
     {
-        public IDomain<TValue> Domain { get; set; }
+        public IDomain Domain { get; set; }
 
         public IConnection<TNode> Connection { get; set; }
 
-        public IReadOnlyList<ISection<TNode, IElement<TValue>, TValue>> Sections { get; set; }
+        public IReadOnlyList<ISection<IElement, TNode>> Sections { get; set; }
         
         public event EventHandler<PageEventArgs> OnAfterParse;
         public event EventHandler<PageEventArgs> OnBeforeParse;
@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         #region Contract
 
-        public virtual IDomain<TValue> Parse(string url)
+        public virtual IDomain Parse(string url)
         {
             this.Connection.Connect(url);
 

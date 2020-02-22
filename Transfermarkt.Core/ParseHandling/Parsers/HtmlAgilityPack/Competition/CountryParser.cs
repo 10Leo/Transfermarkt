@@ -6,7 +6,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class CountryParser : ElementParser<Country, Actors.Nationality, HtmlNode>
+    class CountryParser : ElementParser<Country, Actors.Nationality?, HtmlNode>
     {
         public CountryParser()
         {
@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
                 var parsedStr = countryNode?.GetAttributeValue<string>("title", null);
 
-                return new Country { Value = Converter.Convert(parsedStr) };
+                return new Country { Value = new NationalityValue { Value = Converter.Convert(parsedStr) } };
             };
         }
     }

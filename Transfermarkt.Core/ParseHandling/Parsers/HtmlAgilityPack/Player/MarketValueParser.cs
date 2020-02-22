@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class MarketValueParser : ElementParser<MarketValue, decimal, HtmlNode>
+    class MarketValueParser : ElementParser<MarketValue, decimal?, HtmlNode>
     {
         public MarketValueParser()
         {
@@ -34,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     n = n * 1000;
                 }
 
-                return new MarketValue { Value = Converter.Convert(n.ToString()) };
+                return new MarketValue { Value = new DecimalValue { Value = Converter.Convert(n.ToString()) } };
             };
         }
     }

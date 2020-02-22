@@ -33,7 +33,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             });
         }
 
-        public object Convert(string stringToConvert)
+        public Foot? Convert(string stringToConvert)
         {
             Foot? p = null;
             try

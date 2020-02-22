@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IPage<TDomain, TNode, TElement, TValue> where TDomain : IDomain<TValue> where TElement : IElement<TValue>
+    public interface IPage<TDomain, TElement, TNode> where TDomain : IDomain where TElement : IElement
     {
         TDomain Domain { get; set; }
 
         IConnection<TNode> Connection { get; set; }
 
-        IReadOnlyList<ISection<TNode, TElement, TValue>> Sections { get; set; }
+        IReadOnlyList<ISection<TElement, TNode>> Sections { get; set; }
 
         event EventHandler<PageEventArgs> OnBeforeParse;
         event EventHandler<PageEventArgs> OnAfterParse;

@@ -7,35 +7,35 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.Competition
 {
-    public class Name : Element<string>
+    public class Name : Element
     {
         public Name() : base("Name", "Name")
         {
         }
     }
 
-    public class Season : Element<int>
+    public class Season : Element
     {
         public Season() : base("Y", "Season")
         {
         }
     }
 
-    public class ImgUrl : Element<string>
+    public class ImgUrl : Element
     {
         public ImgUrl() : base("ImgUrl", "Img Url")
         {
         }
     }
 
-    public class Country : Element<Actors.Nationality>
+    public class Country : Element
     {
         public Country() : base("Country", "Country")
         {
         }
     }
 
-    public class CountryImg : Element<string>
+    public class CountryImg : Element
     {
         public CountryImg() : base("CountryImg", "Country Img")
         {

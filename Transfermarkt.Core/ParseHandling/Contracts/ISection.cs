@@ -12,36 +12,36 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TNode"></typeparam>
     /// <typeparam name="TElement"></typeparam>
-    public interface ISection<TNode, TElement, TValue> where TElement : IElement<TValue>
+    public interface ISection<TElement, TNode> where TElement : IElement
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="page"></param>
-        void Parse(IPage<IDomain<TValue>, TNode, TElement, TValue> page);
+        void Parse(IPage<IDomain, TElement, TNode> page);
     }
 
-    public interface IElementsSection<TNode, TElement, TValue> : ISection<TNode, TElement, TValue> where TElement : IElement<TValue>
+    public interface IElementsSection<TElement, TNode> : ISection<TElement, TNode> where TElement : IElement
     {
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IEnumerable<IElementParser<TElement, TNode, TValue>> Parsers { get; set; }
+        IEnumerable<IElementParser<TElement, TNode>> Parsers { get; set; }
     }
 
-    public interface IChildsSection<TDomain, TNode, TElement, TValue> : ISection<TNode, TElement, TValue> where TDomain : IDomain<TValue> where TElement : IElement<TValue>
+    public interface IChildsSection<TDomain, TElement, TNode> : ISection<TElement, TNode> where TDomain : IDomain where TElement : IElement
     {
         /// <summary>
         /// A kind of Page that might be accessible from the Section.
         /// </summary>
-        IPage<TDomain, TNode, TElement, TValue> Page { get; set; }
+        IPage<TDomain, TElement, TNode> Page { get; set; }
     }
 
-    public interface IChildsSamePageSection<TNode, TElement, TValue> : ISection<TNode, TElement, TValue> where TElement : IElement<TValue>
+    public interface IChildsSamePageSection<TElement, TNode> : ISection<TElement, TNode> where TElement : IElement
     {
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IEnumerable<IElementParser<TElement, TNode, TValue>> Parsers { get; set; }
+        IEnumerable<IElementParser<TElement, TNode>> Parsers { get; set; }
     }
 }

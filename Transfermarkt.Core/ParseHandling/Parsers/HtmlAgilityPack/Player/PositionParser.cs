@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class PositionParser : ElementParser<Position, Actors.Position, HtmlNode>
+    class PositionParser : ElementParser<Position, Actors.Position?, HtmlNode>
     {
         public PositionParser()
         {
@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault()
                     .InnerText;
 
-                return new Position { Value = Converter.Convert(parsedStr) };
+                return new Position { Value = new PositionValue { Value = Converter.Convert(parsedStr) } };
             };
         }
     }

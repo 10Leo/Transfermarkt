@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//h1[@class='spielername-profil']")?.InnerText;
 
-                return new Name { Value = Converter.Convert(parsedStr) };
+                return new Name { Value = new StringValue { Value = Converter.Convert(parsedStr) } };
             };
         }
     }

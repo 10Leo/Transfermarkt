@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class NationalityParser : ElementParser<Nationality, Actors.Nationality, HtmlNode>
+    class NationalityParser : ElementParser<Nationality, Actors.Nationality?, HtmlNode>
     {
         public NationalityParser()
         {
@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
                     .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault();
 
-                return new Nationality { Value = Converter.Convert(parsedStr) };
+                return new Nationality { Value = new NationalityValue { Value = Converter.Convert(parsedStr) } };
             };
         }
     }

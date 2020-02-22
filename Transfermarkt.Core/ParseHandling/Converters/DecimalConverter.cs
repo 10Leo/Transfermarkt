@@ -3,9 +3,9 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
-    class DecimalConverter : IConverter<object>
+    class DecimalConverter : IConverter<decimal?>
     {
-        public object Convert(string stringToConvert)
+        public decimal? Convert(string stringToConvert)
         {
             decimal? converted = null;
             try

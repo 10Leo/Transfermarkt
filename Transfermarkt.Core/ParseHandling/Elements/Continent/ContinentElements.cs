@@ -2,14 +2,14 @@
 
 namespace Transfermarkt.Core.ParseHandling.Elements.Continent
 {
-    public class Name : Element<string>
+    public class Name : Element
     {
         public Name() : base("Name", "Name")
         {
         }
     }
 
-    public class ContinentCode : Element<string>
+    public class ContinentCode : Element
     {
         public ContinentCode() : base("Code", "Continent Code")
         {

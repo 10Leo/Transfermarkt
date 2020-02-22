@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class SeasonParser : ElementParser<Season, int, HtmlNode>
+    class SeasonParser : ElementParser<Season, int?, HtmlNode>
     {
         public SeasonParser()
         {
@@ -20,7 +20,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
                     parsedStr = 0;
                 }
 
-                return new Season { Value = Converter.Convert(parsedStr.ToString()) };
+                return new Season { Value = new IntValue { Value = Converter.Convert(parsedStr.ToString()) } };
             };
         }
     }
