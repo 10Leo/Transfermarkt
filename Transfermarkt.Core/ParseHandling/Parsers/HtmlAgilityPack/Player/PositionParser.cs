@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class PositionParser : ElementParser<Position, Actors.Position, HtmlNode>
+    class PositionParser : ElementParser<Position, PositionValue, HtmlNode>
     {
         public PositionParser()
         {

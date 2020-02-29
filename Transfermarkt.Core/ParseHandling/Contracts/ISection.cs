@@ -12,36 +12,36 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     /// <typeparam name="TDomain"></typeparam>
     /// <typeparam name="TNode"></typeparam>
     /// <typeparam name="TElement"></typeparam>
-    public interface ISection<TNode, TElement, TValue> where TElement : IElement<TValue>
+    public interface ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="page"></param>
-        void Parse(IPage<IDomain<TValue>, TNode, TElement, TValue> page);
+        void Parse(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
     }
 
-    public interface IElementsSection<TNode, TElement, TValue> : ISection<TNode, TElement, TValue> where TElement : IElement<TValue>
+    public interface IElementsSection<TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IEnumerable<IElementParser<TElement, TNode, TValue>> Parsers { get; set; }
+        IEnumerable<IElementParser<TElement, TValue, TNode>> Parsers { get; set; }
     }
 
-    public interface IChildsSection<TDomain, TNode, TElement, TValue> : ISection<TNode, TElement, TValue> where TDomain : IDomain<TValue> where TElement : IElement<TValue>
+    public interface IChildsSection<TDomain, TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TDomain : IDomain<TValue> where TElement : IElement<TValue> where TValue : IValue
     {
         /// <summary>
         /// A kind of Page that might be accessible from the Section.
         /// </summary>
-        IPage<TDomain, TNode, TElement, TValue> Page { get; set; }
+        IPage<TDomain, TElement, TValue, TNode> Page { get; set; }
     }
 
-    public interface IChildsSamePageSection<TNode, TElement, TValue> : ISection<TNode, TElement, TValue> where TElement : IElement<TValue>
+    public interface IChildsSamePageSection<TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {
         /// <summary>
         /// Parsers that parse the Elements of the Section.
         /// </summary>
-        IEnumerable<IElementParser<TElement, TNode, TValue>> Parsers { get; set; }
+        IEnumerable<IElementParser<TElement,TValue, TNode>> Parsers { get; set; }
     }
 }

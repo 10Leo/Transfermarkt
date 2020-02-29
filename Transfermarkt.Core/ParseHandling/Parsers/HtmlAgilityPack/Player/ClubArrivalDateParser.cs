@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ClubArrivalDateParser : ElementParser<ClubArrivalDate, DateTime, HtmlNode>
+    class ClubArrivalDateParser : ElementParser<ClubArrivalDate, DatetimeValue, HtmlNode>
     {
         public ClubArrivalDateParser()
         {

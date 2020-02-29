@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TNode, TValue> where TElement: IElement<TValue>, new()
+    abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TValue, TNode> where TElement: IElement<TValue>, new() where TValue : IValue
     {
         private bool parsedAlready = false;
 
@@ -10,8 +10,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public IConverter<TValue> Converter { get; set; }
 
-        public event EventHandler<ParserEventArgs<TNode, TValue>> OnSuccess;
-        public event EventHandler<ParserEventArgs<TNode, TValue>> OnFailure;
+        public event EventHandler<ParserEventArgs<TNode>> OnSuccess;
+        public event EventHandler<ParserEventArgs<TNode>> OnFailure;
 
         public virtual bool CanParse(TNode node)
         {
@@ -27,12 +27,12 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             {
                 e = ParseFunc(node);
 
-                OnSuccess?.Invoke(this, new ParserEventArgs<TNode, TValue>(node, e));
+                OnSuccess?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value.ToString())));
                 parsedAlready = true;
             }
             catch (Exception ex)
             {
-                OnFailure?.Invoke(this, new ParserEventArgs<TNode, TValue>(node, e, ex));
+                OnFailure?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value.ToString()), ex));
             }
 
             return e;

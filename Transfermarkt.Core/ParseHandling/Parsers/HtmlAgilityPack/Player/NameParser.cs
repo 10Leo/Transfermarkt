@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class NameParser : ElementParser<Name, string, HtmlNode>
+    class NameParser : ElementParser<Name, StringValue, HtmlNode>
     {
         public NameParser()
         {
@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault()
                     .InnerText;
 
-                return new Name { /*Value = Converter.Convert(parsedStr)*/ };
+                return new Name { Value = Converter.Convert(parsedStr) };
             };
         }
     }

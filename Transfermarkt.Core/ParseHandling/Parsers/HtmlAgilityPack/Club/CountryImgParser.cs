@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class CountryImgParser : ElementParser<CountryImg, string, HtmlNode>
+    class CountryImgParser : ElementParser<CountryImg, StringValue, HtmlNode>
     {
         public CountryImgParser()
         {

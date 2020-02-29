@@ -10,13 +10,13 @@ using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
-    public class ClubPage : Page<HtmlNode, object>
+    public class ClubPage : Page<IValue, HtmlNode>
     {
         public ClubPage(HAPConnection connection, ILogger logger) : base(connection)
         {
             this.Domain = new Club();
 
-            this.Sections = new List<ISection<HtmlNode, IElement<object>, object>>
+            this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
             {
                 new ClubPageSection(connection, logger),
                 new ClubPlayersPageSection(connection, logger)
@@ -32,16 +32,16 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPageSection : ElementsSection<HtmlNode, object>
+    class ClubPageSection : ElementsSection<HtmlNode, IValue>
     {
         public ClubPageSection(HAPConnection connection, ILogger logger)
         {
-            this.Parsers = new List<IElementParser<IElement<object>, HtmlNode, object>>() {
-                new Parsers.HtmlAgilityPack.Club.CountryParser{  },
-                new Parsers.HtmlAgilityPack.Club.NameParser{ },
-                //new Parsers.HtmlAgilityPack.Club.SeasonParser{ Converter = new IntConverter() },
-                //new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
+            this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
+                new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
+                new Parsers.HtmlAgilityPack.Club.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Club.SeasonParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
             };
 
             this.GetElementsNodes = () =>
@@ -57,31 +57,30 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 return elements;
             };
 
-            //this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"[Success parsing {e.Element.InternalName}]"));
-            //this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"[Error parsing {e.Element.InternalName} on node {e.Node.Name}], innertext: [{e.Node?.InnerText}], innerhtml: [{e.Node?.InnerHtml}]", e.Exception));
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"[Success parsing {e.Element.name}]"));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"[Error parsing {e.Element.name} on node {e.Node.Name}], innertext: [{e.Node?.InnerText}], innerhtml: [{e.Node?.InnerHtml}]", e.Exception));
         }
     }
 
-    class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode, object>
+    class ClubPlayersPageSection : ChildsSamePageSection<Player, IValue, HtmlNode>
     {
         public ClubPlayersPageSection(HAPConnection connection, ILogger logger)
         {
-            this.Parsers = new List<IElementParser<IElement<object>, HtmlNode, object>>() {
-                new Parsers.HtmlAgilityPack.Player.NameParser{ },
-                //new Parsers.HtmlAgilityPack.Player.ShortNameParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Player.BirthDateParser{ Converter = new DateConverter() },
-                //new Parsers.HtmlAgilityPack.Player.NationalityParser{ Converter = new NationalityConverter() },
-                //new Parsers.HtmlAgilityPack.Player.HeightParser{ Converter = new IntConverter() },
-
-                //new Parsers.HtmlAgilityPack.Player.PreferredFootParser{ Converter = new FootConverter() },
-                //new Parsers.HtmlAgilityPack.Player.PositionParser{ Converter = new PositionConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ShirtNumberParser{ Converter = new IntConverter() },
-                //new Parsers.HtmlAgilityPack.Player.CaptainParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ClubArrivalDateParser{ Converter = new DateConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ContractExpirationDateParser{ Converter = new DateConverter() },
-                //new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() },
-                ////new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
-                //new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
+            this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
+                new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.ShortNameParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.BirthDateParser{ Converter = new DateConverter() },
+                new Parsers.HtmlAgilityPack.Player.NationalityParser{ Converter = new NationalityConverter() },
+                new Parsers.HtmlAgilityPack.Player.HeightParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.PreferredFootParser{ Converter = new FootConverter() },
+                new Parsers.HtmlAgilityPack.Player.PositionParser{ Converter = new PositionConverter() },
+                new Parsers.HtmlAgilityPack.Player.ShirtNumberParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.CaptainParser{ Converter = new IntConverter() },
+                new Parsers.HtmlAgilityPack.Player.ClubArrivalDateParser{ Converter = new DateConverter() },
+                new Parsers.HtmlAgilityPack.Player.ContractExpirationDateParser{ Converter = new DateConverter() },
+                new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() },
+                //new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
+                new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
             };
 
             this.GetChildsNodes = () =>
@@ -122,8 +121,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 return playersNodes;
             };
 
-            //this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"[Success parsing {e.Element.InternalName}]"));
-            //this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"[Error parsing {e.Element.InternalName} on node {e.Node.Name}], innertext: [{e.Node?.InnerText}], innerhtml: [{e.Node?.InnerHtml}]", e.Exception));
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"[Success parsing {e.Element.name}]"));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"[Error parsing {e.Element.name} on node {e.Node.Name}], innertext: [{e.Node?.InnerText}], innerhtml: [{e.Node?.InnerHtml}]", e.Exception));
         }
     }
 }

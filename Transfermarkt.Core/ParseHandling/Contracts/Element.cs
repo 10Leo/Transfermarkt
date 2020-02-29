@@ -1,6 +1,6 @@
 ﻿namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Element<TValue> : IElement<TValue>
+    public abstract class Element<TValue> : IElement<TValue> where TValue : IValue
     {
         public string InternalName { get; }
         public string Name { get; }

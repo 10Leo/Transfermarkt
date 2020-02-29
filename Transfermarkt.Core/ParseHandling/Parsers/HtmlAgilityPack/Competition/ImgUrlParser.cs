@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class ImgUrlParser : ElementParser<ImgUrl, string, HtmlNode>
+    class ImgUrlParser : ElementParser<ImgUrl, StringValue, HtmlNode>
     {
         public ImgUrlParser()
         {

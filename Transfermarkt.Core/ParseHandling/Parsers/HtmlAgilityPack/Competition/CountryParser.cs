@@ -6,7 +6,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class CountryParser : ElementParser<Country, Actors.Nationality, HtmlNode>
+    class CountryParser : ElementParser<Country, NationalityValue, HtmlNode>
     {
         public CountryParser()
         {
