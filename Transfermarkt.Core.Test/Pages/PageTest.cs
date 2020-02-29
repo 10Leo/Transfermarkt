@@ -62,7 +62,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             { typeof(Transfermarkt.Core.ParseHandling.Elements.Player.ClubArrivalDate), Patterns.date },
             { typeof(Transfermarkt.Core.ParseHandling.Elements.Player.ContractExpirationDate), Patterns.date },
             { typeof(Transfermarkt.Core.ParseHandling.Elements.Player.MarketValue), Patterns.mv },
-            //{ typeof(Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl), Patterns.link },
+            { typeof(Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl), Patterns.link },
             { typeof(Transfermarkt.Core.ParseHandling.Elements.Player.ProfileUrl), Patterns.link }
         };
 
