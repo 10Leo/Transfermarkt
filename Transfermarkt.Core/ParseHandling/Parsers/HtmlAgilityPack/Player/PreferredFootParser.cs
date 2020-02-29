@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class PreferredFootParser : ElementParser<PreferredFoot, Actors.Foot?, HtmlNode>
+    class PreferredFootParser : ElementParser<PreferredFoot, FootValue, HtmlNode>
     {
         public PreferredFootParser()
         {
@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 var parsedStr = node
                     .InnerText;
 
-                return new PreferredFoot { Value = new FootValue { Value = Converter.Convert(parsedStr) } };
+                return new PreferredFoot { Value = Converter.Convert(parsedStr) };
             };
         }
     }

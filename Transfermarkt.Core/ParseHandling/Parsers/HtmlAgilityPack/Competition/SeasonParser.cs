@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class SeasonParser : ElementParser<Season, int?, HtmlNode>
+    class SeasonParser : ElementParser<Season, IntValue, HtmlNode>
     {
         public SeasonParser()
         {
@@ -21,7 +21,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
                 }
 
                 //TODO: the value to pass is an int but the metthod requires a string. Maybe change the receiver argument to be a generic.
-                return new Season { Value = new IntValue { Value = Converter.Convert(parsedStr.ToString()) } };
+                return new Season { Value = Converter.Convert(parsedStr.ToString()) };
             };
         }
     }

@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ClubArrivalDateParser : ElementParser<ClubArrivalDate, DateTime?, HtmlNode>
+    class ClubArrivalDateParser : ElementParser<ClubArrivalDate, DatetimeValue, HtmlNode>
     {
         public ClubArrivalDateParser()
         {
@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = node.InnerText;
 
-                return new ClubArrivalDate { Value = new DatetimeValue { Value = Converter.Convert(parsedStr) } };
+                return new ClubArrivalDate { Value = Converter.Convert(parsedStr) };
             };
         }
     }

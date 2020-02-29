@@ -12,6 +12,18 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         string ToString();
     }
 
+    //public class AValue : IValue
+    //{
+    //    public Type Type { get; }
+
+    //    public string Value { get; set; }
+
+    //    public override string ToString()
+    //    {
+    //        return string.Format("{0}", Value);
+    //    }
+    //}
+
     public class StringValue : IValue
     {
         public Type Type => typeof(string);

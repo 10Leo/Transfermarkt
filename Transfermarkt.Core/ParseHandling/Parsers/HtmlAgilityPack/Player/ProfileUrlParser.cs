@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ProfileUrlParser : ElementParser<ProfileUrl, string, HtmlNode>
+    class ProfileUrlParser : ElementParser<ProfileUrl, StringValue, HtmlNode>
     {
         public ProfileUrlParser()
         {
@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault(n => n.Attributes["class"]?.Value == "spielprofil_tooltip")
                     .Attributes["href"].Value;
 
-                return new ProfileUrl { Value = new StringValue { Value = Converter.Convert(parsedStr) } };
+                return new ProfileUrl { Value = Converter.Convert(parsedStr) };
             };
         }
     }

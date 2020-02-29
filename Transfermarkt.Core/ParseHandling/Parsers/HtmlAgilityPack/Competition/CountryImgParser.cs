@@ -6,7 +6,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     //TODO: consider extracting IElement from the page and pass it as a generic. e.g. CountryImgParser<CountryImg>
-    class CountryImgParser : ElementParser<CountryImg, string, HtmlNode>
+    class CountryImgParser : ElementParser<CountryImg, StringValue, HtmlNode>
     {
         public CountryImgParser()
         {
@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
                 var parsedStr = countryNode?.GetAttributeValue<string>("src", null);
 
-                return new CountryImg { Value = new StringValue { Value = Converter.Convert(parsedStr) } };
+                return new CountryImg { Value = Converter.Convert(parsedStr) };
             };
         }
     }

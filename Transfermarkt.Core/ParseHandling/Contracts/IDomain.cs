@@ -2,12 +2,12 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IDomain
+    public interface IDomain<TValue> where TValue : IValue
     {
-        IList<IElement> Elements { get; }
+        IList<IElement<TValue>> Elements { get; }
 
-        IList<IDomain> Children { get; }
+        IList<IDomain<TValue>> Children { get; }
 
-        IElement SetElement(IElement element);
+        IElement<TValue> SetElement(IElement<TValue> element);
     }
 }

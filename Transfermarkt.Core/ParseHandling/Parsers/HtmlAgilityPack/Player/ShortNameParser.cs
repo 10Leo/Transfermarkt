@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ShortNameParser : ElementParser<ShortName, string, HtmlNode>
+    class ShortNameParser : ElementParser<ShortName, StringValue, HtmlNode>
     {
         public ShortNameParser()
         {
@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault()
                     .InnerText;
 
-                return new ShortName{ Value = new StringValue { Value = Converter.Convert(parsedStr) } };
+                return new ShortName{ Value = Converter.Convert(parsedStr) };
             };
         }
     }

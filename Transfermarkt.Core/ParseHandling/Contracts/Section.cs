@@ -18,18 +18,18 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     //    public abstract void Parse(IPage<IDomain<TValue>, TNode, IElement<TValue>, TValue> page);
     //}
 
-    public abstract class ElementsSection<TNode, TValue> : IElementsSection<IElement, TNode>
+    public abstract class ElementsSection<TNode, TValue> : IElementsSection<IElement<TValue>, TValue, TNode> where TValue : IValue
     {
-        public IEnumerable<IElementParser<IElement, TNode>> Parsers { get; set; }
+        public IEnumerable<IElementParser<IElement<TValue>, TValue, TNode>> Parsers { get; set; }
 
         public Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
 
         public ElementsSection()
         {
-            this.Parsers = new List<IElementParser<IElement, TNode>>();
+            this.Parsers = new List<IElementParser<IElement<TValue>, TValue, TNode>>();
         }
 
-        public void Parse(IPage<IDomain, IElement, TNode> page)
+        public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
             if (Parsers != null)
             {
@@ -53,13 +53,13 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         }
     }
 
-    public abstract class ChildsSection<TNode, TValue> : IChildsSection<IDomain, IElement, TNode>
+    public abstract class ChildsSection<TNode, TValue> : IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode> where TValue : IValue
     {
-        public IPage<IDomain, IElement, TNode> Page { get; set; }
+        public IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
 
         public Func<IList<string>> GetUrls { get; set; }
 
-        public void Parse(IPage<IDomain, IElement, TNode> page)
+        public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
             if (this.Page != null)
             {
@@ -73,20 +73,20 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                         page.Domain?.Children.Add(pageDomain);
 
                         Type t = this.Page.Domain.GetType();
-                        this.Page.Domain = (IDomain)Activator.CreateInstance(t);
+                        this.Page.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
                     }
                 }
             }
         }
     }
 
-    public abstract class ChildsSamePageSection<TDomain, TNode> : IChildsSamePageSection<IElement, TNode> where TDomain : IDomain, new()
+    public abstract class ChildsSamePageSection<TDomain, TValue, TNode> : IChildsSamePageSection<IElement<TValue>, TValue, TNode> where TDomain : IDomain<TValue>, new() where TValue : IValue
     {
-        public IEnumerable<IElementParser<IElement, TNode>> Parsers { get; set; }
+        public IEnumerable<IElementParser<IElement<TValue>, TValue, TNode>> Parsers { get; set; }
 
         public Func<IList<List<(TNode key, TNode value)>>> GetChildsNodes { get; set; }
 
-        public void Parse(IPage<IDomain, IElement, TNode> page)
+        public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
             {
                 IList<List<(TNode key, TNode value)>> childDomainNodes = GetChildsNodes?.Invoke();

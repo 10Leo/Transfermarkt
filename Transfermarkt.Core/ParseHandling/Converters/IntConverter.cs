@@ -3,9 +3,9 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
-    class IntConverter : IConverter<int?>
+    class IntConverter : IConverter<IntValue>
     {
-        public int? Convert(string stringToConvert)
+        public IntValue Convert(string stringToConvert)
         {
             int? converted = null;
             try
@@ -13,7 +13,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
                 converted = int.Parse(stringToConvert);
             }
             catch (Exception) { }
-            return converted;
+            return new IntValue { Value = converted };
         }
     }
 }

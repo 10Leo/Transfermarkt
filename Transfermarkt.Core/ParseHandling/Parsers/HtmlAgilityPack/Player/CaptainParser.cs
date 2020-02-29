@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class CaptainParser : ElementParser<Captain, int?, HtmlNode>
+    class CaptainParser : ElementParser<Captain, IntValue, HtmlNode>
     {
         public CaptainParser()
         {
@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault(n => (n.Attributes["class"]?.Value).Contains("kapitaenicon-table"));
                 var parsedStr = (cap == null) ? "0" : "1";
 
-                return new Captain { Value = new IntValue { Value = Converter.Convert(parsedStr) } };
+                return new Captain { Value = Converter.Convert(parsedStr) };
             };
         }
     }

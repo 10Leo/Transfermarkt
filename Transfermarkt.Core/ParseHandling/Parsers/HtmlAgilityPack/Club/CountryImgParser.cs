@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class CountryImgParser : ElementParser<CountryImg, string, HtmlNode>
+    class CountryImgParser : ElementParser<CountryImg, StringValue, HtmlNode>
     {
         public CountryImgParser()
         {
@@ -17,7 +17,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='verein_head']//span[@class='mediumpunkt']//img[@class='flaggenrahmen vm']");
                 string parsedStr = countryNode?.GetAttributeValue<string>("src", null);
 
-                return new CountryImg { Value = new StringValue { Value = Converter.Convert(parsedStr) } };
+                return new CountryImg { Value = Converter.Convert(parsedStr) };
             };
         }
     }

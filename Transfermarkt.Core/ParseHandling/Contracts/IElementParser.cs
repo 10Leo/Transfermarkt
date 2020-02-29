@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IElementParser<out TElement, TNode> where TElement : IElement
+    public interface IElementParser<out TElement, out TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {
         //IConverter<TValue> Converter { get; set; }
 
@@ -16,11 +16,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     public class ParserEventArgs<TNode> : EventArgs
     {
         public TNode Node { get; }
-        public IElement Element { get; }
+        public (string name, string value) Element { get; }
         public string Message { get; }
         public Exception Exception { get; }
 
-        public ParserEventArgs(TNode node, IElement parsedElement, Exception exception = null, string message = null)
+        public ParserEventArgs(TNode node, (string name, string value) parsedElement, Exception exception = null, string message = null)
         {
             this.Node = node;
             this.Element = parsedElement;

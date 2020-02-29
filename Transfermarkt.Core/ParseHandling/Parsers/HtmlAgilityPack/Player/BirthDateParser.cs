@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class BirthDateParser : ElementParser<BirthDate, DateTime?, HtmlNode>
+    class BirthDateParser : ElementParser<BirthDate, DatetimeValue, HtmlNode>
     {
         public BirthDateParser()
         {
@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = node.InnerText?.Split(new[] { " (" }, StringSplitOptions.None)?[0];
 
-                return new BirthDate { Value = new DatetimeValue { Value = Converter.Convert(parsedStr) } };
+                return new BirthDate { Value = Converter.Convert(parsedStr) };
             };
         }
     }

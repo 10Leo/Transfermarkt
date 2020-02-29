@@ -1,7 +1,7 @@
 ﻿using System;
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TNode> where TElement: IElement, new()
+    abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TValue, TNode> where TElement: IElement<TValue>, new() where TValue : IValue
     {
         private bool parsedAlready = false;
 
@@ -27,12 +27,12 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             {
                 e = ParseFunc(node);
 
-                OnSuccess?.Invoke(this, new ParserEventArgs<TNode>(node, e));
+                OnSuccess?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value.ToString())));
                 parsedAlready = true;
             }
             catch (Exception ex)
             {
-                OnFailure?.Invoke(this, new ParserEventArgs<TNode>(node, e, ex));
+                OnFailure?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value.ToString()), ex));
             }
 
             return e;

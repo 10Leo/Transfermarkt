@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts.Converter
 {
-    public interface IFootConverter : IConverter<Foot?>
+    public interface IFootConverter : IConverter<FootValue>
     {
     }
 }

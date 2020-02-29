@@ -34,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             });
         }
 
-        public Nationality? Convert(string stringToConvert)
+        public NationalityValue Convert(string stringToConvert)
         {
             Nationality? p = null;
             try
@@ -49,7 +49,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             {
                 //TODO: log
             }
-            return p;
+            return new NationalityValue { Value = p };
         }
 
         private string GetLanguageFolder(string language)

@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts.Converter
 {
-    public interface IPositionConverter : IConverter<Position?>
+    public interface IPositionConverter : IConverter<PositionValue>
     {
     }
 }

@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ImgUrlParser : ElementParser<ImgUrl, string, HtmlNode>
+    class ImgUrlParser : ElementParser<ImgUrl, StringValue, HtmlNode>
     {
         public ImgUrlParser()
         {
@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 //TODO
                 var parsedStr = string.Empty;
 
-                return new ImgUrl { Value = new StringValue { Value = Converter.Convert(parsedStr) } };
+                return new ImgUrl { Value = Converter.Convert(parsedStr) };
             };
         }
     }
