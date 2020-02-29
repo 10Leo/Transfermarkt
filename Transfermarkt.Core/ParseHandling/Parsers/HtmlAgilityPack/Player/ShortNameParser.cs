@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ShortNameParser : ElementParser<HtmlNode>
+    class ShortNameParser : ElementParser<ShortName, StringValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Short Name";
-
         public ShortNameParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -20,7 +18,8 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("table//tr[1]/td[2]/div[2]")
                     .FirstOrDefault()
                     .InnerText;
-                return new ShortName { Value = Converter.Convert(parsedStr) };
+
+                return new ShortName{ Value = Converter.Convert(parsedStr) };
             };
         }
     }

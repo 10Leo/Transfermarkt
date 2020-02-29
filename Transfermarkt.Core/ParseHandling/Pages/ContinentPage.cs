@@ -3,7 +3,6 @@ using System;
 using System.Net;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Page;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {

@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class ImgUrlParser : ElementParser<HtmlNode>
+    class ImgUrlParser : ElementParser<ImgUrl, StringValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Img Url";
-
         public ImgUrlParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -17,34 +15,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
             this.ParseFunc = node =>
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//div[@class='headerfoto']/img")?.GetAttributeValue<string>("src", null);
+                
                 return new ImgUrl { Value = Converter.Convert(parsedStr) };
             };
-        }
-    }
-
-    static class HtmlAgilityPackUtil
-    {
-        public static T GetAttributeValue<T>(this HtmlNode td, string key, T defaultValue) where T : IConvertible
-        {
-            T result = defaultValue;//default(T);
-
-            if (td.Attributes[key] == null)// || String.IsNullOrEmpty(td.Attributes[key].Value) == false)
-            {
-                return defaultValue;
-            }
-
-            string value = td.Attributes[key].Value;
-
-            try
-            {
-                result = (T)Convert.ChangeType(value, typeof(T));
-            }
-            catch
-            {
-                result = defaultValue;//default(T);
-            }
-
-            return result;
         }
     }
 }

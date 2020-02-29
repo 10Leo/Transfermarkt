@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ProfileUrlParser : ElementParser<HtmlNode>
+    class ProfileUrlParser : ElementParser<ProfileUrl, StringValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Profile Url";
-
         public ProfileUrlParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -20,6 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("table//td//a")
                     .FirstOrDefault(n => n.Attributes["class"]?.Value == "spielprofil_tooltip")
                     .Attributes["href"].Value;
+
                 return new ProfileUrl { Value = Converter.Convert(parsedStr) };
             };
         }

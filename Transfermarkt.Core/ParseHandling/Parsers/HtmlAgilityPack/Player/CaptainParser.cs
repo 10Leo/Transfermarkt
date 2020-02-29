@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class CaptainParser : ElementParser<HtmlNode>
+    class CaptainParser : ElementParser<Captain, IntValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Captain";
-
         public CaptainParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -20,6 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("table//tr[1]/td[2]/span")?
                     .FirstOrDefault(n => (n.Attributes["class"]?.Value).Contains("kapitaenicon-table"));
                 var parsedStr = (cap == null) ? "0" : "1";
+
                 return new Captain { Value = Converter.Convert(parsedStr) };
             };
         }

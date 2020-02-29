@@ -6,10 +6,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class CountryParser : ElementParser<HtmlNode>
+    class CountryParser : ElementParser<Country, NationalityValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Country";
-
         public CountryParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -19,6 +17,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
             {
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='verein_head']//span[@class='mediumpunkt']//img[@class='flaggenrahmen vm']");
                 string parsedStr = countryNode?.GetAttributeValue<string>("title", null);
+
                 return new Country { Value = Converter.Convert(parsedStr) };
             };
         }

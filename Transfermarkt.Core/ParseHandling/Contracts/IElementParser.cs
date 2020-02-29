@@ -2,24 +2,30 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IElementParser<TNode, TElement, TValue> where TElement : IElement
+    public interface IElementParser<out TElement, out TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {
-        IConverter<TValue> Converter { get; set; }
+        //IConverter<TValue> Converter { get; set; }
 
-        event EventHandler<CustomEventArgs> OnSuccess;
-        event EventHandler<CustomEventArgs> OnFailure;
+        event EventHandler<ParserEventArgs<TNode>> OnSuccess;
+        event EventHandler<ParserEventArgs<TNode>> OnFailure;
 
         bool CanParse(TNode node);
         TElement Parse(TNode node);
     }
 
-    public class CustomEventArgs : EventArgs
+    public class ParserEventArgs<TNode> : EventArgs
     {
+        public TNode Node { get; }
+        public (string name, string value) Element { get; }
         public string Message { get; }
+        public Exception Exception { get; }
 
-        public CustomEventArgs(string message)
+        public ParserEventArgs(TNode node, (string name, string value) parsedElement, Exception exception = null, string message = null)
         {
-            Message = message;
+            this.Node = node;
+            this.Element = parsedElement;
+            this.Message = message;
+            this.Exception = exception;
         }
     }
 }

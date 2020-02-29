@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts.Converter
 {
-    public interface INationalityConverter : IConverter<object>
+    public interface INationalityConverter : IConverter<NationalityValue>
     {
     }
 }

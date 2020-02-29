@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class MarketValueParser : ElementParser<HtmlNode>
+    class MarketValueParser : ElementParser<MarketValue, DecimalValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Market Value";
-
         public MarketValueParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -35,6 +33,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 {
                     n = n * 1000;
                 }
+
                 return new MarketValue { Value = Converter.Convert(n.ToString()) };
             };
         }

@@ -6,10 +6,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    class CountryParser : ElementParser<HtmlNode>
+    class CountryParser : ElementParser<Country, NationalityValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Country";
-
         public CountryParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -19,6 +17,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
             {
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='wettbewerb_head']//img[@class='flaggenrahmen']");
                 var parsedStr = countryNode?.GetAttributeValue<string>("title", null);
+
                 return new Country { Value = Converter.Convert(parsedStr) };
             };
         }

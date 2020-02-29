@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class NationalityParser : ElementParser<HtmlNode>
+    class NationalityParser : ElementParser<Nationality, NationalityValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Nationality";
-
         public NationalityParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -20,6 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("img")
                     .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
                     .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault();
+
                 return new Nationality { Value = Converter.Convert(parsedStr) };
             };
         }

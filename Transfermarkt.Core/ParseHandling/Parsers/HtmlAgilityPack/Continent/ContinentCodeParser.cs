@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
-    class ContinentCodeParser : ElementParser<HtmlNode>
+    class ContinentCodeParser : ElementParser<Elements.Continent.ContinentCode, StringValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Continent Code";
-
         public ContinentCodeParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -16,7 +14,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 
             this.ParseFunc = node =>
             {
-                return null;
+                return new Transfermarkt.Core.ParseHandling.Elements.Continent.ContinentCode { };
             };
         }
     }

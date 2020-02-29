@@ -4,11 +4,11 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Competition : Domain
+    public class Competition : Domain<IValue>
     {
         public Competition()
         {
-            Elements = new List<IElement>
+            Elements = new List<IElement<IValue>>
             {
                 new Country(),
                 new Name(),

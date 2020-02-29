@@ -4,11 +4,11 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Club : Domain
+    public class Club : Domain<IValue>
     {
         public Club()
         {
-            Elements = new List<IElement>
+            Elements = new List<IElement<IValue>>
             {
                 new Country(),
                 new Name(),

@@ -2,46 +2,42 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Page;
 using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
-    public class CompetitionPage : Page<HtmlNode>
+    public class CompetitionPage : Page<IValue, HtmlNode>
     {
-        public CompetitionPage(HAPConnection connection) : base(connection)
+        public CompetitionPage(HAPConnection connection, ILogger logger) : base(connection)
         {
             this.Domain = new Competition();
 
-            this.Sections = new List<ISection<IDomain, HtmlNode, IElement>>
+            this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
             {
-                new CompetitionPageSection(connection),
-                new CompetitionClubsPageSection(connection)
+                new CompetitionPageSection(connection, logger),
+                new CompetitionClubsPageSection(connection, logger)
             };
-        }
-        
-        private void LogSuccess(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(".");
-        }
 
-        private void LogFailure(Object o, CustomEventArgs e)
-        {
-            Console.WriteLine(e.Message);
+            this.OnBeforeParse += (o, e) => {
+                logger.LogMessage(LogLevel.Milestone, $"Started parsing {e.Url}.");
+            };
+
+            this.OnAfterParse += (o, e) => {
+                logger.LogMessage(LogLevel.Milestone, $"Finished parsing {e.Url}.");
+            };
         }
     }
 
-    class CompetitionPageSection : ElementsSection<HtmlNode>
+    class CompetitionPageSection : ElementsSection<HtmlNode, IValue>
     {
-        public CompetitionPageSection(HAPConnection connection)
+        public CompetitionPageSection(HAPConnection connection, ILogger logger)
         {
-            this.Parsers = new List<IElementParser<HtmlNode, IElement, object>>() {
+            this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
                 new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
                 new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
@@ -61,10 +57,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                 return elements;
             };
+
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"[Success parsing {e.Element.name}]"));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"[Error parsing {e.Element.name} on node {e.Node.Name}], innertext: [{e.Node?.InnerText}], innerhtml: [{e.Node?.InnerHtml}]", e.Exception));
         }
     }
 
-    class CompetitionClubsPageSection : ChildsSection<HtmlNode>
+    class CompetitionClubsPageSection : ChildsSection<HtmlNode, IValue>
     {
         protected static IConfigurationManager config = new ConfigManager();
 
@@ -74,9 +73,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
         public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
 
-        public CompetitionClubsPageSection(HAPConnection connection)
+        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger)
         {
-            this.Page = new ClubPage(connection);
+            this.Page = new ClubPage(connection, logger);
 
             this.GetUrls = () =>
             {

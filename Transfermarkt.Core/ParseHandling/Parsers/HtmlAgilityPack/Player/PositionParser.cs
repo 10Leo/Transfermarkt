@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class PositionParser : ElementParser<HtmlNode>
+    class PositionParser : ElementParser<Position, PositionValue, HtmlNode>
     {
-        public override string DisplayName { get; set; } = "Position";
-
         public PositionParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -20,6 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .SelectNodes("table//tr[2]/td[1]")
                     .FirstOrDefault()
                     .InnerText;
+
                 return new Position { Value = Converter.Convert(parsedStr) };
             };
         }

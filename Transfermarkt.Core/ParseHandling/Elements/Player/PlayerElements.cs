@@ -1,41 +1,51 @@
-﻿using Transfermarkt.Core.ParseHandling.Contracts;
+﻿using System;
+using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.Player
 {
     #region Person related
 
-    class Name : Element
+    public class Name : Element<StringValue>
     {
         public Name() : base("Name", "Name")
         {
+            this.Value = new StringValue();
+        }
+        public Name(string value) : base("Name", "Name")
+        {
+            this.Value = new StringValue { Value = value };
         }
     }
 
-    class ShortName : Element
+    public class ShortName : Element<StringValue>
     {
         public ShortName() : base("ShortName", "Short Name")
         {
+            this.Value = new StringValue();
         }
     }
 
-    class BirthDate : Element
+    public class BirthDate : Element<DatetimeValue>
     {
         public BirthDate() : base("BirthDate", "Birth Date")
         {
+            this.Value = new DatetimeValue { };
         }
     }
 
-    class Nationality : Element
+    public class Nationality : Element<NationalityValue>
     {
         public Nationality() : base("Nat", "Nationality")
         {
+            this.Value = new NationalityValue();
         }
     }
 
-    class Height : Element
+    public class Height : Element<IntValue>
     {
         public Height() : base("H", "Height")
         {
+            this.Value = new IntValue();
         }
     }
 
@@ -43,50 +53,59 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
     #region Football related
 
-    class PreferredFoot : Element
+    public class PreferredFoot : Element<FootValue>
     {
         public PreferredFoot() : base("Foot", "Preferred Foot")
         {
+            this.Value = new FootValue();
         }
     }
 
-    class Position : Element
+    public class Position : Element<PositionValue>
     {
         public Position() : base("Pos", "Position")
         {
+            this.Value = new PositionValue();
         }
-
     }
 
     #endregion Football related
 
     #region Club related
 
-    class ShirtNumber : Element
+    public class ShirtNumber : Element<IntValue>
     {
         public ShirtNumber() : base("#", "Shirt Number")
         {
+            this.Value = new IntValue();
         }
     }
 
-    class Captain : Element
+    public class Captain : Element<IntValue>
     {
         public Captain() : base("Cap", "Captain")
         {
+            this.Value = new IntValue();
         }
     }
 
-    class ClubArrivalDate : Element
+    public class ClubArrivalDate : Element<DatetimeValue>
     {
         public ClubArrivalDate() : base("ClubArrivalDate", "Club Arrival Date")
         {
+            this.Value = new DatetimeValue();
         }
     }
 
-    class ContractExpirationDate : Element
+    public class ContractExpirationDate : Element<DatetimeValue>
     {
-        public ContractExpirationDate() : base("ContractExpirationDate", "Contract Expiration Date")
+        public ContractExpirationDate() : base("ContractExpirationDate", "Contract Expiration Date") {
+            this.Value = new DatetimeValue();
+        }
+
+        public ContractExpirationDate(DateTime? value) : base("ContractExpirationDate", "Contract Expiration Date")
         {
+            this.Value = new DatetimeValue { Value = value };
         }
     }
 
@@ -94,10 +113,11 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
     #region Business related
 
-    class MarketValue : Element
+    public class MarketValue : Element<DecimalValue>
     {
         public MarketValue() : base("MV", "Market Value")
         {
+            this.Value = new DecimalValue();
         }
     }
 
@@ -105,17 +125,19 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
     #region Links
 
-    class ImgUrl : Element
+    public class ImgUrl : Element<StringValue>
     {
         public ImgUrl() : base("ImgUrl", "Img Url")
         {
+            this.Value = new StringValue();
         }
     }
 
-    class ProfileUrl : Element
+    public class ProfileUrl : Element<StringValue>
     {
         public ProfileUrl() : base("ProfileUrl", "Profile Url")
         {
+            this.Value = new StringValue();
         }
     }
 

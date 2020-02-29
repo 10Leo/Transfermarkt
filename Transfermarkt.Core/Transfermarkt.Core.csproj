@@ -55,6 +55,7 @@
     <Compile Include="ParseHandling\Contracts\ISection.cs" />
     <Compile Include="ParseHandling\Contracts\Domain.cs" />
     <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
+    <Compile Include="ParseHandling\Contracts\IValue.cs" />
     <Compile Include="ParseHandling\Contracts\Page.cs" />
     <Compile Include="ParseHandling\Contracts\Section.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
@@ -71,15 +72,12 @@
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="ConfigManager.cs" />
-    <Compile Include="ParseHandling\Contracts\Page\ICompetitionPage.cs" />
     <Compile Include="IConfigurationManager.cs" />
-    <Compile Include="ParseHandling\Contracts\Page\IContinentPage.cs" />
     <Compile Include="ParseHandling\Contracts\IDomain.cs" />
     <Compile Include="ParseHandling\Contracts\IElementParser.cs" />
     <Compile Include="ParseHandling\Contracts\IPage.cs" />
     <Compile Include="ParseHandling\Contracts\Converter\IFootConverter.cs" />
     <Compile Include="ParseHandling\Contracts\Converter\IPositionConverter.cs" />
-    <Compile Include="ParseHandling\Contracts\Page\IClubPage.cs" />
     <Compile Include="ParseHandling\Converters\DateConverter.cs" />
     <Compile Include="ParseHandling\Converters\FootConverter.cs" />
     <Compile Include="ParseHandling\Converters\NationalityConverter.cs" />
