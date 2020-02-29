@@ -2,6 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Contracts.Converter
 {
+    // TODO: This sub IConverters need to be replaced outside of the contracts, as they are domain specific (these ones belong to transfermarkt, they aren't need in a different domain like the fifa one for the site scraper)
     public interface IFootConverter : IConverter<FootValue>
     {
     }
