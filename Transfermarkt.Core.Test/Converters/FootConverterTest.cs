@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
 using Transfermarkt.Core.ParseHandling.Converters;
 
@@ -42,9 +43,9 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
                 var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
                 foreach (var item in deserializedJSON.Set)
                 {
-                    Actors.Foot? retValue = (Actors.Foot?)converter.Convert(item.Name);
+                    FootValue retValue = (FootValue)converter.Convert(item.Name);
 
-                    Assert.IsTrue(retValue.HasValue, $"The Foot string \"{item.Name}\" didn't translate into a Foot type domain object.");
+                    Assert.IsTrue(retValue.Value.HasValue, $"The Foot string \"{item.Name}\" didn't translate into a Foot type domain object.");
                 }
             }
         }
@@ -53,11 +54,11 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
         public void IncorrectFootStringIsNotTransformedIntoDomainObjects()
         {
             IFootConverter converter = new FootConverter();
-            Actors.Foot? retValue = (Actors.Foot?)converter.Convert("Stupid name that doesn't exist in the file");
-            Assert.IsFalse(retValue.HasValue, $"Value should have been null because the supplied name doesn't exist.");
+            FootValue retValue = (FootValue)converter.Convert("Stupid name that doesn't exist in the file");
+            Assert.IsFalse(retValue.Value.HasValue, $"Value should have been null because the supplied name doesn't exist.");
 
-            retValue = (Actors.Foot?)converter.Convert(null);
-            Assert.IsFalse(retValue.HasValue, $"Value should have been null because null was supplied as the value to translate.");
+            retValue = (FootValue)converter.Convert(null);
+            Assert.IsFalse(retValue.Value.HasValue, $"Value should have been null because null was supplied as the value to translate.");
         }
     }
 }

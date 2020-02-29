@@ -3,11 +3,11 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Player : Domain
+    public class Player : Domain<IValue>
     {
         public Player()
         {
-            Elements = new List<IElement>
+            Elements = new List<IElement<IValue>>
             {
                 new Transfermarkt.Core.ParseHandling.Elements.Player.Name(),
                 new Transfermarkt.Core.ParseHandling.Elements.Player.ShortName(),

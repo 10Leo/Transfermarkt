@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class CaptainParser : ElementParser<Captain, HtmlNode>
+    class CaptainParser : ElementParser<Captain, IntValue, HtmlNode>
     {
         public CaptainParser()
         {

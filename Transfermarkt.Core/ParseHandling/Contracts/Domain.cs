@@ -3,39 +3,36 @@ using System.Linq;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Domain : IDomain
+    public abstract class Domain<TValue> : IDomain<TValue> where TValue : IValue
     {
-        public IList<IElement> Elements { get; set; }
+        public IList<IElement<TValue>> Elements { get; set; }
 
-        public IList<IDomain> Children { get; set; }
+        public IList<IDomain<TValue>> Children { get; set; }
 
         public Domain()
         {
-            Elements = new List<IElement>();
-            Children = new List<IDomain>();
+            Elements = new List<IElement<TValue>>();
+            Children = new List<IDomain<TValue>>();
         }
 
-        public IElement SetElement(IElement element)
+        public IElement<TValue> SetElement(IElement<TValue> element)
         {
             if (element == null)
             {
                 return null;
             }
+
             var elementType = element.GetType();
+            var thisElement = Elements.FirstOrDefault(e => e.GetType() == elementType);
+            var index = Elements.IndexOf(thisElement);
+            if (index != -1)
+                Elements[index] = element;
 
-            //var thisElement = Elements.FirstOrDefault(p => p.GetType() == elementType);
-            //thisElement.Value = element.Value;
-
-            foreach (var e in Elements)
+            if (thisElement == null)
             {
-                if (e.GetType() == elementType)
-                {
-                    e.Value = element.Value;
-                    return e;
-                }
+                return null;
             }
-
-            return null;
+            return thisElement;
         }
 
         public override string ToString()

@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class MarketValueParser : ElementParser<MarketValue, HtmlNode>
+    class MarketValueParser : ElementParser<MarketValue, DecimalValue, HtmlNode>
     {
         public MarketValueParser()
         {

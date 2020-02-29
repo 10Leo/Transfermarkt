@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
 using Transfermarkt.Core.ParseHandling.Converters;
 
@@ -53,9 +54,9 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
                 var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
                 foreach (var item in deserializedJSON.Set)
                 {
-                    Actors.Position? retValue = (Actors.Position?)converter.Convert(item.Name);
+                    PositionValue retValue = (PositionValue)converter.Convert(item.Name);
 
-                    Assert.IsTrue(retValue.HasValue, $"The Position string \"{item.Name}\" didn't translate into a Position type domain object.");
+                    Assert.IsTrue(retValue.Value.HasValue, $"The Position string \"{item.Name}\" didn't translate into a Position type domain object.");
                 }
             }
         }
@@ -64,11 +65,11 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
         public void IncorrectPositionStringIsNotTransformedIntoDomainObjects()
         {
             IPositionConverter converter = new PositionConverter();
-            Actors.Position? retValue = (Actors.Position?)converter.Convert("Stupid name that doesn't exist in the file");
-            Assert.IsFalse(retValue.HasValue, $"Value should have been null because the supplied name doesn't exist.");
+            PositionValue retValue = (PositionValue)converter.Convert("Stupid name that doesn't exist in the file");
+            Assert.IsFalse(retValue.Value.HasValue, $"Value should have been null because the supplied name doesn't exist.");
 
-            retValue = (Actors.Position?)converter.Convert(null);
-            Assert.IsFalse(retValue.HasValue, $"Value should have been null because null was supplied as the value to translate.");
+            retValue = (PositionValue)converter.Convert(null);
+            Assert.IsFalse(retValue.Value.HasValue, $"Value should have been null because null was supplied as the value to translate.");
         }
     }
 }

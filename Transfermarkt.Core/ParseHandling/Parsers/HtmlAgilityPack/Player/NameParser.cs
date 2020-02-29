@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class NameParser : ElementParser<Name, HtmlNode>
+    class NameParser : ElementParser<Name, StringValue, HtmlNode>
     {
         public NameParser()
         {

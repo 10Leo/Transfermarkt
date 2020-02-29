@@ -6,7 +6,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
     //TODO: consider extracting IElement from the page and pass it as a generic. e.g. CountryImgParser<CountryImg>
-    class CountryImgParser : ElementParser<CountryImg, HtmlNode>
+    class CountryImgParser : ElementParser<CountryImg, StringValue, HtmlNode>
     {
         public CountryImgParser()
         {

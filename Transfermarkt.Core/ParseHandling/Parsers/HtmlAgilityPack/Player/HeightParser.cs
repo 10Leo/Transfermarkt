@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class HeightParser : ElementParser<Height, HtmlNode>
+    class HeightParser : ElementParser<Height, IntValue, HtmlNode>
     {
         public HeightParser()
         {

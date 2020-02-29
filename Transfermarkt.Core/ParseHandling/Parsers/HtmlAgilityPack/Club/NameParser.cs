@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class NameParser : ElementParser<Name, HtmlNode>
+    class NameParser : ElementParser<Name, StringValue, HtmlNode>
     {
         public NameParser()
         {

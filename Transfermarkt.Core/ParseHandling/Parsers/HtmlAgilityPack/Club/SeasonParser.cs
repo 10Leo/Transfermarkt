@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
 {
-    class SeasonParser : ElementParser<Season, HtmlNode>
+    class SeasonParser : ElementParser<Season, IntValue, HtmlNode>
     {
         public SeasonParser()
         {
