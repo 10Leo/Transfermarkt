@@ -5,10 +5,8 @@ using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ShirtNumberParser : ElementParser<HtmlNode>
+    class ShirtNumberParser : ElementParser<ShirtNumber, IntValue, HtmlNode>
     {
-        public override IElement Element { get; } = new ShirtNumber();
-
         public ShirtNumberParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -22,8 +20,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault()
                     .InnerText;
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new ShirtNumber { Value = Converter.Convert(parsedStr) };
             };
         }
     }

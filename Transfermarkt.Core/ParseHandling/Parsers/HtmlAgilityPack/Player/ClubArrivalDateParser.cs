@@ -1,13 +1,12 @@
 ﻿using HtmlAgilityPack;
+using System;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
-    class ClubArrivalDateParser : ElementParser<HtmlNode>
+    class ClubArrivalDateParser : ElementParser<ClubArrivalDate, DatetimeValue, HtmlNode>
     {
-        public override IElement Element { get; } = new ClubArrivalDate();
-
         public ClubArrivalDateParser()
         {
             //TODO: change so that this value comes from a settings json file according to what's defined on config.
@@ -17,8 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = node.InnerText;
 
-                Element.Value = Converter.Convert(parsedStr);
-                return Element;
+                return new ClubArrivalDate { Value = Converter.Convert(parsedStr) };
             };
         }
     }

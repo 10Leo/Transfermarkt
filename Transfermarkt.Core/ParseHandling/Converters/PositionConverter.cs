@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
+using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
@@ -33,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             });
         }
 
-        public object Convert(string stringToConvert)
+        public PositionValue Convert(string stringToConvert)
         {
             Position? p = null;
             try
@@ -48,7 +49,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             {
                 //TODO: log
             }
-            return p;
+            return new PositionValue { Value = p };
         }
 
         //TODO: move to settings file

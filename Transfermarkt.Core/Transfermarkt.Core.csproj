@@ -55,6 +55,7 @@
     <Compile Include="ParseHandling\Contracts\ISection.cs" />
     <Compile Include="ParseHandling\Contracts\Domain.cs" />
     <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
+    <Compile Include="ParseHandling\Contracts\IValue.cs" />
     <Compile Include="ParseHandling\Contracts\Page.cs" />
     <Compile Include="ParseHandling\Contracts\Section.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />

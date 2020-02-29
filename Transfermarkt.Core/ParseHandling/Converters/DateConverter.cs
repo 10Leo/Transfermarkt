@@ -4,11 +4,11 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
-    class DateConverter : IConverter<object>
+    class DateConverter : IConverter<DatetimeValue>
     {
         private readonly string dateFormat = "dd/MM/yyyy";
 
-        public object Convert(string stringToConvert)
+        public DatetimeValue Convert(string stringToConvert)
         {
             DateTime? converted = null;
             //TODO: remove try catch inside IConverters? exceptions are being handled in the class that calls this function
@@ -17,7 +17,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
                 converted = DateTime.ParseExact(stringToConvert, dateFormat, CultureInfo.InvariantCulture);
             }
             catch (Exception) { }
-            return converted;
+            return new DatetimeValue { Value = converted };
         }
     }
 }

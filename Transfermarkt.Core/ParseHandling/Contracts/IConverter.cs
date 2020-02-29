@@ -1,7 +1,7 @@
 ﻿namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IConverter<T>
+    public interface IConverter<TValue>
     {
-        T Convert(string stringToConvert);
+        TValue Convert(string stringToConvert);
     }
 }
