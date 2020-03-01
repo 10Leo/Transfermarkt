@@ -32,7 +32,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     //    private void Connect()
     //    {
-    //        //TODO: transform this in a service (generic) that connects to the page
     //        try
     //        {
     //            string htmlCode = "";
