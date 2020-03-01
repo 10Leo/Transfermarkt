@@ -103,7 +103,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     }
                     catch (Exception ex)
                     {
-                        //TODO
+                        logger.LogException(LogLevel.Error, "Error collecting urls", ex);
                     }
                 }
 
@@ -140,7 +140,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             MatchCollection matches = Regex.Matches(url, simpleClubUrlPattern);
             if (!(matches.Count > 0 && matches[0].Groups.Count >= identifiers.Count))
             {
-                //TODO: logging
+                throw new Exception($"Error transforming url: '{url}.'");
             }
 
             for (int i = 1; i < matches[0].Groups.Count; i++)
