@@ -7,12 +7,14 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
     public class NationalityConverter : INationalityConverter
     {
         private static IConfigurationManager config = new ConfigManager();
+        private ILogger logger;
 
         public static string Language { get; } = config.GetAppSetting("Language");
         public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
@@ -20,7 +22,33 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         private readonly IDictionary<string, Nationality> map = new Dictionary<string, Nationality>();
 
-        public NationalityConverter()
+        public NationalityConverter() : this(null) { }
+
+        public NationalityConverter(ILogger logger)
+        {
+            this.logger = logger;
+            Load();
+        }
+
+        public NationalityValue Convert(string stringToConvert)
+        {
+            Nationality? p = null;
+            try
+            {
+                p = map[stringToConvert];
+            }
+            catch (KeyNotFoundException ex)
+            {
+                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
+            }
+            catch (ArgumentNullException ex)
+            {
+                logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
+            }
+            return new NationalityValue { Value = p };
+        }
+
+        private void Load()
         {
             string language = Config.GetLanguageFolder(Language);
             string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
@@ -32,24 +60,6 @@ namespace Transfermarkt.Core.ParseHandling.Converters
                 Enum.TryParse(p.DO, out Nationality toDomainObject);
                 map.Add(p.Name, toDomainObject);
             });
-        }
-
-        public NationalityValue Convert(string stringToConvert)
-        {
-            Nationality? p = null;
-            try
-            {
-                p = map[stringToConvert];
-            }
-            catch (KeyNotFoundException)
-            {
-                //TODO: log
-            }
-            catch (ArgumentNullException)
-            {
-                //TODO: log
-            }
-            return new NationalityValue { Value = p };
         }
     }
 }

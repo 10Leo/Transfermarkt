@@ -7,12 +7,14 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
     public class FootConverter : IFootConverter
     {
         private static IConfigurationManager config = new ConfigManager();
+        private ILogger logger;
 
         public static string Language { get; } = config.GetAppSetting("Language");
         public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
@@ -20,7 +22,33 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         private readonly IDictionary<string, Foot> map = new Dictionary<string, Foot>();
 
-        public FootConverter()
+        public FootConverter() : this(null) { }
+
+        public FootConverter(ILogger logger)
+        {
+            this.logger = logger;
+            Load();
+        }
+
+        public FootValue Convert(string stringToConvert)
+        {
+            Foot? p = null;
+            try
+            {
+                p = map[stringToConvert];
+            }
+            catch (KeyNotFoundException ex)
+            {
+                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
+            }
+            catch (ArgumentNullException ex)
+            {
+                logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
+            }
+            return new FootValue { Value = p };
+        }
+
+        private void Load()
         {
             string language = Config.GetLanguageFolder(Language);
             string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
@@ -32,24 +60,6 @@ namespace Transfermarkt.Core.ParseHandling.Converters
                 Enum.TryParse(p.DO, out Foot toDomainObject);
                 map.Add(p.Name, toDomainObject);
             });
-        }
-
-        public FootValue Convert(string stringToConvert)
-        {
-            Foot? p = null;
-            try
-            {
-                p = map[stringToConvert];
-            }
-            catch (KeyNotFoundException)
-            {
-                //TODO: log
-            }
-            catch (ArgumentNullException)
-            {
-                //TODO: log
-            }
-            return new FootValue { Value = p };
         }
     }
 }
