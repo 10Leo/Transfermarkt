@@ -13,21 +13,13 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 {
     public class PositionConverter : IPositionConverter
     {
-        private static IConfigurationManager config = new ConfigManager();
         private ILogger logger;
-
-        public static string Language { get; } = config.GetAppSetting("Language");
-        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
-        public static string SettingsFile { get; } = config.GetAppSetting("SettingsPositionFile");
-
-        private readonly IDictionary<string, Position> map = new Dictionary<string, Position>();
 
         public PositionConverter() : this(null) { }
 
         public PositionConverter(ILogger logger)
         {
             this.logger = logger;
-            Load();
         }
 
         public PositionValue Convert(string stringToConvert)
@@ -35,7 +27,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             Position? p = null;
             try
             {
-                p = map[stringToConvert];
+                p = ConvertersConfig.GetPosition(stringToConvert);
             }
             catch (KeyNotFoundException ex)
             {
@@ -46,20 +38,6 @@ namespace Transfermarkt.Core.ParseHandling.Converters
                 logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
             }
             return new PositionValue { Value = p };
-        }
-
-        private void Load()
-        {
-            string language = Config.GetLanguageFolder(Language);
-            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
-
-            var definition = new { Language = default(string), Set = new[] { new { ID = default(string), Name = default(string), DO = default(string) } } };
-            var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
-            deserializedJSON.Set.ToList().ForEach(p =>
-            {
-                Enum.TryParse(p.DO, out Position toDomainObject);
-                map.Add(p.Name, toDomainObject);
-            });
         }
     }
 }

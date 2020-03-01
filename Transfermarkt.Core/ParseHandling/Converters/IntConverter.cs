@@ -20,7 +20,11 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             {
                 converted = int.Parse(stringToConvert);
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
+            }
+
             return new IntValue { Value = converted };
         }
     }

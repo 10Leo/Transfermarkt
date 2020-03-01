@@ -13,21 +13,13 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 {
     public class NationalityConverter : INationalityConverter
     {
-        private static IConfigurationManager config = new ConfigManager();
         private ILogger logger;
-
-        public static string Language { get; } = config.GetAppSetting("Language");
-        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
-        public static string SettingsFile { get; } = config.GetAppSetting("SettingsNationalityFile");
-
-        private readonly IDictionary<string, Nationality> map = new Dictionary<string, Nationality>();
 
         public NationalityConverter() : this(null) { }
 
         public NationalityConverter(ILogger logger)
         {
             this.logger = logger;
-            Load();
         }
 
         public NationalityValue Convert(string stringToConvert)
@@ -35,7 +27,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
             Nationality? p = null;
             try
             {
-                p = map[stringToConvert];
+                p = ConvertersConfig.GetNationality(stringToConvert);
             }
             catch (KeyNotFoundException ex)
             {
@@ -46,21 +38,6 @@ namespace Transfermarkt.Core.ParseHandling.Converters
                 logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
             }
             return new NationalityValue { Value = p };
-        }
-
-        private void Load()
-        {
-            //TODO: relocate logic so that the loading is done only one time. As it is now, it's reading from the file each time a new Conerter is created.
-            string language = Config.GetLanguageFolder(Language);
-            string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
-
-            var definition = new { Language = default(string), Set = new[] { new { ID = default(string), Name = default(string), DO = default(string) } } };
-            var deserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
-            deserializedJSON.Set.ToList().ForEach(p =>
-            {
-                Enum.TryParse(p.DO, out Nationality toDomainObject);
-                map.Add(p.Name, toDomainObject);
-            });
         }
     }
 }
