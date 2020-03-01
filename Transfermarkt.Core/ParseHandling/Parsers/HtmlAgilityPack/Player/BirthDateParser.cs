@@ -12,6 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 {
     class BirthDateParser : ElementParser<BirthDate, DatetimeValue, HtmlNode>
     {
+        //TODO: unit test to guarantee all of them have the suffix "Parser", which is expected on load of theses configs
         public BirthDateParser()
         {
             this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == ParsersConfig.Get(this.GetType(), ConfigType.PLAYER);
