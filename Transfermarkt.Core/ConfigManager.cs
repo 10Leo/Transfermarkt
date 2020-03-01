@@ -16,6 +16,22 @@ namespace Transfermarkt.Core
         }
     }
 
+    public static class Config
+    {
+        public static string GetLanguageFolder(string language)
+        {
+            switch (language.ToLowerInvariant())
+            {
+                case "pt":
+                    return "PT";
+                case "en":
+                    return "EN";
+                default:
+                    return null;
+            }
+        }
+    }
+
     public static class ParsersConfig
     {
         private static readonly IConfigurationManager config = new ConfigManager();
@@ -36,7 +52,7 @@ namespace Transfermarkt.Core
         {
             {
                 string name = string.Empty;
-                string language = GetLanguageFolder(Language);
+                string language = Config.GetLanguageFolder(Language);
                 string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\Parsers\{PlayerSettingsFile}");
 
                 var definition = new { Language = default(string), Set = new[] { new { ID = default(int), Name = default(string), DO = default(string) } } };
@@ -102,19 +118,6 @@ namespace Transfermarkt.Core
                 //TODO: log
             }
             return p;
-        }
-
-        private static string GetLanguageFolder(string language)
-        {
-            switch (language.ToLowerInvariant())
-            {
-                case "pt":
-                    return "PT";
-                case "en":
-                    return "EN";
-                default:
-                    return null;
-            }
         }
     }
 

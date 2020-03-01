@@ -22,7 +22,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         public NationalityConverter()
         {
-            string language = GetLanguageFolder(Language);
+            string language = Config.GetLanguageFolder(Language);
             string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
 
             var definition = new { Language = default(string), Set = new[] { new { ID = default(string), Name = default(string), DO = default(string) } } };
@@ -50,19 +50,6 @@ namespace Transfermarkt.Core.ParseHandling.Converters
                 //TODO: log
             }
             return new NationalityValue { Value = p };
-        }
-
-        private string GetLanguageFolder(string language)
-        {
-            switch (language.ToLowerInvariant())
-            {
-                case "pt":
-                    return "PT";
-                case "en":
-                    return "EN";
-                default:
-                    return null;
-            }
         }
     }
 }
