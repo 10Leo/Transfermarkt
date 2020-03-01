@@ -50,6 +50,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         private void Load()
         {
+            //TODO: relocate logic so that the loading is done only one time. As it is now, it's reading from the file each time a new Conerter is created.
             string language = Config.GetLanguageFolder(Language);
             string json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{SettingsFile}");
 
