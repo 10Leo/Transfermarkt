@@ -24,21 +24,6 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         public NationalityValue Convert(string stringToConvert)
         {
-            //Nationality? p = null;
-
-            //try
-            //{
-            //    p = ConvertersConfig.GetNationality(stringToConvert);
-            //}
-            //catch (KeyNotFoundException ex)
-            //{
-            //    logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
-            //}
-            //catch (ArgumentNullException ex)
-            //{
-            //    logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
-            //}
-
             return new NationalityValue { Value = ConvertersConfig.GetNationality(stringToConvert) };
         }
     }
