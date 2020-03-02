@@ -79,59 +79,17 @@ namespace Transfermarkt.Core
 
         public static Nationality? GetNationality(string key)
         {
-            Nationality? p = null;
-            p = nationalityMap[key];
-
-            //try
-            //{
-            //}
-            //catch (KeyNotFoundException)
-            //{
-            //    //TODO: log
-            //}
-            //catch (ArgumentNullException)
-            //{
-            //    //TODO: log
-            //}
-            return p;
+            return nationalityMap[key];
         }
 
         public static Position? GetPosition(string key)
         {
-            Position? p = null;
-            p = positionMap[key];
-
-            //try
-            //{
-            //}
-            //catch (KeyNotFoundException)
-            //{
-            //    //TODO: log
-            //}
-            //catch (ArgumentNullException)
-            //{
-            //    //TODO: log
-            //}
-            return p;
+            return positionMap[key];
         }
 
         public static Foot? GetFoot(string key)
         {
-            Foot? p = null;
-            p = footMap[key];
-
-            //try
-            //{
-            //}
-            //catch (KeyNotFoundException)
-            //{
-            //    //TODO: log
-            //}
-            //catch (ArgumentNullException)
-            //{
-            //    //TODO: log
-            //}
-            return p;
+            return footMap[key];
         }
     }
 

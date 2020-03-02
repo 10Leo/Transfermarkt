@@ -17,17 +17,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         public DatetimeValue Convert(string stringToConvert)
         {
-            DateTime? converted = null;
-            //TODO: remove try catch inside IConverters? exceptions are being handled in the class that calls this function
-            try
-            {
-                converted = DateTime.ParseExact(stringToConvert, dateFormat, CultureInfo.InvariantCulture);
-            }
-            catch (Exception ex) {
-                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
-            }
-
-            return new DatetimeValue { Value = converted };
+            return new DatetimeValue { Value = DateTime.ParseExact(stringToConvert, dateFormat, CultureInfo.InvariantCulture) };
         }
     }
 }

@@ -15,16 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         public DecimalValue Convert(string stringToConvert)
         {
-            decimal? converted = null;
-            try
-            {
-                converted = decimal.Parse(stringToConvert);
-            }
-            catch (Exception ex) {
-                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
-            }
-
-            return new DecimalValue { Value = converted };
+            return new DecimalValue { Value = decimal.Parse(stringToConvert) };
         }
     }
 }

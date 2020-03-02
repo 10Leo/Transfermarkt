@@ -24,21 +24,24 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         public FootValue Convert(string stringToConvert)
         {
-            Foot? p = null;
-            try
-            {
-                p = ConvertersConfig.GetFoot(stringToConvert);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
-            }
-            catch (ArgumentNullException ex)
-            {
-                logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
-            }
+            //TODO: remove try catch inside IConverters? exceptions are being handled in the class that calls this function
 
-            return new FootValue { Value = p };
+            //Foot? p = null;
+
+            //try
+            //{
+            //    p = ConvertersConfig.GetFoot(stringToConvert);
+            //}
+            //catch (KeyNotFoundException ex)
+            //{
+            //    logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
+            //}
+            //catch (ArgumentNullException ex)
+            //{
+            //    logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
+            //}
+
+            return new FootValue { Value = ConvertersConfig.GetFoot(stringToConvert) };
         }
     }
 }

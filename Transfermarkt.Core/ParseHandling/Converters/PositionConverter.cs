@@ -24,20 +24,22 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         public PositionValue Convert(string stringToConvert)
         {
-            Position? p = null;
-            try
-            {
-                p = ConvertersConfig.GetPosition(stringToConvert);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
-            }
-            catch (ArgumentNullException ex)
-            {
-                logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
-            }
-            return new PositionValue { Value = p };
+            //Position? p = null;
+
+            //try
+            //{
+            //    p = ConvertersConfig.GetPosition(stringToConvert);
+            //}
+            //catch (KeyNotFoundException ex)
+            //{
+            //    logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
+            //}
+            //catch (ArgumentNullException ex)
+            //{
+            //    logger.LogException(LogLevel.Error, $"Null argument string {stringToConvert} passed.", ex);
+            //}
+
+            return new PositionValue { Value = ConvertersConfig.GetPosition(stringToConvert) };
         }
     }
 }

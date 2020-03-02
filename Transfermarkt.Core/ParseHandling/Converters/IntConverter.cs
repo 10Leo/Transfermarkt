@@ -15,17 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
 
         public IntValue Convert(string stringToConvert)
         {
-            int? converted = null;
-            try
-            {
-                converted = int.Parse(stringToConvert);
-            }
-            catch (Exception ex)
-            {
-                logger.LogException(LogLevel.Error, $"The string {stringToConvert} wasn't found on the config file.", ex);
-            }
-
-            return new IntValue { Value = converted };
+            return new IntValue { Value = int.Parse(stringToConvert) };
         }
     }
 }
