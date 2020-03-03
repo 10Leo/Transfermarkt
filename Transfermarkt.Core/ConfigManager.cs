@@ -148,33 +148,23 @@ namespace Transfermarkt.Core
         public static string Get(Type type, ConfigType level)
         {
             string p = string.Empty;
-            try
+
+            switch (level)
             {
-                switch (level)
-                {
-                    case ConfigType.PLAYER:
-                        p = playerMap[type.Name];
-                        break;
-                    case ConfigType.CLUB:
-                        p = clubMap[type.Name];
-                        break;
-                    case ConfigType.COMPETITION:
-                        p = competitionMap[type.Name];
-                        break;
-                    case ConfigType.CONTINENT:
-                        p = continentMap[type.Name];
-                        break;
-                    default:
-                        break;
-                }
-            }
-            catch (KeyNotFoundException)
-            {
-                //TODO: log
-            }
-            catch (ArgumentNullException)
-            {
-                //TODO: log
+                case ConfigType.PLAYER:
+                    p = playerMap[type.Name];
+                    break;
+                case ConfigType.CLUB:
+                    p = clubMap[type.Name];
+                    break;
+                case ConfigType.COMPETITION:
+                    p = competitionMap[type.Name];
+                    break;
+                case ConfigType.CONTINENT:
+                    p = continentMap[type.Name];
+                    break;
+                default:
+                    break;
             }
             return p;
         }
