@@ -9,6 +9,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
     {
         public CountryImgParser()
         {
+            //TODO: right now this class handles the nodes passed the same amount of times because there's not a defined condition to see if the class can handle it
             this.CanParsePredicate = node => "" == ParsersConfig.Get(this.GetType(), ConfigType.CLUB);
 
             this.ParseFunc = node =>
