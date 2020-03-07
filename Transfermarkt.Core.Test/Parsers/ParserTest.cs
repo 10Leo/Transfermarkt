@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.Test.Parsers
     public class ParserTest
     {
         [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures")]
-        public void ParsersClassNAmeEndsWithSuffix()
+        public void ParsersClassNameEndsWithSuffix()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.Test.Parsers
         }
 
         [TestMethod]
-        public void ParsersClassNAmeEndsWithSuffix2()
+        public void ParsersClassNameEndsWithSuffix2()
         {
             Type[] typelist = GetTypesInNamespace(Assembly.Load("Transfermarkt.Core"), "Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player");
             for (int i = 0; i < typelist.Length; i++)
