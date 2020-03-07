@@ -104,6 +104,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     playersNodes.Add(attribs);
 
+                    //TODO: consider passing the whole tr instead of tds
                     //each column is an attribute
                     HtmlNodeCollection cols = row.SelectNodes("td");
 
