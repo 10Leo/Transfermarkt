@@ -16,6 +16,7 @@ namespace Transfermarkt.Core.Test.Parsers
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
+            //TODO: create method to get all different implementations of IElementParser
             var parserClasses = TestParserOfType<HtmlNode>(assemblies);
             foreach (var parser in parserClasses)
             {
