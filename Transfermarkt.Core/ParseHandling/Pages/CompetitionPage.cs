@@ -50,10 +50,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
 
-                foreach (var elementParser in Parsers)
-                {
-                    elements.Add((connection.GetNode(), connection.GetNode()));
-                }
+                    elements.Add((null, connection.GetNode()));
 
                 return elements;
             };

@@ -8,7 +8,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
     {
         public NameParser()
         {
-            this.CanParsePredicate = node => "" == ParsersConfig.GetLabel(this.GetType(), ConfigType.CONTINENT);
+            this.CanParsePredicate = node => true;//"" == ParsersConfig.GetLabel(this.GetType(), ConfigType.CONTINENT);
 
             this.ParseFunc = node =>
             {
