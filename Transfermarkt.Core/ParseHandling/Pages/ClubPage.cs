@@ -22,11 +22,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new ClubPlayersPageSection(connection, logger)
             };
 
-            this.OnBeforeParse += (o, e) => {
+            this.OnBeforeParse += (o, e) =>
+            {
                 logger.LogMessage(LogLevel.Milestone, $"Started parsing {e.Url}.");
             };
 
-            this.OnAfterParse += (o, e) => {
+            this.OnAfterParse += (o, e) =>
+            {
                 logger.LogMessage(LogLevel.Milestone, $"Finished parsing {e.Url}.");
             };
         }
@@ -49,10 +51,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
 
-                foreach (var elementParser in Parsers)
-                {
-                    elements.Add((connection.GetNode(), connection.GetNode()));
-                }
+                elements.Add((null, connection.GetNode()));
 
                 return elements;
             };
@@ -101,7 +100,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 //each row is a player
                 foreach (var row in rows)
                 {
-
                     List<(HtmlNode key, HtmlNode value)> attribs = new List<(HtmlNode key, HtmlNode value)>();
 
                     playersNodes.Add(attribs);
