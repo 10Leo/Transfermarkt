@@ -1,19 +1,20 @@
-﻿using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
+﻿using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
     class DecimalConverter : IConverter<DecimalValue>
     {
+        private ILogger logger;
+
+        public DecimalConverter(ILogger logger)
+        {
+            this.logger = logger;
+        }
+
         public DecimalValue Convert(string stringToConvert)
         {
-            decimal? converted = null;
-            try
-            {
-                converted = decimal.Parse(stringToConvert);
-            }
-            catch (Exception) { }
-            return new DecimalValue { Value = converted };
+            return new DecimalValue { Value = decimal.Parse(stringToConvert) };
         }
     }
 }

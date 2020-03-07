@@ -61,6 +61,7 @@
     <Compile Include="Converters\NationalityConverterTest.cs" />
     <Compile Include="Converters\PositionConverterTest.cs" />
     <Compile Include="Pages\PageTest.cs" />
+    <Compile Include="Parsers\ParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

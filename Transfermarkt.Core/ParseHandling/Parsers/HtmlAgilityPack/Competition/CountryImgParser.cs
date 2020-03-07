@@ -5,13 +5,11 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
 {
-    //TODO: consider extracting IElement from the page and pass it as a generic. e.g. CountryImgParser<CountryImg>
     class CountryImgParser : ElementParser<CountryImg, StringValue, HtmlNode>
     {
         public CountryImgParser()
         {
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => true;
+            this.CanParsePredicate = node => "" == ParsersConfig.GetLabel(this.GetType(), ConfigType.COMPETITION);
 
             this.ParseFunc = node =>
             {
