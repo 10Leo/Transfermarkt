@@ -9,7 +9,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
     {
         public ImgUrlParser()
         {
-            this.CanParsePredicate = node => "" == ParsersConfig.Get(this.GetType(), ConfigType.COMPETITION);
+            this.CanParsePredicate = node => "" == ParsersConfig.GetLabel(this.GetType(), ConfigType.COMPETITION);
 
             this.ParseFunc = node =>
             {

@@ -145,7 +145,7 @@ namespace Transfermarkt.Core
             });
         }
 
-        public static string Get(Type type, ConfigType level)
+        public static string GetLabel(Type type, ConfigType level)
         {
             string p = string.Empty;
 

@@ -10,7 +10,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
     {
         public ContractExpirationDateParser()
         {
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == ParsersConfig.Get(this.GetType(), ConfigType.PLAYER);
+            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == ParsersConfig.GetLabel(this.GetType(), ConfigType.PLAYER);
 
             this.ParseFunc = node =>
             {

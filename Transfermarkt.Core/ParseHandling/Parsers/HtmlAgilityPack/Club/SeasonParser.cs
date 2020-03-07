@@ -9,7 +9,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
     {
         public SeasonParser()
         {
-            this.CanParsePredicate = node => "" == ParsersConfig.Get(this.GetType(), ConfigType.CLUB);
+            this.CanParsePredicate = node => "" == ParsersConfig.GetLabel(this.GetType(), ConfigType.CLUB);
 
             this.ParseFunc = node =>
             {

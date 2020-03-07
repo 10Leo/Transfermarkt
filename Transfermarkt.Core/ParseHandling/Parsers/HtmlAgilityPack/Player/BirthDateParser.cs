@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
         //TODO: unit test to guarantee all of them have the suffix "Parser", which is expected on load of theses configs
         public BirthDateParser()
         {
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == ParsersConfig.Get(this.GetType(), ConfigType.PLAYER);
+            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == ParsersConfig.GetLabel(this.GetType(), ConfigType.PLAYER);
 
             this.ParseFunc = node =>
             {

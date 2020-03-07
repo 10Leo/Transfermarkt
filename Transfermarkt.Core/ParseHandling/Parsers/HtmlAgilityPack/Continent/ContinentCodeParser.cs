@@ -9,7 +9,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
     {
         public ContinentCodeParser()
         {
-            this.CanParsePredicate = node => "" == ParsersConfig.Get(this.GetType(), ConfigType.CONTINENT);
+            this.CanParsePredicate = node => "" == ParsersConfig.GetLabel(this.GetType(), ConfigType.CONTINENT);
 
             this.ParseFunc = node =>
             {
