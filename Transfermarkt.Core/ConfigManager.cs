@@ -120,6 +120,7 @@ namespace Transfermarkt.Core
             var playerDeserializedJSON = JsonConvert.DeserializeAnonymousType(json, definition);
             playerDeserializedJSON.Set.ToList().ForEach(p =>
             {
+                // TODO: consider changing this to remove the existing dependency of the Parser's class name, that must end with Parser.
                 playerMap.Add(p.DO + "Parser", p.Name);
             });
 
