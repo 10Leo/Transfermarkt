@@ -78,7 +78,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new Parsers.HtmlAgilityPack.Player.ClubArrivalDateParser{ Converter = new DateConverter(logger) },
                 new Parsers.HtmlAgilityPack.Player.ContractExpirationDateParser{ Converter = new DateConverter(logger) },
                 new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter(logger) },
-                //new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter(logger) },
+                new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter(logger) },
                 new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter(logger) }
             };
 

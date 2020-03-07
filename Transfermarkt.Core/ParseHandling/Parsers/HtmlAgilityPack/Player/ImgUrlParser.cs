@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using System.Linq;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 
@@ -12,8 +13,10 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
 
             this.ParseFunc = node =>
             {
-                //TODO
-                var parsedStr = string.Empty;
+                var parsedStr = node
+                    .SelectNodes("table//td/a/img")
+                    .FirstOrDefault(n => n.Attributes["class"]?.Value == "bilderrahmen-fixed")
+                    .Attributes["src"].Value;
 
                 return new ImgUrl { Value = Converter.Convert(parsedStr) };
             };
