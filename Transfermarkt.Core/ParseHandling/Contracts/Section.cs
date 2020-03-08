@@ -49,6 +49,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                         }
                     }
                 }
+
+                Parsers.ToList().ForEach(p =>
+                {
+                    p.Reset();
+                });
             }
         }
     }
@@ -98,17 +103,25 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                         TDomain childType = new TDomain();
                         page.Domain?.Children.Add(childType);
 
-                        foreach ((TNode key, TNode value) in childDomainNode)
+                        if (Parsers != null)
                         {
-                            foreach (var parser in Parsers)
+                            foreach ((TNode key, TNode value) in childDomainNode)
                             {
-                                if (parser.CanParse(key))
+                                foreach (var parser in Parsers)
                                 {
-                                    var parsedObj = parser.Parse(value);
-                                    var e = childType.SetElement(parsedObj);
+                                    if (parser.CanParse(key))
+                                    {
+                                        var parsedObj = parser.Parse(value);
+                                        var e = childType.SetElement(parsedObj);
+                                    }
                                 }
                             }
                         }
+
+                        Parsers.ToList().ForEach(p =>
+                        {
+                            p.Reset();
+                        });
                     }
                 }
             }
