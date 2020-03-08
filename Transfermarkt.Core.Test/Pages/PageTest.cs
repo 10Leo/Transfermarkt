@@ -80,6 +80,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
         private static readonly int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
+        //TODO: make method that returns config settings generic, so that ints can be returned.
         private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, int.Parse(MinimumLoggingLevel));
 
 
