@@ -33,7 +33,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             public const string abbrevName = @"^(\D)*$";
         }
 
-        //TODO: consider create enum to retrieve configs and a generic GetAppSettings<T> to retrive it as a type
+        //TODO: consider create enum to hold and retrieve config settings and a generic GetAppSettings<T> to retrive it as a type.
         private static IConfigurationManager config = new ConfigManager();
 
         private static string MinimumLoggingLevel { get; } = config.GetAppSetting("MinimumLoggingLevel");
