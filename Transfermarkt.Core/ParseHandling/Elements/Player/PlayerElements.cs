@@ -34,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
         public override string ToString()
         {
-            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(CommonFormats.date) : ""));
+            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(Common.date) : ""));
         }
     }
 
@@ -103,7 +103,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
         public override string ToString()
         {
-            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(CommonFormats.date) : ""));
+            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(Common.date) : ""));
         }
     }
 
@@ -120,7 +120,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 
         public override string ToString()
         {
-            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(CommonFormats.date) : ""));
+            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(Common.date) : ""));
         }
     }
 

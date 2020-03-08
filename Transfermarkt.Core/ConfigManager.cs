@@ -17,9 +17,11 @@ namespace Transfermarkt.Core
         }
     }
 
-    public struct CommonFormats
+    public struct Common
     {
         public const string date = @"yyyy.MM.dd";
+        public static readonly char[] trimChars = new char[] { ' ', '\t', '\n', '\r' };
+
     }
 
     public static class Config

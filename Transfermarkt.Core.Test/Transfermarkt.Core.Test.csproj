@@ -60,9 +60,11 @@
     <Compile Include="Converters\FootConverterTest.cs" />
     <Compile Include="Converters\NationalityConverterTest.cs" />
     <Compile Include="Converters\PositionConverterTest.cs" />
+    <Compile Include="Pages\PagePerformanceTest.cs" />
     <Compile Include="Pages\PageTest.cs" />
     <Compile Include="Parsers\ParserTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestingConfigs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
