@@ -52,6 +52,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
                 Parsers.ToList().ForEach(p =>
                 {
+                    //TODO: recreate an instance of the parser? if yes, relocate this logic to the beginning of this method.
                     p.Reset();
                 });
             }
