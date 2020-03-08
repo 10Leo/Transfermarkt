@@ -20,13 +20,12 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
     {
         private const string clubPerformanceFilePath = @"C:\Transfermarkt\Performance\club.txt";
 
-        //TODO: consider create enum to hold and retrieve config settings and a generic GetAppSettings<T> to retrive it as a type.
         private static IConfigurationManager config = new ConfigManager();
 
-        private static string MinimumLoggingLevel { get; } = config.GetAppSetting("MinimumLoggingLevel");
-        private static string LogPath { get; } = config.GetAppSetting("LogPath");
+        private static int MinimumLoggingLevel { get; } = config.GetAppSetting<int>("MinimumLoggingLevel");
+        private static string LogPath { get; } = config.GetAppSetting<string>("LogPath");
 
-        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, int.Parse(MinimumLoggingLevel));
+        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
 
         public PagePerformanceTest()
         {

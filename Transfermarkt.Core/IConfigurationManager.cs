@@ -1,8 +1,10 @@
-﻿namespace Transfermarkt.Core.Contracts
+﻿using System;
+
+namespace Transfermarkt.Core.Contracts
 {
     public interface IConfigurationManager
     {
 
-        string GetAppSetting(string key);
+        T GetAppSetting<T>(string key) where T : IConvertible;
     }
 }

@@ -11,9 +11,27 @@ namespace Transfermarkt.Core
 {
     public class ConfigManager : IConfigurationManager
     {
-        public string GetAppSetting(string key)
+        public T GetAppSetting<T>(string key) where T : IConvertible
         {
-            return ConfigurationManager.AppSettings[key]?.ToString();
+            T result = default(T);
+
+            if (ConfigurationManager.AppSettings[key] == null)// || String.IsNullOrEmpty(td.Attributes[key].Value) == false)
+            {
+                return result;
+            }
+
+            string value = ConfigurationManager.AppSettings[key];
+
+            try
+            {
+                result = (T)Convert.ChangeType(value, typeof(T));
+            }
+            catch
+            {
+                result = default(T);
+            }
+
+            return result;
         }
     }
 
@@ -44,11 +62,11 @@ namespace Transfermarkt.Core
     {
         private static IConfigurationManager config = new ConfigManager();
 
-        public static string Language { get; } = config.GetAppSetting("Language");
-        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
-        public static string NationalitySettingsFile { get; } = config.GetAppSetting("SettingsNationalityFile");
-        public static string FootSettingsFile { get; } = config.GetAppSetting("SettingsFootFile");
-        public static string PositionSettingsFile { get; } = config.GetAppSetting("SettingsPositionFile");
+        public static string Language { get; } = config.GetAppSetting<string>("Language");
+        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>("SettingsFolderPath");
+        public static string NationalitySettingsFile { get; } = config.GetAppSetting<string>("SettingsNationalityFile");
+        public static string FootSettingsFile { get; } = config.GetAppSetting<string>("SettingsFootFile");
+        public static string PositionSettingsFile { get; } = config.GetAppSetting<string>("SettingsPositionFile");
 
         private static readonly IDictionary<string, Nationality> nationalityMap = new Dictionary<string, Nationality>();
         private static readonly IDictionary<string, Position> positionMap = new Dictionary<string, Position>();
@@ -104,8 +122,8 @@ namespace Transfermarkt.Core
     {
         private static readonly IConfigurationManager config = new ConfigManager();
 
-        public static string Language { get; } = config.GetAppSetting("Language");
-        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
+        public static string Language { get; } = config.GetAppSetting<string>("Language");
+        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>("SettingsFolderPath");
         public static string PlayerSettingsFile { get; } = "player.json";
         public static string ClubSettingsFile { get; } = "club.json";
         public static string CompetitionSettingsFile { get; } = "competition.json";

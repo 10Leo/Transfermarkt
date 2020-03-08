@@ -15,8 +15,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
     {
         private static IConfigurationManager config = new ConfigManager();
 
-        public static string SettingsFolderPath { get; } = config.GetAppSetting("SettingsFolderPath");
-        public static string SettingsFile { get; } = config.GetAppSetting("SettingsPositionFile");
+        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>("SettingsFolderPath");
+        public static string SettingsFile { get; } = config.GetAppSetting<string>("SettingsPositionFile");
 
         private IDictionary<string, Type> languages = new Dictionary<string, Type>();
 
