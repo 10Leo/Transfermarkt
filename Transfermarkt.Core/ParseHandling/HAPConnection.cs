@@ -18,6 +18,7 @@ namespace Transfermarkt.Core.ParseHandling
             try
             {
                 string htmlString = "";
+                //TODO: consider separate the loading of the file from it's loading by HAP.
                 using (WebClient client = new WebClient())
                 {
                     Uri uri = new Uri(url);
