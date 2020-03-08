@@ -17,6 +17,11 @@ namespace Transfermarkt.Core
         }
     }
 
+    public struct CommonFormats
+    {
+        public const string date = @"yyyy.MM.dd";
+    }
+
     public static class Config
     {
         public static string GetLanguageFolder(string language)
