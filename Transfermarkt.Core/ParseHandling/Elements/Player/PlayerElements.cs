@@ -31,6 +31,11 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
         {
             this.Value = new DatetimeValue { };
         }
+
+        public override string ToString()
+        {
+            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(CommonFormats.date) : ""));
+        }
     }
 
     public class Nationality : Element<NationalityValue>
@@ -95,6 +100,11 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
         {
             this.Value = new DatetimeValue();
         }
+
+        public override string ToString()
+        {
+            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(CommonFormats.date) : ""));
+        }
     }
 
     public class ContractExpirationDate : Element<DatetimeValue>
@@ -106,6 +116,11 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
         public ContractExpirationDate(DateTime? value) : base("ContractExpirationDate", "Contract Expiration Date")
         {
             this.Value = new DatetimeValue { Value = value };
+        }
+
+        public override string ToString()
+        {
+            return string.Format("[{0}: {1}]", InternalName, (Value.Value.HasValue ? Value.Value.Value.ToString(CommonFormats.date) : ""));
         }
     }
 
