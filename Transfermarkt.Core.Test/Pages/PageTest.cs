@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.ParseHandling;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Logging;
 
@@ -17,13 +8,10 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
     [TestClass]
     public class PageTest
     {
-        //TODO: consider create enum to hold and retrieve config settings and a generic GetAppSettings<T> to retrive it as a type.
-        private static IConfigurationManager config = new ConfigManager();
+        private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
+        private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
 
-        private static string MinimumLoggingLevel { get; } = config.GetAppSetting("MinimumLoggingLevel");
-        private static string LogPath { get; } = config.GetAppSetting("LogPath");
-
-        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, int.Parse(MinimumLoggingLevel));
+        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
 
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()

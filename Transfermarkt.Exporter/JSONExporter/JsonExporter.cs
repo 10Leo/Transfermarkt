@@ -2,22 +2,19 @@
 using System;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.Exporter;
 
 namespace Transfermarkt.Exporter.JSONExporter
 {
     public class JsonExporter : IExporter
     {
-        private static IConfigurationManager config = new ConfigManager();
-
         private static readonly string dateFormat = "yyyy-MM-dd";
         private static readonly string format = ".json";
         private static readonly string competitionFileFormat = "{COUNTRY}-{COMPETITION_NAME}_{SEASON}" + format;
         private static readonly string clubFileFormat = "{COUNTRY}-{CLUB_NAME}_{SEASON}" + format;
 
-        public static string BaseFolderPath { get; } = config.GetAppSetting("BaseFolderPath");
-        public static string Level1FolderFormat { get; } = config.GetAppSetting("Level1FolderFormat");
+        public static string BaseFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseFolderPath);
+        public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
 
 
         private static JsonSerializerSettings settings;

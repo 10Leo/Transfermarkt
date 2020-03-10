@@ -5,6 +5,7 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Player
 {
     #region Person related
 
+    //TODO: use attributes to specify which field should be printed.
     public class Name : Element<StringValue>
     {
         public Name() : base("Name", "Name")
