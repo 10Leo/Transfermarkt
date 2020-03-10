@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
 using Transfermarkt.Core.ParseHandling.Converters;
@@ -13,10 +12,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
     [TestClass]
     public class FootConverterTest
     {
-        private static IConfigurationManager config = new ConfigManager();
-
-        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
-        public static string SettingsFile { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFootFile);
+        public static string SettingsFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
+        public static string SettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFootFile);
 
         private IDictionary<string, Type> languages = new Dictionary<string, Type>();
 

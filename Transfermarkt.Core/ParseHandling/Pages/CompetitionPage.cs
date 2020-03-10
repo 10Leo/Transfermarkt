@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
 using Transfermarkt.Logging;
@@ -62,13 +61,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionClubsPageSection : ChildsSection<HtmlNode, IValue>
     {
-        protected static IConfigurationManager config = new ConfigManager();
-
-        public string BaseURL { get; } = config.GetAppSetting<string>(Keys.Config.BaseURL);
-        public string SimpleClubUrlFormat { get; } = config.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
-        public string PlusClubUrlFormat { get; } = config.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
-        public string IdentifiersGetterPattern { get; } = config.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
-        public string IdentifiersSetterPattern { get; } = config.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
+        public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        public string SimpleClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
+        public string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
+        public string IdentifiersGetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
+        public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
 
         public CompetitionClubsPageSection(HAPConnection connection, ILogger logger)
         {

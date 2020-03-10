@@ -5,13 +5,12 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
 
 namespace Transfermarkt.Core
 {
-    public class ConfigManager : IConfigurationManager
+    public static class ConfigManager
     {
-        public T GetAppSetting<T>(string key) where T : IConvertible
+        public static T GetAppSetting<T>(string key) where T : IConvertible
         {
             T result = default(T);
 
@@ -83,13 +82,11 @@ namespace Transfermarkt.Core
 
     public static class ConvertersConfig
     {
-        private static IConfigurationManager config = new ConfigManager();
-
-        public static string Language { get; } = config.GetAppSetting<string>(Keys.Config.Language);
-        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
-        public static string NationalitySettingsFile { get; } = config.GetAppSetting<string>(Keys.Config.SettingsNationalityFile);
-        public static string FootSettingsFile { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFootFile);
-        public static string PositionSettingsFile { get; } = config.GetAppSetting<string>(Keys.Config.SettingsPositionFile);
+        public static string Language { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Language);
+        public static string SettingsFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
+        public static string NationalitySettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsNationalityFile);
+        public static string FootSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFootFile);
+        public static string PositionSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsPositionFile);
 
         private static readonly IDictionary<string, Nationality> nationalityMap = new Dictionary<string, Nationality>();
         private static readonly IDictionary<string, Position> positionMap = new Dictionary<string, Position>();
@@ -143,10 +140,8 @@ namespace Transfermarkt.Core
 
     public static class ParsersConfig
     {
-        private static readonly IConfigurationManager config = new ConfigManager();
-
-        public static string Language { get; } = config.GetAppSetting<string>(Keys.Config.Language);
-        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
+        public static string Language { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Language);
+        public static string SettingsFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
         public static string PlayerSettingsFile { get; } = "player.json";
         public static string ClubSettingsFile { get; } = "club.json";
         public static string CompetitionSettingsFile { get; } = "competition.json";
