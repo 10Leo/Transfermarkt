@@ -16,8 +16,8 @@ namespace Transfermarkt.Exporter.JSONExporter
         private static readonly string competitionFileFormat = "{COUNTRY}-{COMPETITION_NAME}_{SEASON}" + format;
         private static readonly string clubFileFormat = "{COUNTRY}-{CLUB_NAME}_{SEASON}" + format;
 
-        public static string BaseFolderPath { get; } = config.GetAppSetting<string>("BaseFolderPath");
-        public static string Level1FolderFormat { get; } = config.GetAppSetting<string>("Level1FolderFormat");
+        public static string BaseFolderPath { get; } = config.GetAppSetting<string>(Keys.Config.BaseFolderPath);
+        public static string Level1FolderFormat { get; } = config.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
 
 
         private static JsonSerializerSettings settings;

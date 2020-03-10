@@ -64,11 +64,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     {
         protected static IConfigurationManager config = new ConfigManager();
 
-        public string BaseURL { get; } = config.GetAppSetting<string>("BaseURL");
-        public string SimpleClubUrlFormat { get; } = config.GetAppSetting<string>("SimpleClubUrlFormat");
-        public string PlusClubUrlFormat { get; } = config.GetAppSetting<string>("PlusClubUrlFormatV2");
-        public string IdentifiersGetterPattern { get; } = config.GetAppSetting<string>("IdentifiersGetterPattern");
-        public string IdentifiersSetterPattern { get; } = config.GetAppSetting<string>("IdentifiersSetterPattern");
+        public string BaseURL { get; } = config.GetAppSetting<string>(Keys.Config.BaseURL);
+        public string SimpleClubUrlFormat { get; } = config.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
+        public string PlusClubUrlFormat { get; } = config.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
+        public string IdentifiersGetterPattern { get; } = config.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
+        public string IdentifiersSetterPattern { get; } = config.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
 
         public CompetitionClubsPageSection(HAPConnection connection, ILogger logger)
         {

@@ -22,8 +22,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
         private static IConfigurationManager config = new ConfigManager();
 
-        private static int MinimumLoggingLevel { get; } = config.GetAppSetting<int>("MinimumLoggingLevel");
-        private static string LogPath { get; } = config.GetAppSetting<string>("LogPath");
+        private static int MinimumLoggingLevel { get; } = config.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
+        private static string LogPath { get; } = config.GetAppSetting<string>(Keys.Config.LogPath);
 
         private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
 

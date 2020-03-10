@@ -85,11 +85,11 @@ namespace Transfermarkt.Core
     {
         private static IConfigurationManager config = new ConfigManager();
 
-        public static string Language { get; } = config.GetAppSetting<string>("Language");
-        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>("SettingsFolderPath");
-        public static string NationalitySettingsFile { get; } = config.GetAppSetting<string>("SettingsNationalityFile");
-        public static string FootSettingsFile { get; } = config.GetAppSetting<string>("SettingsFootFile");
-        public static string PositionSettingsFile { get; } = config.GetAppSetting<string>("SettingsPositionFile");
+        public static string Language { get; } = config.GetAppSetting<string>(Keys.Config.Language);
+        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
+        public static string NationalitySettingsFile { get; } = config.GetAppSetting<string>(Keys.Config.SettingsNationalityFile);
+        public static string FootSettingsFile { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFootFile);
+        public static string PositionSettingsFile { get; } = config.GetAppSetting<string>(Keys.Config.SettingsPositionFile);
 
         private static readonly IDictionary<string, Nationality> nationalityMap = new Dictionary<string, Nationality>();
         private static readonly IDictionary<string, Position> positionMap = new Dictionary<string, Position>();
@@ -145,8 +145,8 @@ namespace Transfermarkt.Core
     {
         private static readonly IConfigurationManager config = new ConfigManager();
 
-        public static string Language { get; } = config.GetAppSetting<string>("Language");
-        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>("SettingsFolderPath");
+        public static string Language { get; } = config.GetAppSetting<string>(Keys.Config.Language);
+        public static string SettingsFolderPath { get; } = config.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
         public static string PlayerSettingsFile { get; } = "player.json";
         public static string ClubSettingsFile { get; } = "club.json";
         public static string CompetitionSettingsFile { get; } = "competition.json";
