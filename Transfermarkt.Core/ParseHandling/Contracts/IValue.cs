@@ -95,4 +95,15 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             return string.Format("{0}", Value);
         }
     }
+
+    public class ContinentCodeValue : IValue
+    {
+        public Type Type => typeof(Actors.ContinentCode?);
+        public Actors.ContinentCode? Value { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}", Value);
+        }
+    }
 }

@@ -91,6 +91,7 @@ namespace Transfermarkt.Core
         private static readonly IDictionary<string, Nationality> nationalityMap = new Dictionary<string, Nationality>();
         private static readonly IDictionary<string, Position> positionMap = new Dictionary<string, Position>();
         private static readonly IDictionary<string, Foot> footMap = new Dictionary<string, Foot>();
+        private static readonly IDictionary<string, ContinentCode> continentMap = new Dictionary<string, ContinentCode>();
 
         static ConvertersConfig()
         {
@@ -135,6 +136,11 @@ namespace Transfermarkt.Core
         public static Foot? GetFoot(string key)
         {
             return footMap[key];
+        }
+
+        internal static ContinentCode? GetContinent(string key)
+        {
+            return continentMap[key];
         }
     }
 
