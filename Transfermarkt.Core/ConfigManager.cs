@@ -45,6 +45,7 @@ namespace Transfermarkt.Core
             public const string SettingsPositionFile = "SettingsPositionFile";
             public const string SettingsNationalityFile = "SettingsNationalityFile";
             public const string SettingsFootFile = "SettingsFootFile";
+            public const string SettingsContinentFile = "SettingsContinentFile";
             public const string Level1FolderFormat = "Level1FolderFormat";
             public const string SimpleClubUrlFormat = "SimpleClubUrlFormat";
             public const string PlusClubUrlFormat = "PlusClubUrlFormat";
@@ -87,6 +88,7 @@ namespace Transfermarkt.Core
         public static string NationalitySettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsNationalityFile);
         public static string FootSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFootFile);
         public static string PositionSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsPositionFile);
+        public static string ContinentSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsContinentFile);
 
         private static readonly IDictionary<string, Nationality> nationalityMap = new Dictionary<string, Nationality>();
         private static readonly IDictionary<string, Position> positionMap = new Dictionary<string, Position>();
