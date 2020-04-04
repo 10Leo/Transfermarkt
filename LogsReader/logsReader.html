@@ -14,21 +14,46 @@
 
 <body>
     <h1>Logs</h1>
-	<div id="content">
-		<table Id="tabLogs">
-		  <thead>
-			<tr>
-			  <th>Date</th>
-			  <th>Type</th>
-			  <th>Msg</th>
-			  <th>InnerText</th>
-			  <th>InnerHtml</th>
-			  <th>Exception</th>
+	<div id="content" class="container">
+		<table id="tabLogs">
+			<thead>
+			  <tr>
+				<th>Date</th>
+				<th>Type</th>
+				<th>Msg</th>
+				<th>InnerText</th>
+				<th>InnerHtml</th>
+				<th>Exception</th>
+			  </tr>
+			</thead>
+			<tbody id="logs-list">
+			</tbody>
+		  </table>
+	</div>
+
+	<div id="templates">
+		<template id="logEntry-template2">
+		  <li class="logEntry media my-4">
+			<div class="media-body">
+				<span class="logEntry__date"></span>
+				<span class="logEntry__type"></span>
+				<span class="logEntry__msg"></span>
+				<span class="logEntry__innerText"></span>
+				<span class="logEntry__innerHtml"></span>
+				<span class="logEntry__ex"></span>
+			</div>
+		  </li>
+		</template>
+		<template id="logEntry-template">
+			<tr class="logEntry media my-4">
+				<td class="logEntry__date"></td>
+				<td class="logEntry__type"></td>
+				<td class="logEntry__msg"></td>
+				<td class="logEntry__innerText"></td>
+				<td class="logEntry__innerHtml"></td>
+				<td class="logEntry__ex"></td>
 			</tr>
-		  </thead>
-		  <tbody>
-		  </tbody>
-		</table>
+		  </template>
 	</div>
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
