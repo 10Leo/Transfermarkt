@@ -1,0 +1,47 @@
+{
+  "Language": "Português",
+  "Set": [
+	{
+		"Name": "Nasc. / idade", "DO": "BirthDate",
+	},
+	{
+		"Name": "Jogadores", "DO": "Captain",
+	},
+	{
+		"Name": "Na equipa desde", "DO": "ClubArrivalDate",
+	},
+	{
+		"Name": "Contrato até", "DO": "ContractExpirationDate",
+	},
+	{
+		"Name": "Altura", "DO": "Height",
+	},
+	{
+		"Name": "Jogadores", "DO": "ImgUrl",
+	},
+	{
+		"Name": "Valor de mercado", "DO": "MarketValue",
+	},
+	{
+		"Name": "Jogadores", "DO": "Name",
+	},
+	{
+		"Name": "Nac.", "DO": "Nationality",
+	},
+	{
+		"Name": "Jogadores", "DO": "Position",
+	},
+	{
+		"Name": "Pé", "DO": "PreferredFoot",
+	},
+	{
+		"Name": "Jogadores", "DO": "ProfileUrl",
+	},
+	{
+		"Name": "#", "DO": "ShirtNumber",
+	},
+	{
+		"Name": "Jogadores", "DO": "ShortName",
+	}
+  ]
+}

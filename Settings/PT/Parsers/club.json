@@ -1,0 +1,20 @@
+{
+  "Language": "Português",
+  "Set": [
+	{
+		"Name": "", "DO": "CountryImg",
+	},
+	{
+		"Name": "", "DO": "Country",
+	},
+	{
+		"Name": "", "DO": "ImgUrl",
+	},
+	{
+		"Name": "", "DO": "Name",
+	},
+	{
+		"Name": "", "DO": "Season",
+	}
+  ]
+}
