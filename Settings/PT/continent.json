@@ -1,0 +1,31 @@
+{
+  "Language": "Português",
+  "Set": [
+	{
+		  "Name": "Ligas & competições da taça asiática /  oceânica"
+		, "DO": [
+			"ABB",
+			"UUU"
+		],
+	},
+	{
+		  "Name": "Campeonatos & Taças - Europa"
+		, "DO": [
+			"EEE"
+		],
+	},
+	{
+		  "Name": "Ligas & Taças africanas"
+		, "DO": [
+			"FFF"
+		],
+	},
+	{
+		  "Name": "Ligas & competições da taça da América do Norte e do Sul"
+		, "DO": [
+			"SRR",
+			"NNN"
+		],
+	}
+  ]
+}

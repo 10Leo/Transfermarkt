@@ -1,0 +1,14 @@
+{
+  "Language": "Português",
+  "Set": [
+	{
+		"Name": "direito", "DO": "R",
+	},
+	{
+		"Name": "esquerdo", "DO": "L",
+	},
+	{
+		"Name": "ambos", "DO": "A",
+	}
+  ]
+}
