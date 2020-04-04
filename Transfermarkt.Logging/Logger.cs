@@ -46,11 +46,11 @@ namespace Transfermarkt.Logging
         {
             if (ex?.InnerException == null)
             {
-                messages.Add(ex.Message);
+                messages.Add($"EX: {ex.Message}");
             }
             else
             {
-                messages.Add(ex.InnerException.Message);
+                messages.Add($"EX: {ex.InnerException.Message}");
             }
             LogWrite(level, messages);
         }
