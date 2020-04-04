@@ -12,7 +12,9 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 
             this.ParseFunc = node =>
             {
-                return new Elements.Continent.Name { };
+                var n1 = node.SelectSingleNode("//div[@id='stickyContent']");
+                var parsedStr = node.SelectSingleNode("//div[@id='main']//div[@class='table-header']/h2")?.InnerText;
+                return new Elements.Continent.Name { Value = Converter.Convert(parsedStr) };
             };
         }
     }

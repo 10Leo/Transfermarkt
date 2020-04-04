@@ -97,7 +97,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     }
                     catch (Exception ex)
                     {
-                        logger.LogException(LogLevel.Error, "Error collecting urls", ex);
+                        logger.LogException(LogLevel.Error, "Error collecting Club urls", ex);
                     }
                 }
 

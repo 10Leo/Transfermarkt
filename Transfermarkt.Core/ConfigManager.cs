@@ -45,6 +45,7 @@ namespace Transfermarkt.Core
             public const string SettingsPositionFile = "SettingsPositionFile";
             public const string SettingsNationalityFile = "SettingsNationalityFile";
             public const string SettingsFootFile = "SettingsFootFile";
+            public const string SettingsContinentFile = "SettingsContinentFile";
             public const string Level1FolderFormat = "Level1FolderFormat";
             public const string SimpleClubUrlFormat = "SimpleClubUrlFormat";
             public const string PlusClubUrlFormat = "PlusClubUrlFormat";
@@ -87,10 +88,12 @@ namespace Transfermarkt.Core
         public static string NationalitySettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsNationalityFile);
         public static string FootSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFootFile);
         public static string PositionSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsPositionFile);
+        public static string ContinentSettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsContinentFile);
 
         private static readonly IDictionary<string, Nationality> nationalityMap = new Dictionary<string, Nationality>();
         private static readonly IDictionary<string, Position> positionMap = new Dictionary<string, Position>();
         private static readonly IDictionary<string, Foot> footMap = new Dictionary<string, Foot>();
+        private static readonly IDictionary<string, ContinentCode[]> continentMap = new Dictionary<string, ContinentCode[]>();
 
         static ConvertersConfig()
         {
@@ -120,6 +123,32 @@ namespace Transfermarkt.Core
                 Enum.TryParse(p.DO, out Foot toDomainObject);
                 footMap.Add(p.Name, toDomainObject);
             });
+
+            var definitionContinent = new
+            {
+                Language = default(string),
+                Set = new[] {
+                    new {
+                        ID = default(string),
+                        Name = default(string),
+                        DO = new[] {
+                            default(string)
+                        }
+                    }
+                }
+            };
+            json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{ContinentSettingsFile}");
+            var deserializedJSONContinent = JsonConvert.DeserializeAnonymousType(json, definitionContinent);
+            deserializedJSONContinent.Set.ToList().ForEach(p =>
+            {
+                var ccs = new List<ContinentCode>();
+                p.DO.ToList().ForEach(d =>
+                {
+                    Enum.TryParse(d, out ContinentCode toDomainObject);
+                    ccs.Add(toDomainObject);
+                });
+                continentMap.Add(p.Name, ccs.ToArray());
+            });
         }
 
         public static Nationality? GetNationality(string key)
@@ -135,6 +164,11 @@ namespace Transfermarkt.Core
         public static Foot? GetFoot(string key)
         {
             return footMap[key];
+        }
+
+        internal static ContinentCode? GetContinent(string key)
+        {
+            return continentMap[key].FirstOrDefault();
         }
     }
 

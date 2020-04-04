@@ -70,10 +70,11 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             };
             var append = "/wettbewerbe?plus=1";
 
+            ContinentPage page = null;
             foreach (var url in urls)
             {
-                //ContinentPage page = new ContinentPage(url);
-                //page.Parse();
+                page = new ContinentPage(new HAPConnection(), logger);
+                page.Parse(url);
             }
         }
     }

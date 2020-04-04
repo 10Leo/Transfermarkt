@@ -10,11 +10,11 @@ namespace Transfermarkt.Core.ParseHandling.Elements.Continent
         }
     }
 
-    public class ContinentCode : Element<StringValue>
+    public class ContinentCode : Element<ContinentCodeValue>
     {
         public ContinentCode() : base("Code", "Continent Code")
         {
-            this.Value = new StringValue();
+            this.Value = new ContinentCodeValue();
         }
     }
 }

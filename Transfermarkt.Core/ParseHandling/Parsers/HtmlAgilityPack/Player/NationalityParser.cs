@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 var parsedStr = node
                     .SelectNodes("img")
                     .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
-                    .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault();
+                    .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault().Trim();
 
                 return new Nationality { Value = Converter.Convert(parsedStr) };
             };

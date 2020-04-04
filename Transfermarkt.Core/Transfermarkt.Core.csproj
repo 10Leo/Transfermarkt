@@ -58,6 +58,7 @@
     <Compile Include="ParseHandling\Contracts\IValue.cs" />
     <Compile Include="ParseHandling\Contracts\Page.cs" />
     <Compile Include="ParseHandling\Contracts\Section.cs" />
+    <Compile Include="ParseHandling\Converters\ContinentCodeConverter.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
     <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
     <Compile Include="ParseHandling\Elements\Continent\ContinentElements.cs" />
