@@ -6,9 +6,6 @@
 	<title>Logs</title>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<link rel="stylesheet" href="style.css">
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-  </script>
 	<script src="logsReader-app.js"></script>
 </head>
 
@@ -32,23 +29,11 @@
 	</div>
 
 	<div id="templates">
-		<template id="logEntry-template2">
-		  <li class="logEntry media my-4">
-			<div class="media-body">
-				<span class="logEntry__date"></span>
-				<span class="logEntry__type"></span>
-				<span class="logEntry__msg"></span>
-				<span class="logEntry__innerText"></span>
-				<span class="logEntry__innerHtml"></span>
-				<span class="logEntry__ex"></span>
-			</div>
-		  </li>
-		</template>
 		<template id="logEntry-template">
 			<tr class="logEntry media my-4">
 				<td class="logEntry__date"></td>
 				<td class="logEntry__type"></td>
-				<td class="logEntry__msg"></td>
+				<td class="logEntry__evt"></td>
 				<td class="logEntry__innerText"></td>
 				<td class="logEntry__innerHtml"></td>
 				<td class="logEntry__ex"></td>
