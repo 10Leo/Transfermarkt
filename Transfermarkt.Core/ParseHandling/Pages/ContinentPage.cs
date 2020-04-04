@@ -76,10 +76,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 }
 
                 var rows = table.SelectNodes(".//tbody/tr[@class='odd']|.//tbody/tr[@class='even']");
-                // each row is a club
+                // each row is a Competiton
                 foreach (var row in rows)
                 {
-                    //each column is an attribute
                     HtmlNodeCollection cols = row.SelectNodes("td");
 
                     try

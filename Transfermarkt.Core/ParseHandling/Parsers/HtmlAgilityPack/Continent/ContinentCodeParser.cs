@@ -1,6 +1,4 @@
 ﻿using HtmlAgilityPack;
-using System;
-using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
@@ -13,7 +11,8 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 
             this.ParseFunc = node =>
             {
-                return new Transfermarkt.Core.ParseHandling.Elements.Continent.ContinentCode { };
+                var parsedStr = node.SelectSingleNode("//div[@id='main']//div[@class='table-header']/h2")?.InnerText;
+                return new Elements.Continent.ContinentCode { Value = Converter.Convert(parsedStr) };
             };
         }
     }

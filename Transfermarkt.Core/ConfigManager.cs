@@ -93,7 +93,7 @@ namespace Transfermarkt.Core
         private static readonly IDictionary<string, Nationality> nationalityMap = new Dictionary<string, Nationality>();
         private static readonly IDictionary<string, Position> positionMap = new Dictionary<string, Position>();
         private static readonly IDictionary<string, Foot> footMap = new Dictionary<string, Foot>();
-        private static readonly IDictionary<string, ContinentCode> continentMap = new Dictionary<string, ContinentCode>();
+        private static readonly IDictionary<string, ContinentCode[]> continentMap = new Dictionary<string, ContinentCode[]>();
 
         static ConvertersConfig()
         {
@@ -123,6 +123,32 @@ namespace Transfermarkt.Core
                 Enum.TryParse(p.DO, out Foot toDomainObject);
                 footMap.Add(p.Name, toDomainObject);
             });
+
+            var definitionContinent = new
+            {
+                Language = default(string),
+                Set = new[] {
+                    new {
+                        ID = default(string),
+                        Name = default(string),
+                        DO = new[] {
+                            default(string)
+                        }
+                    }
+                }
+            };
+            json = File.ReadAllText($@"{SettingsFolderPath}\{language}\{ContinentSettingsFile}");
+            var deserializedJSONContinent = JsonConvert.DeserializeAnonymousType(json, definitionContinent);
+            deserializedJSONContinent.Set.ToList().ForEach(p =>
+            {
+                var ccs = new List<ContinentCode>();
+                p.DO.ToList().ForEach(d =>
+                {
+                    Enum.TryParse(d, out ContinentCode toDomainObject);
+                    ccs.Add(toDomainObject);
+                });
+                continentMap.Add(p.Name, ccs.ToArray());
+            });
         }
 
         public static Nationality? GetNationality(string key)
@@ -142,7 +168,7 @@ namespace Transfermarkt.Core
 
         internal static ContinentCode? GetContinent(string key)
         {
-            return continentMap[key];
+            return continentMap[key].FirstOrDefault();
         }
     }
 
