@@ -8,8 +8,8 @@ namespace Transfermarkt.Logging
 {
     public interface ILogger
     {
-        void LogMessage(LogLevel level, string message);
-        void LogException(LogLevel level, string message, Exception ex);
+        void LogMessage(LogLevel level, IList<string> messages);
+        void LogException(LogLevel level, IList<string> messages, Exception ex);
     }
 
     public enum LogLevel
