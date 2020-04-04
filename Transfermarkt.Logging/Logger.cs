@@ -57,6 +57,7 @@ namespace Transfermarkt.Logging
 
         private void LogWrite(LogLevel level, IList<string> logMessages)
         {
+            //TODO: change received logMessages parameter to be a dictionary with it's key being the code that it's now passed as part of the message.
             if ((int)level < this.minimumLevel)
             {
                 return;
