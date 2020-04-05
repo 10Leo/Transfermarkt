@@ -17,12 +17,12 @@ window.LogReader.app = (function() {
 		var temp = document.getElementById("logEntry-template");
         var clone = temp.content.cloneNode(true);
 
-		if(this.date !== undefined){
-			clone.querySelector(".logEntry__date").textContent = this.date;
+		if(this.date !== undefined && this.date.text !== ""){
+			clone.querySelector(".logEntry__date").textContent = this.date.text;
 		}
-		if(this.type !== undefined){
-			clone.querySelector(".logEntry__type").textContent = this.type;
-			switch (this.type) {
+		if(this.type !== undefined && this.type.text !== ""){
+			clone.querySelector(".logEntry__type").textContent = this.type.text;
+			switch (this.type.text) {
 				case "Info":
 					clone.children[0].classList.add("alert-info");
 					break;
@@ -42,23 +42,23 @@ window.LogReader.app = (function() {
 					break;
 			}
 		}
-		if(this.evt !== undefined){
-			clone.querySelector(".logEntry__evt").textContent += this.evt;
+		if(this.evt !== undefined && this.evt.text !== ""){
+			clone.querySelector(".logEntry__evt").textContent += this.evt.text;
 		}
-		if(this.do !== undefined){
-			clone.querySelector(".logEntry__obj").textContent = this.do;
+		if(this.do !== undefined && this.do.text !== ""){
+			clone.querySelector(".logEntry__obj").textContent = this.do.text;
 		}
-		if(this.url !== undefined){
+		if(this.url !== undefined && (this.url.text !== "" || this.url.href !== "")){
 			clone.querySelector(".logEntry__obj").innerHTML = "<a href=\"" + this.url.href + "\" class=\"alert-link\" >" + this.url.text + "</a>";
 		}
-		if(this.innerText !== undefined){
-			clone.querySelector(".logEntry__innerText").textContent = this.innerText;
+		if(this.innerText !== undefined && this.innerText.text !== ""){
+			clone.querySelector(".logEntry__innerText").textContent = this.innerText.text;
 		}
-		if(this.innerHtml !== undefined){
-			clone.querySelector(".logEntry__innerHtml").innerHTML = this.innerHtml;
+		if(this.innerHtml !== undefined && this.innerHtml.text !== ""){
+			clone.querySelector(".logEntry__innerHtml").innerHTML = this.innerHtml.text;
 		}
-		if(this.ex !== undefined){
-			clone.querySelector(".logEntry__ex").textContent = this.ex;
+		if(this.ex !== undefined && this.ex.text !== ""){
+			clone.querySelector(".logEntry__ex").textContent = this.ex.text;
 		}
 
         return clone;
@@ -95,44 +95,45 @@ window.LogReader.app = (function() {
 			entryLogs.forEach(entryLog => {
 				var logParts = entryLog.match(/(?<=\<\|\|)([^\<][^\|][^\|]|[^\|][^\|][^\>]*)(?=\s*\|\|\>)/g);
 				
-				var log = { };
+				var log = {
+					date: { text: "" },
+					type: { text: "" },
+					evt: { text: "" },
+					do: { text: "" },
+					url: { text: "", href: "" },
+					ex: { text: "" },
+					innerText: { text: "" },
+					innerHtml: { text: "" }
+				};
+
 				if(logParts.length > 0){
-					log.date = logParts[0];
+					log.date.text = logParts[0];
 				}
 				if(logParts.length > 1){
-					log.type = logParts[1].trim();
+					log.type.text = logParts[1].trim();
 				}
 
 				if(logParts.length > 2){
 					for (let i = 2; i < logParts.length; i++) {
 						var parts = logParts[i].match(/^(?<E>.+): (?<S>[\s\S^]*)/);// /^(EVT: |URL: |DO: |EX: |INNER_TEXT: |INNER_HTML: )([\s\S^]*)/
 						var txt = parts.groups.S;
+						
+						var dict = {
+							'EVT': log.evt,
+							'DO': log.do,
+							'URL': log.url,
+							'EX': log.ex,
+							'INNER_TEXT': log.innerText,
+							'INNER_HTML': log.innerHtml
+						};
 
-						switch (parts.groups.E) {
-							case "EVT":
-								log.evt = txt;
-								break;
-							case "DO":
-								log.do = txt;
-								break;
-							case "URL":
-								var pattern = /^http[s]?:\/\/.*?\/(?<L>[a-zA-Z-_]+).*$/;
-								var m = txt.match(pattern);
-								log.url = {}
-								log.url.href = txt;
-								log.url.text = m?.groups?.L;
-								break;
-							case "INNER_TEXT":
-								log.innerText = txt;
-								break;
-							case "EX":
-								log.ex = txt;
-								break;
-							case "INNER_HTML":
-								log.innerHtml = txt;
-								break;
-							default:
-								break;
+						dict[parts.groups.E].text = txt
+
+						if (parts.groups.E == 'URL') {
+							var pattern = /^http[s]?:\/\/.*?\/(?<L>[a-zA-Z-_]+).*$/;
+							var m = txt.match(pattern);
+							dict[parts.groups.E].text = m?.groups?.L;
+							dict[parts.groups.E].href = txt;
 						}
 					}
 				}
