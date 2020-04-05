@@ -29,7 +29,8 @@ namespace Transfermarkt.Logging
                 {
                     var str = $"{entryStart}";
                     str += $"{separatorStart}{DateTime.Now.ToString("yyyyMMdd HH:mm:ss")}{separatorEnd}";
-                    str += $"{separatorStart}{string.Format("{0,10}", "Init")}{separatorEnd}";
+                    str += $"{separatorStart}{string.Format("{0,10}", LogLevel.Info.ToString())}{separatorEnd}";
+                    str += $"{separatorStart}EVT: Init{separatorEnd}";
                     str += $"{entryEnd}\n";
                     byte[] info = new UTF8Encoding(true).GetBytes(str);
                     fs.Write(info, 0, info.Length);
