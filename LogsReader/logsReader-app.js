@@ -22,15 +22,34 @@ window.LogReader.app = (function() {
 		}
 		if(this.type !== undefined){
 			clone.querySelector(".logEntry__type").textContent = this.type;
+			switch (this.type) {
+				case "Info":
+					clone.children[0].classList.add("alert-info");
+					break;
+				case "Milestone":
+					clone.children[0].classList.add("alert-primary");
+					break;
+				case "Warning":
+					clone.children[0].classList.add("alert-warning");
+					break;
+				case "Error":
+					clone.children[0].classList.add("alert-danger");
+					break;
+				case "Fatal":
+					clone.children[0].classList.add("alert-danger");
+					break;
+				default:
+					break;
+			}
 		}
 		if(this.evt !== undefined){
 			clone.querySelector(".logEntry__evt").textContent += this.evt;
 		}
 		if(this.do !== undefined){
-			clone.querySelector(".logEntry__evt").textContent += " " + this.do;
+			clone.querySelector(".logEntry__obj").textContent = this.do;
 		}
 		if(this.url !== undefined){
-			clone.querySelector(".logEntry__evt").textContent += " " + this.url;
+			clone.querySelector(".logEntry__obj").innerHTML = "<a href=\"" + this.url.href + "\" class=\"alert-link\" >" + this.url.text + "</a>";
 		}
 		if(this.innerText !== undefined){
 			clone.querySelector(".logEntry__innerText").textContent = this.innerText;

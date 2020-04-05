@@ -11,16 +11,17 @@
 
 <body>
     <h1>Logs</h1>
-	<div id="content" class="container">
-		<table id="tabLogs">
-			<thead>
+	<div id="content" class="container-fluid">
+		<table class="table">
+			<thead class="thead-dark">
 			  <tr>
-				<th>Date</th>
-				<th>Type</th>
-				<th>Msg</th>
-				<th>InnerText</th>
-				<th>InnerHtml</th>
-				<th>Exception</th>
+				<th scope="col">Date</th>
+				<th scope="col">Type</th>
+				<th scope="col">Obj</th>
+				<th scope="col">Msg</th>
+				<th scope="col">InnerText</th>
+				<th scope="col">InnerHtml</th>
+				<th scope="col">Exception</th>
 			  </tr>
 			</thead>
 			<tbody id="logs-list">
@@ -30,9 +31,10 @@
 
 	<div id="templates">
 		<template id="logEntry-template">
-			<tr class="logEntry media my-4">
+			<tr class="logEntry alert" role="alert">
 				<td class="logEntry__date"></td>
 				<td class="logEntry__type"></td>
+				<td class="logEntry__obj"></td>
 				<td class="logEntry__evt"></td>
 				<td class="logEntry__innerText"></td>
 				<td class="logEntry__innerHtml"></td>
