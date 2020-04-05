@@ -36,7 +36,7 @@ window.LogReader.app = (function() {
 			clone.querySelector(".logEntry__innerText").textContent = this.innerText;
 		}
 		if(this.innerHtml !== undefined){
-			clone.querySelector(".logEntry__innerHtml").innerHtml = this.innerHtml;
+			clone.querySelector(".logEntry__innerHtml").innerHTML = this.innerHtml;
 		}
 		if(this.ex !== undefined){
 			clone.querySelector(".logEntry__ex").textContent = this.ex;
@@ -88,7 +88,7 @@ window.LogReader.app = (function() {
 					for (let i = 2; i < logParts.length; i++) {
 						var parts = logParts[i].match(/^(?<E>.+): (?<S>[\s\S^]*)/);// /^(EVT: |URL: |DO: |EX: |INNER_TEXT: |INNER_HTML: )([\s\S^]*)/
 						var txt = parts.groups.S;
-						
+
 						switch (parts.groups.E) {
 							case "EVT":
 								log.evt = txt;
@@ -97,7 +97,11 @@ window.LogReader.app = (function() {
 								log.do = txt;
 								break;
 							case "URL":
-								log.url = txt;
+								var pattern = /^http[s]?:\/\/.*?\/(?<L>[a-zA-Z-_]+).*$/;
+								var m = txt.match(pattern);
+								log.url = {}
+								log.url.href = txt;
+								log.url.text = m?.groups?.L;
 								break;
 							case "INNER_TEXT":
 								log.innerText = txt;
