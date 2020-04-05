@@ -130,7 +130,7 @@ window.LogReader.app = (function() {
 						dict[parts.groups.E].text = txt
 
 						if (parts.groups.E == 'URL') {
-							var pattern = /^http[s]?:\/\/.*?\/(?<L>[a-zA-Z-_]+).*$/;
+							var pattern = /^http[s]?:\/\/.*?\/(?<L>[a-zA-Z-_0-9]+).*$/;
 							var m = txt.match(pattern);
 							dict[parts.groups.E].text = m?.groups?.L;
 							dict[parts.groups.E].href = txt;
