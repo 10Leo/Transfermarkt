@@ -23,11 +23,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
 
             this.OnBeforeParse += (o, e) => {
-                logger.LogMessage(LogLevel.Milestone, $"Started parsing {e.Url}.");
+                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
             this.OnAfterParse += (o, e) => {
-                logger.LogMessage(LogLevel.Milestone, $"Finished parsing {e.Url}.");
+                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
     }
@@ -54,8 +54,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 return elements;
             };
 
-            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"[Success parsing {e.Element.name}]"));
-            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"[Error parsing {e.Element.name} on node {e.Node.Name}], innertext: [{e.Node?.InnerText}], innerhtml: [{e.Node?.InnerHtml}]", e.Exception));
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, new List<string> { $"EVT: Parsing element Success.", $"DO: {e.Element.name}" }));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, new List<string> { $"EVT: Parsing Error on node {e.Node?.Name}.", $"DO: {e.Element.name}", $"INNER_TEXT: {e.Node?.InnerText}" }, e.Exception));
         }
     }
 
@@ -97,7 +97,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     }
                     catch (Exception ex)
                     {
-                        logger.LogException(LogLevel.Error, "Error collecting Club urls", ex);
+                        logger.LogException(LogLevel.Error, new List<string> { "EVT: Error collecting Club urls" }, ex);
                     }
                 }
 

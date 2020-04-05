@@ -12,6 +12,11 @@ namespace Transfermarkt.Logging
     {
         private string path = string.Empty;
         private readonly int minimumLevel = 0;
+        private readonly string entryStart = "[[";
+        private readonly string entryEnd = "]]";
+
+        private readonly string separatorStart = "<||";
+        private readonly string separatorEnd = "||>";
 
         public Logger(string path, int minimumLevel)
         {
@@ -22,31 +27,38 @@ namespace Transfermarkt.Logging
             {
                 using (FileStream fs = File.Create(this.path))
                 {
-                    byte[] info = new UTF8Encoding(true).GetBytes(string.Format("[{0} {1,10}]\n", DateTime.Now.ToString("yyyyMMdd HH:mm:ss"), "Init"));
+                    var str = $"{entryStart}";
+                    str += $"{separatorStart}{DateTime.Now.ToString("yyyyMMdd HH:mm:ss")}{separatorEnd}";
+                    str += $"{separatorStart}{string.Format("{0,10}", LogLevel.Info.ToString())}{separatorEnd}";
+                    str += $"{separatorStart}EVT: Init{separatorEnd}";
+                    str += $"{entryEnd}\n";
+                    byte[] info = new UTF8Encoding(true).GetBytes(str);
                     fs.Write(info, 0, info.Length);
                 }
             }
         }
 
-        public void LogMessage(LogLevel level, string message)
+        public void LogMessage(LogLevel level, IList<string> messages)
         {
-            LogWrite(level, $"[{message}]");
+            LogWrite(level, messages);
         }
 
-        public void LogException(LogLevel level, string message, Exception ex)
+        public void LogException(LogLevel level, IList<string> messages, Exception ex)
         {
             if (ex?.InnerException == null)
             {
-                LogWrite(level, $"[{message}] {ex.Message}");
+                messages.Add($"EX: {ex.Message}");
             }
             else
             {
-                LogWrite(level, $"[{message}] {ex.InnerException.Message}");
+                messages.Add($"EX: {ex.InnerException.Message}");
             }
+            LogWrite(level, messages);
         }
 
-        private void LogWrite(LogLevel level, string logMessage)
+        private void LogWrite(LogLevel level, IList<string> logMessages)
         {
+            //TODO: change received logMessages parameter to be a dictionary with it's key being the code that it's now passed as part of the message.
             if ((int)level < this.minimumLevel)
             {
                 return;
@@ -56,7 +68,7 @@ namespace Transfermarkt.Logging
             {
                 using (StreamWriter w = File.AppendText(path))
                 {
-                    Log(level, logMessage, w);
+                    Log(level, logMessages, w);
                 }
             }
             catch (Exception)
@@ -64,12 +76,18 @@ namespace Transfermarkt.Logging
             }
         }
 
-        private void Log(LogLevel level, string logMessage, TextWriter txtWriter)
+        private void Log(LogLevel level, IList<string> logMessages, TextWriter txtWriter)
         {
             try
             {
-                txtWriter.Write("[{0} {1,10}] ", DateTime.Now.ToString("yyyyMMdd HH:mm:ss"), level.ToString());
-                txtWriter.WriteLine("{0}", logMessage);
+                txtWriter.Write(entryStart);
+                txtWriter.Write($"{separatorStart}{DateTime.Now.ToString("yyyyMMdd HH:mm:ss")}{separatorEnd}");
+                txtWriter.Write($"{separatorStart}{string.Format("{0,10}", level.ToString())}{separatorEnd}");
+                foreach (var logMessage in logMessages)
+                {
+                    txtWriter.Write($"{separatorStart}{logMessage}{separatorEnd}");
+                }
+                txtWriter.WriteLine(entryEnd);
             }
             catch (Exception)
             {

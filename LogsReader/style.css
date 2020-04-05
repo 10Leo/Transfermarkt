@@ -1,0 +1,28 @@
+html,
+body {
+    margin: 0;
+}
+
+html {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height: 100%;
+}
+
+body {
+    height: inherit;
+}
+
+p {
+    position: absolute;
+    margin: 0;
+    top: 35px;
+    right: 5px;
+    color: #aaa;
+}
+.title {
+	color: blue;
+	background-color: red;
+}
+.just {
+	color: yellow;
+}
