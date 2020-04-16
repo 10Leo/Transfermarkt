@@ -1,12 +1,10 @@
 ﻿using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Exporter
 {
-    public interface IExporter
+    public interface IExporter//<TDomain, TValue> where TDomain : IDomain<TValue> where TValue : IValue
     {
-        void ExtractCompetition(Competition competition);
-        void ExtractClub(Club club);
-
         void Extract(IDomain<IValue> domain);
     }
 }

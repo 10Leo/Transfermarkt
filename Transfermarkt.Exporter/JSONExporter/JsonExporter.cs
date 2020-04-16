@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Exporter;
@@ -34,8 +35,52 @@ namespace Transfermarkt.Exporter.JSONExporter
         public void Extract(IDomain<IValue> domain)
         {
             var o = Extract(new JObject(), domain);
-
             string output = o.ToString();
+
+
+            string pathString = CreateBaseDir();
+            string fileName = string.Empty;
+
+            var country = (NationalityValue)domain.Elements.FirstOrDefault(e => e.InternalName == "Country")?.Value;
+            if (country == null || !country.Value.HasValue)
+            {
+                return;
+            }
+            var name = (StringValue)domain.Elements.FirstOrDefault(e => e.InternalName == "Name")?.Value;
+            if (name == null || string.IsNullOrWhiteSpace(name.Value))
+            {
+                return;
+            }
+            var season = (IntValue)domain.Elements.FirstOrDefault(e => e.InternalName == "Y")?.Value;
+
+            if (domain is Continent)
+            {
+            }
+            else if (domain is Competition)
+            {
+                fileName = competitionFileFormat;
+                fileName = fileName.Replace("{COUNTRY}", country.Value.ToString());
+                fileName = fileName.Replace("{COMPETITION_NAME}", name.Value);
+                fileName = fileName.Replace("{SEASON}", season.Value?.ToString());
+            }
+            else if (domain is Club)
+            {
+                pathString = System.IO.Path.Combine(pathString, string.Format("{0}", country.Value.ToString()));
+                System.IO.Directory.CreateDirectory(pathString);
+
+                fileName = clubFileFormat;
+                fileName = fileName.Replace("{COUNTRY}", country.Value.ToString());
+                fileName = fileName.Replace("{CLUB_NAME}", name.Value);
+                fileName = fileName.Replace("{SEASON}", season.Value?.ToString());
+            }
+
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                return;
+            }
+            pathString = System.IO.Path.Combine(pathString, fileName);
+
+            WriteToFile(pathString, output);
         }
 
         public JObject Extract(JObject baseObj, IDomain<IValue> domain)
@@ -95,41 +140,6 @@ namespace Transfermarkt.Exporter.JSONExporter
             baseObj.Add(setProp);
 
             return baseObj;
-        }
-
-        public void ExtractCompetition(Competition competition)
-        {
-            string pathString = CreateBaseDir();
-
-            string fileName = competitionFileFormat;
-            //fileName = fileName.Replace("{COUNTRY}", competition.Country?.ToString());
-            //fileName = fileName.Replace("{COMPETITION_NAME}", competition.Name);
-            //fileName = fileName.Replace("{SEASON}", competition.Season.ToString());
-
-            pathString = System.IO.Path.Combine(pathString, fileName);
-
-            string output = JsonConvert.SerializeObject(competition, settings);
-
-            WriteToFile(pathString, output);
-        }
-
-        public void ExtractClub(Club club)
-        {
-            //string pathString = CreateBaseDir();
-
-            //pathString = System.IO.Path.Combine(pathString, string.Format("{0}", club.Country));
-            //System.IO.Directory.CreateDirectory(pathString);
-
-            //string fileName = clubFileFormat;
-            //fileName = fileName.Replace("{COUNTRY}", club.Country?.ToString());
-            //fileName = fileName.Replace("{CLUB_NAME}", club.Name);
-            //fileName = fileName.Replace("{SEASON}", club.Season.ToString());
-
-            //pathString = System.IO.Path.Combine(pathString, fileName);
-
-            //string output = JsonConvert.SerializeObject(club, settings);
-
-            //WriteToFile(pathString, output);
         }
 
         private static string CreateBaseDir()

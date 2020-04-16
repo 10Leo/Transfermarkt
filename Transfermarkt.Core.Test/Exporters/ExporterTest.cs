@@ -15,20 +15,21 @@ namespace Transfermarkt.Core.Test.Exporters
         public void SuccessfullyExportsDomainsAsJSON()
         {
             IExporter exporter = new JsonExporter();
-            IDomain<IValue> domain = GenerateClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
 
-            IDomain<IValue> player01 = GeneratePlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain<IValue> player02 = GeneratePlayer("Lio Messi", "Messi", new DateTime(1986, 1, 1), Nationality.ARG, 171, Foot.L, Position.AM, 10, 1, new DateTime(2003, 7, 1), new DateTime(2022, 7, 1), 200000000, "http://link", "http://link");
-            IDomain<IValue> player03 = GeneratePlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain<IValue> club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
 
-            domain.Children.Add(player01);
-            domain.Children.Add(player02);
-            domain.Children.Add(player03);
+            IDomain<IValue> player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
+            IDomain<IValue> player02 = MockPlayer("Lio Messi", "Messi", new DateTime(1986, 1, 1), Nationality.ARG, 171, Foot.L, Position.AM, 10, 1, new DateTime(2003, 7, 1), new DateTime(2022, 7, 1), 200000000, "http://link", "http://link");
+            IDomain<IValue> player03 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+
+            club01.Children.Add(player01);
+            club01.Children.Add(player02);
+            club01.Children.Add(player03);
             
-            exporter.Extract(domain);
+            exporter.Extract(club01);
         }
 
-        private Club GenerateClub(Nationality nationality, string name, int season, string imgUrl, string countryImg)
+        private Club MockClub(Nationality nationality, string name, int season, string imgUrl, string countryImg)
         {
             Club domain = new Club();
 
@@ -41,7 +42,7 @@ namespace Transfermarkt.Core.Test.Exporters
             return domain;
         }
 
-        private Player GeneratePlayer(string name, string shortName, DateTime birthDate, Nationality nat, int h, Foot foot, Position pos, int number, int cap, DateTime clubArrivalDate, DateTime contractExpirationDate, decimal mv, string imgUrl, string profileUrl)
+        private Player MockPlayer(string name, string shortName, DateTime birthDate, Nationality nat, int h, Foot foot, Position pos, int number, int cap, DateTime clubArrivalDate, DateTime contractExpirationDate, decimal mv, string imgUrl, string profileUrl)
         {
             Player domain = new Player();
 
