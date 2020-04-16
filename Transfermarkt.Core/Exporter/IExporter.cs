@@ -6,5 +6,7 @@ namespace Transfermarkt.Core.Exporter
     {
         void ExtractCompetition(Competition competition);
         void ExtractClub(Club club);
+
+        void Extract(IDomain<IValue> domain);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Exporter;
+using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Exporter.JSONExporter
 {
@@ -27,6 +29,72 @@ namespace Transfermarkt.Exporter.JSONExporter
             };
             settings.Formatting = Formatting.Indented;
             settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+        }
+
+        public void Extract(IDomain<IValue> domain)
+        {
+            var o = Extract(new JObject(), domain);
+
+            string output = o.ToString();
+        }
+
+        public JObject Extract(JObject baseObj, IDomain<IValue> domain)
+        {
+            //JObject jObject = new JObject();
+
+            foreach (IElement<IValue> element in domain.Elements)
+            {
+                string value = string.Empty;
+                if (element.Value.Type == typeof(string))
+                {
+                    value = ((StringValue)element.Value).Value;
+                }
+                else if (element.Value.Type == typeof(int?))
+                {
+                    value = ((IntValue)element.Value).Value?.ToString();
+                }
+                else if (element.Value.Type == typeof(decimal?))
+                {
+                    value = ((DecimalValue)element.Value).Value?.ToString();
+                }
+                else if (element.Value.Type == typeof(DateTime?))
+                {
+                    value = ((DatetimeValue)element.Value).Value?.ToString();
+                }
+                else if (element.Value.Type == typeof(Nationality?))
+                {
+                    value = ((NationalityValue)element.Value).Value?.ToString();
+                }
+                else if (element.Value.Type == typeof(Position?))
+                {
+                    value = ((PositionValue)element.Value).Value?.ToString();
+                }
+                else if (element.Value.Type == typeof(Foot?))
+                {
+                    value = ((FootValue)element.Value).Value?.ToString();
+                }
+
+                var prop = new JProperty(element.InternalName, value);
+                baseObj.Add(prop);
+            }
+
+            if (domain.Children == null || domain.Children.Count == 0)
+            {
+                return baseObj;
+            }
+
+            var set = new JArray();
+
+            foreach (var child in domain.Children)
+            {
+                var o = Extract(new JObject(), child);
+                set.Add(o);
+            }
+
+            var setProp = new JProperty("Set", set);
+            baseObj.Add(setProp);
+
+            return baseObj;
         }
 
         public void ExtractCompetition(Competition competition)
