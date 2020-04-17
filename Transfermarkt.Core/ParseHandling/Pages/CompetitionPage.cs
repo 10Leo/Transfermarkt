@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
 using Transfermarkt.Logging;
@@ -24,11 +23,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
 
             this.OnBeforeParse += (o, e) => {
-                logger.LogMessage(LogLevel.Milestone, $"Started parsing {e.Url}.");
+                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
             this.OnAfterParse += (o, e) => {
-                logger.LogMessage(LogLevel.Milestone, $"Finished parsing {e.Url}.");
+                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
     }
@@ -50,28 +49,23 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
 
-                foreach (var elementParser in Parsers)
-                {
-                    elements.Add((connection.GetNode(), connection.GetNode()));
-                }
+                    elements.Add((null, connection.GetNode()));
 
                 return elements;
             };
 
-            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, $"[Success parsing {e.Element.name}]"));
-            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, $"[Error parsing {e.Element.name} on node {e.Node.Name}], innertext: [{e.Node?.InnerText}], innerhtml: [{e.Node?.InnerHtml}]", e.Exception));
+            this.Parsers.ToList().ForEach(p => p.OnSuccess += (o, e) => logger.LogMessage(LogLevel.Info, new List<string> { $"EVT: Parsing element Success.", $"DO: {e.Element.name}" }));
+            this.Parsers.ToList().ForEach(p => p.OnFailure += (o, e) => logger.LogException(LogLevel.Warning, new List<string> { $"EVT: Parsing Error on node {e.Node?.Name}.", $"DO: {e.Element.name}", $"INNER_TEXT: {e.Node?.InnerText}" }, e.Exception));
         }
     }
 
     class CompetitionClubsPageSection : ChildsSection<HtmlNode, IValue>
     {
-        protected static IConfigurationManager config = new ConfigManager();
-
-        public string BaseURL { get; } = config.GetAppSetting("BaseURL");
-        public string SimpleClubUrlFormat { get; } = config.GetAppSetting("SimpleClubUrlFormat");
-        public string PlusClubUrlFormat { get; } = config.GetAppSetting("PlusClubUrlFormatV2");
-        public string IdentifiersGetterPattern { get; } = config.GetAppSetting("IdentifiersGetterPattern");
-        public string IdentifiersSetterPattern { get; } = config.GetAppSetting("IdentifiersSetterPattern");
+        public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        public string SimpleClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
+        public string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
+        public string IdentifiersGetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
+        public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
 
         public CompetitionClubsPageSection(HAPConnection connection, ILogger logger)
         {
@@ -103,7 +97,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                     }
                     catch (Exception ex)
                     {
-                        //TODO
+                        logger.LogException(LogLevel.Error, new List<string> { "EVT: Error collecting Club urls" }, ex);
                     }
                 }
 
@@ -140,7 +134,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             MatchCollection matches = Regex.Matches(url, simpleClubUrlPattern);
             if (!(matches.Count > 0 && matches[0].Groups.Count >= identifiers.Count))
             {
-                //TODO: logging
+                throw new Exception($"Error transforming url: '{url}.'");
             }
 
             for (int i = 1; i < matches[0].Groups.Count; i++)

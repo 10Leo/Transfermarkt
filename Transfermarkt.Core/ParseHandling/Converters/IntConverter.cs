@@ -1,5 +1,5 @@
-﻿using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
+﻿using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
@@ -7,13 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
     {
         public IntValue Convert(string stringToConvert)
         {
-            int? converted = null;
-            try
-            {
-                converted = int.Parse(stringToConvert);
-            }
-            catch (Exception) { }
-            return new IntValue { Value = converted };
+            return new IntValue { Value = int.Parse(stringToConvert) };
         }
     }
 }

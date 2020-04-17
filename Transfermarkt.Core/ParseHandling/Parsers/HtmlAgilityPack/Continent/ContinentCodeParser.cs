@@ -1,20 +1,18 @@
 ﻿using HtmlAgilityPack;
-using System;
-using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {
-    class ContinentCodeParser : ElementParser<Elements.Continent.ContinentCode, StringValue, HtmlNode>
+    class ContinentCodeParser : ElementParser<Elements.Continent.ContinentCode, ContinentCodeValue, HtmlNode>
     {
         public ContinentCodeParser()
         {
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "";
+            this.CanParsePredicate = node => true;//"" == ParsersConfig.GetLabel(this.GetType(), ConfigType.CONTINENT);
 
             this.ParseFunc = node =>
             {
-                return new Transfermarkt.Core.ParseHandling.Elements.Continent.ContinentCode { };
+                var parsedStr = node.SelectSingleNode("//div[@id='main']//div[@class='table-header']/h2")?.InnerText;
+                return new Elements.Continent.ContinentCode { Value = Converter.Convert(parsedStr) };
             };
         }
     }

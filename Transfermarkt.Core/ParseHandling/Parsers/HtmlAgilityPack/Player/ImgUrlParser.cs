@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using System.Linq;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 
@@ -8,13 +9,14 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
     {
         public ImgUrlParser()
         {
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "Jogadores";
+            this.CanParsePredicate = node => node?.InnerText?.Trim(Common.trimChars) == ParsersConfig.GetLabel(this.GetType(), ConfigType.PLAYER);
 
             this.ParseFunc = node =>
             {
-                //TODO
-                var parsedStr = string.Empty;
+                var parsedStr = node
+                    .SelectNodes("table//td/a/img")
+                    .FirstOrDefault(n => n.Attributes["class"]?.Value == "bilderrahmen-fixed")
+                    .Attributes["src"].Value;
 
                 return new ImgUrl { Value = Converter.Convert(parsedStr) };
             };

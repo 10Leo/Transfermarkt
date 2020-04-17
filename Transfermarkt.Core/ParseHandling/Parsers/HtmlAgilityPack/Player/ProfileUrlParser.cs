@@ -9,8 +9,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
     {
         public ProfileUrlParser()
         {
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "Jogadores";
+            this.CanParsePredicate = node => node?.InnerText?.Trim(Common.trimChars) == ParsersConfig.GetLabel(this.GetType(), ConfigType.PLAYER);
 
             this.ParseFunc = node =>
             {

@@ -1,0 +1,44 @@
+{
+  "Language": "Português",
+  "Set": [
+	{
+		"Name": "Guarda-Redes", "DO": "GR",
+	},
+	{
+		"Name": "Lateral Direito", "DO": "RB",
+	},
+	{
+		"Name": "Lateral Esquerdo", "DO": "LB",
+	},
+	{
+		"Name": "Defesa Central", "DO": "CB",
+	},
+	{
+		"Name": "Médio Defensivo", "DO": "DM",
+	},
+	{
+		"Name": "Médio Centro", "DO": "CM",
+	},
+	{
+		"Name": "Médio Direito", "DO": "RM",
+	},
+	{
+		"Name": "Médio Esquerdo", "DO": "LM",
+	},
+	{
+		"Name": "Médio Ofensivo", "DO": "AM",
+	},
+	{
+		"Name": "Extremo Direito", "DO": "RW",
+	},
+	{
+		"Name": "Extremo Esquerdo", "DO": "LW",
+	},
+	{
+		"Name": "Segundo Avançado", "DO": "SS",
+	},
+	{
+		"Name": "Ponta de Lança", "DO": "CF",
+	}
+  ]
+}

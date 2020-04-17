@@ -8,12 +8,13 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
     {
         public NameParser()
         {
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "";
+            this.CanParsePredicate = node => true;//"" == ParsersConfig.GetLabel(this.GetType(), ConfigType.CONTINENT);
 
             this.ParseFunc = node =>
             {
-                return new Elements.Continent.Name { };
+                var n1 = node.SelectSingleNode("//div[@id='stickyContent']");
+                var parsedStr = node.SelectSingleNode("//div[@id='main']//div[@class='table-header']/h2")?.InnerText;
+                return new Elements.Continent.Name { Value = Converter.Convert(parsedStr) };
             };
         }
     }

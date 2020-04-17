@@ -1,0 +1,14 @@
+{
+  "Language": "English",
+  "Set": [
+	{
+		"Name": "right", "DO": "R",
+	},
+	{
+		"Name": "left", "DO": "L",
+	},
+	{
+		"Name": "both", "DO": "A",
+	}
+  ]
+}

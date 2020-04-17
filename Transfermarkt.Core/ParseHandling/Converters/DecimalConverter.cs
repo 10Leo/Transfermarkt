@@ -1,5 +1,5 @@
-﻿using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
+﻿using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
@@ -7,13 +7,7 @@ namespace Transfermarkt.Core.ParseHandling.Converters
     {
         public DecimalValue Convert(string stringToConvert)
         {
-            decimal? converted = null;
-            try
-            {
-                converted = decimal.Parse(stringToConvert);
-            }
-            catch (Exception) { }
-            return new DecimalValue { Value = converted };
+            return new DecimalValue { Value = decimal.Parse(stringToConvert) };
         }
     }
 }

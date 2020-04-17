@@ -10,8 +10,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
     {
         public CountryParser()
         {
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => true;
+            this.CanParsePredicate = node => true;// "" == ParsersConfig.GetLabel(this.GetType(), ConfigType.CLUB);
 
             this.ParseFunc = node =>
             {

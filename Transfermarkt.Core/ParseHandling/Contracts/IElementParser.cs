@@ -11,6 +11,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         bool CanParse(TNode node);
         TElement Parse(TNode node);
+        void Reset();
     }
 
     public class ParserEventArgs<TNode> : EventArgs

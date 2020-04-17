@@ -2,6 +2,7 @@
 {
     public enum Nationality
     {
+        NA = 000,
         AFG = 004,
         ALB = 008,
         ATA = 010,
@@ -254,6 +255,7 @@
         ENG = 8262,
         NIR = 8263,
         SCT = 8264,
-        WLS = 8265
+        WLS = 8265,
+        RKS = 383
     }
 }

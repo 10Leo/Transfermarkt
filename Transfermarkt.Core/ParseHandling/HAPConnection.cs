@@ -17,15 +17,17 @@ namespace Transfermarkt.Core.ParseHandling
         {
             try
             {
-                string htmlCode = "";
+                string htmlString = "";
+                //TODO: consider separate the loading of the file from it's loading by HAP.
                 using (WebClient client = new WebClient())
                 {
+                    Uri uri = new Uri(url);
                     client.Encoding = System.Text.Encoding.GetEncoding("UTF-8");
                     client.Headers.Add(HttpRequestHeader.UserAgent, "AvoidError");
-                    htmlCode = client.DownloadString(url);
+                    htmlString = client.DownloadString(uri);
                 }
                 doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(htmlCode);
+                doc.LoadHtml(htmlString);
             }
             catch (System.Net.WebException ex)
             {

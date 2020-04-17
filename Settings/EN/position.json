@@ -1,0 +1,44 @@
+{
+  "Language": "English",
+  "Set": [
+	{
+		"Name": "Goalkeeper", "DO": "GR",
+	},
+	{
+		"Name": "Right-Back", "DO": "RB",
+	},
+	{
+		"Name": "Left-Back", "DO": "LB",
+	},
+	{
+		"Name": "Centre-Back", "DO": "CB",
+	},
+	{
+		"Name": "Defensive Midfield", "DO": "DM",
+	},
+	{
+		"Name": "Central Midfield", "DO": "CM",
+	},
+	{
+		"Name": "Right Midfield", "DO": "RM",
+	},
+	{
+		"Name": "Left Midfield", "DO": "LM",
+	},
+	{
+		"Name": "Attacking Midfield", "DO": "AM",
+	},
+	{
+		"Name": "Right Winger", "DO": "RW",
+	},
+	{
+		"Name": "Left Winger", "DO": "LW",
+	},
+	{
+		"Name": "Second Striker", "DO": "SS",
+	},
+	{
+		"Name": "Centre-Forward", "DO": "CF",
+	}
+  ]
+}

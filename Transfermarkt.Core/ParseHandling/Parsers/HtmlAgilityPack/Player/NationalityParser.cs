@@ -9,15 +9,14 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
     {
         public NationalityParser()
         {
-            //TODO: change so that this value comes from a settings json file according to what's defined on config.
-            this.CanParsePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "Nac.";
+            this.CanParsePredicate = node => node?.InnerText?.Trim(Common.trimChars) == ParsersConfig.GetLabel(this.GetType(), ConfigType.PLAYER);
 
             this.ParseFunc = node =>
             {
                 var parsedStr = node
                     .SelectNodes("img")
                     .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
-                    .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault();
+                    .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault().Trim();
 
                 return new Nationality { Value = Converter.Convert(parsedStr) };
             };
