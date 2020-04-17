@@ -122,19 +122,19 @@ namespace Transfermarkt.Exporter.JSONExporter
             }
             else if (element.Value.Type == typeof(DateTime?))
             {
-                value = ((DatetimeValue)element.Value).Value;
+                value = ((DatetimeValue)element.Value).Value?.ToString("dd.MM.yyyy");
             }
             else if (element.Value.Type == typeof(Nationality?))
             {
-                value = ((NationalityValue)element.Value).Value;
+                value = ((NationalityValue)element.Value).Value?.ToString();
             }
             else if (element.Value.Type == typeof(Position?))
             {
-                value = ((PositionValue)element.Value).Value;
+                value = ((PositionValue)element.Value).Value?.ToString();
             }
             else if (element.Value.Type == typeof(Foot?))
             {
-                value = ((FootValue)element.Value).Value;
+                value = ((FootValue)element.Value).Value?.ToString();
             }
 
             return value;
@@ -158,7 +158,7 @@ namespace Transfermarkt.Exporter.JSONExporter
                 var v = k.Value;
 
                 IElement<IValue> element = domain.Elements.FirstOrDefault(e => e.InternalName.ToUpperInvariant() == v.ToUpperInvariant());
-                string value = element.Value?.ToString();
+                string value = GetValue(element)?.ToString();
 
                 if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
                 {
