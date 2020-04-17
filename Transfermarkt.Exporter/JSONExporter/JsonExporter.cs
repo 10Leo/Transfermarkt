@@ -14,15 +14,14 @@ namespace Transfermarkt.Exporter.JSONExporter
     {
         private static readonly string dateFormat = "yyyy-MM-dd";
         private static readonly string format = ".json";
+        private static JsonSerializerSettings settings;
+
         public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
         public static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
         public static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
 
         public static string BaseFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseFolderPath);
         public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
-
-
-        private static JsonSerializerSettings settings;
 
         public JsonExporter()
         {
@@ -77,7 +76,7 @@ namespace Transfermarkt.Exporter.JSONExporter
             WriteToFile(pathString, output);
         }
 
-        public JObject Extract(JObject baseObj, IDomain<IValue> domain)
+        private JObject Extract(JObject baseObj, IDomain<IValue> domain)
         {
             foreach (IElement<IValue> element in domain.Elements)
             {

@@ -3,7 +3,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Exporter
 {
-    public interface IExporter//<TDomain, TValue> where TDomain : IDomain<TValue> where TValue : IValue
+    public interface IExporter
     {
         void Extract(IDomain<IValue> domain);
     }
