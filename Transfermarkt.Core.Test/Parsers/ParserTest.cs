@@ -24,7 +24,7 @@ namespace Transfermarkt.Core.Test.Parsers
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures")]
         public void ParsersClassNameEndsWithSuffix2()
         {
             Type[] typelist = GetTypesInNamespace(Assembly.Load("Transfermarkt.Core"), "Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player");

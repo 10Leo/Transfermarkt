@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Core.Actors;
@@ -11,14 +12,14 @@ namespace Transfermarkt.Core.Test.Exporters
     [TestClass]
     public class ExporterTest
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsAClubAsJSON()
         {
             IExporter exporter = new JsonExporter();
 
             IDomain<IValue> club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
 
-            IDomain<IValue> player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
+            IDomain<IValue> player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 1, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
             IDomain<IValue> player02 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
 
             club.Children.Add(player01);
@@ -45,6 +46,7 @@ namespace Transfermarkt.Core.Test.Exporters
             exporter.Extract(club);
         }
 
+        [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsACompetitionAsJSON()
         {
             IExporter exporter = new JsonExporter();
@@ -70,7 +72,7 @@ namespace Transfermarkt.Core.Test.Exporters
             exporter.Extract(competition);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsAContinentAsJSON()
         {
             IExporter exporter = new JsonExporter();
