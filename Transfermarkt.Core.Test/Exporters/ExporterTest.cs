@@ -105,7 +105,7 @@ namespace Transfermarkt.Core.Test.Exporters
         {
             Continent domain = new Continent();
 
-            ((Core.ParseHandling.Elements.Continent.ContinentCode)domain.Elements.FirstOrDefault(e => e.InternalName == "Country")).Value = new ContinentCodeValue { Value = continentCode };
+            ((Core.ParseHandling.Elements.Continent.ContinentCode)domain.Elements.FirstOrDefault(e => e.InternalName == "Code")).Value = new ContinentCodeValue { Value = continentCode };
             ((Core.ParseHandling.Elements.Continent.Name)domain.Elements.FirstOrDefault(e => e.InternalName == "Name")).Value = new StringValue { Value = name };
 
             return domain;

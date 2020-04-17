@@ -46,12 +46,7 @@ namespace Transfermarkt.Exporter.JSONExporter
 
             string pathString = CreateBaseDir();
 
-            var country = (NationalityValue)domain.Elements.FirstOrDefault(e => e.InternalName == "Country")?.Value;
-            if (country == null || !country.Value.HasValue)
-            {
-                return;
-            }
-
+            
             string fileName = string.Empty;
             if (domain is Continent)
             {
@@ -64,8 +59,13 @@ namespace Transfermarkt.Exporter.JSONExporter
             else if (domain is Club)
             {
                 fileName = GenerateFileName(ClubFileNameFormat, domain);
-                pathString = System.IO.Path.Combine(pathString, string.Format("{0}", country.Value.ToString()));
-                System.IO.Directory.CreateDirectory(pathString);
+
+                var country = (NationalityValue)domain.Elements.FirstOrDefault(e => e.InternalName == "Country")?.Value;
+                if (country != null && country.Value.HasValue)
+                {
+                    pathString = System.IO.Path.Combine(pathString, string.Format("{0}", country.Value.ToString()));
+                    System.IO.Directory.CreateDirectory(pathString);
+                }
             }
 
             if (string.IsNullOrWhiteSpace(fileName))
@@ -108,11 +108,13 @@ namespace Transfermarkt.Exporter.JSONExporter
         private object GetValue(IElement<IValue> element)
         {
             object value = string.Empty;
-            if (element.Value.Type == typeof(string))
+
+            if (element == null)
             {
-                value = ((StringValue)element.Value).Value;
+                return value;
             }
-            else if (element.Value.Type == typeof(int?))
+
+            if (element.Value.Type == typeof(int?))
             {
                 value = ((IntValue)element.Value).Value;
             }
@@ -123,6 +125,10 @@ namespace Transfermarkt.Exporter.JSONExporter
             else if (element.Value.Type == typeof(DateTime?))
             {
                 value = ((DatetimeValue)element.Value).Value?.ToString("dd.MM.yyyy");
+            }
+            else if (element.Value.Type == typeof(string))
+            {
+                value = ((StringValue)element.Value).Value;
             }
             else if (element.Value.Type == typeof(Nationality?))
             {
@@ -135,6 +141,14 @@ namespace Transfermarkt.Exporter.JSONExporter
             else if (element.Value.Type == typeof(Foot?))
             {
                 value = ((FootValue)element.Value).Value?.ToString();
+            }
+            else if (element.Value.Type == typeof(ContinentCode?))
+            {
+                value = ((ContinentCodeValue)element.Value).Value?.ToString();
+            }
+            else
+            {
+                value = element.Value?.ToString();
             }
 
             return value;
