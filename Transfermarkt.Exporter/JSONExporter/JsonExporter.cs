@@ -14,9 +14,9 @@ namespace Transfermarkt.Exporter.JSONExporter
     {
         private static readonly string dateFormat = "yyyy-MM-dd";
         private static readonly string format = ".json";
-        private static readonly string continentFileFormat = "{CODE}-{NAME}" + format;
-        private static readonly string competitionFileFormat = "{COUNTRY}-{NAME}_{Y}" + format;
-        private static readonly string clubFileFormat = "{COUNTRY}-{NAME}_{Y}" + format;
+        private static readonly string continentFileNameFormat = "{CODE}-{NAME}" + format;
+        private static readonly string competitionFileNameFormat = "{COUNTRY}-{NAME}_{Y}" + format;
+        private static readonly string clubFileNameFormat = "{COUNTRY}-{NAME}_{Y}" + format;
 
         public static string BaseFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseFolderPath);
         public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
@@ -52,13 +52,22 @@ namespace Transfermarkt.Exporter.JSONExporter
                 return;
             }
 
-            if (domain is Club)
+            string fileName = string.Empty;
+            if (domain is Continent)
             {
+                fileName = GenerateFileName(continentFileNameFormat, domain);
+            }
+            else if(domain is Competition)
+            {
+                fileName = GenerateFileName(competitionFileNameFormat, domain);
+            }
+            else if (domain is Club)
+            {
+                fileName = GenerateFileName(clubFileNameFormat, domain);
                 pathString = System.IO.Path.Combine(pathString, string.Format("{0}", country.Value.ToString()));
                 System.IO.Directory.CreateDirectory(pathString);
             }
 
-            string fileName = GenerateFileName(competitionFileFormat, domain);
             if (string.IsNullOrWhiteSpace(fileName))
             {
                 return;
