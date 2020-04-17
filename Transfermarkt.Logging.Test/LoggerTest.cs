@@ -9,7 +9,7 @@ namespace Transfermarkt.Logging.Test
     [TestClass]
     public class LoggerTest
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Logger")]
         public void LogsAnException()
         {
             var logger = LoggerFactory.GetLogger(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 0);
@@ -19,7 +19,7 @@ namespace Transfermarkt.Logging.Test
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Logger")]
         public void LogsAMessage()
         {
             var logger = LoggerFactory.GetLogger(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 0);

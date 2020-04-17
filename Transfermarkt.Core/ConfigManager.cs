@@ -41,18 +41,26 @@ namespace Transfermarkt.Core
             public const string Language = "Language";
             public const string BaseURL = "BaseURL";
             public const string BaseFolderPath = "BaseFolderPath";
+
             public const string SettingsFolderPath = "SettingsFolderPath";
             public const string SettingsPositionFile = "SettingsPositionFile";
             public const string SettingsNationalityFile = "SettingsNationalityFile";
             public const string SettingsFootFile = "SettingsFootFile";
             public const string SettingsContinentFile = "SettingsContinentFile";
+
             public const string Level1FolderFormat = "Level1FolderFormat";
+
+            public const string ContinentFileNameFormat = "ContinentFileNameFormat";
+            public const string CompetitionFileNameFormat = "CompetitionFileNameFormat";
+            public const string ClubFileNameFormat = "ClubFileNameFormat";
+            
             public const string SimpleClubUrlFormat = "SimpleClubUrlFormat";
             public const string PlusClubUrlFormat = "PlusClubUrlFormat";
             public const string PlusClubUrlFormatV2 = "PlusClubUrlFormatV2";
             public const string CompetitionUrlFormat = "CompetitionUrlFormat";
             public const string IdentifiersGetterPattern = "IdentifiersGetterPattern";
             public const string IdentifiersSetterPattern = "IdentifiersSetterPattern";
+
             public const string LogPath = "LogPath";
             public const string MinimumLoggingLevel = "MinimumLoggingLevel";
         }
