@@ -60,10 +60,8 @@ namespace Transfermarkt.Core.Test.Exporters
 
             IDomain<IValue> continent = MockContinent(ContinentCode.EEE, "Europe");
 
-
             IDomain<IValue> competition01 = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
             IDomain<IValue> competition02 = MockCompetition(Nationality.ESP, "Liga BBVA", 2020, "http://BBVA.pt", "http://BBVA.pt");
-
 
             IDomain<IValue> club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt");
             IDomain<IValue> club02 = MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt");

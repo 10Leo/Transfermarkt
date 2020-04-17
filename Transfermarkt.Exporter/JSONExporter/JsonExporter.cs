@@ -85,38 +85,36 @@ namespace Transfermarkt.Exporter.JSONExporter
 
         public JObject Extract(JObject baseObj, IDomain<IValue> domain)
         {
-            //JObject jObject = new JObject();
-
             foreach (IElement<IValue> element in domain.Elements)
             {
-                string value = string.Empty;
+                object value = string.Empty;
                 if (element.Value.Type == typeof(string))
                 {
                     value = ((StringValue)element.Value).Value;
                 }
                 else if (element.Value.Type == typeof(int?))
                 {
-                    value = ((IntValue)element.Value).Value?.ToString();
+                    value = ((IntValue)element.Value).Value;
                 }
                 else if (element.Value.Type == typeof(decimal?))
                 {
-                    value = ((DecimalValue)element.Value).Value?.ToString();
+                    value = ((DecimalValue)element.Value).Value;
                 }
                 else if (element.Value.Type == typeof(DateTime?))
                 {
-                    value = ((DatetimeValue)element.Value).Value?.ToString();
+                    value = ((DatetimeValue)element.Value).Value;
                 }
                 else if (element.Value.Type == typeof(Nationality?))
                 {
-                    value = ((NationalityValue)element.Value).Value?.ToString();
+                    value = ((NationalityValue)element.Value).Value;
                 }
                 else if (element.Value.Type == typeof(Position?))
                 {
-                    value = ((PositionValue)element.Value).Value?.ToString();
+                    value = ((PositionValue)element.Value).Value;
                 }
                 else if (element.Value.Type == typeof(Foot?))
                 {
-                    value = ((FootValue)element.Value).Value?.ToString();
+                    value = ((FootValue)element.Value).Value;
                 }
 
                 var prop = new JProperty(element.InternalName, value);
@@ -136,7 +134,7 @@ namespace Transfermarkt.Exporter.JSONExporter
                 set.Add(o);
             }
 
-            var setProp = new JProperty("Set", set);
+            var setProp = new JProperty("Children", set);
             baseObj.Add(setProp);
 
             return baseObj;
