@@ -14,9 +14,9 @@ namespace Transfermarkt.Exporter.JSONExporter
     {
         private static readonly string dateFormat = "yyyy-MM-dd";
         private static readonly string format = ".json";
-        private static readonly string continentFileNameFormat = "{CODE}-{NAME}" + format;
-        private static readonly string competitionFileNameFormat = "{COUNTRY}-{NAME}_{Y}" + format;
-        private static readonly string clubFileNameFormat = "{COUNTRY}-{NAME}_{Y}" + format;
+        public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
+        public static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
+        public static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
 
         public static string BaseFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseFolderPath);
         public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
@@ -55,15 +55,15 @@ namespace Transfermarkt.Exporter.JSONExporter
             string fileName = string.Empty;
             if (domain is Continent)
             {
-                fileName = GenerateFileName(continentFileNameFormat, domain);
+                fileName = GenerateFileName(ContinentFileNameFormat, domain);
             }
             else if(domain is Competition)
             {
-                fileName = GenerateFileName(competitionFileNameFormat, domain);
+                fileName = GenerateFileName(CompetitionFileNameFormat, domain);
             }
             else if (domain is Club)
             {
-                fileName = GenerateFileName(clubFileNameFormat, domain);
+                fileName = GenerateFileName(ClubFileNameFormat, domain);
                 pathString = System.IO.Path.Combine(pathString, string.Format("{0}", country.Value.ToString()));
                 System.IO.Directory.CreateDirectory(pathString);
             }
