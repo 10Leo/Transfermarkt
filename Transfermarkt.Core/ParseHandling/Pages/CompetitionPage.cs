@@ -75,6 +75,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             {
                 IList<string> urls = new List<string>();
 
+                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                
                 HtmlNode table = connection.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
                 if (table == null)
                 {
