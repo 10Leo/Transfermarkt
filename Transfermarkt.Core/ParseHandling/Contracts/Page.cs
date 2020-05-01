@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
@@ -21,9 +22,28 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         #region Contract
 
-        public virtual IDomain<TValue> Parse(string url)
+        public virtual List<string[]> Fetch(string url)
         {
             this.Connection.Connect(url);
+
+            List<string[]> urls = new List<string[]>();
+            if (Sections != null)
+            {
+                foreach (var section in Sections)
+                {
+                    if (section is IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)
+                    {
+                        urls.Add(((IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)section).Fetch(this).ToArray());
+                    }
+                }
+            }
+
+            return urls;
+        }
+
+        public virtual IDomain<TValue> Parse(string url)
+        {
+            //this.Connection.Connect(url);
 
             OnBeforeParse?.Invoke(this, new PageEventArgs(url));
 
