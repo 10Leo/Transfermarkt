@@ -1,19 +1,48 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
+using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Exporter;
+using Transfermarkt.Core.ParseHandling;
+using Transfermarkt.Core.ParseHandling.Contracts;
+using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Exporter.JSONExporter;
+using Transfermarkt.Logging;
 
 namespace Transfermarkt.Console
 {
     class Program
     {
-        private static string BaseURL { get; } = ConfigurationManager.AppSettings["BaseURL"].ToString();
-        private static string PlusClubUrlFormat { get; } = ConfigurationManager.AppSettings["PlusClubUrlFormatV2"].ToString();
-        private static string CompetitionUrlFormat { get; } = ConfigurationManager.AppSettings["CompetitionUrlFormat"].ToString();
+        private static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        private static string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
+        private static string CompetitionUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionUrlFormat);
+        private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
+        private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
+
+        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
 
         private static IExporter exporter;
+
+        private static IDictionary<int, Type> pageTypes = new Dictionary<int, Type>();
+
+        private static readonly string[] urls = new string[]
+        {
+            "https://www.transfermarkt.pt/wettbewerbe/europa",
+            "https://www.transfermarkt.pt/wettbewerbe/amerika",
+            "https://www.transfermarkt.pt/wettbewerbe/asien",
+            "https://www.transfermarkt.pt/wettbewerbe/afrika"
+        };
+
+        private static readonly IDictionary<int, (string displayName, string internalName)> continent = new Dictionary<int, (string, string)>
+        {
+            [1] = ("Europe", "europa"),
+            [2] = ("America", "amerika"),
+            [3] = ("Asia", "asien"),
+            [4] = ("Africa", "afrika"),
+        };
 
         private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
         {
@@ -31,91 +60,204 @@ namespace Transfermarkt.Console
 
         static void Main(string[] args)
         {
+            pageTypes.Add(2, typeof(ContinentPage));
+            pageTypes.Add(3, typeof(CompetitionPage));
+            pageTypes.Add(4, typeof(ClubPage));
+
+            IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page = null;
             exporter = new JsonExporter();
 
             System.Console.WriteLine("----------------------------------");
+            System.Console.WriteLine("Escolha uma das seguintes opções:");
 
-            int option = 0;
-            if (args.Length > 0)
+            var vs = continent.Values.ToList();
+            for (int i = 0; i < vs.Count; i++)
             {
+                System.Console.WriteLine(string.Format("{0}: {1}", continent.Keys.ElementAt(i), vs[i].displayName));
+            }
+
+            int val = RequestNumber();
+            string opt = continent[val].internalName;
+
+            System.Console.WriteLine("Parse: 0; Peek: 1");
+            int typ = RequestNumber();
+            
+
+            if (typ > 0)
+            {
+                page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
+
+                List<string[]> urls = page.Fetch($"{BaseURL}/wettbewerbe/{opt}");
+
+                System.Console.WriteLine("Escolha uma das seguintes opções:");
+
+                foreach (string[] item in urls)
+                {
+                    System.Console.WriteLine(string.Format("0: Todas"));
+                    for (int i = 0; i < item.Length; i++)
+                    {
+                        System.Console.WriteLine(string.Format("{0}: {1}", (i + 1), item[i]));
+                    }
+                }
+
                 try
                 {
-                    option = int.Parse(args[0]);
+                    List<int> opts = RequestNumbers();
+
+                    System.Console.WriteLine("Parse: 0; Peek: 1");
+                    typ = RequestNumber();
+
+                    List<List<string[]>> clubUrls = new List<List<string[]>>();
+                    foreach (var item in opts)
+                    {
+                        opt = urls.FirstOrDefault()[item - 1];
+
+                        page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
+
+                        List<string[]> thisClub = page.Fetch($"{opt}");
+                        clubUrls.Add(thisClub);
+                    }
+
+
+                    System.Console.WriteLine(string.Format("0: Todas"));
+                    int n = 0, k = 0;
+                    foreach (List<string[]> all in clubUrls)
+                    {
+                        foreach (string[] comp in all)
+                        {
+                            for (int i = 0; i < comp.Length; i++)
+                            {
+                                System.Console.WriteLine(string.Format("{0}{1}{2}: {3}", n, k, (i + 1), comp[i]));
+                            }
+                            k++;
+                        }
+                        n++;
+                    }
+
+                    //List<int> opts3 = RequestNumbers();
+
+                    List<int[]> opts30 = RequestNumbers2();
+
+                    System.Console.WriteLine("Parse: 0; Peek: 1");
+                    typ = RequestNumber();
+
+                    List<List<string[]>> clubUrls2 = new List<List<string[]>>();
+
+                    if (typ > 0)
+                    {
+                        foreach (int[] item in opts30)
+                        {
+                            opt = clubUrls.FirstOrDefault()[item[0]][item[1]-1];
+
+                            page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
+
+                            List<string[]> thisClub = page.Fetch($"{opt}");
+                            clubUrls2.Add(thisClub);
+                        }
+                    }
+
+
+                    foreach (List<string[]> all in clubUrls2)
+                    {
+                        foreach (string[] comp in all)
+                        {
+                            for (int i = 0; i < comp.Length; i++)
+                            {
+                                System.Console.WriteLine(string.Format("{0}{1}{2}: {3}", n, k, (i + 1), comp[i]));
+                            }
+                            k++;
+                        }
+                        n++;
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    //log
+                    System.Console.WriteLine("Error reading or interpreting chosen option.");
+                    System.Console.WriteLine(ex.Message);
+                    throw;
                 }
             }
-            switch (option)
-            {
-                case 0:
-                    TestCompetitions();
-                    break;
-                case 1:
-                    TestCompetition(Nationality.ITA, currentSeason);
-                    break;
-                case 2:
-                    TestSquad("Barcelona", 2011);
-                    break;
-                default: break;
-            }
         }
 
-        static void TestCompetitions(int season = 2018)
-        {
-            //string url = BaseURL + detailsPageUrl;
-            //try
-            //{
-            //    Season s = conn.ParseCompetitions(url, season);
 
-            //    System.Console.WriteLine(competition);
-            //    exporter.ExtractCompetitions(competition);
-            //}
-            //catch (Exception ex)
-            //{
-            //    System.Console.WriteLine(ex.InnerException);
-            //    System.Console.WriteLine(ex.Message);
-            //    throw;
-            //}
+        private static int RequestUrls()
+        {
+            int operation = 0;
+            return operation;
         }
 
-        static void TestCompetition(Nationality nationality, int season = 2018)
+        private static List<int> RequestNumbers()
         {
-            string detailsPageUrl = CompetitionUrlFormat;
-            detailsPageUrl = detailsPageUrl.Replace("{COMPETITION_NAME}", competitions[nationality].internalName);
-            detailsPageUrl = detailsPageUrl.Replace("{DIVISION}", competitions[nationality].d1);
-            detailsPageUrl = detailsPageUrl.Replace("{SEASON}", season.ToString());
+            List<int> numbers = new List<int>();
 
-            string url = BaseURL + detailsPageUrl;
             try
             {
+                string strNumbers = System.Console.ReadLine();
+                string[] splitedStrNumbers = strNumbers.Split(' ');
+
+                foreach (var strNumber in splitedStrNumbers)
+                {
+                    numbers.Add(int.Parse(strNumber));
+                }
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex.InnerException);
+                System.Console.WriteLine("Error reading or interpreting supplied numbers.");
                 System.Console.WriteLine(ex.Message);
                 throw;
             }
+
+            return numbers;
         }
 
-        static void TestSquad(string name, int season = 2018)
+        private static List<int[]> RequestNumbers2()
         {
-            string detailsPageUrl = PlusClubUrlFormat;
-            detailsPageUrl = detailsPageUrl.Replace("{CLUB_STRING}", clubs[name].internalName);
-            detailsPageUrl = detailsPageUrl.Replace("{CLUB_ID}", clubs[name].id.ToString());
-            detailsPageUrl = detailsPageUrl.Replace("{SEASON}", season.ToString());
+            List<int[]> numbers = new List<int[]>();
 
-            string url = BaseURL + detailsPageUrl;
             try
             {
+                string strNumbers = System.Console.ReadLine();
+                string[] splitedStrNumbers = strNumbers.Split(' ');
+
+                foreach (var strNumber in splitedStrNumbers)
+                {
+                    string[] splitedStrNumbers2 = strNumber.Split('.');
+
+                    int[] ns = new int[2];
+                    for (int i = 0; i < splitedStrNumbers2.Length; i++)
+                    {
+                        ns[i] = int.Parse(splitedStrNumbers2[i]);
+                    }
+                    numbers.Add(ns);
+                }
             }
             catch (Exception ex)
             {
-                System.Console.WriteLine(ex.InnerException);
+                System.Console.WriteLine("Error reading or interpreting supplied numbers.");
                 System.Console.WriteLine(ex.Message);
                 throw;
             }
+
+            return numbers;
+        }
+
+        private static int RequestNumber()
+        {
+            int operation = 0;
+
+            try
+            {
+                string reqOperation = System.Console.ReadLine();
+                operation = int.Parse(reqOperation);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("Error reading or interpreting supplied operation.");
+                System.Console.WriteLine(ex.Message);
+                throw;
+            }
+
+            return operation;
         }
     }
 }
