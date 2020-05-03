@@ -67,7 +67,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.GetUrls = () =>
             {
-                IList<string> urls = new List<string>();
+                IList<Link> urls = new List<Link>();
 
                 connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
 
@@ -85,10 +85,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     try
                     {
-                        string competitionUrl = GetCompetitionUrl(cols[0]);
-                        string finalCompetitionUrl = TransformUrl(competitionUrl, BaseURL);
+                        var competitionUrl = GetCompetitionLink(cols);
+                        competitionUrl.Url = TransformUrl(competitionUrl.Url, BaseURL);
 
-                        urls.Add(finalCompetitionUrl);
+                        urls.Add(competitionUrl);
                     }
                     catch (Exception ex)
                     {
@@ -100,12 +100,15 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
         }
 
-        private string GetCompetitionUrl(HtmlNode node)
+        private Link GetCompetitionLink(HtmlNodeCollection cols)
         {
-            return node
+            var country = cols[1]
+                .SelectNodes("img")
+                .FirstOrDefault(n => n.Attributes["class"]?.Value == "flaggenrahmen")?.Attributes["Title"].Value;
+            var a = cols[0]
                 .SelectNodes("table//td[2]/a")
-                .FirstOrDefault()
-                .Attributes["href"].Value;
+                .FirstOrDefault();
+            return new Link { Title = $"{country}-{a.InnerText}", Url = a.Attributes["href"].Value };
         }
 
         private string TransformUrl(string url, string baseURL)

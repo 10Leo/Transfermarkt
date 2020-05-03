@@ -36,7 +36,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         /// </summary>
         IPage<TDomain, TElement, TValue, TNode> Page { get; set; }
 
-        IList<string> Fetch(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
+        IList<Link> Fetch(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
     }
 
     public interface IChildsSamePageSection<TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue

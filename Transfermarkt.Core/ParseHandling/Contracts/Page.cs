@@ -22,11 +22,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         #region Contract
 
-        public virtual List<string> Fetch(string url)
+        public virtual List<Link> Fetch(string url)
         {
             this.Connection.Connect(url);
 
-            List<string> urls = new List<string>();
+            List<Link> urls = new List<Link>();
             if (Sections != null)
             {
                 foreach (var section in Sections)

@@ -93,7 +93,7 @@ namespace Transfermarkt.Console
             }
 
 
-            List<string> urls = page.Fetch($"{BaseURL}/wettbewerbe/{opt}");
+            List<Link> urls = page.Fetch($"{BaseURL}/wettbewerbe/{opt}");
 
             System.Console.WriteLine("Escolha uma das seguintes opções:");
             System.Console.WriteLine(string.Format("0: Todas"));
@@ -115,7 +115,7 @@ namespace Transfermarkt.Console
                     var parsedLeagues = new List<IDomain<IValue>>();
                     foreach (var item in opts)
                     {
-                        opt = urls[item - 1];
+                        opt = urls[item - 1].Url;
 
                         page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
 
@@ -131,14 +131,14 @@ namespace Transfermarkt.Console
                     return;
                 }
 
-                List<List<string>> leaguesClubsUrls = new List<List<string>>();
+                List<List<Link>> leaguesClubsUrls = new List<List<Link>>();
                 foreach (var item in opts)
                 {
-                    opt = urls[item - 1];
+                    opt = urls[item - 1].Url;
 
                     page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
 
-                    List<string> league = page.Fetch($"{opt}");
+                    List<Link> league = page.Fetch($"{opt}");
                     leaguesClubsUrls.Add(league);
                 }
 
@@ -146,7 +146,7 @@ namespace Transfermarkt.Console
                 System.Console.WriteLine("The chosen options will be parsed.");
                 System.Console.WriteLine(string.Format("0: Todas"));
                 int k = 0;
-                foreach (List<string> leagueClubs in leaguesClubsUrls)//league X clubs
+                foreach (List<Link> leagueClubs in leaguesClubsUrls)//league X clubs
                 {
                     for (int i = 0; i < leagueClubs.Count; i++)
                     {
@@ -164,7 +164,7 @@ namespace Transfermarkt.Console
 
                 foreach (int[] item in opts30)
                 {
-                    opt = leaguesClubsUrls[item[0]][item[1] - 1];
+                    opt = leaguesClubsUrls[item[0]][item[1] - 1].Url;
 
                     page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
 
