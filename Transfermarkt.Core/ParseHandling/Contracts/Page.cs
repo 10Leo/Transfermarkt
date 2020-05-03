@@ -22,18 +22,18 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         #region Contract
 
-        public virtual List<string[]> Fetch(string url)
+        public virtual List<string> Fetch(string url)
         {
             this.Connection.Connect(url);
 
-            List<string[]> urls = new List<string[]>();
+            List<string> urls = new List<string>();
             if (Sections != null)
             {
                 foreach (var section in Sections)
                 {
                     if (section is IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)
                     {
-                        urls.Add(((IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)section).Fetch(this).ToArray());
+                        urls.AddRange(((IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)section).Fetch(this).ToArray());
                     }
                 }
             }

@@ -14,7 +14,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         event EventHandler<PageEventArgs> OnBeforeParse;
         event EventHandler<PageEventArgs> OnAfterParse;
 
-        List<string[]> Fetch(string url);
+        List<string> Fetch(string url);
         TDomain Parse(string url);
         void Save();
     }

@@ -28,7 +28,7 @@ namespace Transfermarkt.Console
 
         private static IDictionary<int, Type> pageTypes = new Dictionary<int, Type>();
 
-        private static readonly string[] urls = new string[]
+        private static readonly string[] continentUrls = new string[]
         {
             "https://www.transfermarkt.pt/wettbewerbe/europa",
             "https://www.transfermarkt.pt/wettbewerbe/amerika",
@@ -81,101 +81,99 @@ namespace Transfermarkt.Console
 
             System.Console.WriteLine("Parse: 0; Peek: 1");
             int typ = RequestNumber();
-            
 
-            if (typ > 0)
+            page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
+
+            if (typ == 0)
             {
-                page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
+                page.Fetch($"{opt}");
+                page.Parse($"{BaseURL}/wettbewerbe/{opt}");
+                return;
+            }
 
-                List<string[]> urls = page.Fetch($"{BaseURL}/wettbewerbe/{opt}");
 
-                System.Console.WriteLine("Escolha uma das seguintes opções:");
+            List<string> urls = page.Fetch($"{BaseURL}/wettbewerbe/{opt}");
 
-                foreach (string[] item in urls)
+            System.Console.WriteLine("Escolha uma das seguintes opções:");
+            System.Console.WriteLine(string.Format("0: Todas"));
+
+            for (int i = 0; i < urls.Count; i++)
+            {
+                System.Console.WriteLine(string.Format("{0}: {1}", (i + 1), urls[i]));
+            }
+
+            try
+            {
+                List<int> opts = RequestNumbers();
+
+                System.Console.WriteLine("Parse: 0; Peek: 1");
+                typ = RequestNumber();
+
+                if (typ == 0)
                 {
-                    System.Console.WriteLine(string.Format("0: Todas"));
-                    for (int i = 0; i < item.Length; i++)
-                    {
-                        System.Console.WriteLine(string.Format("{0}: {1}", (i + 1), item[i]));
-                    }
-                }
-
-                try
-                {
-                    List<int> opts = RequestNumbers();
-
-                    System.Console.WriteLine("Parse: 0; Peek: 1");
-                    typ = RequestNumber();
-
-                    List<List<string[]>> clubUrls = new List<List<string[]>>();
+                    var parsedLeagues = new List<IDomain<IValue>>();
                     foreach (var item in opts)
                     {
-                        opt = urls.FirstOrDefault()[item - 1];
+                        opt = urls[item - 1];
 
                         page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
 
-                        List<string[]> thisClub = page.Fetch($"{opt}");
-                        clubUrls.Add(thisClub);
+                        page.Fetch($"{opt}");
+                        IDomain<IValue> league = page.Parse($"{opt}");
+                        parsedLeagues.Add(league);
                     }
-
-
-                    System.Console.WriteLine(string.Format("0: Todas"));
-                    int n = 0, k = 0;
-                    foreach (List<string[]> all in clubUrls)
-                    {
-                        foreach (string[] comp in all)
-                        {
-                            for (int i = 0; i < comp.Length; i++)
-                            {
-                                System.Console.WriteLine(string.Format("{0}{1}{2}: {3}", n, k, (i + 1), comp[i]));
-                            }
-                            k++;
-                        }
-                        n++;
-                    }
-
-                    //List<int> opts3 = RequestNumbers();
-
-                    List<int[]> opts30 = RequestNumbers2();
-
-                    System.Console.WriteLine("Parse: 0; Peek: 1");
-                    typ = RequestNumber();
-
-                    List<List<string[]>> clubUrls2 = new List<List<string[]>>();
-
-                    if (typ > 0)
-                    {
-                        foreach (int[] item in opts30)
-                        {
-                            opt = clubUrls.FirstOrDefault()[item[0]][item[1]-1];
-
-                            page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
-
-                            List<string[]> thisClub = page.Fetch($"{opt}");
-                            clubUrls2.Add(thisClub);
-                        }
-                    }
-
-
-                    foreach (List<string[]> all in clubUrls2)
-                    {
-                        foreach (string[] comp in all)
-                        {
-                            for (int i = 0; i < comp.Length; i++)
-                            {
-                                System.Console.WriteLine(string.Format("{0}{1}{2}: {3}", n, k, (i + 1), comp[i]));
-                            }
-                            k++;
-                        }
-                        n++;
-                    }
+                    return;
                 }
-                catch (Exception ex)
+
+                List<List<string>> leaguesClubsUrls = new List<List<string>>();
+                foreach (var item in opts)
                 {
-                    System.Console.WriteLine("Error reading or interpreting chosen option.");
-                    System.Console.WriteLine(ex.Message);
-                    throw;
+                    opt = urls[item - 1];
+
+                    page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
+
+                    List<string> league = page.Fetch($"{opt}");
+                    leaguesClubsUrls.Add(league);
                 }
+
+
+                System.Console.WriteLine("The chosen options will be parsed.");
+                System.Console.WriteLine(string.Format("0: Todas"));
+                int k = 0;
+                foreach (List<string> leagueClubs in leaguesClubsUrls)//league X clubs
+                {
+                    for (int i = 0; i < leagueClubs.Count; i++)
+                    {
+                        System.Console.WriteLine(string.Format("{0}{1}: {2}", k, (i + 1), leagueClubs[i]));
+                    }
+                    k++;
+                }
+
+                List<int[]> opts30 = RequestNumbers2();
+
+                //System.Console.WriteLine("Parse: 0; Peek: 1");
+                //typ = RequestNumber();
+
+                List<IDomain<IValue>> parsedClubs = new List<IDomain<IValue>>();
+
+                {
+                    foreach (int[] item in opts30)
+                    {
+                        opt = leaguesClubsUrls[item[0]][item[1] - 1];
+
+                        page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
+
+                        page.Fetch($"{opt}");
+                        IDomain<IValue> club = page.Parse($"{opt}");
+                        parsedClubs.Add(club);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine("Error reading or interpreting chosen option.");
+                System.Console.WriteLine(ex.Message);
+                throw;
             }
         }
 
