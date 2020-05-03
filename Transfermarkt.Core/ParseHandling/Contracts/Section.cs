@@ -63,13 +63,13 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public abstract class ChildsSection<TNode, TValue> : IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode> where TValue : IValue
     {
-        private IList<string> pagesNodes;
+        private IList<Link> pagesNodes;
         
         public IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
 
-        public Func<IList<string>> GetUrls { get; set; }
+        public Func<IList<Link>> GetUrls { get; set; }
 
-        public IList<string> Fetch(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
+        public IList<Link> Fetch(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
             pagesNodes = GetUrls?.Invoke();
 
@@ -84,7 +84,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 {
                     foreach (var pageUrl in pagesNodes)
                     {
-                        var pageDomain = this.Page.Parse(pageUrl);
+                        var pageDomain = this.Page.Parse(pageUrl.Url);
                         page.Domain?.Children.Add(pageDomain);
 
                         Type t = this.Page.Domain.GetType();
