@@ -88,6 +88,7 @@ namespace Transfermarkt.Console
             {
                 page.Fetch($"{opt}");
                 page.Parse($"{BaseURL}/wettbewerbe/{opt}");
+                exporter.Extract(page.Domain);
                 return;
             }
 
@@ -121,6 +122,11 @@ namespace Transfermarkt.Console
                         page.Fetch($"{opt}");
                         IDomain<IValue> league = page.Parse($"{opt}");
                         parsedLeagues.Add(league);
+                    }
+
+                    foreach (var domain in parsedLeagues)
+                    {
+                        exporter.Extract(domain);
                     }
                     return;
                 }
@@ -156,17 +162,20 @@ namespace Transfermarkt.Console
 
                 List<IDomain<IValue>> parsedClubs = new List<IDomain<IValue>>();
 
+                foreach (int[] item in opts30)
                 {
-                    foreach (int[] item in opts30)
-                    {
-                        opt = leaguesClubsUrls[item[0]][item[1] - 1];
+                    opt = leaguesClubsUrls[item[0]][item[1] - 1];
 
-                        page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
+                    page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
 
-                        page.Fetch($"{opt}");
-                        IDomain<IValue> club = page.Parse($"{opt}");
-                        parsedClubs.Add(club);
-                    }
+                    page.Fetch($"{opt}");
+                    IDomain<IValue> club = page.Parse($"{opt}");
+                    parsedClubs.Add(club);
+                }
+
+                foreach (var domain in parsedClubs)
+                {
+                    exporter.Extract(domain);
                 }
             }
             catch (Exception ex)
