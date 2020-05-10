@@ -83,6 +83,7 @@ namespace Transfermarkt.Console
 
                 Command continentCmd = GetInput();
 
+                //List<List<Link>> continentsCompetitionsUrls = Get(continentCmd, continentsCompetitionsUrls);
 
                 var continentPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
                 var continentsCompetitionsUrls = new List<List<Link>>();
@@ -102,77 +103,29 @@ namespace Transfermarkt.Console
                         return;
                     }
                 }
+                CheckIfExit(continentCmd);
 
-                //P(cmd, pageTypes[2], chosenContinent);
 
 
                 // Competitions
-                System.Console.WriteLine("Escolha uma das seguintes opções:");
-                System.Console.WriteLine(string.Format("0: Todas"));
-                for (int i = 0; i < continentsCompetitionsUrls.Count; i++)
-                {
-                    System.Console.WriteLine(string.Format("{0}", i + 1));//continent[input.Index1].internalName
-                    for (int j = 0; j < continentsCompetitionsUrls[i].Count; j++)
-                    {
-                        System.Console.WriteLine(string.Format("\t{0}.{1}: {2}", (i + 1), (j + 1), continentsCompetitionsUrls[i][j].Title));
-                    }
-                }
+                PresentOptions(continentsCompetitionsUrls);
 
                 Command competitionCmd = GetInput();
 
-                var competitionPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
-                var clubsCompetitionsUrls = new List<List<Link>>();
-                foreach (var (Index1, Index2) in competitionCmd.Options)
-                {
-                    string choice = $"{continentsCompetitionsUrls[Index1 - 1][Index2 - 1].Url}";
-
-                    var competitionPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
-                    competitionPages.Add(competitionPage);
-                    List<Link> clubsUrls = competitionPage.Fetch(choice);
-                    clubsCompetitionsUrls.Add(clubsUrls);
-
-                    if (competitionCmd.CommandType == CommandType.P)
-                    {
-                        competitionPage.Parse(choice);
-                        exporter.Extract(competitionPage.Domain);
-                        return;
-                    }
-                }
+                List<List<Link>> clubsCompetitionsUrls = Execute(competitionCmd, pageTypes[3], continentsCompetitionsUrls);
+                CheckIfExit(competitionCmd);
 
 
 
                 // Clubs
-                System.Console.WriteLine("Escolha uma das seguintes opções:");
-                System.Console.WriteLine(string.Format("0: Todas"));
-                for (int i = 0; i < clubsCompetitionsUrls.Count; i++)
-                {
-                    System.Console.WriteLine(string.Format("{0}", i + 1));//continent[input.Index1].internalName
-                    for (int j = 0; j < clubsCompetitionsUrls[i].Count; j++)
-                    {
-                        System.Console.WriteLine(string.Format("\t{0}.{1}: {2}", (i + 1), (j + 1), clubsCompetitionsUrls[i][j].Title));
-                    }
-                }
+                PresentOptions(clubsCompetitionsUrls);
 
                 Command clubCmd = GetInput();
+                clubCmd.CommandType = CommandType.P;
 
-                var clubPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
-                var clubUrls = new List<List<Link>>();
-                foreach (var (Index1, Index2) in clubCmd.Options)
-                {
-                    string choice = $"{clubsCompetitionsUrls[Index1 - 1][Index2 - 1].Url}";
+                List<List<Link>> clubUrls = Execute(clubCmd, pageTypes[4], clubsCompetitionsUrls);
+                CheckIfExit(clubCmd);
 
-                    var clubPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
-                    clubPages.Add(clubPage);
-                    List<Link> clubsUrls = clubPage.Fetch(choice);
-                    clubUrls.Add(clubsUrls);
-
-                    //if (clubCmd.CommandType == CommandType.P)
-                    {
-                        clubPage.Parse(choice);
-                        exporter.Extract(clubPage.Domain);
-                        return;
-                    }
-                }
             }
             catch (Exception ex)
             {
@@ -204,6 +157,52 @@ namespace Transfermarkt.Console
                     break;
                 default:
                     break;
+            }
+        }
+
+
+        private static void PresentOptions(List<List<Link>> urls)
+        {
+            System.Console.WriteLine("Escolha uma das seguintes opções:");
+            System.Console.WriteLine(string.Format("0: Todas"));
+            for (int i = 0; i < urls.Count; i++)
+            {
+                System.Console.WriteLine(string.Format("{0}", i + 1));
+                for (int j = 0; j < urls[i].Count; j++)
+                {
+                    System.Console.WriteLine(string.Format("\t{0}.{1}: {2}", (i + 1), (j + 1), urls[i][j].Title));
+                }
+            }
+        }
+
+        private static List<List<Link>> Execute(Command cmd, Type type, List<List<Link>> urls)
+        {
+            var pages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
+            var childUrlsCollection = new List<List<Link>>();
+            foreach (var (Index1, Index2) in cmd.Options)
+            {
+                string choice = $"{urls[Index1 - 1][Index2 - 1].Url}";
+
+                var page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(type, new HAPConnection(), logger);
+                pages.Add(page);
+                List<Link> childUrls = page.Fetch(choice);
+                childUrlsCollection.Add(childUrls);
+
+                if (cmd.CommandType == CommandType.P)
+                {
+                    page.Parse(choice);
+                    exporter.Extract(page.Domain);
+                }
+            }
+
+            return childUrlsCollection;
+        }
+
+        private static void CheckIfExit(Command cmd)
+        {
+            if (cmd.CommandType == CommandType.P)
+            {
+                return;
             }
         }
     }
