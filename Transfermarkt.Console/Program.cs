@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Exporter;
@@ -63,119 +64,114 @@ namespace Transfermarkt.Console
             pageTypes.Add(2, typeof(ContinentPage));
             pageTypes.Add(3, typeof(CompetitionPage));
             pageTypes.Add(4, typeof(ClubPage));
-
-            IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page = null;
             exporter = new JsonExporter();
 
             System.Console.WriteLine("----------------------------------");
-            System.Console.WriteLine("Escolha uma das seguintes opções:");
-
-            var vs = continent.Values.ToList();
-            for (int i = 0; i < vs.Count; i++)
-            {
-                System.Console.WriteLine(string.Format("{0}: {1}", continent.Keys.ElementAt(i), vs[i].displayName));
-            }
-
-            int val = RequestNumber();
-            string opt = continent[val].internalName;
-
-            System.Console.WriteLine("Parse: 0; Peek: 1");
-            int typ = RequestNumber();
-
-            page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
-
-            if (typ == 0)
-            {
-                page.Fetch($"{opt}");
-                page.Parse($"{BaseURL}/wettbewerbe/{opt}");
-                exporter.Extract(page.Domain);
-                return;
-            }
-
-
-            List<Link> urls = page.Fetch($"{BaseURL}/wettbewerbe/{opt}");
-
-            System.Console.WriteLine("Escolha uma das seguintes opções:");
-            System.Console.WriteLine(string.Format("0: Todas"));
-
-            for (int i = 0; i < urls.Count; i++)
-            {
-                System.Console.WriteLine(string.Format("{0}: {1}", (i + 1), urls[i]));
-            }
 
             try
             {
-                List<int> opts = RequestNumbers();
+                // Continent
+                System.Console.WriteLine("Escolha uma das seguintes opções:");
 
-                System.Console.WriteLine("Parse: 0; Peek: 1");
-                typ = RequestNumber();
-
-                if (typ == 0)
-                {
-                    var parsedLeagues = new List<IDomain<IValue>>();
-                    foreach (var item in opts)
-                    {
-                        opt = urls[item - 1].Url;
-
-                        page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
-
-                        page.Fetch($"{opt}");
-                        IDomain<IValue> league = page.Parse($"{opt}");
-                        parsedLeagues.Add(league);
-                    }
-
-                    foreach (var domain in parsedLeagues)
-                    {
-                        exporter.Extract(domain);
-                    }
-                    return;
-                }
-
-                List<List<Link>> leaguesClubsUrls = new List<List<Link>>();
-                foreach (var item in opts)
-                {
-                    opt = urls[item - 1].Url;
-
-                    page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
-
-                    List<Link> league = page.Fetch($"{opt}");
-                    leaguesClubsUrls.Add(league);
-                }
-
-
-                System.Console.WriteLine("The chosen options will be parsed.");
                 System.Console.WriteLine(string.Format("0: Todas"));
-                int k = 0;
-                foreach (List<Link> leagueClubs in leaguesClubsUrls)//league X clubs
+                var vs = continent.Values.ToList();
+                for (int i = 0; i < vs.Count; i++)
                 {
-                    for (int i = 0; i < leagueClubs.Count; i++)
+                    System.Console.WriteLine(string.Format("{0}: {1}", continent.Keys.ElementAt(i), vs[i].displayName));
+                }
+
+
+                Command continentCmd = GetInput();
+
+
+                var continentPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
+                var continentsCompetitionsUrls = new List<List<Link>>();
+                foreach (var input in continentCmd.Options)
+                {
+                    string chosenContinent = $"{BaseURL}/wettbewerbe/{continent[input.Index1].internalName}";
+
+                    var continentPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
+                    continentPages.Add(continentPage);
+                    List<Link> competitionsUrls = continentPage.Fetch(chosenContinent);
+                    continentsCompetitionsUrls.Add(competitionsUrls);
+
+                    if (continentCmd.CommandType == CommandType.P)
                     {
-                        System.Console.WriteLine(string.Format("{0}{1}: {2}", k, (i + 1), leagueClubs[i]));
+                        continentPage.Parse(chosenContinent);
+                        exporter.Extract(continentPage.Domain);
+                        return;
                     }
-                    k++;
                 }
 
-                List<int[]> opts30 = RequestNumbers2();
+                //P(cmd, pageTypes[2], chosenContinent);
 
-                //System.Console.WriteLine("Parse: 0; Peek: 1");
-                //typ = RequestNumber();
 
-                List<IDomain<IValue>> parsedClubs = new List<IDomain<IValue>>();
-
-                foreach (int[] item in opts30)
+                // Competitions
+                System.Console.WriteLine("Escolha uma das seguintes opções:");
+                System.Console.WriteLine(string.Format("0: Todas"));
+                for (int i = 0; i < continentsCompetitionsUrls.Count; i++)
                 {
-                    opt = leaguesClubsUrls[item[0]][item[1] - 1].Url;
-
-                    page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
-
-                    page.Fetch($"{opt}");
-                    IDomain<IValue> club = page.Parse($"{opt}");
-                    parsedClubs.Add(club);
+                    System.Console.WriteLine(string.Format("{0}", i + 1));//continent[input.Index1].internalName
+                    for (int j = 0; j < continentsCompetitionsUrls[i].Count; j++)
+                    {
+                        System.Console.WriteLine(string.Format("\t{0}.{1}: {2}", (i + 1), (j + 1), continentsCompetitionsUrls[i][j].Title));
+                    }
                 }
 
-                foreach (var domain in parsedClubs)
+                Command competitionCmd = GetInput();
+
+                var competitionPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
+                var clubsCompetitionsUrls = new List<List<Link>>();
+                foreach (var (Index1, Index2) in competitionCmd.Options)
                 {
-                    exporter.Extract(domain);
+                    string choice = $"{continentsCompetitionsUrls[Index1 - 1][Index2 - 1].Url}";
+
+                    var competitionPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
+                    competitionPages.Add(competitionPage);
+                    List<Link> clubsUrls = competitionPage.Fetch(choice);
+                    clubsCompetitionsUrls.Add(clubsUrls);
+
+                    if (competitionCmd.CommandType == CommandType.P)
+                    {
+                        competitionPage.Parse(choice);
+                        exporter.Extract(competitionPage.Domain);
+                        return;
+                    }
+                }
+
+
+
+                // Clubs
+                System.Console.WriteLine("Escolha uma das seguintes opções:");
+                System.Console.WriteLine(string.Format("0: Todas"));
+                for (int i = 0; i < clubsCompetitionsUrls.Count; i++)
+                {
+                    System.Console.WriteLine(string.Format("{0}", i + 1));//continent[input.Index1].internalName
+                    for (int j = 0; j < clubsCompetitionsUrls[i].Count; j++)
+                    {
+                        System.Console.WriteLine(string.Format("\t{0}.{1}: {2}", (i + 1), (j + 1), clubsCompetitionsUrls[i][j].Title));
+                    }
+                }
+
+                Command clubCmd = GetInput();
+
+                var clubPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
+                var clubUrls = new List<List<Link>>();
+                foreach (var (Index1, Index2) in clubCmd.Options)
+                {
+                    string choice = $"{clubsCompetitionsUrls[Index1 - 1][Index2 - 1].Url}";
+
+                    var clubPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
+                    clubPages.Add(clubPage);
+                    List<Link> clubsUrls = clubPage.Fetch(choice);
+                    clubUrls.Add(clubsUrls);
+
+                    //if (clubCmd.CommandType == CommandType.P)
+                    {
+                        clubPage.Parse(choice);
+                        exporter.Extract(clubPage.Domain);
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
@@ -186,85 +182,29 @@ namespace Transfermarkt.Console
             }
         }
 
-
-        private static int RequestUrls()
+        private static Command GetInput()
         {
-            int operation = 0;
-            return operation;
+            string input = System.Console.ReadLine();
+            return Util.ParseCommand(input);
         }
 
-        private static List<int> RequestNumbers()
+        private static void P(Command cmd, Type t, string url)
         {
-            List<int> numbers = new List<int>();
+            IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(t, new HAPConnection(), logger);
 
-            try
+            switch (cmd.CommandType)
             {
-                string strNumbers = System.Console.ReadLine();
-                string[] splitedStrNumbers = strNumbers.Split(' ');
-
-                foreach (var strNumber in splitedStrNumbers)
-                {
-                    numbers.Add(int.Parse(strNumber));
-                }
+                case CommandType.F:
+                    page.Fetch(url);
+                    break;
+                case CommandType.P:
+                    page.Fetch(url);
+                    page.Parse(url);
+                    exporter.Extract(page.Domain);
+                    break;
+                default:
+                    break;
             }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine("Error reading or interpreting supplied numbers.");
-                System.Console.WriteLine(ex.Message);
-                throw;
-            }
-
-            return numbers;
-        }
-
-        private static List<int[]> RequestNumbers2()
-        {
-            List<int[]> numbers = new List<int[]>();
-
-            try
-            {
-                string strNumbers = System.Console.ReadLine();
-                string[] splitedStrNumbers = strNumbers.Split(' ');
-
-                foreach (var strNumber in splitedStrNumbers)
-                {
-                    string[] splitedStrNumbers2 = strNumber.Split('.');
-
-                    int[] ns = new int[2];
-                    for (int i = 0; i < splitedStrNumbers2.Length; i++)
-                    {
-                        ns[i] = int.Parse(splitedStrNumbers2[i]);
-                    }
-                    numbers.Add(ns);
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine("Error reading or interpreting supplied numbers.");
-                System.Console.WriteLine(ex.Message);
-                throw;
-            }
-
-            return numbers;
-        }
-
-        private static int RequestNumber()
-        {
-            int operation = 0;
-
-            try
-            {
-                string reqOperation = System.Console.ReadLine();
-                operation = int.Parse(reqOperation);
-            }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine("Error reading or interpreting supplied operation.");
-                System.Console.WriteLine(ex.Message);
-                throw;
-            }
-
-            return operation;
         }
     }
 }
