@@ -9,6 +9,8 @@ namespace Transfermarkt.Console
 {
     public static class Util
     {
+        private static readonly int NOT_SUPPLIED = -1;
+
         public static Command ParseCommand(string line)
         {
             Command cmd = new Command();
@@ -72,7 +74,7 @@ namespace Transfermarkt.Console
                     var sp = opt.Split('.');
 
                     var i1 = int.Parse(sp[0]);
-                    var i2 = -1;
+                    int i2 = NOT_SUPPLIED;
                     if (sp.Length > 1)
                     {
                         i2 = int.Parse(sp[1]);
