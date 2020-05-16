@@ -141,26 +141,6 @@ namespace Transfermarkt.Console
             return Util.ParseCommand(input);
         }
 
-        private static void P(Command cmd, Type t, string url)
-        {
-            IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(t, new HAPConnection(), logger);
-
-            switch (cmd.CommandType)
-            {
-                case CommandType.F:
-                    page.Fetch(url);
-                    break;
-                case CommandType.P:
-                    page.Fetch(url);
-                    page.Parse(url);
-                    exporter.Extract(page.Domain);
-                    break;
-                default:
-                    break;
-            }
-        }
-
-
         private static void PresentOptions(List<List<Link>> urls)
         {
             System.Console.WriteLine("Escolha uma das seguintes opções:");
@@ -183,19 +163,34 @@ namespace Transfermarkt.Console
             {
                 string choice = $"{urls[Index1 - 1][Index2 - 1].Url}";
 
-                var page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(type, new HAPConnection(), logger);
-                pages.Add(page);
-                List<Link> childUrls = page.Fetch(choice);
-                childUrlsCollection.Add(childUrls);
-
-                if (cmd.CommandType == CommandType.P)
-                {
-                    page.Parse(choice);
-                    exporter.Extract(page.Domain);
-                }
+                (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
+                pages.Add(e.Page);
+                childUrlsCollection.Add(e.Links);
             }
 
             return childUrlsCollection;
+        }
+
+        private static (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) ExecuteAction(Command cmd, Type type, string url)
+        {
+            var page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(type, new HAPConnection(), logger);
+            List<Link> childUrls = null;
+
+            switch (cmd.CommandType)
+            {
+                case CommandType.F:
+                    childUrls = page.Fetch(url);
+                    break;
+                case CommandType.P:
+                    childUrls = page.Fetch(url);
+                    page.Parse(url);
+                    exporter.Extract(page.Domain);
+                    break;
+                default:
+                    break;
+            }
+
+            return (page, childUrls);
         }
 
         private static void CheckIfExit(Command cmd)
