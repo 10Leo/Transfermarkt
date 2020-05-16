@@ -202,7 +202,7 @@ namespace Transfermarkt.Console
         {
             if (cmd.CommandType == CommandType.P)
             {
-                return;
+                Environment.Exit(0);
             }
         }
     }
