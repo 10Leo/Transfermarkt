@@ -10,24 +10,44 @@ namespace Transfermarkt.Console
     {
         public CommandType CommandType { get; set; }
 
-        public List<(ExtraCommand Cmd, string Val)> ExtraArgs { get; set; } = new List<(ExtraCommand Cmd, string Val)>();
-
-        public List<(int Index1, int Index2)> Options { get; set; } = new List<(int Index1, int Index2)>();
+        public List<(Argument Cmd, IArgumentValue Val)> Args { get; set; } = new List<(Argument Cmd, IArgumentValue Val)>();
 
         public override string ToString()
         {
             string cmdToParse = $"{CommandType.ToString()}";
-            if (ExtraArgs?.Count > 0)
+            if (Args?.Count > 0)
             {
-                cmdToParse += $" {string.Join(" ", ExtraArgs.Select(t => string.Format("{0}:{1}", t.Cmd, t.Val)))}";
-            }
-            if (Options?.Count > 0)
-            {
-                cmdToParse += $" {string.Join(" ", Options.Select(t => string.Format("{0}.{1}", t.Index1, t.Index2)))}";
+                cmdToParse += $" {string.Join(" ", Args.Select(t => string.Format("{0}:{1}", t.Cmd, t.Val)))}";
             }
 
             return cmdToParse;
         }
+    }
+
+    public class Arg
+    {
+        public Argument Argument { get; set; }
+        public IArgumentValue Value { get; set; }
+    }
+
+    public interface IArgumentValue
+    {
+    }
+
+    public class StringArgumentValue : IArgumentValue
+    {
+        public string Value { get; set; }
+    }
+
+    public class Index1ArgumentValue : IArgumentValue
+    {
+        public List<int> Indexes { get; set; } = new List<int>();
+
+    }
+
+    public class Index2ArgumentValue : IArgumentValue
+    {
+        public List<(int Index1, int Index2)> Indexes { get; set; } = new List<(int Index1, int Index2)>();
     }
 
     public enum CommandType
@@ -36,8 +56,9 @@ namespace Transfermarkt.Console
         P
     }
 
-    public enum ExtraCommand
+    public enum Argument
     {
-        Y
+        Y,
+        O
     }
 }

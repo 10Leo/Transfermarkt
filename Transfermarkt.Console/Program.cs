@@ -87,9 +87,12 @@ namespace Transfermarkt.Console
 
                 var continentPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
                 var continentsCompetitionsUrls = new List<List<Link>>();
-                foreach (var input in continentCmd.Options)
+
+                List<int> e1 = ((Index1ArgumentValue)continentCmd.Args.FirstOrDefault(a => a.Cmd == Argument.O).Val).Indexes;
+
+                foreach (var input in e1)
                 {
-                    string chosenContinent = $"{BaseURL}/wettbewerbe/{continent[input.Index1].internalName}";
+                    string chosenContinent = $"{BaseURL}/wettbewerbe/{continent[input].internalName}";
 
                     var continentPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
                     continentPages.Add(continentPage);
@@ -100,7 +103,6 @@ namespace Transfermarkt.Console
                     {
                         continentPage.Parse(chosenContinent);
                         exporter.Extract(continentPage.Domain);
-                        return;
                     }
                 }
                 CheckIfExit(continentCmd);
@@ -138,7 +140,7 @@ namespace Transfermarkt.Console
         private static Command GetInput()
         {
             string input = System.Console.ReadLine();
-            return Util.ParseCommand(input);
+            return CommandUtil.ParseCommand(input);
         }
 
         private static void PresentOptions(List<List<Link>> urls)
@@ -159,7 +161,10 @@ namespace Transfermarkt.Console
         {
             var pages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
             var childUrlsCollection = new List<List<Link>>();
-            foreach (var (Index1, Index2) in cmd.Options)
+
+            List<(int Index1, int Index2)> indexes = ((Index2ArgumentValue)cmd.Args.FirstOrDefault(a => a.Cmd == Argument.O).Val).Indexes;
+
+            foreach (var (Index1, Index2) in indexes)
             {
                 string choice = $"{urls[Index1 - 1][Index2 - 1].Url}";
 
