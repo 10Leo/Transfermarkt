@@ -43,7 +43,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public virtual IDomain<TValue> Parse(string url)
         {
-            //this.Connection.Connect(url);
+            this.Connection.Connect(url);
 
             OnBeforeParse?.Invoke(this, new PageEventArgs(url));
 
