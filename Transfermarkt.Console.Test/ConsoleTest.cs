@@ -214,11 +214,11 @@ namespace Transfermarkt.Console.Test
         private void Validate(string cmdToParse, Command cmd, string cmdType, List<(string k, string v)> args, List<(int i1, int i2)> opts)
         {
             CommandType? commandType = null;
-            if (cmdType.ToLowerInvariant() == "f")
+            if (cmdType.Trim().ToLowerInvariant() == "f")
             {
                 commandType = CommandType.F;
             }
-            else if (cmdType.ToLowerInvariant() == "p")
+            else if (cmdType.Trim().ToLowerInvariant() == "p")
             {
                 commandType = CommandType.P;
             }
@@ -231,24 +231,39 @@ namespace Transfermarkt.Console.Test
                 Assert.IsTrue(cmd.Args.Count == args.Count, $"Number of extra args should be {args.Count} instead of {cmd.Args.Count}.");
                 for (int i = 0; i < args.Count; i++)
                 {
-                    Argument? extraCmd = null;
-                    if (args[i].k.ToLowerInvariant() == "y")
+                    Argument? arg = null;
+                    if (args[i].k.Trim().ToLowerInvariant() == "-y")
                     {
-                        extraCmd = Argument.Y;
+                        arg = Argument.Y;
+
+                        var stringArgType = (StringArgumentValue)cmd.Args[i].Val;
+                        Assert.IsTrue(
+                            stringArgType.Value == args[i].v.Trim().ToLowerInvariant(),
+                            $"Extra args should be {args[i].k.Trim().ToLowerInvariant()}:{args[i].v.Trim().ToLowerInvariant()} instead of: {cmd.Args[i].Cmd}:{stringArgType.Value}."
+                        );
                     }
-                    //Assert.IsTrue(cmd.Args[i].Cmd == extraCmd.Value && cmd.Args[i].Val == args[i].v, $"Extra args should be {args[i].k}:{args[i].v} instead of: {cmd.Args[i].Cmd}:{cmd.Args[i].Val}.");
+                    else if (args[i].k.Trim().ToLowerInvariant() == "-o")
+                    {
+                        arg = Argument.O;
+
+                        if (cmd.Args[i].Val is Index2ArgumentValue)
+                        {
+                            var indexArgType = (Index2ArgumentValue)cmd.Args[i].Val;
+
+                            Assert.IsNotNull(indexArgType, $"There should exist {opts.Count} options.");
+                            Assert.IsTrue(
+                                indexArgType.Indexes.Count == opts.Count,
+                                $"Number of options should be {opts.Count} instead of {indexArgType.Indexes.Count}."
+                            );
+                            for (int j = 0; j < opts.Count; j++)
+                            {
+                                Assert.IsTrue(indexArgType.Indexes[j].Index1 == opts[j].i1 && indexArgType.Indexes[j].Index2 == opts[j].i2, $"Extra args should be {opts[j].i1}:{opts[j].i2} instead of: {indexArgType.Indexes[j].Index1}:{indexArgType.Indexes[j].Index2}.");
+                            }
+                        }
+                    }
+                    Assert.IsTrue(cmd.Args[i].Cmd == arg.Value, $"Extra args should be {args[i].k}:{args[i].v} instead of: {cmd.Args[i].Cmd}:{cmd.Args[i].Val}.");
                 }
             }
-
-            //if (opts?.Count > 0)
-            //{
-            //    Assert.IsNotNull(cmd.Options, $"There should exist {opts.Count} options.");
-            //    Assert.IsTrue(cmd.Options.Count == opts.Count, $"Number of options should be {opts.Count} instead of {cmd.Options.Count}.");
-            //    for (int i = 0; i < opts.Count; i++)
-            //    {
-            //        Assert.IsTrue(cmd.Options[i].Index1 == opts[i].i1 && cmd.Options[i].Index2 == opts[i].i2, $"Extra args should be {opts[i].i1}:{opts[i].i2} instead of: {cmd.Options[i].Index1}:{cmd.Options[i].Index2}.");
-            //    }
-            //}
         }
     }
 }
