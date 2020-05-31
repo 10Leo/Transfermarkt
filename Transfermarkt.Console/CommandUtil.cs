@@ -74,10 +74,10 @@ namespace Transfermarkt.Console
                         throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
                     }
 
-                    Argument? aa = ToArgument(a);
-                    IArgumentValue vv = ToValue(aa.Value, v);
+                    ParameterName? aa = ToArgument(a);
+                    IParameterValue vv = ToValue(aa.Value, v);
 
-                    cmd.Args.Add((aa.Value, vv));
+                    cmd.Parameters.Add((aa.Value, vv));
                 }
             }
             catch (Exception ex)
@@ -90,38 +90,38 @@ namespace Transfermarkt.Console
             return cmd;
         }
 
-        private static Argument? ToArgument(string a)
+        private static ParameterName? ToArgument(string a)
         {
             var aa = a.Substring(1);
 
             if (AllowedYearStringCmd.Contains(aa))
             {
-                return Argument.Y;
+                return ParameterName.Y;
             }
             if (AllowedObjStringCmd.Contains(aa))
             {
-                return Argument.O;
+                return ParameterName.O;
             }
 
             return null;
         }
 
-        private static IArgumentValue ToValue(Argument a, string v)
+        private static IParameterValue ToValue(ParameterName a, string v)
         {
             switch (a)
             {
-                case Argument.Y:
-                    var year = new StringArgumentValue();
+                case ParameterName.Y:
+                    var year = new StringParameterValue();
                     year.Value = ParseYear(v).ToString();
                     return year;
-                case Argument.O:
+                case ParameterName.O:
                     var g1 = "I1";
                     var g2 = "I2";
                     var g3 = "I3";
 
                     MatchCollection splitArguments = Regex.Matches(v, $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))");
 
-                    IArgumentValue indexes = null;
+                    IParameterValue indexes = null;
                     int nIndexes = 0;
 
                     var structure = splitArguments.OfType<Match>().FirstOrDefault();
@@ -136,12 +136,12 @@ namespace Transfermarkt.Console
                     else if (string.IsNullOrEmpty(o2) || string.IsNullOrWhiteSpace(o2))
                     {
                         nIndexes = 1;
-                        indexes = new Index1ArgumentValue();
+                        indexes = new Index1ParameterValue();
                     }
                     else if (string.IsNullOrEmpty(o3) || string.IsNullOrWhiteSpace(o3))
                     {
                         nIndexes = 2;
-                        indexes = new Index2ArgumentValue();
+                        indexes = new Index2ParameterValue();
                     }
                     else
                     {
@@ -157,11 +157,11 @@ namespace Transfermarkt.Console
 
                         if (nIndexes == 1)
                         {
-                            ((Index1ArgumentValue)indexes).Indexes.Add(int.Parse(a1));
+                            ((Index1ParameterValue)indexes).Indexes.Add(int.Parse(a1));
                         }
                         else if (nIndexes == 2)
                         {
-                            ((Index2ArgumentValue)indexes).Indexes.Add((int.Parse(a1), int.Parse(a2)));
+                            ((Index2ParameterValue)indexes).Indexes.Add((int.Parse(a1), int.Parse(a2)));
                         }
                     }
 

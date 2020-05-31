@@ -227,28 +227,28 @@ namespace Transfermarkt.Console.Test
 
             if (args?.Count > 0)
             {
-                Assert.IsNotNull(cmd.Args, $"There should exist {args.Count} extras args.");
-                Assert.IsTrue(cmd.Args.Count == args.Count, $"Number of extra args should be {args.Count} instead of {cmd.Args.Count}.");
+                Assert.IsNotNull(cmd.Parameters, $"There should exist {args.Count} extras args.");
+                Assert.IsTrue(cmd.Parameters.Count == args.Count, $"Number of extra args should be {args.Count} instead of {cmd.Parameters.Count}.");
                 for (int i = 0; i < args.Count; i++)
                 {
-                    Argument? arg = null;
+                    ParameterName? arg = null;
                     if (args[i].k.Trim().ToLowerInvariant() == "-y")
                     {
-                        arg = Argument.Y;
+                        arg = ParameterName.Y;
 
-                        var stringArgType = (StringArgumentValue)cmd.Args[i].Val;
+                        var stringArgType = (StringParameterValue)cmd.Parameters[i].Val;
                         Assert.IsTrue(
                             stringArgType.Value == args[i].v.Trim().ToLowerInvariant(),
-                            $"Extra args should be {args[i].k.Trim().ToLowerInvariant()}:{args[i].v.Trim().ToLowerInvariant()} instead of: {cmd.Args[i].Cmd}:{stringArgType.Value}."
+                            $"Extra args should be {args[i].k.Trim().ToLowerInvariant()}:{args[i].v.Trim().ToLowerInvariant()} instead of: {cmd.Parameters[i].Cmd}:{stringArgType.Value}."
                         );
                     }
                     else if (args[i].k.Trim().ToLowerInvariant() == "-o")
                     {
-                        arg = Argument.O;
+                        arg = ParameterName.O;
 
-                        if (cmd.Args[i].Val is Index2ArgumentValue)
+                        if (cmd.Parameters[i].Val is Index2ParameterValue)
                         {
-                            var indexArgType = (Index2ArgumentValue)cmd.Args[i].Val;
+                            var indexArgType = (Index2ParameterValue)cmd.Parameters[i].Val;
 
                             Assert.IsNotNull(indexArgType, $"There should exist {opts.Count} options.");
                             Assert.IsTrue(
@@ -261,7 +261,7 @@ namespace Transfermarkt.Console.Test
                             }
                         }
                     }
-                    Assert.IsTrue(cmd.Args[i].Cmd == arg.Value, $"Extra args should be {args[i].k}:{args[i].v} instead of: {cmd.Args[i].Cmd}:{cmd.Args[i].Val}.");
+                    Assert.IsTrue(cmd.Parameters[i].Cmd == arg.Value, $"Extra args should be {args[i].k}:{args[i].v} instead of: {cmd.Parameters[i].Cmd}:{cmd.Parameters[i].Val}.");
                 }
             }
         }

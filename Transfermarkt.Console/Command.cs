@@ -10,55 +10,67 @@ namespace Transfermarkt.Console
     {
         public CommandType CommandType { get; set; }
 
-        public List<(Argument Cmd, IArgumentValue Val)> Args { get; set; } = new List<(Argument Cmd, IArgumentValue Val)>();
+        public List<(ParameterName Cmd, IParameterValue Val)> Parameters { get; set; } = new List<(ParameterName Cmd, IParameterValue Val)>();
 
         public override string ToString()
         {
             string cmdToParse = $"{CommandType.ToString()}";
-            if (Args?.Count > 0)
+            if (Parameters?.Count > 0)
             {
-                cmdToParse += $" {string.Join(" ", Args.Select(t => string.Format("{0}:{1}", t.Cmd, t.Val)))}";
+                cmdToParse += $" {string.Join(" ", Parameters.Select(t => string.Format("{0}:{1}", t.Cmd, t.Val)))}";
             }
 
             return cmdToParse;
         }
     }
 
-    public class Arg
+    public class Parameter
     {
-        public Argument Argument { get; set; }
-        public IArgumentValue Value { get; set; }
+        public ParameterName Name { get; set; }
+        public IParameterValue Value { get; set; }
     }
 
-    public interface IArgumentValue
+    public interface IParameterValue
     {
     }
 
-    public class StringArgumentValue : IArgumentValue
+    public class StringParameterValue : IParameterValue
     {
         public string Value { get; set; }
     }
 
-    public class Index1ArgumentValue : IArgumentValue
+    public class Index1ParameterValue : IParameterValue
     {
         public List<int> Indexes { get; set; } = new List<int>();
 
     }
 
-    public class Index2ArgumentValue : IArgumentValue
+    public class Index2ParameterValue : IParameterValue
     {
         public List<(int Index1, int Index2)> Indexes { get; set; } = new List<(int Index1, int Index2)>();
     }
 
     public enum CommandType
     {
+        /// <summary>
+        /// Fetch links from page.
+        /// </summary>
         F,
+        /// <summary>
+        /// Parse page.
+        /// </summary>
         P
     }
 
-    public enum Argument
+    public enum ParameterName
     {
+        /// <summary>
+        /// Year.
+        /// </summary>
         Y,
+        /// <summary>
+        /// Page(s) to fetch/parse.
+        /// </summary>
         O
     }
 }

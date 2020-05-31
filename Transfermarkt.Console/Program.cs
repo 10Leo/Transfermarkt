@@ -88,7 +88,7 @@ namespace Transfermarkt.Console
                 var continentPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
                 var continentsCompetitionsUrls = new List<List<Link>>();
 
-                List<int> e1 = ((Index1ArgumentValue)continentCmd.Args.FirstOrDefault(a => a.Cmd == Argument.O).Val).Indexes;
+                List<int> e1 = ((Index1ParameterValue)continentCmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
 
                 foreach (var input in e1)
                 {
@@ -162,7 +162,7 @@ namespace Transfermarkt.Console
             var pages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
             var childUrlsCollection = new List<List<Link>>();
 
-            List<(int Index1, int Index2)> indexes = ((Index2ArgumentValue)cmd.Args.FirstOrDefault(a => a.Cmd == Argument.O).Val).Indexes;
+            List<(int Index1, int Index2)> indexes = ((Index2ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
 
             foreach (var (Index1, Index2) in indexes)
             {
