@@ -40,6 +40,18 @@ namespace Transfermarkt.Console
                     throw new Exception(ErrorMsg.ERROR_MSG_CMD);
                 }
 
+                if (cm.Value.Trim().ToLowerInvariant() == "f")
+                {
+                    cmd.CommandType = CommandType.F;
+                }
+                else if (cm.Value.Trim().ToLowerInvariant() == "p")
+                {
+                    cmd.CommandType = CommandType.P;
+                }
+                else
+                {
+                    throw new Exception(ErrorMsg.ERROR_MSG_CMD);
+                }
 
                 if (arguments == null || string.IsNullOrEmpty(arguments.Value) || string.IsNullOrWhiteSpace(arguments.Value))
                 {
