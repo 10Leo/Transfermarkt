@@ -37,12 +37,12 @@ namespace Transfermarkt.Console
             "https://www.transfermarkt.pt/wettbewerbe/afrika"
         };
 
-        private static readonly IDictionary<int, (string displayName, string internalName)> continent = new Dictionary<int, (string, string)>
+        private static readonly IDictionary<string, Link> continent = new Dictionary<string, Link>
         {
-            [1] = ("Europe", "europa"),
-            [2] = ("America", "amerika"),
-            [3] = ("Asia", "asien"),
-            [4] = ("Africa", "afrika"),
+            ["1"] = new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" },
+            ["2"] = new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" },
+            ["3"] = new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" },
+            ["4"] = new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }
         };
 
         private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
@@ -71,61 +71,26 @@ namespace Transfermarkt.Console
             try
             {
                 // Continent
-                System.Console.WriteLine("Escolha uma das seguintes opções:");
-
-                System.Console.WriteLine(string.Format("0: Todas"));
-                var vs = continent.Values.ToList();
-                for (int i = 0; i < vs.Count; i++)
-                {
-                    System.Console.WriteLine(string.Format("{0}: {1}", continent.Keys.ElementAt(i), vs[i].displayName));
-                }
-
-
+                PresentOptions(continent);
                 Command continentCmd = GetInput();
-
-                //List<List<Link>> continentsCompetitionsUrls = Get(continentCmd, continentsCompetitionsUrls);
-
-                var continentPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
-                var continentsCompetitionsUrls = new List<List<Link>>();
-
-                List<int> e1 = ((Index1ParameterValue)continentCmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
-
-                foreach (var input in e1)
-                {
-                    string chosenContinent = $"{BaseURL}/wettbewerbe/{continent[input].internalName}";
-
-                    var continentPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
-                    continentPages.Add(continentPage);
-                    List<Link> competitionsUrls = continentPage.Fetch(chosenContinent);
-                    continentsCompetitionsUrls.Add(competitionsUrls);
-
-                    if (continentCmd.CommandType == CommandType.P)
-                    {
-                        continentPage.Parse(chosenContinent);
-                        exporter.Extract(continentPage.Domain);
-                    }
-                }
+                IDictionary<string, Link> competitionsLinks = Execute(continentCmd, pageTypes[2], continent);
                 CheckIfExit(continentCmd);
 
 
 
                 // Competitions
-                PresentOptions(continentsCompetitionsUrls);
-
+                PresentOptions(competitionsLinks);
                 Command competitionCmd = GetInput();
-
-                List<List<Link>> clubsCompetitionsUrls = Execute(competitionCmd, pageTypes[3], continentsCompetitionsUrls);
+                IDictionary<string, Link> clubsCompetitionsUrls = Execute(competitionCmd, pageTypes[3], competitionsLinks);
                 CheckIfExit(competitionCmd);
 
 
 
                 // Clubs
                 PresentOptions(clubsCompetitionsUrls);
-
                 Command clubCmd = GetInput();
                 clubCmd.CommandType = CommandType.P;
-
-                List<List<Link>> clubUrls = Execute(clubCmd, pageTypes[4], clubsCompetitionsUrls);
+                IDictionary<string, Link> clubUrls = Execute(clubCmd, pageTypes[4], clubsCompetitionsUrls);
                 CheckIfExit(clubCmd);
 
             }
@@ -143,35 +108,80 @@ namespace Transfermarkt.Console
             return CommandUtil.ParseCommand(input);
         }
 
-        private static void PresentOptions(List<List<Link>> urls)
+        private static void PresentOptions(IDictionary<string, Link> urls)
         {
             System.Console.WriteLine("Escolha uma das seguintes opções:");
             System.Console.WriteLine(string.Format("0: Todas"));
             for (int i = 0; i < urls.Count; i++)
             {
-                System.Console.WriteLine(string.Format("{0}", i + 1));
-                for (int j = 0; j < urls[i].Count; j++)
-                {
-                    System.Console.WriteLine(string.Format("\t{0}.{1}: {2}", (i + 1), (j + 1), urls[i][j].Title));
-                }
+                var v = urls.Keys.ElementAt(i);
+                System.Console.WriteLine(string.Format("\t{0}: {1}", v, (!string.IsNullOrEmpty(urls[v].Title) ? urls[v].Title : urls[v].Url)));
+
+                //Match splitArguments = Regex.Match(v.ToString(), @"(?<Continent>[0-9]?[0-9]?[0-9])(?<League>[0-9][0-9][0-9])(?<Club>[0-9][0-9][0-9])(?<Player>[0-9][0-9][0-9])$");
+                //var continent = int.Parse(splitArguments.Groups["Continent"].Value);
+                //var competition = int.Parse(splitArguments.Groups["League"].Value);
+                //var club = int.Parse(splitArguments.Groups["Club"].Value);
+
+                //var ss = new List<int>();
+                //if (continent > 0)
+                //{
+                //    ss.Add(continent);
+                //}
+                //if (competition > 0)
+                //{
+                //    ss.Add(competition);
+                //}
+                //if (club > 0)
+                //{
+                //    ss.Add(club);
+                //}
+
+                //System.Console.WriteLine(string.Format("\t{0}: {1}", string.Join(".", ss), (!string.IsNullOrEmpty(urls[v].Title) ? urls[v].Title : urls[v].Url)));
             }
         }
 
-        private static List<List<Link>> Execute(Command cmd, Type type, List<List<Link>> urls)
+        private static IDictionary<string, Link> Execute(Command cmd, Type type, IDictionary<string, Link> urls)
         {
             var pages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
-            var childUrlsCollection = new List<List<Link>>();
+            var childUrlsCollection = new Dictionary<string, Link>();
 
-            List<(int Index1, int Index2)> indexes = ((Index2ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
+            IParameterValue fir = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val;
 
-            foreach (var (Index1, Index2) in indexes)
+            if (fir is Index1ParameterValue)
             {
-                string choice = $"{urls[Index1 - 1][Index2 - 1].Url}";
+                List<int> indexes = ((Index1ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
 
-                (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
-                pages.Add(e.Page);
-                childUrlsCollection.Add(e.Links);
+                foreach (int index in indexes)
+                {
+                    string choice = $"{urls[index.ToString()].Url}";
+
+                    (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
+                    pages.Add(e.Page);
+
+                    for (int i = 0; i < e.Links.Count; i++)
+                    {
+                        childUrlsCollection.Add($"{index + "." + (i + 1)}", e.Links[i]);
+                    }
+                }
             }
+            else if (fir is Index2ParameterValue)
+            {
+                List<(int Index1, int Index2)> indexes = ((Index2ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
+
+                foreach (var (Index1, Index2) in indexes)
+                {
+                    string choice = $"{urls[Index1 + "." + Index2].Url}";
+
+                    (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
+                    pages.Add(e.Page);
+
+                    for (int i = 0; i < e.Links.Count; i++)
+                    {
+                        childUrlsCollection.Add($"{Index2 + "." + (i + 1)}", e.Links[i]);
+                    }
+                }
+            }
+
 
             return childUrlsCollection;
         }
