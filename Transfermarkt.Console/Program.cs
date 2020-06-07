@@ -23,6 +23,10 @@ namespace Transfermarkt.Console
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
         private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
 
+        private const decimal ContinentFactor = 1000000000;
+        private const decimal CompetitionFactor = 1000000;
+        private const decimal ClubFactor = 1000;
+
         private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
 
         private static IExporter exporter;
