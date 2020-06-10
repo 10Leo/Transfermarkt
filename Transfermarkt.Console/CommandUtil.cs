@@ -31,58 +31,64 @@ namespace Transfermarkt.Console
                     throw new Exception(ErrorMsg.ERROR_MSG_CMD);
                 }
 
-                var m = Regex.Match(line, @"^(?<CMD>[\w\-]+)\s+(?<Args>.*)");
-                var cm = m.Groups["CMD"];
-                var arguments = m.Groups["Args"];
+                var cmdGroup = "CMD";
+                var argsGroup = "Args";
+                var argNameGroup = "ArgName";
+                var argValueGroup = "ArgValue";
 
-                if (cm == null || string.IsNullOrEmpty(cm.Value) || string.IsNullOrWhiteSpace(cm.Value))
-                {
-                    throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-                }
+                var m = Regex.Matches(line, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)\s+(?<{argValueGroup}>[^-]+))");
 
-                if (cm.Value.Trim().ToLowerInvariant() == "f")
+                if (m.Count > 0)
                 {
-                    cmd.CommandType = CommandType.F;
-                }
-                else if (cm.Value.Trim().ToLowerInvariant() == "p")
-                {
-                    cmd.CommandType = CommandType.P;
-                }
-                else if (cm.Value.Trim().ToLowerInvariant() == "e")
-                {
-                    cmd.CommandType = CommandType.E;
-                    return cmd;
-                }
-                else
-                {
-                    throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-                }
-
-                if (arguments == null || string.IsNullOrEmpty(arguments.Value) || string.IsNullOrWhiteSpace(arguments.Value))
-                {
-                    throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-                }
-
-                MatchCollection splitArguments = Regex.Matches(arguments.Value, @"((?<Arg>-[^-\s]+)\s+(?<Value>[^-]+))");
-                foreach (Match argument in splitArguments)
-                {
-                    string a = argument.Groups["Arg"]?.Value?.Trim()?.ToLowerInvariant();
-                    string v = argument.Groups["Value"]?.Value?.Trim();
-
-                    if (a == null || string.IsNullOrEmpty(a) || string.IsNullOrWhiteSpace(a))
+                    var cm = m[0].Groups[cmdGroup];
+                    if (cm == null || string.IsNullOrEmpty(cm.Value) || string.IsNullOrWhiteSpace(cm.Value))
                     {
-                        throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        throw new Exception(ErrorMsg.ERROR_MSG_CMD);
                     }
 
-                    if (v == null || string.IsNullOrEmpty(v) || string.IsNullOrWhiteSpace(v))
+                    if (cm.Value.Trim().ToLowerInvariant() == "f")
                     {
-                        throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        cmd.CommandType = CommandType.F;
                     }
+                    else if (cm.Value.Trim().ToLowerInvariant() == "p")
+                    {
+                        cmd.CommandType = CommandType.P;
+                    }
+                    else if (cm.Value.Trim().ToLowerInvariant() == "e")
+                    {
+                        cmd.CommandType = CommandType.E;
+                        return cmd;
+                    }
+                    else
+                    {
+                        throw new Exception(ErrorMsg.ERROR_MSG_CMD);
+                    }
+                }
 
-                    ParameterName? aa = ToArgument(a);
-                    IParameterValue vv = ToValue(aa.Value, v);
+                if (m.Count > 1)
+                {
+                    for (int i = 1; i < m.Count; i++)
+                    {
+                        var argument = m[i];
 
-                    cmd.Parameters.Add((aa.Value, vv));
+                        string a = argument.Groups[argNameGroup]?.Value?.Trim()?.ToLowerInvariant();
+                        string v = argument.Groups[argValueGroup]?.Value?.Trim();
+
+                        if (a == null || string.IsNullOrEmpty(a) || string.IsNullOrWhiteSpace(a))
+                        {
+                            throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        }
+
+                        if (v == null || string.IsNullOrEmpty(v) || string.IsNullOrWhiteSpace(v))
+                        {
+                            throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        }
+
+                        ParameterName? aa = ToArgument(a);
+                        IParameterValue vv = ToValue(aa.Value, v);
+
+                        cmd.Parameters.Add((aa.Value, vv));
+                    }
                 }
             }
             catch (Exception ex)
@@ -135,7 +141,7 @@ namespace Transfermarkt.Console
                     MatchCollection splitArguments = Regex.Matches(v, pattern);
 
                     IndexesParameterValue indexes = new IndexesParameterValue();
-                    
+
                     foreach (Match argument in splitArguments)
                     {
                         var i = DetermineNumberOfIndexes(argument);
@@ -149,7 +155,6 @@ namespace Transfermarkt.Console
 
             return null;
         }
-
 
         private static IIndex DetermineNumberOfIndexes(Match argument)
         {
