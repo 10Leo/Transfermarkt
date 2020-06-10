@@ -88,8 +88,8 @@ namespace Transfermarkt.Console
         /// </summary>
         Y,
         /// <summary>
-        /// Page(s) to fetch/parse.
+        /// Page(s) indexes to fetch/parse.
         /// </summary>
-        O
+        I
     }
 }

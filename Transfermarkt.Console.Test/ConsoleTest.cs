@@ -244,7 +244,7 @@ namespace Transfermarkt.Console.Test
                     }
                     else if (args[i].k.Trim().ToLowerInvariant() == "-o")
                     {
-                        arg = ParameterName.O;
+                        arg = ParameterName.I;
 
                         if (cmd.Parameters[i].Val is Index2ParameterValue)
                         {

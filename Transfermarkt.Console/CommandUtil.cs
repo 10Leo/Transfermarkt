@@ -19,7 +19,7 @@ namespace Transfermarkt.Console
         }
 
         private static readonly List<string> AllowedYearStringCmd = new List<string> { "y", "year" };
-        private static readonly List<string> AllowedObjStringCmd = new List<string> { "o" };
+        private static readonly List<string> AllowedObjStringCmd = new List<string> { "i" };
 
         public static Command ParseCommand(string line)
         {
@@ -111,7 +111,7 @@ namespace Transfermarkt.Console
             }
             if (AllowedObjStringCmd.Contains(aa))
             {
-                return ParameterName.O;
+                return ParameterName.I;
             }
 
             return null;
@@ -132,7 +132,7 @@ namespace Transfermarkt.Console
                     };
                     return year;
 
-                case ParameterName.O:
+                case ParameterName.I:
                     var g1 = "I1";
                     var g2 = "I2";
                     var g3 = "I3";

@@ -100,9 +100,9 @@ namespace Transfermarkt.Console
                         (ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
                         
 
-                        IndexesParameterValue o = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val as IndexesParameterValue;
+                        IndexesParameterValue i = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val as IndexesParameterValue;
 
-                        foreach (IIndex ind in o.Indexes)
+                        foreach (IIndex ind in i.Indexes)
                         {
                             if (ind is Index1ParameterValue)
                             {
@@ -116,13 +116,13 @@ namespace Transfermarkt.Console
                                     choice.P = (ContinentPage)e.Page;
                                     continent[index.ToString()] = choice;
 
-                                    for (int i = 0; i < e.Links.Count; i++)
+                                    for (int l = 0; l < e.Links.Count; l++)
                                     {
-                                        var key = $"{index + "." + (i + 1)}";
+                                        var key = $"{index + "." + (l + 1)}";
 
                                         if (!competition.ContainsKey(key))
                                         {
-                                            competition.Add(key, (e.Links[i], null));
+                                            competition.Add(key, (e.Links[l], null));
                                         }
                                     }
                                 }
@@ -168,7 +168,6 @@ namespace Transfermarkt.Console
                     {
 
                     }
-
                 }
             }
             catch (Exception ex)
@@ -222,12 +221,12 @@ namespace Transfermarkt.Console
             var pages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
             //var childUrlsCollection = new Dictionary<string, Link>();
 
-            IndexesParameterValue fir = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val as IndexesParameterValue;
+            IndexesParameterValue fir = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val as IndexesParameterValue;
             foreach (var ind in fir.Indexes)
             {
                 if (ind is Index1ParameterValue)
                 {
-                    int index = ((Index1ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Index1;
+                    int index = ((Index1ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val).Index1;
 
                     {
                         string choice = $"{urls[index.ToString()].Url}";
@@ -243,7 +242,7 @@ namespace Transfermarkt.Console
                 }
                 else if (ind is Index2ParameterValue)
                 {
-                    var f = ((Index2ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val);
+                    var f = ((Index2ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val);
                     int Index1 = f.Index1;
                     int Index2 = f.Index2;
 
