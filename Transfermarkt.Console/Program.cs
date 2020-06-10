@@ -108,8 +108,17 @@ namespace Transfermarkt.Console
                             {
                                 int index = (ind as Index1ParameterValue).Index1;
 
+                                if (!continent.ContainsKey(index.ToString()))
+                                {
+                                    continue;
+                                }
 
                                 (Link L, ContinentPage P) choice = continent[index.ToString()];
+
+                                if (choice.P != null)
+                                {
+                                    continue;
+                                }
 
                                 {
                                     (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[2], choice.L.Url);
