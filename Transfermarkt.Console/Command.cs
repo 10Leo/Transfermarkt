@@ -38,16 +38,31 @@ namespace Transfermarkt.Console
     {
         public string Value { get; set; }
     }
-
-    public class Index1ParameterValue : IParameterValue
+    public class IndexesParameterValue : IParameterValue
     {
-        public List<int> Indexes { get; set; } = new List<int>();
-
+        public List<IIndex> Indexes { get; set; } = new List<IIndex>();
     }
 
-    public class Index2ParameterValue : IParameterValue
+    public interface IIndex
     {
-        public List<(int Index1, int Index2)> Indexes { get; set; } = new List<(int Index1, int Index2)>();
+    }
+
+    public class Index1ParameterValue : IIndex
+    {
+        public int Index1 { get; set; }
+    }
+
+    public class Index2ParameterValue : IIndex
+    {
+        public int Index1 { get; set; }
+        public int Index2 { get; set; }
+    }
+
+    public class Index3ParameterValue : IIndex
+    {
+        public int Index1 { get; set; }
+        public int Index2 { get; set; }
+        public int Index3 { get; set; }
     }
 
     public enum CommandType
@@ -59,7 +74,11 @@ namespace Transfermarkt.Console
         /// <summary>
         /// Parse page.
         /// </summary>
-        P
+        P,
+        /// <summary>
+        /// Exit.
+        /// </summary>
+        E
     }
 
     public enum ParameterName
