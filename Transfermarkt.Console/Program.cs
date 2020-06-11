@@ -41,7 +41,7 @@ namespace Transfermarkt.Console
             ["4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
         };
         private static IDictionary<string, (Link L, CompetitionPage P)> competition = new Dictionary<string, (Link, CompetitionPage)>();
-        private static IDictionary<string, Link> club = new Dictionary<string, Link>();
+        private static IDictionary<string, (Link L, ClubPage P)> club = new Dictionary<string, (Link L, ClubPage P)>();
 
         static void Main(string[] args)
         {
@@ -50,55 +50,23 @@ namespace Transfermarkt.Console
             pageTypes.Add(4, typeof(ClubPage));
             exporter = new JsonExporter();
 
-            System.Console.WriteLine("----------------------------------");
+            System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
-            try
+            PresentOptions(continent);
+
+            bool exit = false;
+            while (!exit)
             {
-                //// Continent
-                //PresentOptions(continent);
-                //Command continentCmd = GetInput();
-                //IDictionary<string, Link> competitionsLinks = Execute(continentCmd, pageTypes[2], continent);
-                //CheckIfExit(continentCmd);
-
-
-
-                //// Competitions
-                //PresentOptions(competitionsLinks);
-                //Command competitionCmd = GetInput();
-                //IDictionary<string, Link> clubsCompetitionsUrls = Execute(competitionCmd, pageTypes[3], competitionsLinks);
-                //CheckIfExit(competitionCmd);
-
-
-
-                //// Clubs
-                //PresentOptions(clubsCompetitionsUrls);
-                //Command clubCmd = GetInput();
-                //clubCmd.CommandType = CommandType.P;
-                //IDictionary<string, Link> clubUrls = Execute(clubCmd, pageTypes[4], clubsCompetitionsUrls);
-                //CheckIfExit(clubCmd);
-
-
-
-
-
-
-                //PresentOptions(continent);
-
-                bool exit = false;
-                while (!exit)
+                try
                 {
                     Command cmd = GetInput();
 
-                    //CheckIfExit(cmd);
+                    exit = CheckIfExit(cmd);
 
-                    if (cmd.CommandType == CommandType.E)
-                    {
-                        exit = true;
-                    }
-                    else if (cmd.CommandType == CommandType.F)
+                    if (!exit)
                     {
                         (ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
-                        
+
 
                         IndexesParameterValue i = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val as IndexesParameterValue;
 
@@ -120,70 +88,101 @@ namespace Transfermarkt.Console
                                     continue;
                                 }
 
+                                (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[2], choice.L.Url);
+                                choice.P = (ContinentPage)e.Page;
+                                continent[index.ToString()] = choice;
+
+                                for (int l = 0; l < e.Links.Count; l++)
                                 {
-                                    (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[2], choice.L.Url);
-                                    choice.P = (ContinentPage)e.Page;
-                                    continent[index.ToString()] = choice;
+                                    var key = $"{index + "." + (l + 1)}";
 
-                                    for (int l = 0; l < e.Links.Count; l++)
+                                    if (!competition.ContainsKey(key))
                                     {
-                                        var key = $"{index + "." + (l + 1)}";
-
-                                        if (!competition.ContainsKey(key))
-                                        {
-                                            competition.Add(key, (e.Links[l], null));
-                                        }
+                                        competition.Add(key, (e.Links[l], null));
                                     }
                                 }
+
+                                // Present options
+                                System.Console.WriteLine();
+                                for (int l = 0; l < e.Links.Count; l++)
+                                {
+                                    var key = $"{index + "." + (l + 1)}";
+
+                                    System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(competition[key].L.Title) ? competition[key].L.Title : competition[key].L.Url)));
+                                }
                             }
-                            //else if (ind is Index2ParameterValue)
-                            //{
-                            //    var f = ((Index2ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val);
-                            //    int Index1 = f.Index1;
-                            //    int Index2 = f.Index2;
+                            else if (ind is Index2ParameterValue)
+                            {
+                                int Index1 = (ind as Index2ParameterValue).Index1;
+                                int Index2 = (ind as Index2ParameterValue).Index2;
+                                string index = $"{Index1 + "." + Index2}";
 
-                            //    {
-                            //        string choice = $"{urls[Index1 + "." + Index2].Url}";
+                                if (!competition.ContainsKey(index.ToString()))
+                                {
+                                    continue;
+                                }
 
-                            //        (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
-                            //        pages.Add(e.Page);
+                                (Link L, CompetitionPage P) choice = competition[index.ToString()];
 
-                            //        for (int i = 0; i < e.Links.Count; i++)
-                            //        {
-                            //            club.Add($"{Index2 + "." + (i + 1)}", e.Links[i]);
-                            //        }
-                            //    }
-                            //}
-                            //else if (ind is Index3ParameterValue)
-                            //{
-                            //    var f = ((Index3ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val);
-                            //    int Index1 = f.Index1;
-                            //    int Index2 = f.Index2;
-                            //    int Index3 = f.Index3;
+                                if (choice.P != null)
+                                {
+                                    continue;
+                                }
 
-                            //    string choice = $"{urls[Index1 + "." + Index2 + "." + Index3].Url}";
+                                (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[3], choice.L.Url);
+                                choice.P = (CompetitionPage)e.Page;
+                                competition[index.ToString()] = choice;
 
-                            //    (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
-                            //    pages.Add(e.Page);
+                                for (int l = 0; l < e.Links.Count; l++)
+                                {
+                                    var key = $"{Index1 + "." + Index2 + "." + (l + 1)}";
 
-                            //    for (int i = 0; i < e.Links.Count; i++)
-                            //    {
-                            //        club.Add($"{Index2 + "." + (i + 1)}", e.Links[i]);
-                            //    }
-                            //}
+                                    if (!club.ContainsKey(key))
+                                    {
+                                        club.Add(key, (e.Links[l], null));
+                                    }
+                                }
+
+                                // Present options
+                                System.Console.WriteLine();
+                                for (int l = 0; l < e.Links.Count; l++)
+                                {
+                                    var key = $"{index + "." + (l + 1)}";
+
+                                    System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(club[key].L.Title) ? club[key].L.Title : club[key].L.Url)));
+                                }
+                            }
+                            else if (ind is Index3ParameterValue)
+                            {
+                                int Index1 = (ind as Index3ParameterValue).Index1;
+                                int Index2 = (ind as Index3ParameterValue).Index2;
+                                int Index3 = (ind as Index3ParameterValue).Index3;
+                                string index = $"{Index1 + "." + Index2 + "." + Index3}";
+
+                                if (!club.ContainsKey(index.ToString()))
+                                {
+                                    continue;
+                                }
+
+                                (Link L, ClubPage P) choice = club[index.ToString()];
+
+                                if (choice.P != null)
+                                {
+                                    continue;
+                                }
+
+                                (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[4], choice.L.Url);
+                                choice.P = (ClubPage)e.Page;
+                                club[index.ToString()] = choice;
+                            }
                         }
                     }
-                    else if (cmd.CommandType == CommandType.P)
-                    {
-
-                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Console.WriteLine("Error reading or interpreting chosen option.");
-                System.Console.WriteLine(ex.Message);
-                throw;
+                catch (Exception ex)
+                {
+                    System.Console.WriteLine("Error reading or interpreting chosen option.");
+                    System.Console.WriteLine(ex.Message);
+                }
             }
         }
 
@@ -193,14 +192,14 @@ namespace Transfermarkt.Console
             return CommandUtil.ParseCommand(input);
         }
 
-        private static void PresentOptions(IDictionary<string, Link> urls)
+        private static void PresentOptions(IDictionary<string, (Link L, ContinentPage P)> urls)
         {
             System.Console.WriteLine("Escolha uma das seguintes opções:");
             System.Console.WriteLine(string.Format("0: Todas"));
             for (int i = 0; i < urls.Count; i++)
             {
                 var v = urls.Keys.ElementAt(i);
-                System.Console.WriteLine(string.Format("\t{0}: {1}", v, (!string.IsNullOrEmpty(urls[v].Title) ? urls[v].Title : urls[v].Url)));
+                System.Console.WriteLine(string.Format("{0}: {1}", v, (!string.IsNullOrEmpty(urls[v].L.Title) ? urls[v].L.Title : urls[v].L.Url)));
 
                 //Match splitArguments = Regex.Match(v.ToString(), @"(?<Continent>[0-9]?[0-9]?[0-9])(?<League>[0-9][0-9][0-9])(?<Club>[0-9][0-9][0-9])(?<Player>[0-9][0-9][0-9])$");
                 //var continent = int.Parse(splitArguments.Groups["Continent"].Value);
@@ -263,7 +262,7 @@ namespace Transfermarkt.Console
 
                         for (int i = 0; i < e.Links.Count; i++)
                         {
-                            club.Add($"{Index2 + "." + (i + 1)}", e.Links[i]);
+                            club.Add($"{Index2 + "." + (i + 1)}", (e.Links[i], null));
                         }
                     }
                 }
@@ -309,12 +308,9 @@ namespace Transfermarkt.Console
             return (page, childUrls);
         }
 
-        private static void CheckIfExit(Command cmd)
+        private static bool CheckIfExit(Command cmd)
         {
-            if (cmd.CommandType == CommandType.E)
-            {
-                Environment.Exit(0);
-            }
+            return cmd.CommandType == CommandType.E;
         }
     }
 }
