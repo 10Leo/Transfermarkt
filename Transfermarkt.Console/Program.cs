@@ -65,7 +65,7 @@ namespace Transfermarkt.Console
 
                     if (!exit)
                     {
-                        Ac(cmd);
+                        Proccess(cmd);
                     }
                 }
                 catch (Exception ex)
@@ -82,7 +82,7 @@ namespace Transfermarkt.Console
             return CommandUtil.ParseCommand(input);
         }
 
-        private static void Ac(Command cmd)
+        private static void Proccess(Command cmd)
         {
             (ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
 
@@ -122,48 +122,6 @@ namespace Transfermarkt.Console
                 {
                     proceed = ClubP(cmd, $"{i1.ToString()}.{i2.ToString()}.{i3.ToString()}", ind is Index3ParameterValue);
                 }
-            }
-        }
-
-        private static void PresentOptions(IDictionary<string, (Link L, ContinentPage P)> urls)
-        {
-            System.Console.WriteLine("Escolha uma das seguintes opções:");
-            System.Console.WriteLine(string.Format("0: Todas"));
-            for (int i = 0; i < urls.Count; i++)
-            {
-                var v = urls.Keys.ElementAt(i);
-                System.Console.WriteLine(string.Format("{0}: {1}", v, (!string.IsNullOrEmpty(urls[v].L.Title) ? urls[v].L.Title : urls[v].L.Url)));
-
-                //Match splitArguments = Regex.Match(v.ToString(), @"(?<Continent>[0-9]?[0-9]?[0-9])(?<League>[0-9][0-9][0-9])(?<Club>[0-9][0-9][0-9])(?<Player>[0-9][0-9][0-9])$");
-                //var continent = int.Parse(splitArguments.Groups["Continent"].Value);
-                //var competition = int.Parse(splitArguments.Groups["League"].Value);
-                //var club = int.Parse(splitArguments.Groups["Club"].Value);
-
-                //var ss = new List<int>();
-                //if (continent > 0)
-                //{
-                //    ss.Add(continent);
-                //}
-                //if (competition > 0)
-                //{
-                //    ss.Add(competition);
-                //}
-                //if (club > 0)
-                //{
-                //    ss.Add(club);
-                //}
-
-                //System.Console.WriteLine(string.Format("\t{0}: {1}", string.Join(".", ss), (!string.IsNullOrEmpty(urls[v].Title) ? urls[v].Title : urls[v].Url)));
-            }
-        }
-
-        private static void PresentOptions2(string index, IDictionary<string, (Link L, ContinentPage P)> urls, IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childsSection)
-        {
-            for (int l = 0; l < childsSection.Children.Count; l++)
-            {
-                var key = $"{index + "." + (l + 1)}";
-
-                System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(urls[key].L.Title) ? urls[key].L.Title : urls[key].L.Url)));
             }
         }
 
@@ -310,6 +268,27 @@ namespace Transfermarkt.Console
             }
 
             return true;
+        }
+
+        private static void PresentOptions(IDictionary<string, (Link L, ContinentPage P)> urls)
+        {
+            System.Console.WriteLine("Escolha uma das seguintes opções:");
+            System.Console.WriteLine(string.Format("0: Todas"));
+            for (int i = 0; i < urls.Count; i++)
+            {
+                var v = urls.Keys.ElementAt(i);
+                System.Console.WriteLine(string.Format("{0}: {1}", v, (!string.IsNullOrEmpty(urls[v].L.Title) ? urls[v].L.Title : urls[v].L.Url)));
+            }
+        }
+
+        private static void PresentOptions2(string index, IDictionary<string, (Link L, ContinentPage P)> urls, IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childsSection)
+        {
+            for (int l = 0; l < childsSection.Children.Count; l++)
+            {
+                var key = $"{index + "." + (l + 1)}";
+
+                System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(urls[key].L.Title) ? urls[key].L.Title : urls[key].L.Url)));
+            }
         }
 
         private static bool CheckIfExit(Command cmd)
