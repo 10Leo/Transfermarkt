@@ -48,15 +48,15 @@ namespace Transfermarkt.Console
 
                     if (cm.Value.Trim().ToLowerInvariant() == "f")
                     {
-                        cmd.CommandType = CommandType.F;
+                        cmd.Action = Action.F;
                     }
                     else if (cm.Value.Trim().ToLowerInvariant() == "p")
                     {
-                        cmd.CommandType = CommandType.P;
+                        cmd.Action = Action.P;
                     }
                     else if (cm.Value.Trim().ToLowerInvariant() == "e")
                     {
-                        cmd.CommandType = CommandType.E;
+                        cmd.Action = Action.E;
                         return cmd;
                     }
                     else

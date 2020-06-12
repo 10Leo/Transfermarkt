@@ -200,7 +200,7 @@ namespace Transfermarkt.Console
                 return true;
             }
 
-            if (cmd.CommandType == CommandType.P)
+            if (cmd.Action == Action.P)
             {
                 choice.P.Parse(choice.L.Url);
                 exporter.Extract(choice.P.Domain);
@@ -257,7 +257,7 @@ namespace Transfermarkt.Console
                 return true;
             }
 
-            if (cmd.CommandType == CommandType.P)
+            if (cmd.Action == Action.P)
             {
                 choice.P.Parse(choice.L.Url);
                 exporter.Extract(choice.P.Domain);
@@ -303,7 +303,7 @@ namespace Transfermarkt.Console
                 return true;
             }
 
-            if (cmd.CommandType == CommandType.P)
+            if (cmd.Action == Action.P)
             {
                 choice.P.Parse(choice.L.Url);
                 exporter.Extract(choice.P.Domain);
@@ -312,31 +312,9 @@ namespace Transfermarkt.Console
             return true;
         }
 
-        private static (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) ExecuteAction(Command cmd, Type type, string url)
-        {
-            var page = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(type, new HAPConnection(), logger);
-            List<Link> childUrls = null;
-
-            switch (cmd.CommandType)
-            {
-                case CommandType.F:
-                    childUrls = page.Fetch(url);
-                    break;
-                case CommandType.P:
-                    childUrls = page.Fetch(url);
-                    page.Parse(url);
-                    exporter.Extract(page.Domain);
-                    break;
-                default:
-                    break;
-            }
-
-            return (page, childUrls);
-        }
-
         private static bool CheckIfExit(Command cmd)
         {
-            return cmd.CommandType == CommandType.E;
+            return cmd.Action == Action.E;
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Transfermarkt.Console
 {
     public class Command
     {
-        public CommandType CommandType { get; set; }
+        public Action Action { get; set; }
 
         public List<(ParameterName Cmd, IParameterValue Val)> Parameters { get; set; } = new List<(ParameterName Cmd, IParameterValue Val)>();
 
         public override string ToString()
         {
-            string cmdToParse = $"{CommandType.ToString()}";
+            string cmdToParse = $"{Action.ToString()}";
             if (Parameters?.Count > 0)
             {
                 cmdToParse += $" {string.Join(" ", Parameters.Select(t => string.Format("{0}:{1}", t.Cmd, t.Val)))}";
@@ -65,7 +65,7 @@ namespace Transfermarkt.Console
         public int Index3 { get; set; }
     }
 
-    public enum CommandType
+    public enum Action
     {
         /// <summary>
         /// Fetch links from page.

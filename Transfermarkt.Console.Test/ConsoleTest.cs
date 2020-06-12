@@ -213,17 +213,17 @@ namespace Transfermarkt.Console.Test
 
         private void Validate(string cmdToParse, Command cmd, string cmdType, List<(string k, string v)> args, List<(int i1, int i2)> opts)
         {
-            CommandType? commandType = null;
+            Action? action = null;
             if (cmdType.Trim().ToLowerInvariant() == "f")
             {
-                commandType = CommandType.F;
+                action = Action.F;
             }
             else if (cmdType.Trim().ToLowerInvariant() == "p")
             {
-                commandType = CommandType.P;
+                action = Action.P;
             }
 
-            Assert.IsTrue(cmd.CommandType == commandType, "Command Type not parsed correctly.");
+            Assert.IsTrue(cmd.Action == action, "Command Type not parsed correctly.");
 
             if (args?.Count > 0)
             {
