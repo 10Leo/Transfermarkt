@@ -69,6 +69,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public CompetitionClubsPageSection(HAPConnection connection, ILogger logger)
         {
+            this.Name = "Clubs";
             this.Page = new ClubPage(connection, logger);
 
             this.GetUrls = () =>
