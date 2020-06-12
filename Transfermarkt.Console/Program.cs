@@ -112,15 +112,15 @@ namespace Transfermarkt.Console
                 bool proceed = true;
                 if (proceed && i1 != 0)
                 {
-                    proceed = ContinentP(cmd, i1.ToString());
+                    proceed = ContinentP(cmd, i1.ToString(), ind is Index1ParameterValue);
                 }
                 if (proceed && i2 != 0)
                 {
-                    proceed = CompetitionP(cmd, $"{i1.ToString()}.{i2.ToString()}");
+                    proceed = CompetitionP(cmd, $"{i1.ToString()}.{i2.ToString()}", ind is Index2ParameterValue);
                 }
                 if (proceed && i3 != 0)
                 {
-                    proceed = ClubP(cmd, $"{i1.ToString()}.{i2.ToString()}.{i3.ToString()}");
+                    proceed = ClubP(cmd, $"{i1.ToString()}.{i2.ToString()}.{i3.ToString()}", ind is Index3ParameterValue);
                 }
             }
         }
@@ -157,165 +157,157 @@ namespace Transfermarkt.Console
             }
         }
 
-        private static void Execute(Command cmd, Type type, IDictionary<string, Link> urls)
+        private static void PresentOptions2(string index, IDictionary<string, (Link L, ContinentPage P)> urls, IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childsSection)
         {
-            var pages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
-            //var childUrlsCollection = new Dictionary<string, Link>();
-
-            IndexesParameterValue fir = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val as IndexesParameterValue;
-            foreach (var ind in fir.Indexes)
+            for (int l = 0; l < childsSection.Children.Count; l++)
             {
-                if (ind is Index1ParameterValue)
-                {
-                    int index = ((Index1ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val).Index1;
+                var key = $"{index + "." + (l + 1)}";
 
-                    {
-                        string choice = $"{urls[index.ToString()].Url}";
-
-                        (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
-                        pages.Add(e.Page);
-
-                        for (int i = 0; i < e.Links.Count; i++)
-                        {
-                            //competition.Add($"{index + "." + (i + 1)}", e.Links[i]);
-                        }
-                    }
-                }
-                else if (ind is Index2ParameterValue)
-                {
-                    var f = ((Index2ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val);
-                    int Index1 = f.Index1;
-                    int Index2 = f.Index2;
-
-                    {
-                        string choice = $"{urls[Index1 + "." + Index2].Url}";
-
-                        (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
-                        pages.Add(e.Page);
-
-                        for (int i = 0; i < e.Links.Count; i++)
-                        {
-                            club.Add($"{Index2 + "." + (i + 1)}", (e.Links[i], null));
-                        }
-                    }
-                }
-                //else if (ind is Index3ParameterValue)
-                //{
-                //    var f = ((Index3ParameterValue)cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val);
-                //    int Index1 = f.Index1;
-                //    int Index2 = f.Index2;
-                //    int Index3 = f.Index3;
-
-                //    string choice = $"{urls[Index1 + "." + Index2 + "." + Index3].Url}";
-
-                //    (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, type, choice);
-                //    pages.Add(e.Page);
-
-                //    for (int i = 0; i < e.Links.Count; i++)
-                //    {
-                //        club.Add($"{Index2 + "." + (i + 1)}", e.Links[i]);
-                //    }
-                //}
+                System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(urls[key].L.Title) ? urls[key].L.Title : urls[key].L.Url)));
             }
         }
 
-        private static bool ContinentP(Command cmd, String index)
+        private static bool ContinentP(Command cmd, String index, bool isFinal)
         {
             if (!continent.ContainsKey(index.ToString()))
             {
                 return false;
             }
 
+            IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childLinksSection = null;
             (Link L, ContinentPage P) choice = continent[index.ToString()];
+            if (choice.P == null)
+            {
+                choice.P = (ContinentPage)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
+                continent[index.ToString()] = choice;
 
-            if (choice.P != null)
+                choice.P.Fetch(choice.L.Url);
+
+                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competitions");
+                for (int l = 0; l < childLinksSection.Children.Count; l++)
+                {
+                    var key = $"{index}.{(l + 1)}";
+
+                    if (!competition.ContainsKey(key))
+                    {
+                        competition.Add(key, (childLinksSection.Children[l], null));
+                    }
+                }
+            }
+
+            if (!isFinal)
             {
                 return true;
             }
 
-            (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[2], choice.L.Url);
-            choice.P = (ContinentPage)e.Page;
-            continent[index.ToString()] = choice;
+            if (cmd.CommandType == CommandType.P)
+            {
+                choice.P.Parse(choice.L.Url);
+                exporter.Extract(choice.P.Domain);
+            }
 
-            for (int l = 0; l < e.Links.Count; l++)
+            if (childLinksSection == null)
+            {
+                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competitions");
+            }
+
+            // Present options
+            System.Console.WriteLine();
+            for (int l = 0; l < childLinksSection.Children.Count; l++)
             {
                 var key = $"{index + "." + (l + 1)}";
 
-                if (!competition.ContainsKey(key))
-                {
-                    competition.Add(key, (e.Links[l], null));
-                }
+                System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(competition[key].L.Title) ? competition[key].L.Title : competition[key].L.Url)));
             }
-
-            //// Present options
-            //System.Console.WriteLine();
-            //for (int l = 0; l < e.Links.Count; l++)
-            //{
-            //    var key = $"{index + "." + (l + 1)}";
-
-            //    System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(competition[key].L.Title) ? competition[key].L.Title : competition[key].L.Url)));
-            //}
 
             return true;
         }
 
-        private static bool CompetitionP(Command cmd, String index) {
+        private static bool CompetitionP(Command cmd, String index, bool isFinal)
+        {
 
             if (!competition.ContainsKey(index.ToString()))
             {
                 return false;
             }
 
+            IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childLinksSection = null;
             (Link L, CompetitionPage P) choice = competition[index.ToString()];
+            if (choice.P == null)
+            {
+                choice.P = (CompetitionPage)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
+                competition[index.ToString()] = choice;
 
-            if (choice.P != null)
+                choice.P.Fetch(choice.L.Url);
+
+                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Clubs");
+                for (int l = 0; l < childLinksSection.Children.Count; l++)
+                {
+                    var key = $"{index}.{(l + 1)}";
+
+                    if (!club.ContainsKey(key))
+                    {
+                        club.Add(key, (childLinksSection.Children[l], null));
+                    }
+                }
+            }
+
+            if (!isFinal)
             {
                 return true;
             }
 
-            (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[3], choice.L.Url);
-            choice.P = (CompetitionPage)e.Page;
-            competition[index.ToString()] = choice;
-
-            for (int l = 0; l < e.Links.Count; l++)
+            if (cmd.CommandType == CommandType.P)
             {
-                var key = $"{index}.{(l + 1)}";
-
-                if (!club.ContainsKey(key))
-                {
-                    club.Add(key, (e.Links[l], null));
-                }
+                choice.P.Parse(choice.L.Url);
+                exporter.Extract(choice.P.Domain);
             }
 
-            //// Present options
-            //System.Console.WriteLine();
-            //for (int l = 0; l < e.Links.Count; l++)
-            //{
-            //    var key = $"{index + "." + (l + 1)}";
+            if (childLinksSection == null)
+            {
+                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competitions");
+            }
 
-            //    System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(club[key].L.Title) ? club[key].L.Title : club[key].L.Url)));
-            //}
+            // Present options
+            System.Console.WriteLine();
+            for (int l = 0; l < childLinksSection.Children.Count; l++)
+            {
+                var key = $"{index + "." + (l + 1)}";
+
+                System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(club[key].L.Title) ? club[key].L.Title : club[key].L.Url)));
+            }
 
             return true;
         }
 
-        private static bool ClubP(Command cmd, String index) {
+        private static bool ClubP(Command cmd, String index, bool isFinal)
+        {
 
             if (!club.ContainsKey(index.ToString()))
             {
                 return false;
             }
 
+            IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childLinksSection = null;
             (Link L, ClubPage P) choice = club[index.ToString()];
+            if (choice.P == null)
+            {
+                choice.P = (ClubPage)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
+                club[index.ToString()] = choice;
 
-            if (choice.P != null)
+                choice.P.Fetch(choice.L.Url);
+            }
+
+            if (!isFinal)
             {
                 return true;
             }
 
-            (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[4], choice.L.Url);
-            choice.P = (ClubPage)e.Page;
-            club[index.ToString()] = choice;
+            if (cmd.CommandType == CommandType.P)
+            {
+                choice.P.Parse(choice.L.Url);
+                exporter.Extract(choice.P.Domain);
+            }
 
             return true;
         }
