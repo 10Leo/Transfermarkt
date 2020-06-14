@@ -43,19 +43,9 @@ namespace Transfermarkt.Console
             [$"4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
         };
 
-        private static IDictionary<string, (Link L, ContinentPage P)> continent = new Dictionary<string, (Link, ContinentPage)>
-        {
-            ////[$"{currentSeason}.1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
-            ////[$"{currentSeason}.2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
-            ////[$"{currentSeason}.3"] = (new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
-            ////[$"{currentSeason}.4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
-            //[$"1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
-            //[$"2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
-            //[$"3"] = (new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
-            //[$"4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
-        };
-        private static IDictionary<string, (Link L, CompetitionPage P)> competition = new Dictionary<string, (Link, CompetitionPage)>();
-        private static IDictionary<string, (Link L, ClubPage P)> club = new Dictionary<string, (Link L, ClubPage P)>();
+        private static readonly IDictionary<string, (Link L, ContinentPage P)> continent = new Dictionary<string, (Link, ContinentPage)>();
+        private static readonly IDictionary<string, (Link L, CompetitionPage P)> competition = new Dictionary<string, (Link, CompetitionPage)>();
+        private static readonly IDictionary<string, (Link L, ClubPage P)> club = new Dictionary<string, (Link L, ClubPage P)>();
 
 
         static void Main(string[] args)
@@ -66,7 +56,6 @@ namespace Transfermarkt.Console
             exporter = new JsonExporter();
 
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
-
             
 
             for (int i = 0; i < cont.Count; i++)
