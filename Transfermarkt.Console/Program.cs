@@ -31,17 +31,32 @@ namespace Transfermarkt.Console
 
         private static IExporter exporter;
 
+        private static int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+
         private static IDictionary<int, Type> pageTypes = new Dictionary<int, Type>();
+
+        private static IDictionary<string, (Link L, ContinentPage P)> cont = new Dictionary<string, (Link, ContinentPage)>
+        {
+            [$"1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
+            [$"2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
+            [$"3"] = (new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
+            [$"4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
+        };
 
         private static IDictionary<string, (Link L, ContinentPage P)> continent = new Dictionary<string, (Link, ContinentPage)>
         {
-            ["1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
-            ["2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
-            ["3"] = (new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
-            ["4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
+            ////[$"{currentSeason}.1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
+            ////[$"{currentSeason}.2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
+            ////[$"{currentSeason}.3"] = (new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
+            ////[$"{currentSeason}.4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
+            //[$"1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
+            //[$"2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
+            //[$"3"] = (new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
+            //[$"4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
         };
         private static IDictionary<string, (Link L, CompetitionPage P)> competition = new Dictionary<string, (Link, CompetitionPage)>();
         private static IDictionary<string, (Link L, ClubPage P)> club = new Dictionary<string, (Link L, ClubPage P)>();
+
 
         static void Main(string[] args)
         {
@@ -52,7 +67,12 @@ namespace Transfermarkt.Console
 
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
-            PresentOptions(continent);
+            
+
+            for (int i = 0; i < cont.Count; i++)
+            {
+                System.Console.WriteLine($"{(i + 1)}: {cont.ElementAt(i).Value}");
+            }
 
             bool exit = false;
             while (!exit)
@@ -78,15 +98,17 @@ namespace Transfermarkt.Console
 
         private static Command GetInput()
         {
+            System.Console.Write("> ");
             string input = System.Console.ReadLine();
             return CommandUtil.ParseCommand(input);
         }
 
         private static void Proccess(Command cmd)
         {
-            (ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
-
             IndexesParameterValue i = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val as IndexesParameterValue;
+
+            var year = ((StringParameterValue)cmd[ParameterName.Y]).Value;
+
             foreach (IIndex ind in i.Indexes)
             {
                 int i1 = 0;
@@ -109,10 +131,10 @@ namespace Transfermarkt.Console
                     i3 = (ind as Index3ParameterValue).Index3;
                 }
 
-                bool proceed = true;
+                bool proceed = ContinentsP(cmd, $"{i1.ToString()}");
                 if (proceed && i1 != 0)
                 {
-                    proceed = ContinentP(cmd, i1.ToString(), ind is Index1ParameterValue);
+                    proceed = ContinentP(cmd, $"{i1.ToString()}", ind is Index1ParameterValue);
                 }
                 if (proceed && i2 != 0)
                 {
@@ -125,26 +147,49 @@ namespace Transfermarkt.Console
             }
         }
 
-        private static bool ContinentP(Command cmd, String index, bool isFinal)
+        private static bool ContinentsP(Command cmd, string index)
         {
-            if (!continent.ContainsKey(index.ToString()))
+            var year = ((StringParameterValue)cmd[ParameterName.Y]).Value;
+
+            var k = $"{year}.{index}";
+
+            if (!cont.ContainsKey(index) )
+            {
+                return false;
+            }
+
+            if (!continent.ContainsKey(k))
+            {
+                continent.Add(k, (cont[index].L, null));
+            }
+
+            return true;
+        }
+
+        private static bool ContinentP(Command cmd, string index, bool isFinal)
+        {
+            var year = ((StringParameterValue)cmd[ParameterName.Y]).Value;
+
+            var k = $"{year}.{index}";
+
+            if (!continent.ContainsKey(k))
             {
                 return false;
             }
 
             IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childLinksSection = null;
-            (Link L, ContinentPage P) choice = continent[index.ToString()];
+            (Link L, ContinentPage P) choice = continent[k];
             if (choice.P == null)
             {
-                choice.P = (ContinentPage)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
-                continent[index.ToString()] = choice;
+                choice.P = (ContinentPage)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger, year);
+                continent[k] = choice;
 
                 choice.P.Fetch(choice.L.Url);
 
                 childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competitions");
                 for (int l = 0; l < childLinksSection.Children.Count; l++)
                 {
-                    var key = $"{index}.{(l + 1)}";
+                    var key = $"{year}.{index}.{(l + 1)}";
 
                     if (!competition.ContainsKey(key))
                     {
@@ -169,39 +214,48 @@ namespace Transfermarkt.Console
                 childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competitions");
             }
 
+            if (childLinksSection == null)
+            {
+                return true;
+            }
+
             // Present options
             System.Console.WriteLine();
             for (int l = 0; l < childLinksSection.Children.Count; l++)
             {
-                var key = $"{index + "." + (l + 1)}";
+                var presentationKey = $"{index}.{(l + 1)}";
+                var key = $"{k}.{(l + 1)}";
 
-                System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(competition[key].L.Title) ? competition[key].L.Title : competition[key].L.Url)));
+                System.Console.WriteLine(string.Format("\t{0}: {1}", presentationKey, (!string.IsNullOrEmpty(competition[key].L.Title) ? competition[key].L.Title : competition[key].L.Url)));
             }
 
             return true;
         }
 
-        private static bool CompetitionP(Command cmd, String index, bool isFinal)
+        private static bool CompetitionP(Command cmd, string index, bool isFinal)
         {
+            var year = ((StringParameterValue)cmd[ParameterName.Y]).Value;
 
-            if (!competition.ContainsKey(index.ToString()))
+            var k = $"{year}.{index}";
+            
+            if (!competition.ContainsKey(k))
             {
                 return false;
             }
 
             IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childLinksSection = null;
-            (Link L, CompetitionPage P) choice = competition[index.ToString()];
+            (Link L, CompetitionPage P) choice = competition[k];
             if (choice.P == null)
             {
-                choice.P = (CompetitionPage)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger);
-                competition[index.ToString()] = choice;
+                choice.P = (CompetitionPage)Activator.CreateInstance(pageTypes[3], new HAPConnection(), logger, year);
+                competition[k] = choice;
 
                 choice.P.Fetch(choice.L.Url);
 
                 childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Clubs");
                 for (int l = 0; l < childLinksSection.Children.Count; l++)
                 {
-                    var key = $"{index}.{(l + 1)}";
+                    var key = $"{k}.{(l + 1)}";
 
                     if (!club.ContainsKey(key))
                     {
@@ -223,35 +277,44 @@ namespace Transfermarkt.Console
 
             if (childLinksSection == null)
             {
-                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competitions");
+                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Clubs");
+            }
+
+            if (childLinksSection == null)
+            {
+                return true;
             }
 
             // Present options
             System.Console.WriteLine();
             for (int l = 0; l < childLinksSection.Children.Count; l++)
             {
-                var key = $"{index + "." + (l + 1)}";
+                var presentationKey = $"{index}.{(l + 1)}";
+                var key = $"{k}.{(l + 1)}";
 
-                System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(club[key].L.Title) ? club[key].L.Title : club[key].L.Url)));
+                System.Console.WriteLine(string.Format("\t{0}: {1}", presentationKey, (!string.IsNullOrEmpty(club[key].L.Title) ? club[key].L.Title : club[key].L.Url)));
             }
 
             return true;
         }
 
-        private static bool ClubP(Command cmd, String index, bool isFinal)
+        private static bool ClubP(Command cmd, string index, bool isFinal)
         {
+            var year = ((StringParameterValue)cmd[ParameterName.Y]).Value;
 
-            if (!club.ContainsKey(index.ToString()))
+            var k = $"{year}.{index}";
+            
+            if (!club.ContainsKey(k))
             {
                 return false;
             }
 
             IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> childLinksSection = null;
-            (Link L, ClubPage P) choice = club[index.ToString()];
+            (Link L, ClubPage P) choice = club[k];
             if (choice.P == null)
             {
-                choice.P = (ClubPage)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger);
-                club[index.ToString()] = choice;
+                choice.P = (ClubPage)Activator.CreateInstance(pageTypes[4], new HAPConnection(), logger, year);
+                club[k] = choice;
 
                 choice.P.Fetch(choice.L.Url);
             }
@@ -273,7 +336,6 @@ namespace Transfermarkt.Console
         private static void PresentOptions(IDictionary<string, (Link L, ContinentPage P)> urls)
         {
             System.Console.WriteLine("Escolha uma das seguintes opções:");
-            System.Console.WriteLine(string.Format("0: Todas"));
             for (int i = 0; i < urls.Count; i++)
             {
                 var v = urls.Keys.ElementAt(i);

@@ -8,6 +8,18 @@ namespace Transfermarkt.Console
 {
     public class Command
     {
+        public IParameterValue this[ParameterName parameter]
+        {
+            get {
+                if (Parameters.Any(p => p.Cmd == parameter))
+                {
+                    return Parameters.FirstOrDefault(p => p.Cmd == parameter).Val;
+                }
+
+                return null;
+            }
+        }
+
         public Action Action { get; set; }
 
         public List<(ParameterName Cmd, IParameterValue Val)> Parameters { get; set; } = new List<(ParameterName Cmd, IParameterValue Val)>();

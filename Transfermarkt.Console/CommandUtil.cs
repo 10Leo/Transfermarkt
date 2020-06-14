@@ -21,6 +21,8 @@ namespace Transfermarkt.Console
         private static readonly List<string> AllowedYearStringCmd = new List<string> { "y", "year" };
         private static readonly List<string> AllowedObjStringCmd = new List<string> { "i" };
 
+        private static int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+
         public static Command ParseCommand(string line)
         {
             Command cmd = new Command();
@@ -89,6 +91,16 @@ namespace Transfermarkt.Console
 
                         cmd.Parameters.Add((aa.Value, vv));
                     }
+                }
+
+                //(ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
+                if (!cmd.Parameters.Any(p => p.Cmd == ParameterName.Y))
+                {
+                    var year = new StringParameterValue
+                    {
+                        Value = currentSeason.ToString()
+                    };
+                    cmd.Parameters.Add((ParameterName.Y, year));
                 }
             }
             catch (Exception ex)
