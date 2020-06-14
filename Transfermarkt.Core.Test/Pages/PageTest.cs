@@ -35,7 +35,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
-            url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2019";
+            url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2009";
             CompetitionPage page = new CompetitionPage(new HAPConnection(), logger, null);
             page.Parse(url);
 
