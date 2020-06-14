@@ -19,7 +19,9 @@ namespace Transfermarkt.Console
         }
 
         private static readonly List<string> AllowedYearStringCmd = new List<string> { "y", "year" };
-        private static readonly List<string> AllowedObjStringCmd = new List<string> { "o" };
+        private static readonly List<string> AllowedObjStringCmd = new List<string> { "i" };
+
+        private static int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
         public static Command ParseCommand(string line)
         {
@@ -31,53 +33,74 @@ namespace Transfermarkt.Console
                     throw new Exception(ErrorMsg.ERROR_MSG_CMD);
                 }
 
-                var m = Regex.Match(line, @"^(?<CMD>[\w\-]+)\s+(?<Args>.*)");
-                var cm = m.Groups["CMD"];
-                var arguments = m.Groups["Args"];
+                var cmdGroup = "CMD";
+                var argsGroup = "Args";
+                var argNameGroup = "ArgName";
+                var argValueGroup = "ArgValue";
 
-                if (cm == null || string.IsNullOrEmpty(cm.Value) || string.IsNullOrWhiteSpace(cm.Value))
-                {
-                    throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-                }
+                var m = Regex.Matches(line, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)\s+(?<{argValueGroup}>[^-]+))");
 
-                if (cm.Value.Trim().ToLowerInvariant() == "f")
+                if (m.Count > 0)
                 {
-                    cmd.CommandType = CommandType.F;
-                }
-                else if (cm.Value.Trim().ToLowerInvariant() == "p")
-                {
-                    cmd.CommandType = CommandType.P;
-                }
-                else
-                {
-                    throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-                }
-
-                if (arguments == null || string.IsNullOrEmpty(arguments.Value) || string.IsNullOrWhiteSpace(arguments.Value))
-                {
-                    throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-                }
-
-                MatchCollection splitArguments = Regex.Matches(arguments.Value, @"((?<Arg>-[^-\s]+)\s+(?<Value>[^-]+))");
-                foreach (Match argument in splitArguments)
-                {
-                    string a = argument.Groups["Arg"]?.Value?.Trim()?.ToLowerInvariant();
-                    string v = argument.Groups["Value"]?.Value?.Trim();
-
-                    if (a == null || string.IsNullOrEmpty(a) || string.IsNullOrWhiteSpace(a))
+                    var cm = m[0].Groups[cmdGroup];
+                    if (cm == null || string.IsNullOrEmpty(cm.Value) || string.IsNullOrWhiteSpace(cm.Value))
                     {
-                        throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        throw new Exception(ErrorMsg.ERROR_MSG_CMD);
                     }
 
-                    if (v == null || string.IsNullOrEmpty(v) || string.IsNullOrWhiteSpace(v))
+                    if (cm.Value.Trim().ToLowerInvariant() == "f")
                     {
-                        throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        cmd.Action = Action.F;
                     }
+                    else if (cm.Value.Trim().ToLowerInvariant() == "p")
+                    {
+                        cmd.Action = Action.P;
+                    }
+                    else if (cm.Value.Trim().ToLowerInvariant() == "e")
+                    {
+                        cmd.Action = Action.E;
+                        return cmd;
+                    }
+                    else
+                    {
+                        throw new Exception(ErrorMsg.ERROR_MSG_CMD);
+                    }
+                }
 
-                    ParameterName? aa = ToArgument(a);
-                    IParameterValue vv = ToValue(aa.Value, v);
+                if (m.Count > 1)
+                {
+                    for (int i = 1; i < m.Count; i++)
+                    {
+                        var argument = m[i];
 
-                    cmd.Parameters.Add((aa.Value, vv));
+                        string a = argument.Groups[argNameGroup]?.Value?.Trim()?.ToLowerInvariant();
+                        string v = argument.Groups[argValueGroup]?.Value?.Trim();
+
+                        if (a == null || string.IsNullOrEmpty(a) || string.IsNullOrWhiteSpace(a))
+                        {
+                            throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        }
+
+                        if (v == null || string.IsNullOrEmpty(v) || string.IsNullOrWhiteSpace(v))
+                        {
+                            throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                        }
+
+                        ParameterName? aa = ToArgument(a);
+                        IParameterValue vv = ToValue(aa.Value, v);
+
+                        cmd.Parameters.Add((aa.Value, vv));
+                    }
+                }
+
+                //(ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
+                if (!cmd.Parameters.Any(p => p.Cmd == ParameterName.Y))
+                {
+                    var year = new StringParameterValue
+                    {
+                        Value = currentSeason.ToString()
+                    };
+                    cmd.Parameters.Add((ParameterName.Y, year));
                 }
             }
             catch (Exception ex)
@@ -100,69 +123,41 @@ namespace Transfermarkt.Console
             }
             if (AllowedObjStringCmd.Contains(aa))
             {
-                return ParameterName.O;
+                return ParameterName.I;
             }
 
             return null;
         }
+
+        private const string g1 = "I1";
+        private const string g2 = "I2";
+        private const string g3 = "I3";
 
         private static IParameterValue ToValue(ParameterName a, string v)
         {
             switch (a)
             {
                 case ParameterName.Y:
-                    var year = new StringParameterValue();
-                    year.Value = ParseYear(v).ToString();
+                    var year = new StringParameterValue
+                    {
+                        Value = ParseYear(v).ToString()
+                    };
                     return year;
-                case ParameterName.O:
+
+                case ParameterName.I:
                     var g1 = "I1";
                     var g2 = "I2";
                     var g3 = "I3";
+                    var pattern = $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))";
 
-                    MatchCollection splitArguments = Regex.Matches(v, $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))");
+                    MatchCollection splitArguments = Regex.Matches(v, pattern);
 
-                    IParameterValue indexes = null;
-                    int nIndexes = 0;
-
-                    var structure = splitArguments.OfType<Match>().FirstOrDefault();
-                    var o1 = structure.Groups[g1].Value.Trim();
-                    var o2 = structure.Groups[g2].Value.Trim();
-                    var o3 = structure.Groups[g3].Value.Trim();
-
-                    if (string.IsNullOrEmpty(o1) || string.IsNullOrWhiteSpace(o1))
-                    {
-                        throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
-                    }
-                    else if (string.IsNullOrEmpty(o2) || string.IsNullOrWhiteSpace(o2))
-                    {
-                        nIndexes = 1;
-                        indexes = new Index1ParameterValue();
-                    }
-                    else if (string.IsNullOrEmpty(o3) || string.IsNullOrWhiteSpace(o3))
-                    {
-                        nIndexes = 2;
-                        indexes = new Index2ParameterValue();
-                    }
-                    else
-                    {
-                        nIndexes = 3;
-                        //indexes = new Index3ArgumentValue();
-                    }
+                    IndexesParameterValue indexes = new IndexesParameterValue();
 
                     foreach (Match argument in splitArguments)
                     {
-                        var a1 = argument.Groups[g1].Value.Trim();
-                        var a2 = argument.Groups[g2].Value.Trim();
-                        var a3 = argument.Groups[g3].Value.Trim();
-
-                        if (nIndexes == 1)
-                        {
-                            ((Index1ParameterValue)indexes).Indexes.Add(int.Parse(a1));
-                        }
-                        else if (nIndexes == 2)
-                        {
-                            ((Index2ParameterValue)indexes).Indexes.Add((int.Parse(a1), int.Parse(a2)));
-                        }
+                        var i = DetermineNumberOfIndexes(argument);
+                        indexes.Indexes.Add(i);
                     }
 
                     return indexes;
@@ -171,6 +166,30 @@ namespace Transfermarkt.Console
             }
 
             return null;
+        }
+
+        private static IIndex DetermineNumberOfIndexes(Match argument)
+        {
+            var o1 = argument.Groups[g1].Value.Trim();
+            var o2 = argument.Groups[g2].Value.Trim();
+            var o3 = argument.Groups[g3].Value.Trim();
+
+            if (string.IsNullOrEmpty(o1) || string.IsNullOrWhiteSpace(o1))
+            {
+                throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+            }
+            else if (string.IsNullOrEmpty(o2) || string.IsNullOrWhiteSpace(o2))
+            {
+                return new Index1ParameterValue { Index1 = int.Parse(o1) };
+            }
+            else if (string.IsNullOrEmpty(o3) || string.IsNullOrWhiteSpace(o3))
+            {
+                return new Index2ParameterValue { Index1 = int.Parse(o1), Index2 = int.Parse(o2) };
+            }
+            else
+            {
+                return new Index3ParameterValue { Index1 = int.Parse(o1), Index2 = int.Parse(o2), Index3 = int.Parse(o3) };
+            }
         }
 
         private static int ParseYear(string yearCmd)

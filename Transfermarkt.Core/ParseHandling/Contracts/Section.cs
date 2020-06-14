@@ -21,11 +21,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     public abstract class ElementsSection<TNode, TValue> : IElementsSection<IElement<TValue>, TValue, TNode> where TValue : IValue
     {
         private IList<(TNode key, TNode value)> elementsNodes;
-        
+
         public IEnumerable<IElementParser<IElement<TValue>, TValue, TNode>> Parsers { get; set; }
 
         public Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
-        
+
         public ElementsSection()
         {
             this.Parsers = new List<IElementParser<IElement<TValue>, TValue, TNode>>();
@@ -33,64 +33,69 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
-            if (Parsers != null)
+            if (Parsers == null)
             {
-                elementsNodes = GetElementsNodes?.Invoke();
+                return;
+            }
 
-                if (elementsNodes != null && elementsNodes.Count > 0)
+            elementsNodes = GetElementsNodes?.Invoke();
+            if (elementsNodes == null || elementsNodes.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var (key, value) in elementsNodes)
+            {
+                foreach (var parser in Parsers)
                 {
-                    foreach (var (key, value) in elementsNodes)
+                    if (parser.CanParse(key))
                     {
-                        foreach (var parser in Parsers)
-                        {
-                            if (parser.CanParse(key))
-                            {
-                                var parsedObj = parser.Parse(value);
-                                var e = page.Domain.SetElement(parsedObj);
-                            }
-                        }
+                        var parsedObj = parser.Parse(value);
+                        var e = page.Domain.SetElement(parsedObj);
                     }
                 }
-
-                Parsers.ToList().ForEach(p =>
-                {
-                    //TODO: recreate an instance of the parser? if yes, relocate this logic to the beginning of this method.
-                    p.Reset();
-                });
             }
+
+            Parsers.ToList().ForEach(p =>
+            {
+                //TODO: recreate an instance of the parser? if yes, relocate this logic to the beginning of this method.
+                p.Reset();
+            });
         }
     }
 
     public abstract class ChildsSection<TNode, TValue> : IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode> where TValue : IValue
     {
-        private IList<Link> pagesNodes;
-        
+        public string Name { get; set; }
         public IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
+        public IList<Link> Children { get; set; }
 
         public Func<IList<Link>> GetUrls { get; set; }
 
         public IList<Link> Fetch(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
-            pagesNodes = GetUrls?.Invoke();
-
-            return pagesNodes;
+            Children = GetUrls?.Invoke();
+            return Children;
         }
 
         public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
-            if (this.Page != null)
+            if (this.Page == null)
             {
-                if (pagesNodes != null && pagesNodes.Count > 0)
-                {
-                    foreach (var pageUrl in pagesNodes)
-                    {
-                        var pageDomain = this.Page.Parse(pageUrl.Url);
-                        page.Domain?.Children.Add(pageDomain);
+                return;
+            }
+            if (Children == null || Children.Count == 0)
+            {
+                return;
+            }
 
-                        Type t = this.Page.Domain.GetType();
-                        this.Page.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
-                    }
-                }
+            foreach (var pageUrl in Children)
+            {
+                var pageDomain = this.Page.Parse(pageUrl.Url);
+                page.Domain?.Children.Add(pageDomain);
+
+                Type t = this.Page.Domain.GetType();
+                this.Page.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
             }
         }
     }
@@ -105,37 +110,37 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
+            childDomainNodes = GetChildsNodes?.Invoke();
+
+            if (childDomainNodes == null || childDomainNodes.Count == 0)
             {
-                childDomainNodes = GetChildsNodes?.Invoke();
+                return;
+            }
 
-                if (childDomainNodes != null && childDomainNodes.Count > 0)
+            foreach (List<(TNode key, TNode value)> childDomainNode in childDomainNodes)
+            {
+                TDomain childType = new TDomain();
+                page.Domain?.Children.Add(childType);
+
+                if (Parsers != null)
                 {
-                    foreach (List<(TNode key, TNode value)> childDomainNode in childDomainNodes)
+                    foreach ((TNode key, TNode value) in childDomainNode)
                     {
-                        TDomain childType = new TDomain();
-                        page.Domain?.Children.Add(childType);
-
-                        if (Parsers != null)
+                        foreach (var parser in Parsers)
                         {
-                            foreach ((TNode key, TNode value) in childDomainNode)
+                            if (parser.CanParse(key))
                             {
-                                foreach (var parser in Parsers)
-                                {
-                                    if (parser.CanParse(key))
-                                    {
-                                        var parsedObj = parser.Parse(value);
-                                        var e = childType.SetElement(parsedObj);
-                                    }
-                                }
+                                var parsedObj = parser.Parse(value);
+                                var e = childType.SetElement(parsedObj);
                             }
                         }
-
-                        Parsers.ToList().ForEach(p =>
-                        {
-                            p.Reset();
-                        });
                     }
                 }
+
+                Parsers.ToList().ForEach(p =>
+                {
+                    p.Reset();
+                });
             }
         }
     }

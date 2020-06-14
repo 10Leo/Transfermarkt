@@ -13,14 +13,14 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ContinentPage : Page<IValue, HtmlNode>
     {
-        public ContinentPage(HAPConnection connection, ILogger logger) : base(connection)
+        public ContinentPage(HAPConnection connection, ILogger logger, string year) : base(connection)
         {
             this.Domain = new Continent();
 
             this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
             {
                 new ContinentPageSection(connection, logger),
-                new ContinentCompetitionsPageSection(connection, logger)
+                new ContinentCompetitionsPageSection(connection, logger, year)
             };
 
             this.OnBeforeParse += (o, e) => {
@@ -60,10 +60,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, IValue>
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        public string Season { get; }
 
-        public ContinentCompetitionsPageSection(HAPConnection connection, ILogger logger)
+        public ContinentCompetitionsPageSection(HAPConnection connection, ILogger logger, string year)
         {
-            this.Page = new CompetitionPage(connection, logger);
+            this.Season = year;
+            this.Name = "Competitions";
+            this.Page = new CompetitionPage(connection, logger, year);
 
             this.GetUrls = () =>
             {
@@ -113,7 +116,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         private string TransformUrl(string url, string baseURL)
         {
-            return string.Format("{0}{1}", baseURL, url);
+            return string.Format("{0}{1}{2}{3}", baseURL, url, "/plus/?saison_id=", Season);
         }
 
     }

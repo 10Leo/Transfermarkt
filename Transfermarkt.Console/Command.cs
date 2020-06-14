@@ -8,13 +8,25 @@ namespace Transfermarkt.Console
 {
     public class Command
     {
-        public CommandType CommandType { get; set; }
+        public IParameterValue this[ParameterName parameter]
+        {
+            get {
+                if (Parameters.Any(p => p.Cmd == parameter))
+                {
+                    return Parameters.FirstOrDefault(p => p.Cmd == parameter).Val;
+                }
+
+                return null;
+            }
+        }
+
+        public Action Action { get; set; }
 
         public List<(ParameterName Cmd, IParameterValue Val)> Parameters { get; set; } = new List<(ParameterName Cmd, IParameterValue Val)>();
 
         public override string ToString()
         {
-            string cmdToParse = $"{CommandType.ToString()}";
+            string cmdToParse = $"{Action.ToString()}";
             if (Parameters?.Count > 0)
             {
                 cmdToParse += $" {string.Join(" ", Parameters.Select(t => string.Format("{0}:{1}", t.Cmd, t.Val)))}";
@@ -38,19 +50,34 @@ namespace Transfermarkt.Console
     {
         public string Value { get; set; }
     }
-
-    public class Index1ParameterValue : IParameterValue
+    public class IndexesParameterValue : IParameterValue
     {
-        public List<int> Indexes { get; set; } = new List<int>();
-
+        public List<IIndex> Indexes { get; set; } = new List<IIndex>();
     }
 
-    public class Index2ParameterValue : IParameterValue
+    public interface IIndex
     {
-        public List<(int Index1, int Index2)> Indexes { get; set; } = new List<(int Index1, int Index2)>();
     }
 
-    public enum CommandType
+    public class Index1ParameterValue : IIndex
+    {
+        public int Index1 { get; set; }
+    }
+
+    public class Index2ParameterValue : IIndex
+    {
+        public int Index1 { get; set; }
+        public int Index2 { get; set; }
+    }
+
+    public class Index3ParameterValue : IIndex
+    {
+        public int Index1 { get; set; }
+        public int Index2 { get; set; }
+        public int Index3 { get; set; }
+    }
+
+    public enum Action
     {
         /// <summary>
         /// Fetch links from page.
@@ -59,7 +86,11 @@ namespace Transfermarkt.Console
         /// <summary>
         /// Parse page.
         /// </summary>
-        P
+        P,
+        /// <summary>
+        /// Exit.
+        /// </summary>
+        E
     }
 
     public enum ParameterName
@@ -69,8 +100,8 @@ namespace Transfermarkt.Console
         /// </summary>
         Y,
         /// <summary>
-        /// Page(s) to fetch/parse.
+        /// Page(s) indexes to fetch/parse.
         /// </summary>
-        O
+        I
     }
 }

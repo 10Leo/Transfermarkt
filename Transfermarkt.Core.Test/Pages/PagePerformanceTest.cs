@@ -42,7 +42,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             List<long> ellapsedMillis = new List<long>();
             for (int i = 0; i < 20; i++)
             {
-                ClubPage page = new ClubPage(new HAPConnection(), logger);
+                ClubPage page = new ClubPage(new HAPConnection(), logger, null);
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
                 page.Parse(url);

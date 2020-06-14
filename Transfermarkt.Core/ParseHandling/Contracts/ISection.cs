@@ -32,9 +32,15 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     public interface IChildsSection<TDomain, TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TDomain : IDomain<TValue> where TElement : IElement<TValue> where TValue : IValue
     {
         /// <summary>
+        /// A name that describes the Section.
+        /// </summary>
+        string Name { get; set; }
+
+        /// <summary>
         /// A kind of Page that might be accessible from the Section.
         /// </summary>
         IPage<TDomain, TElement, TValue, TNode> Page { get; set; }
+        IList<Link> Children { get; set; }
 
         IList<Link> Fetch(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
     }

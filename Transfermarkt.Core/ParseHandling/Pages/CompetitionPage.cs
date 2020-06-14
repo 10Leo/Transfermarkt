@@ -12,14 +12,14 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
-        public CompetitionPage(HAPConnection connection, ILogger logger) : base(connection)
+        public CompetitionPage(HAPConnection connection, ILogger logger, string year) : base(connection)
         {
             this.Domain = new Competition();
 
             this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
             {
                 new CompetitionPageSection(connection, logger),
-                new CompetitionClubsPageSection(connection, logger)
+                new CompetitionClubsPageSection(connection, logger, year)
             };
 
             this.OnBeforeParse += (o, e) => {
@@ -66,10 +66,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
         public string IdentifiersGetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
         public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
+        public string Season { get; }
 
-        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger)
+        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger, string year)
         {
-            this.Page = new ClubPage(connection, logger);
+            this.Season = year;
+            this.Name = "Clubs";
+            this.Page = new ClubPage(connection, logger, year);
 
             this.GetUrls = () =>
             {
@@ -142,10 +145,22 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 throw new Exception($"Error transforming url: '{url}.'");
             }
 
+            IDictionary<string, string> dic = new Dictionary<string, string>();
             for (int i = 1; i < matches[0].Groups.Count; i++)
             {
                 Group group = matches[0].Groups[i];
-                finalClubUrl = finalClubUrl.Replace("{" + group.Name + "}", group.Value);
+                dic.Add(group.Name, group.Value);
+            }
+
+            if (dic.ContainsKey("SEASON"))
+            {
+                dic["SEASON"] = Season;
+            }
+
+            for (int i = 0; i < dic.Count; i++)
+            {
+                var k = dic.Keys.ElementAt(i);
+                finalClubUrl = finalClubUrl.Replace("{" + k + "}", dic[k]);
             }
 
             return string.Format("{0}{1}", baseURL, finalClubUrl);
