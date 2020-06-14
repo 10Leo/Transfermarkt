@@ -32,6 +32,7 @@ namespace Transfermarkt.Console
         private static IExporter exporter;
 
         private static int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+        private static string lastSelectedSeason = currentSeason.ToString();
 
         private static IDictionary<int, Type> pageTypes = new Dictionary<int, Type>();
 
@@ -96,7 +97,18 @@ namespace Transfermarkt.Console
         {
             IndexesParameterValue i = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val as IndexesParameterValue;
 
-            var year = ((StringParameterValue)cmd[ParameterName.Y]).Value;
+            // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
+            var yy = cmd[ParameterName.Y];
+            if (yy == null)
+            {
+                var y = new StringParameterValue
+                {
+                    Value = lastSelectedSeason
+                };
+                cmd.Parameters.Add((ParameterName.Y, y));
+            }
+
+            lastSelectedSeason = ((StringParameterValue)cmd[ParameterName.Y]).Value;
 
             foreach (IIndex ind in i.Indexes)
             {

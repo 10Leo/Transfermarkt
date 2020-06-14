@@ -92,16 +92,6 @@ namespace Transfermarkt.Console
                         cmd.Parameters.Add((aa.Value, vv));
                     }
                 }
-
-                //(ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
-                if (!cmd.Parameters.Any(p => p.Cmd == ParameterName.Y))
-                {
-                    var year = new StringParameterValue
-                    {
-                        Value = currentSeason.ToString()
-                    };
-                    cmd.Parameters.Add((ParameterName.Y, year));
-                }
             }
             catch (Exception ex)
             {
