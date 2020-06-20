@@ -35,7 +35,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class ContinentPageSection : ElementsSection<HtmlNode, IValue>
     {
-        public ContinentPageSection(HAPConnection connection, ILogger logger)
+        public ContinentPageSection(HAPConnection connection, ILogger logger) : base("Continent Details")
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Continent.NameParser{ Converter = new StringConverter() },
@@ -62,10 +62,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public string Season { get; }
 
-        public ContinentCompetitionsPageSection(HAPConnection connection, ILogger logger, string year)
+        public ContinentCompetitionsPageSection(HAPConnection connection, ILogger logger, string year) : base("Continent - Competitions Section")
         {
             this.Season = year;
-            this.Name = "Competitions";
             this.Page = new CompetitionPage(connection, logger, year);
 
             this.GetUrls = () =>

@@ -15,6 +15,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     public interface ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {
         /// <summary>
+        /// A name that describes the Section.
+        /// </summary>
+        string Name { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="page"></param>
@@ -31,11 +36,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public interface IChildsSection<TDomain, TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TDomain : IDomain<TValue> where TElement : IElement<TValue> where TValue : IValue
     {
-        /// <summary>
-        /// A name that describes the Section.
-        /// </summary>
-        string Name { get; set; }
-
         /// <summary>
         /// A kind of Page that might be accessible from the Section.
         /// </summary>

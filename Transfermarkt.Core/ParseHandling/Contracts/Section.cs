@@ -20,14 +20,17 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public abstract class ElementsSection<TNode, TValue> : IElementsSection<IElement<TValue>, TValue, TNode> where TValue : IValue
     {
+        public string Name { get; set; }
+
         private IList<(TNode key, TNode value)> elementsNodes;
 
         public IEnumerable<IElementParser<IElement<TValue>, TValue, TNode>> Parsers { get; set; }
 
         public Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
 
-        public ElementsSection()
+        public ElementsSection(string name)
         {
+            this.Name = name;
             this.Parsers = new List<IElementParser<IElement<TValue>, TValue, TNode>>();
         }
 
@@ -67,10 +70,16 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     public abstract class ChildsSection<TNode, TValue> : IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode> where TValue : IValue
     {
         public string Name { get; set; }
+
         public IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
         public IList<Link> Children { get; set; }
 
         public Func<IList<Link>> GetUrls { get; set; }
+
+        public ChildsSection(string name)
+        {
+            this.Name = name;
+        }
 
         public IList<Link> Fetch(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
@@ -102,11 +111,18 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public abstract class ChildsSamePageSection<TDomain, TValue, TNode> : IChildsSamePageSection<IElement<TValue>, TValue, TNode> where TDomain : IDomain<TValue>, new() where TValue : IValue
     {
+        public string Name { get; set; }
+        
         private IList<List<(TNode key, TNode value)>> childDomainNodes;
 
         public IEnumerable<IElementParser<IElement<TValue>, TValue, TNode>> Parsers { get; set; }
 
         public Func<IList<List<(TNode key, TNode value)>>> GetChildsNodes { get; set; }
+
+        public ChildsSamePageSection(string name)
+        {
+            this.Name = name;
+        }
 
         public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {

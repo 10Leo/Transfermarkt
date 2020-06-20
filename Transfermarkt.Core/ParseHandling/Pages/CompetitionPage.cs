@@ -34,7 +34,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionPageSection : ElementsSection<HtmlNode, IValue>
     {
-        public CompetitionPageSection(HAPConnection connection, ILogger logger)
+        public CompetitionPageSection(HAPConnection connection, ILogger logger) : base("Competition Details")
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -68,10 +68,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
         public string Season { get; }
 
-        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger, string year)
+        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger, string year) : base("Competiton - Clubs Section")
         {
             this.Season = year;
-            this.Name = "Clubs";
             this.Page = new ClubPage(connection, logger, year);
 
             this.GetUrls = () =>
