@@ -253,7 +253,7 @@ namespace Transfermarkt.Console
 
                 choice.P.Fetch(choice.L.Url);
 
-                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competiton - Clubs Section");
+                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competition - Clubs Section");
                 for (int l = 0; l < childLinksSection.Children.Count; l++)
                 {
                     var key = $"{k}.{(l + 1)}";
@@ -278,7 +278,7 @@ namespace Transfermarkt.Console
 
             if (childLinksSection == null)
             {
-                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competiton - Clubs Section");
+                childLinksSection = choice.P.Sections.OfType<IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>().FirstOrDefault(s => s.Name == "Competition - Clubs Section");
             }
 
             if (childLinksSection == null)

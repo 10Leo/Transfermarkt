@@ -5,18 +5,18 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 {
     public interface IPage<TDomain, TElement, TValue, TNode> where TDomain : IDomain<TValue> where TElement : IElement<TValue> where TValue : IValue
     {
+        ISection<TElement, TValue, TNode> this[string name] { get; }
+        IReadOnlyList<ISection<TElement, TValue, TNode>> Sections { get; set; }
+
         TDomain Domain { get; set; }
 
         IConnection<TNode> Connection { get; set; }
 
-        IReadOnlyList<ISection<TElement, TValue, TNode>> Sections { get; set; }
-
         event EventHandler<PageEventArgs> OnBeforeParse;
         event EventHandler<PageEventArgs> OnAfterParse;
 
-        List<Link> Fetch(string url);
-        TDomain Parse(string url);
-        void Save();
+        IEnumerable<Link> Fetch(string url);
+        TDomain Parse(string url, string sectionName = null, IEnumerable<Link> links = null);
     }
 
     public class PageEventArgs : EventArgs

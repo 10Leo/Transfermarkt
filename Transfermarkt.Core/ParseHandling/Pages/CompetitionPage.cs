@@ -68,7 +68,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
         public string Season { get; }
 
-        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger, string year) : base("Competiton - Clubs Section")
+        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger, string year) : base("Competition - Clubs Section")
         {
             this.Season = year;
             this.Page = new ClubPage(connection, logger, year);

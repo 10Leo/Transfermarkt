@@ -6,12 +6,13 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 {
     public abstract class Page<TValue, TNode> : IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> where TValue : IValue
     {
+        public ISection<IElement<TValue>, TValue, TNode> this[string name] => Sections?.FirstOrDefault(s => s.Name == name);
+        public IReadOnlyList<ISection<IElement<TValue>, TValue, TNode>> Sections { get; set; }
+
         public IDomain<TValue> Domain { get; set; }
 
         public IConnection<TNode> Connection { get; set; }
 
-        public IReadOnlyList<ISection<IElement<TValue>, TValue, TNode>> Sections { get; set; }
-        
         public event EventHandler<PageEventArgs> OnAfterParse;
         public event EventHandler<PageEventArgs> OnBeforeParse;
 
@@ -22,11 +23,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         #region Contract
 
-        public virtual List<Link> Fetch(string url)
+        public virtual IEnumerable<Link> Fetch(string url)
         {
             this.Connection.Connect(url);
 
-            List<Link> urls = new List<Link>();
+            var urls = new List<Link>();
             if (Sections != null)
             {
                 foreach (var section in Sections)
@@ -41,7 +42,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             return urls;
         }
 
-        public virtual IDomain<TValue> Parse(string url)
+        public virtual IDomain<TValue> Parse(string url, string sectionName = null, IEnumerable<Link> links = null)
         {
             this.Connection.Connect(url);
 
@@ -49,19 +50,31 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
             if (Sections != null)
             {
-                foreach (var section in Sections)
+                if (sectionName != null && links != null)
                 {
-                    section.Parse(this);
+                    var section = this[sectionName];
+
+                    if (section is IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)
+                    {
+                        ((IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)section).Parse(this, links);
+                    }
+                    else
+                    {
+                        section.Parse(this);
+                    }
+                }
+                else
+                {
+                    foreach (var section in Sections)
+                    {
+                        section.Parse(this);
+                    }
                 }
             }
 
             OnAfterParse?.Invoke(this, new PageEventArgs(url));
 
             return this.Domain;
-        }
-
-        public virtual void Save()
-        {
         }
 
         #endregion Contract
