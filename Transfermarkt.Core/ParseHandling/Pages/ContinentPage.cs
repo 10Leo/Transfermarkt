@@ -23,6 +23,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new ContinentCompetitionsPageSection(connection, logger, year)
             };
 
+            // TODO create global string with placeholders for event texts: $"{EVT}: {TEXT}"
             this.OnBeforeParse += (o, e) => {
                 logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
