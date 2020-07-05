@@ -23,7 +23,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         /// 
         /// </summary>
         /// <param name="page"></param>
-        void Parse(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
+        void Parse();
     }
 
     public interface IElementsSection<TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
@@ -36,14 +36,10 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public interface IChildsSection<TDomain, TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TDomain : IDomain<TValue> where TElement : IElement<TValue> where TValue : IValue
     {
-        /// <summary>
-        /// A kind of Page that might be accessible from the Section.
-        /// </summary>
-        //IPage<TDomain, TElement, TValue, TNode> Page { get; set; }
         IList<Link> Children { get; set; }
 
-        IList<Link> Fetch(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
-        void Parse(IPage<IDomain<TValue>, TElement, TValue, TNode> page, IEnumerable<Link> links);
+        IList<Link> Fetch();
+        void Parse(IEnumerable<Link> links);
     }
 
     public interface IChildsSamePageSection<TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue

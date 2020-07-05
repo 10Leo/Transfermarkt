@@ -19,8 +19,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
             {
-                new ContinentPageSection(connection, logger),
-                new ContinentCompetitionsPageSection(connection, logger, year)
+                new ContinentPageSection(this, logger),
+                new ContinentCompetitionsPageSection(this, logger, year)
             };
 
             // TODO create global string with placeholders for event texts: $"{EVT}: {TEXT}"
@@ -36,7 +36,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class ContinentPageSection : ElementsSection<HtmlNode, IValue>
     {
-        public ContinentPageSection(HAPConnection connection, ILogger logger) : base("Continent Details")
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
+
+        public ContinentPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Continent Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Continent.NameParser{ Converter = new StringConverter() },
@@ -46,9 +48,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             this.GetElementsNodes = () =>
             {
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
-                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
-                elements.Add((null, connection.GetNode()));
+                elements.Add((null, Conn.GetNode()));
 
                 return elements;
             };
@@ -62,19 +64,20 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public string Season { get; }
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(HAPConnection connection, ILogger logger, string year) : base("Continent - Competitions Section")
+        public ContinentCompetitionsPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger, string year) : base("Continent - Competitions Section", page)
         {
             this.Season = year;
-            this.Page = new CompetitionPage(connection, logger, year);
+            this.ChildPage = new CompetitionPage(new HAPConnection(), logger, year);
 
             this.GetUrls = () =>
             {
                 IList<Link> urls = new List<Link>();
 
-                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
-                HtmlNode table = connection.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
+                HtmlNode table = Conn.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
                 if (table == null)
                 {
                     return null;

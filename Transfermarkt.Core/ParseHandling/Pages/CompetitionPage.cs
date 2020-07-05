@@ -18,8 +18,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
             {
-                new CompetitionPageSection(connection, logger),
-                new CompetitionClubsPageSection(connection, logger, year)
+                new CompetitionPageSection(this, logger),
+                new CompetitionClubsPageSection(this, logger, year)
             };
 
             this.OnBeforeParse += (o, e) => {
@@ -34,7 +34,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionPageSection : ElementsSection<HtmlNode, IValue>
     {
-        public CompetitionPageSection(HAPConnection connection, ILogger logger) : base("Competition Details")
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
+
+        public CompetitionPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Competition Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -47,9 +49,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             this.GetElementsNodes = () =>
             {
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
-                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
-                    elements.Add((null, connection.GetNode()));
+                    elements.Add((null, Conn.GetNode()));
 
                 return elements;
             };
@@ -67,19 +69,20 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string IdentifiersGetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
         public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
         public string Season { get; }
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger, string year) : base("Competition - Clubs Section")
+        public CompetitionClubsPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger, string year) : base("Competition - Clubs Section", page)
         {
             this.Season = year;
-            this.Page = new ClubPage(connection, logger, year);
+            this.ChildPage = new ClubPage(new HAPConnection(), logger, year);
 
             this.GetUrls = () =>
             {
                 IList<Link> urls = new List<Link>();
 
-                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
                 
-                HtmlNode table = connection.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
+                HtmlNode table = Conn.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
                 if (table == null)
                 {
                     return null;

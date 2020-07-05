@@ -22,17 +22,19 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     {
         private IList<(TNode key, TNode value)> elementsNodes;
         protected Func<IList<(TNode key, TNode value)>> GetElementsNodes { get; set; }
+        protected IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
 
         public string Name { get; set; }
         public IEnumerable<IElementParser<IElement<TValue>, TValue, TNode>> Parsers { get; set; }
 
-        public ElementsSection(string name)
+        public ElementsSection(string name, IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
             this.Name = name;
+            this.Page = page;
             this.Parsers = new List<IElementParser<IElement<TValue>, TValue, TNode>>();
         }
 
-        public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
+        public void Parse()
         {
             if (Parsers == null)
             {
@@ -52,7 +54,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                     if (parser.CanParse(key))
                     {
                         var parsedObj = parser.Parse(value);
-                        var e = page.Domain.SetElement(parsedObj);
+                        var e = this.Page.Domain.SetElement(parsedObj);
                     }
                 }
             }
@@ -70,21 +72,27 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         private bool fetched = false;
         private readonly IDictionary<Link, bool> linksParsed = new Dictionary<Link, bool>();
         protected IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
-
+        protected IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> ChildPage { get; set; }
         protected Func<IList<Link>> GetUrls { get; set; }
 
-        public ChildsSection(string name)
         public string Name { get; set; }
         public IList<Link> Children { get; set; }
+
+        public ChildsSection(string name, IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
             this.Name = name;
+            this.Page = page;
         }
 
-        public IList<Link> Fetch(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
+        public IList<Link> Fetch()
         {
             if (fetched)
             {
                 return Children;
+            }
+            if (!this.Page.Connection.IsConnected)
+            {
+                throw new Exception("No connection to the page made yet.");
             }
 
             Children = GetUrls?.Invoke();
@@ -94,15 +102,19 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             return Children;
         }
 
-        public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
+        public void Parse()
         {
             if (this.Page == null)
             {
                 return;
             }
+            if (!this.Page.Connection.IsConnected)
+            {
+                throw new Exception("No connection to the page made yet.");
+            }
             if (fetched == false)
             {
-                Fetch(page);
+                Fetch();
             }
             if (Children == null || Children.Count == 0)
             {
@@ -117,26 +129,30 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                     continue;
                 }
 
-                var pageDomain = this.Page.Parse(pageUrl.Url);
+                var pageDomain = this.ChildPage.Parse(pageUrl.Url);
                 linksParsed[pageUrl] = true;
 
-                page.Domain?.Children.Add(pageDomain);
+                this.Page.Domain?.Children.Add(pageDomain);
 
-                Type t = this.Page.Domain.GetType();
-                this.Page.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
+                Type t = this.ChildPage.Domain.GetType();
+                this.ChildPage.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
                 this.ChildPage.Connection.Reset();
             }
         }
 
-        public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page, IEnumerable<Link> links)
+        public void Parse(IEnumerable<Link> links)
         {
             if (this.Page == null)
             {
                 return;
             }
+            if (!this.Page.Connection.IsConnected)
+            {
+                throw new Exception("No connection to the page made yet.");
+            }
             if (fetched == false)
             {
-                Fetch(page);
+                Fetch();
             }
             if (Children == null || Children.Count == 0)
             {
@@ -157,13 +173,13 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                     continue;
                 }
 
-                var pageDomain = this.Page.Parse(pageToParse.Url);
+                var pageDomain = this.ChildPage.Parse(pageToParse.Url);
                 linksParsed[pageToParse] = true;
 
-                page.Domain?.Children.Add(pageDomain);
+                this.Page.Domain?.Children.Add(pageDomain);
 
-                Type t = this.Page.Domain.GetType();
-                this.Page.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
+                Type t = this.ChildPage.Domain.GetType();
+                this.ChildPage.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
                 this.ChildPage.Connection.Reset();
             }
         }
@@ -173,16 +189,18 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     {
         private IList<List<(TNode key, TNode value)>> childDomainNodes;
         protected Func<IList<List<(TNode key, TNode value)>>> GetChildsNodes { get; set; }
+        protected IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
 
         public string Name { get; set; }
         public IEnumerable<IElementParser<IElement<TValue>, TValue, TNode>> Parsers { get; set; }
 
-        public ChildsSamePageSection(string name)
+        public ChildsSamePageSection(string name, IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
         {
             this.Name = name;
+            this.Page = page;
         }
 
-        public void Parse(IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> page)
+        public void Parse()
         {
             childDomainNodes = GetChildsNodes?.Invoke();
 
@@ -194,7 +212,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             foreach (List<(TNode key, TNode value)> childDomainNode in childDomainNodes)
             {
                 TDomain childType = new TDomain();
-                page.Domain?.Children.Add(childType);
+                this.Page.Domain?.Children.Add(childType);
 
                 if (Parsers != null)
                 {
