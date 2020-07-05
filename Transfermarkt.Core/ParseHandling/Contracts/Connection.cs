@@ -23,5 +23,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
             return default;
         }
+
+        public abstract void Reset();
     }
 }

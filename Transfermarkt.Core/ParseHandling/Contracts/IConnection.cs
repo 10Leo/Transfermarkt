@@ -8,5 +8,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         TNode Connect(string url);
         TNode GetNode();
+        void Reset();
     }
 }

@@ -124,6 +124,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
                 Type t = this.Page.Domain.GetType();
                 this.Page.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
+                this.ChildPage.Connection.Reset();
             }
         }
 
@@ -163,6 +164,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
                 Type t = this.Page.Domain.GetType();
                 this.Page.Domain = (IDomain<TValue>)Activator.CreateInstance(t);
+                this.ChildPage.Connection.Reset();
             }
         }
     }

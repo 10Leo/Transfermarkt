@@ -43,6 +43,11 @@ namespace Transfermarkt.Core.ParseHandling
 
             return doc.DocumentNode;
         }
+
+        public override void Reset()
+        {
+            doc = null;
+        }
     }
 
     static class HtmlAgilityPackUtil
