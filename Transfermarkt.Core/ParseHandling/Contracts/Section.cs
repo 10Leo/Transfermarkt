@@ -67,17 +67,15 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
     public abstract class ChildsSection<TNode, TValue> : IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode> where TValue : IValue
     {
+        private bool fetched = false;
         private readonly IDictionary<Link, bool> linksParsed = new Dictionary<Link, bool>();
-        
-        public string Name { get; set; }
-        public IList<Link> Children { get; set; }
-
         protected IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> Page { get; set; }
 
         protected Func<IList<Link>> GetUrls { get; set; }
-        private bool fetched = false;
 
         public ChildsSection(string name)
+        public string Name { get; set; }
+        public IList<Link> Children { get; set; }
         {
             this.Name = name;
         }

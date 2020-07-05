@@ -15,6 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         event EventHandler<PageEventArgs> OnBeforeParse;
         event EventHandler<PageEventArgs> OnAfterParse;
 
+        void Connect(string url);
         IEnumerable<Link> Fetch(string url);
         TDomain Parse(string url, string sectionName = null, IEnumerable<Link> links = null);
     }

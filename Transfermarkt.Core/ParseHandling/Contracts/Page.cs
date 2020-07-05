@@ -24,8 +24,11 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         #region Contract
 
         public virtual IEnumerable<Link> Fetch(string url)
+        public void Connect(string url)
         {
             this.Connection.Connect(url);
+        }
+
 
             var urls = new List<Link>();
             if (Sections != null)
