@@ -38,6 +38,6 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
             }
         }
 
-        #endregion
+        #endregion Equality
     }
 }

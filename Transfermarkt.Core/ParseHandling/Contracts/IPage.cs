@@ -3,10 +3,12 @@ using System.Collections.Generic;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IPage<TDomain, TElement, TValue, TNode> where TDomain : IDomain<TValue> where TElement : IElement<TValue> where TValue : IValue
+    public interface IPage<TDomain, TValue, TNode> where TDomain : IDomain<TValue> where TValue : IValue
     {
-        ISection<TElement, TValue, TNode> this[string name] { get; }
-        IReadOnlyList<ISection<TElement, TValue, TNode>> Sections { get; set; }
+        ISection this[string name] { get; }
+        IReadOnlyList<ISection> Sections { get; set; }
+
+        string Url { get; }
 
         TDomain Domain { get; set; }
 
@@ -16,8 +18,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         event EventHandler<PageEventArgs> OnAfterParse;
 
         void Connect(string url);
-        IEnumerable<Link> Fetch(string url);
-        TDomain Parse(string url, string sectionName = null, IEnumerable<Link> links = null);
+
+        void Parse(IEnumerable<ISection> sections = null, bool parseChildren = false);
     }
 
     public class PageEventArgs : EventArgs

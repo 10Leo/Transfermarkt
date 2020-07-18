@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         {
             this.Domain = new Competition();
 
-            this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
+            this.Sections = new List<ISection>
             {
                 new CompetitionPageSection(this, logger),
                 new CompetitionClubsPageSection(this, logger, year)
@@ -36,7 +36,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     {
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Competition Details", page)
+        public CompetitionPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Competition Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -71,7 +71,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger, string year) : base("Competition - Clubs Section", page)
+        public CompetitionClubsPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger, string year) : base("Competition - Clubs Section", page, logger, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new ClubPage(new HAPConnection(), logger, year);
