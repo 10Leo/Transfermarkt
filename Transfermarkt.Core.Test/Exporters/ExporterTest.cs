@@ -17,10 +17,10 @@ namespace Transfermarkt.Core.Test.Exporters
         {
             IExporter exporter = new JsonExporter();
 
-            IDomain<IValue> club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
+            IDomain club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
 
-            IDomain<IValue> player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 1, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain<IValue> player02 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 1, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
+            IDomain player02 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
 
             club.Children.Add(player01);
             club.Children.Add(player02);
@@ -35,10 +35,10 @@ namespace Transfermarkt.Core.Test.Exporters
 
             IExporter exporter = new JsonExporter();
 
-            IDomain<IValue> club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
+            IDomain club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
 
-            IDomain<IValue> player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 1, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain<IValue> player02 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 1, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
+            IDomain player02 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
 
             club.Children.Add(player01);
             club.Children.Add(player02);
@@ -51,15 +51,15 @@ namespace Transfermarkt.Core.Test.Exporters
         {
             IExporter exporter = new JsonExporter();
 
-            IDomain<IValue> competition = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
+            IDomain competition = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
 
-            IDomain<IValue> club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt");
-            IDomain<IValue> club02 = MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt");
+            IDomain club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt");
+            IDomain club02 = MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt");
 
-            IDomain<IValue> player011 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain<IValue> player012 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain player011 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
+            IDomain player012 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
             
-            IDomain<IValue> player021 = MockPlayer("Deco", "Deco", new DateTime(1982, 1, 1), Nationality.BRA, 178, Foot.R, Position.AM, 10, 0, new DateTime(1999, 7, 1), new DateTime(2005, 7, 1), 6000000, "http://link", "http://link");
+            IDomain player021 = MockPlayer("Deco", "Deco", new DateTime(1982, 1, 1), Nationality.BRA, 178, Foot.R, Position.AM, 10, 0, new DateTime(1999, 7, 1), new DateTime(2005, 7, 1), 6000000, "http://link", "http://link");
 
             competition.Children.Add(club01);
             competition.Children.Add(club02);
@@ -77,27 +77,27 @@ namespace Transfermarkt.Core.Test.Exporters
         {
             IExporter exporter = new JsonExporter();
 
-            IDomain<IValue> continent = MockContinent(ContinentCode.EEE, "Europe");
+            IDomain continent = MockContinent(ContinentCode.EEE, "Europe");
 
-            IDomain<IValue> competition01 = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
-            IDomain<IValue> competition02 = MockCompetition(Nationality.ESP, "Liga BBVA", 2020, "http://BBVA.pt", "http://BBVA.pt");
+            IDomain competition01 = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
+            IDomain competition02 = MockCompetition(Nationality.ESP, "Liga BBVA", 2020, "http://BBVA.pt", "http://BBVA.pt");
 
-            IDomain<IValue> club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt");
-            IDomain<IValue> club02 = MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt");
+            IDomain club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt");
+            IDomain club02 = MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt");
 
-            IDomain<IValue> club11 = MockClub(Nationality.ESP, "Real Madrid", 2020, "http://Madrid.pt", "http://Madrid.pt");
-            IDomain<IValue> club12 = MockClub(Nationality.ESP, "Barcelona", 2020, "http://Barcelona.pt", "http://Barcelona.pt");
+            IDomain club11 = MockClub(Nationality.ESP, "Real Madrid", 2020, "http://Madrid.pt", "http://Madrid.pt");
+            IDomain club12 = MockClub(Nationality.ESP, "Barcelona", 2020, "http://Barcelona.pt", "http://Barcelona.pt");
 
 
-            IDomain<IValue> player011 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain<IValue> player012 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain player011 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
+            IDomain player012 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
 
-            IDomain<IValue> player021 = MockPlayer("Deco", "Deco", new DateTime(1982, 1, 1), Nationality.BRA, 178, Foot.R, Position.AM, 10, 0, new DateTime(1999, 7, 1), new DateTime(2005, 7, 1), 6000000, "http://link", "http://link");
+            IDomain player021 = MockPlayer("Deco", "Deco", new DateTime(1982, 1, 1), Nationality.BRA, 178, Foot.R, Position.AM, 10, 0, new DateTime(1999, 7, 1), new DateTime(2005, 7, 1), 6000000, "http://link", "http://link");
 
-            IDomain<IValue> player111 = MockPlayer("Sergio Ramos", "Ramos", new DateTime(1984, 1, 1), Nationality.ESP, 188, Foot.R, Position.CB, 4, 0, new DateTime(2006, 7, 1), null, 70000000, "http://link", "http://link");
+            IDomain player111 = MockPlayer("Sergio Ramos", "Ramos", new DateTime(1984, 1, 1), Nationality.ESP, 188, Foot.R, Position.CB, 4, 0, new DateTime(2006, 7, 1), null, 70000000, "http://link", "http://link");
 
-            IDomain<IValue> player121 = MockPlayer("Sergio Busquets", "Busquets", new DateTime(1986, 1, 1), Nationality.ESP, 184, Foot.R, Position.DM, 6, 0, new DateTime(2008, 7, 1), null, 70000000, "http://link", "http://link");
-            IDomain<IValue> player122 = MockPlayer("Lio Messi", "Messi", new DateTime(1986, 1, 1), Nationality.ARG, 171, Foot.L, Position.AM, 10, 1, new DateTime(2003, 7, 1), new DateTime(2022, 7, 1), 200000000, "http://link", "http://link");
+            IDomain player121 = MockPlayer("Sergio Busquets", "Busquets", new DateTime(1986, 1, 1), Nationality.ESP, 184, Foot.R, Position.DM, 6, 0, new DateTime(2008, 7, 1), null, 70000000, "http://link", "http://link");
+            IDomain player122 = MockPlayer("Lio Messi", "Messi", new DateTime(1986, 1, 1), Nationality.ARG, 171, Foot.L, Position.AM, 10, 1, new DateTime(2003, 7, 1), new DateTime(2022, 7, 1), 200000000, "http://link", "http://link");
 
             continent.Children.Add(competition01);
             continent.Children.Add(competition02);

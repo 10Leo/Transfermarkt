@@ -12,14 +12,19 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
-        public CompetitionPage(HAPConnection connection, ILogger logger, string year) : base(connection)
+        public CompetitionPage() : base(null)
+        {
+
+        }
+
+        public CompetitionPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Competition();
 
-            this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
+            this.Sections = new List<ISection>
             {
-                new CompetitionPageSection(connection, logger),
-                new CompetitionClubsPageSection(connection, logger, year)
+                new CompetitionPageSection(this, logger),
+                new CompetitionClubsPageSection(this, logger, year)
             };
 
             this.OnBeforeParse += (o, e) => {
@@ -32,9 +37,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionPageSection : ElementsSection<HtmlNode, IValue>
+    class CompetitionPageSection : ElementsSection<HtmlNode>
     {
-        public CompetitionPageSection(HAPConnection connection, ILogger logger)
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
+
+        public CompetitionPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -47,9 +54,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             this.GetElementsNodes = () =>
             {
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
-                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
-                    elements.Add((null, connection.GetNode()));
+                    elements.Add((null, Conn.GetNode()));
 
                 return elements;
             };
@@ -59,28 +66,28 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionClubsPageSection : ChildsSection<HtmlNode, IValue>
+    class CompetitionClubsPageSection : ChildsSection<HtmlNode, ClubPage>
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public string SimpleClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
         public string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
         public string IdentifiersGetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
         public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
-        public string Season { get; }
+        public int? Season { get; }
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(HAPConnection connection, ILogger logger, string year)
+        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Competition - Clubs Section", page, logger, page.Connection)
         {
             this.Season = year;
-            this.Name = "Clubs";
-            this.Page = new ClubPage(connection, logger, year);
+            this.ChildPage = new ClubPage(new HAPConnection(), logger, year);
 
             this.GetUrls = () =>
             {
                 IList<Link> urls = new List<Link>();
 
-                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
                 
-                HtmlNode table = connection.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
+                HtmlNode table = Conn.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
                 if (table == null)
                 {
                     return null;
@@ -154,7 +161,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             if (dic.ContainsKey("SEASON"))
             {
-                dic["SEASON"] = Season;
+                dic["SEASON"] = Season.ToString();
             }
 
             for (int i = 0; i < dic.Count; i++)

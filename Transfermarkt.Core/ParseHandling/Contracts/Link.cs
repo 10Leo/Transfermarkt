@@ -15,5 +15,29 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         {
             return $"{(Title ?? Url)}";
         }
+
+        #region Equality
+
+        public override bool Equals(object obj)
+        {
+            if (!(obj is Link item))
+            {
+                return false;
+            }
+
+            return this.Title.Equals(item.Title);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 13;
+                hash = (hash * 7) + Title.GetHashCode();
+                return hash;
+            }
+        }
+
+        #endregion Equality
     }
 }

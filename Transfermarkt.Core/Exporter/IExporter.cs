@@ -5,6 +5,6 @@ namespace Transfermarkt.Core.Exporter
 {
     public interface IExporter
     {
-        void Extract(IDomain<IValue> domain);
+        void Extract(IDomain domain);
     }
 }

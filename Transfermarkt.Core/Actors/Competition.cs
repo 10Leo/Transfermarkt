@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Competition : Domain<IValue>
+    public class Competition : Domain
     {
         public Competition()
         {

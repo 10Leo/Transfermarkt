@@ -9,47 +9,22 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     /// <summary>
     /// Section of a Page.
     /// </summary>
-    /// <typeparam name="TDomain"></typeparam>
-    /// <typeparam name="TNode"></typeparam>
-    /// <typeparam name="TElement"></typeparam>
-    public interface ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="page"></param>
-        void Parse(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
-    }
-
-    public interface IElementsSection<TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
-    {
-        /// <summary>
-        /// Parsers that parse the Elements of the Section.
-        /// </summary>
-        IEnumerable<IElementParser<TElement, TValue, TNode>> Parsers { get; set; }
-    }
-
-    public interface IChildsSection<TDomain, TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TDomain : IDomain<TValue> where TElement : IElement<TValue> where TValue : IValue
+    public interface ISection
     {
         /// <summary>
         /// A name that describes the Section.
         /// </summary>
         string Name { get; set; }
 
-        /// <summary>
-        /// A kind of Page that might be accessible from the Section.
-        /// </summary>
-        IPage<TDomain, TElement, TValue, TNode> Page { get; set; }
-        IList<Link> Children { get; set; }
+        Children ChildrenType { get; }
 
-        IList<Link> Fetch(IPage<IDomain<TValue>, TElement, TValue, TNode> page);
+        void Parse(bool parseChildren);
     }
 
-    public interface IChildsSamePageSection<TElement, TValue, TNode> : ISection<TElement, TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
+    public enum Children
     {
-        /// <summary>
-        /// Parsers that parse the Elements of the Section.
-        /// </summary>
-        IEnumerable<IElementParser<TElement,TValue, TNode>> Parsers { get; set; }
+        NO,
+        SAME_PAGE,
+        DIFF_PAGE
     }
 }
