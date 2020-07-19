@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
-        public CompetitionPage(HAPConnection connection, ILogger logger, string year) : base(connection)
+        public CompetitionPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Competition();
 
@@ -68,10 +68,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
         public string IdentifiersGetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersGetterPattern);
         public string IdentifiersSetterPattern { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.IdentifiersSetterPattern);
-        public string Season { get; }
+        public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger, string year) : base("Competition - Clubs Section", page, logger, page.Connection)
+        public CompetitionClubsPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger, int? year) : base("Competition - Clubs Section", page, logger, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new ClubPage(new HAPConnection(), logger, year);
@@ -156,7 +156,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             if (dic.ContainsKey("SEASON"))
             {
-                dic["SEASON"] = Season;
+                dic["SEASON"] = Season.ToString();
             }
 
             for (int i = 0; i < dic.Count; i++)

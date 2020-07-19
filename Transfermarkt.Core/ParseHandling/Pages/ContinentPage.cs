@@ -13,7 +13,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ContinentPage : Page<IValue, HtmlNode>
     {
-        public ContinentPage(HAPConnection connection, ILogger logger, string year) : base(connection)
+        public ContinentPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Continent();
 
@@ -63,10 +63,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, IValue>
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
-        public string Season { get; }
+        public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger, string year) : base("Continent - Competitions Section", page, logger, page.Connection)
+        public ContinentCompetitionsPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, logger, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new CompetitionPage(new HAPConnection(), logger, year);

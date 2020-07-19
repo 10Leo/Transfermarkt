@@ -164,7 +164,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
                 Type tChildPage = this.ChildPage.GetType();
                 this.ChildPage.Connection.Reset();
-                var childPage = (IPage<IDomain<TValue>, TValue, TNode>)Activator.CreateInstance(tChildPage, this.ChildPage.Connection, this.Logger, null);
+                var childPage = (IPage<IDomain<TValue>, TValue, TNode>)Activator.CreateInstance(tChildPage, this.ChildPage.Connection, this.Logger, 2009);
                 childPage.Connect(pageUrl.Url);
                 childPage.Parse(parseChildren: parseChildren);
 
@@ -213,7 +213,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 {
                     Type tChildPage = this.ChildPage.GetType();
                     this.ChildPage.Connection.Reset();
-                    var childPage = (IPage<IDomain<TValue>, TValue, TNode>)Activator.CreateInstance(tChildPage, this.ChildPage.Connection, this.Logger, null);
+                    var childPage = (IPage<IDomain<TValue>, TValue, TNode>)Activator.CreateInstance(tChildPage, this.ChildPage.Connection, this.Logger, 2009);
                     childPage.Connect(pageUrl.Url);
                     childPage.Parse(parseChildren: false);
 

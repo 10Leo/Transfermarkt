@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ClubPage : Page<IValue, HtmlNode>
     {
-        public ClubPage(HAPConnection connection, ILogger logger, string year) : base(connection)
+        public ClubPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Club();
 
