@@ -13,11 +13,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ContinentPage : Page<IValue, HtmlNode>
     {
-        public ContinentPage(HAPConnection connection, ILogger logger, string year) : base(connection)
+        public ContinentPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Continent();
 
-            this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
+            this.Sections = new List<ISection>
             {
                 new ContinentPageSection(this, logger),
                 new ContinentCompetitionsPageSection(this, logger, year)
@@ -34,11 +34,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentPageSection : ElementsSection<HtmlNode, IValue>
+    class ContinentPageSection : ElementsSection<HtmlNode>
     {
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Continent Details", page)
+        public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Continent Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Continent.NameParser{ Converter = new StringConverter() },
@@ -60,13 +60,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, IValue>
+    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
-        public string Season { get; }
+        public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger, string year) : base("Continent - Competitions Section", page)
+        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, logger, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new CompetitionPage(new HAPConnection(), logger, year);

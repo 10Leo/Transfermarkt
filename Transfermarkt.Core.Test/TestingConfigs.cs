@@ -69,7 +69,7 @@ namespace Transfermarkt.Core.Test
             [Nationality.ITA] = ("serie-a", "IT1", "")
         };
 
-        public static void DomainElementsCheck(IDomain<IValue> domain)
+        public static void DomainElementsCheck(IDomain domain)
         {
             for (int i = 0; i < domain.Elements.Count; i++)
             {

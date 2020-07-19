@@ -12,11 +12,16 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ClubPage : Page<IValue, HtmlNode>
     {
-        public ClubPage(HAPConnection connection, ILogger logger, string year) : base(connection)
+        public ClubPage() : base(null)
+        {
+
+        }
+
+        public ClubPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Club();
 
-            this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
+            this.Sections = new List<ISection>
             {
                 new ClubPageSection(this, logger),
                 new ClubPlayersPageSection(this, logger)
@@ -34,11 +39,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPageSection : ElementsSection<HtmlNode, IValue>
+    class ClubPageSection : ElementsSection<HtmlNode>
     {
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ClubPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Club Details", page)
+        public ClubPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Club Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
@@ -63,11 +68,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ClubPlayersPageSection : ChildsSamePageSection<Player, IValue, HtmlNode>
+    class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode>
     {
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
         
-        public ClubPlayersPageSection(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Club - Players Section", page)
+        public ClubPlayersPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Club - Players Section", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },

@@ -37,7 +37,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestClubParsing()
         {
             string url = @"file://C:\Transfermarkt\Performance\club.html";
-            IDomain<IValue> domain = null;
+            IDomain domain = null;
 
             List<long> ellapsedMillis = new List<long>();
             for (int i = 0; i < 20; i++)
@@ -45,7 +45,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
                 ClubPage page = new ClubPage(new HAPConnection(), logger, null);
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                page.Parse(url);
+                page.Connect(url);
+                page.Parse();
                 watch.Stop();
                 ellapsedMillis.Add(watch.ElapsedMilliseconds);
 
