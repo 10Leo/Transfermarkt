@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Page.Parser.Contracts;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.Exporter;
+using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Exporter.JSONExporter

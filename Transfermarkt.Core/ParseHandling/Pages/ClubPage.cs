@@ -7,6 +7,7 @@ using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
 using Transfermarkt.Logging;
+using Page.Parser.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {

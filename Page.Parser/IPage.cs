@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Transfermarkt.Core.ParseHandling.Contracts
+namespace Page.Parser.Contracts
 {
     public interface IPage<TDomain, TNode> where TDomain : IDomain
     {

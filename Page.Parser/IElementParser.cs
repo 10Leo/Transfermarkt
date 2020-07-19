@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Transfermarkt.Core.ParseHandling.Contracts
+namespace Page.Parser.Contracts
 {
     public interface IElementParser<out TElement, out TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {

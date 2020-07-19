@@ -1,4 +1,4 @@
-﻿namespace Transfermarkt.Core.ParseHandling.Contracts
+﻿namespace Page.Parser.Contracts
 {
     public interface IElement<out TValue> where TValue : IValue
     {

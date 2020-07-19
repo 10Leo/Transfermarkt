@@ -1,7 +1,8 @@
 ﻿using System;
-namespace Transfermarkt.Core.ParseHandling.Contracts
+
+namespace Page.Parser.Contracts
 {
-    abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TValue, TNode> where TElement : IElement<TValue>, new() where TValue : IValue
+    public abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TValue, TNode> where TElement : IElement<TValue>, new() where TValue : IValue
     {
         private bool parsedAlready = false;
 

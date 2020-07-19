@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{51E667D6-B895-494F-95DA-EB080DD8EEBB}</ProjectGuid>
+    <ProjectGuid>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Transfermarkt.Exporter</RootNamespace>
-    <AssemblyName>Transfermarkt.Exporter</AssemblyName>
+    <RootNamespace>Page.Parser</RootNamespace>
+    <AssemblyName>Page.Parser</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -31,11 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -45,21 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="JSONExporter\JsonExporter.cs" />
+    <Compile Include="Connection.cs" />
+    <Compile Include="Domain.cs" />
+    <Compile Include="Element.cs" />
+    <Compile Include="ElementParser.cs" />
+    <Compile Include="IConnection.cs" />
+    <Compile Include="IConverter.cs" />
+    <Compile Include="IDomain.cs" />
+    <Compile Include="IElement.cs" />
+    <Compile Include="IElementParser.cs" />
+    <Compile Include="IPage.cs" />
+    <Compile Include="ISection.cs" />
+    <Compile Include="IValue.cs" />
+    <Compile Include="Link.cs" />
+    <Compile Include="Page.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Page.Parser\Page.Parser.csproj">
-      <Project>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</Project>
-      <Name>Page.Parser</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Transfermarkt.Core\Transfermarkt.Core.csproj">
-      <Project>{624D334A-662C-4B28-BB3F-C73E61850C93}</Project>
-      <Name>Transfermarkt.Core</Name>
-    </ProjectReference>
+    <Compile Include="Section.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

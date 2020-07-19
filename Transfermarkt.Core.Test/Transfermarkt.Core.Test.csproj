@@ -76,6 +76,10 @@
     <Folder Include="Elements\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Page.Parser\Page.Parser.csproj">
+      <Project>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</Project>
+      <Name>Page.Parser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Transfermarkt.Core\Transfermarkt.Core.csproj">
       <Project>{624d334a-662c-4b28-bb3f-c73e61850c93}</Project>
       <Name>Transfermarkt.Core</Name>

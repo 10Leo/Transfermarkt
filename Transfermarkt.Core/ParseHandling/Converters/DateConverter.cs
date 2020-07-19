@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Page.Parser.Contracts;
+using System;
 using System.Globalization;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Logging;

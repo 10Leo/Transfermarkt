@@ -49,16 +49,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
-    <Compile Include="ParseHandling\Contracts\Connection.cs" />
-    <Compile Include="ParseHandling\Contracts\Element.cs" />
-    <Compile Include="ParseHandling\Contracts\IConnection.cs" />
-    <Compile Include="ParseHandling\Contracts\ISection.cs" />
-    <Compile Include="ParseHandling\Contracts\Domain.cs" />
-    <Compile Include="ParseHandling\Contracts\ElementParser.cs" />
-    <Compile Include="ParseHandling\Contracts\IValue.cs" />
-    <Compile Include="ParseHandling\Contracts\Link.cs" />
-    <Compile Include="ParseHandling\Contracts\Page.cs" />
-    <Compile Include="ParseHandling\Contracts\Section.cs" />
     <Compile Include="ParseHandling\Converters\ContinentCodeConverter.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
     <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
@@ -66,7 +56,6 @@
     <Compile Include="Actors\Competition.cs" />
     <Compile Include="Actors\Continent.cs" />
     <Compile Include="Actors\ContinentCode.cs" />
-    <Compile Include="ParseHandling\Contracts\IElement.cs" />
     <Compile Include="Actors\Manager.cs" />
     <Compile Include="Actors\Nationality.cs" />
     <Compile Include="Actors\Person.cs" />
@@ -74,9 +63,6 @@
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
     <Compile Include="ConfigManager.cs" />
-    <Compile Include="ParseHandling\Contracts\IDomain.cs" />
-    <Compile Include="ParseHandling\Contracts\IElementParser.cs" />
-    <Compile Include="ParseHandling\Contracts\IPage.cs" />
     <Compile Include="ParseHandling\Converters\IFootConverter.cs" />
     <Compile Include="ParseHandling\Converters\IPositionConverter.cs" />
     <Compile Include="ParseHandling\Converters\DateConverter.cs" />
@@ -86,7 +72,6 @@
     <Compile Include="ParseHandling\Converters\StringConverter.cs" />
     <Compile Include="ParseHandling\Converters\DecimalConverter.cs" />
     <Compile Include="ParseHandling\Converters\INationalityConverter.cs" />
-    <Compile Include="ParseHandling\Contracts\IConverter.cs" />
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
     <Compile Include="Exporter\IExporter.cs" />
     <Compile Include="ParseHandling\Elements\Player\PlayerElements.cs" />
@@ -120,12 +105,17 @@
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ProfileUrlParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ShirtNumberParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ShortNameParser.cs" />
+    <Compile Include="ParseHandling\Value.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Page.Parser\Page.Parser.csproj">
+      <Project>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</Project>
+      <Name>Page.Parser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Transfermarkt.Logging\Transfermarkt.Logging.csproj">
       <Project>{3166b876-1387-4469-9b20-7be12bcd105e}</Project>
       <Name>Transfermarkt.Logging</Name>
