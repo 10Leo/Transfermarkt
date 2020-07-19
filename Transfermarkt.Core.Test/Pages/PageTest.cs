@@ -29,16 +29,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         [TestMethod, TestCategory("Page")]
         public void TestPartialParsing()
         {
-            //string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
-            //ClubPage page = new ClubPage(new HAPConnection(), logger, null);
-            //var section = page["Club - Players Section"];
-            //page.Parse(url, "Club - Players Section", new Link[] { new Link { Title = "" } });
-            ////page.Parse(url, new Link[] { new Link { ID = "1.1.1", Title = "" } });
-
-            //Assert.IsNotNull(section, "The returned Section is null.");
-            //Assert.IsTrue(section.Name == "Club - Players Section", "The returned Section was different than the one expected.");
-
-
+            //page.Parse(url, new Link[] { new Link { ID = "1.1.1", Title = "" } });
             string[] urls = new string[]
             {
                 "https://www.transfermarkt.pt/wettbewerbe/europa",
@@ -48,9 +39,9 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             };
             var append = "/wettbewerbe?plus=1";
 
-            ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, null);
+            ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, 2009);
 
-            //TODO: consider passing url in constructor, making it this way always available to the functions, as it will be required by the constructor.
+            //TODO: consider passing url in constructor making it a required param and as a result, always available to the functions.
             continentPage.Connect(urls[0]);
 
             var sectionsToParse = new List<ISection>
@@ -68,6 +59,9 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
 
             var childSection = (ChildsSection<HtmlAgilityPack.HtmlNode, IValue>)continentPage["Continent - Competitions Section"];
+            Assert.IsNotNull(childSection, "The returned Section is null.");
+            Assert.IsTrue(childSection.Name == "Continent - Competitions Section", "The returned Section was different than the one expected.");
+
             childSection.Parse(false);
 
 
@@ -79,46 +73,13 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             childSection.Parse(childrenToParse);
 
             var compPagePT = childSection["Portugal-Liga NOS"];
+            Assert.IsNotNull(compPagePT, "The returned Page is null.");
+
             compPagePT.Parse(parseChildren: true);
 
-            //var continentSamePageSection = (IElementsSection<IElement<IValue>, IValue, HtmlAgilityPack.HtmlNode>)continentPage["Continent Details"];
-            //continentSamePageSection.Parse();
 
-            //IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlAgilityPack.HtmlNode> childSection = (IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlAgilityPack.HtmlNode>)continentPage["Continent - Competitions Section"];
-            //var sectionUrls = childSection.Fetch();
-
-            //childSection.Parse(sectionUrls.Where(u => u.Title == "Portugal-Liga NOS"));
-
-
-            //IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlAgilityPack.HtmlNode> competition = childSection["SL Benfica"];
-
-            //childSection["SL Benfica"].Parse();
-
-
-
-
-
-
-
-            //string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
-            //url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2009";
-            //CompetitionPage competitionPage = new CompetitionPage(new HAPConnection(), logger, "2013");
-            //competitionPage.Connect(url);
-
-            //IEnumerable<string> names = competitionPage.Sections.Select(s => s.Name);
-            //var ss = competitionPage.Sections.Select(s => new { s.Name, T = s.GetType() });
-
-            //var samePageSection = (IElementsSection<IElement<IValue>, IValue, HtmlAgilityPack.HtmlNode>)competitionPage["Competition Details"];
-            //samePageSection.Parse();
-
-            //childSection = (IChildsSection<IDomain<IValue>, IElement<IValue>, IValue, HtmlAgilityPack.HtmlNode>)competitionPage["Competition - Clubs Section"];
-            //sectionUrls = childSection.Fetch();
-
-            //childSection.Parse(sectionUrls.Where(s => s.Title == "SL Benfica" || s.Title == "FC Porto"));
-            //childSection.Parse(sectionUrls.Where(s => s.Title == "SL Benfica" || s.Title == "Sporting CP"));
-
-            //var domain = competitionPage.Domain;
-            //Assert.IsNotNull(domain, "The returned Domain is null.");
+            var domain = continentPage.Domain;
+            Assert.IsNotNull(domain, "The returned Domain is null.");
             //Assert.IsTrue(domain.Children.Count == (4 - 1), "There should be only 3 records as one of the 4 supplied links was a repetition and no repetition should be parsed.");
         }
 
@@ -128,7 +89,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
 
             ClubPage page = new ClubPage(new HAPConnection(), logger, null);
-            //page.Parse(url);
+            page.Connect(url);
+            page.Parse();
 
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -146,7 +108,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
             url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2009";
             CompetitionPage page = new CompetitionPage(new HAPConnection(), logger, null);
-            //page.Parse(url);
+            page.Connect(url);
+            page.Parse();
 
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -183,7 +146,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             foreach (var url in urls)
             {
                 page = new ContinentPage(new HAPConnection(), logger, null);
-                //page.Parse(url);
+                page.Connect(url);
+                page.Parse();
             }
         }
     }

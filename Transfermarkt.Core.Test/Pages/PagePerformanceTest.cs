@@ -45,7 +45,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
                 ClubPage page = new ClubPage(new HAPConnection(), logger, null);
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                //page.Parse(url);
+                page.Connect(url);
+                page.Parse();
                 watch.Stop();
                 ellapsedMillis.Add(watch.ElapsedMilliseconds);
 
