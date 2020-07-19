@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Page<TValue, TNode> : IPage<IDomain<TValue>, TValue, TNode> where TValue : IValue
+    public abstract class Page<TValue, TNode> : IPage<IDomain, TNode> where TValue : IValue
     {
         public ISection this[string name] => Sections?.FirstOrDefault(s => s.Name == name);
 
@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         public IReadOnlyList<ISection> Sections { get; set; }
 
-        public IDomain<TValue> Domain { get; set; }
+        public IDomain Domain { get; set; }
 
         public IConnection<TNode> Connection { get; set; }
 

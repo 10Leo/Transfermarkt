@@ -34,11 +34,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentPageSection : ElementsSection<HtmlNode, IValue>
+    class ContinentPageSection : ElementsSection<HtmlNode>
     {
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Continent Details", page)
+        public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Continent Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Continent.NameParser{ Converter = new StringConverter() },
@@ -60,13 +60,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, IValue>
+    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, logger, page.Connection)
+        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, logger, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new CompetitionPage(new HAPConnection(), logger, year);

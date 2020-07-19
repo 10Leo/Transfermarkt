@@ -58,7 +58,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             //continentPage.Parse(sectionsToParse, false);
 
 
-            var childSection = (ChildsSection<HtmlAgilityPack.HtmlNode, IValue>)continentPage["Continent - Competitions Section"];
+            var childSection = (ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>)continentPage["Continent - Competitions Section"];
             Assert.IsNotNull(childSection, "The returned Section is null.");
             Assert.IsTrue(childSection.Name == "Continent - Competitions Section", "The returned Section was different than the one expected.");
 

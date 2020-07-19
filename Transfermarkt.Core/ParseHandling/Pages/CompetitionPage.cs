@@ -12,6 +12,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
+        public CompetitionPage() : base(null)
+        {
+
+        }
+
         public CompetitionPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Competition();
@@ -32,11 +37,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionPageSection : ElementsSection<HtmlNode, IValue>
+    class CompetitionPageSection : ElementsSection<HtmlNode>
     {
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger) : base("Competition Details", page)
+        public CompetitionPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
@@ -61,7 +66,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class CompetitionClubsPageSection : ChildsSection<HtmlNode, IValue>
+    class CompetitionClubsPageSection : ChildsSection<HtmlNode, ClubPage>
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public string SimpleClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
@@ -71,7 +76,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(IPage<IDomain<IValue>, IValue, HtmlNode> page, ILogger logger, int? year) : base("Competition - Clubs Section", page, logger, page.Connection)
+        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Competition - Clubs Section", page, logger, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new ClubPage(new HAPConnection(), logger, year);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public interface IPage<TDomain, TValue, TNode> where TDomain : IDomain<TValue> where TValue : IValue
+    public interface IPage<TDomain, TNode> where TDomain : IDomain
     {
         ISection this[string name] { get; }
         IReadOnlyList<ISection> Sections { get; set; }

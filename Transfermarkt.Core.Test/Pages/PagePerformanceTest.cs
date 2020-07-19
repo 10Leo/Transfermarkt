@@ -37,7 +37,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         public void TestClubParsing()
         {
             string url = @"file://C:\Transfermarkt\Performance\club.html";
-            IDomain<IValue> domain = null;
+            IDomain domain = null;
 
             List<long> ellapsedMillis = new List<long>();
             for (int i = 0; i < 20; i++)

@@ -3,7 +3,7 @@ using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Player : Domain<IValue>
+    public class Player : Domain
     {
         public Player()
         {

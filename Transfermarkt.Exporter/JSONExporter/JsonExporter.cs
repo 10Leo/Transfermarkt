@@ -33,7 +33,7 @@ namespace Transfermarkt.Exporter.JSONExporter
             settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         }
 
-        public void Extract(IDomain<IValue> domain)
+        public void Extract(IDomain domain)
         {
             var o = Extract(new JObject(), domain);
             string output = o?.ToString();
@@ -76,7 +76,7 @@ namespace Transfermarkt.Exporter.JSONExporter
             WriteToFile(pathString, output);
         }
 
-        private JObject Extract(JObject baseObj, IDomain<IValue> domain)
+        private JObject Extract(JObject baseObj, IDomain domain)
         {
             foreach (IElement<IValue> element in domain.Elements)
             {
@@ -153,7 +153,7 @@ namespace Transfermarkt.Exporter.JSONExporter
             return value;
         }
 
-        private string GenerateFileName(string template, IDomain<IValue> domain)
+        private string GenerateFileName(string template, IDomain domain)
         {
             string fileName = template;
 
