@@ -66,10 +66,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, logger, page.Connection)
+        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, page.Connection)
         {
             this.Season = year;
-            this.ChildPage = new CompetitionPage(new HAPConnection(), logger, year);
+            this.ChildPage = new CompetitionPage();
 
             this.GetUrls = () =>
             {

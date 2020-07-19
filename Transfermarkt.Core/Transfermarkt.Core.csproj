@@ -123,14 +123,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Transfermarkt.Logging\Transfermarkt.Logging.csproj">
-      <Project>{3166B876-1387-4469-9B20-7BE12BCD105E}</Project>
+      <Project>{3166b876-1387-4469-9b20-7be12bcd105e}</Project>
       <Name>Transfermarkt.Logging</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

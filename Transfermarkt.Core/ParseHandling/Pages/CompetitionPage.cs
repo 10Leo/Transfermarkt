@@ -12,27 +12,50 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
-        public CompetitionPage() : base(null)
-        {
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(@"c:\Transfermarkt\Logs", 2);
 
+        public int? Year { get; set; }
+
+        public CompetitionPage() : base(new HAPConnection())
+        {
+            Init();
         }
 
-        public CompetitionPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
+        //public CompetitionPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
+        //{
+        //    this.Domain = new Competition();
+
+        //    this.Sections = new List<ISection>
+        //    {
+        //        new CompetitionPageSection(this, logger),
+        //        new CompetitionClubsPageSection(this, logger, year)
+        //    };
+
+        //    this.OnBeforeParse += (o, e) => {
+        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
+        //    };
+
+        //    this.OnAfterParse += (o, e) => {
+        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
+        //    };
+        //}
+
+        private void Init()
         {
             this.Domain = new Competition();
 
             this.Sections = new List<ISection>
             {
-                new CompetitionPageSection(this, logger),
-                new CompetitionClubsPageSection(this, logger, year)
+                new CompetitionPageSection(this, Logger),
+                new CompetitionClubsPageSection(this, Logger)
             };
 
             this.OnBeforeParse += (o, e) => {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
             this.OnAfterParse += (o, e) => {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
     }
@@ -76,10 +99,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Competition - Clubs Section", page, logger, page.Connection)
+        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition - Clubs Section", page, page.Connection)
         {
-            this.Season = year;
-            this.ChildPage = new ClubPage(new HAPConnection(), logger, year);
+            this.Season = null;
+            this.ChildPage = new ClubPage();
 
             this.GetUrls = () =>
             {
@@ -161,7 +184,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             if (dic.ContainsKey("SEASON"))
             {
-                dic["SEASON"] = Season.ToString();
+                //dic["SEASON"] = Season.ToString();
             }
 
             for (int i = 0; i < dic.Count; i++)

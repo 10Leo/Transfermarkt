@@ -19,7 +19,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         [TestMethod, TestCategory("Page")]
         public void TestPageMethods()
         {
-            ClubPage page = new ClubPage(new HAPConnection(), logger, null);
+            ClubPage page = new ClubPage();
             var section = page["Club - Players Section"];
 
             Assert.IsNotNull(section, "The returned Section is null.");
@@ -88,7 +88,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         {
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
 
-            ClubPage page = new ClubPage(new HAPConnection(), logger, null);
+            ClubPage page = new ClubPage();
             page.Connect(url);
             page.Parse();
 
@@ -107,7 +107,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
             url = "https://www.transfermarkt.pt/liga-nos/startseite/wettbewerb/PO1/plus/?saison_id=2009";
-            CompetitionPage page = new CompetitionPage(new HAPConnection(), logger, null);
+            CompetitionPage page = new CompetitionPage();
             page.Connect(url);
             page.Parse();
 

@@ -12,29 +12,52 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ClubPage : Page<IValue, HtmlNode>
     {
-        public ClubPage() : base(null)
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(@"c:\Transfermarkt\Logs", 2);
+        
+        public ClubPage() : base(new HAPConnection())
         {
-
+            Init();
         }
 
-        public ClubPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
+        //public ClubPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
+        //{
+        //    this.Domain = new Club();
+
+        //    this.Sections = new List<ISection>
+        //    {
+        //        new ClubPageSection(this, logger),
+        //        new ClubPlayersPageSection(this, logger)
+        //    };
+
+        //    this.OnBeforeParse += (o, e) =>
+        //    {
+        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
+        //    };
+
+        //    this.OnAfterParse += (o, e) =>
+        //    {
+        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
+        //    };
+        //}
+
+        private void Init()
         {
             this.Domain = new Club();
 
             this.Sections = new List<ISection>
             {
-                new ClubPageSection(this, logger),
-                new ClubPlayersPageSection(this, logger)
+                new ClubPageSection(this, Logger),
+                new ClubPlayersPageSection(this, Logger)
             };
 
             this.OnBeforeParse += (o, e) =>
             {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
             this.OnAfterParse += (o, e) =>
             {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
     }

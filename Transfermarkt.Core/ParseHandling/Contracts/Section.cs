@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
@@ -97,15 +96,13 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
         public IList<IPage<IDomain, TNode>> ChildrenPages { get; set; }
         public Children ChildrenType { get; private set; }
 
-        public ILogger Logger { get; set; }
         public IConnection<TNode> Connection { get; set; }
 
-        public ChildsSection(string name, IPage<IDomain, TNode> page, ILogger logger, IConnection<TNode> connection)
+        public ChildsSection(string name, IPage<IDomain, TNode> page, IConnection<TNode> connection)
         {
             this.Name = name;
             this.Page = page;
             this.ChildrenType = Contracts.Children.DIFF_PAGE;
-            this.Logger = logger;
             this.Connection = connection;
         }
 
@@ -166,7 +163,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
                 Type tChildPage = this.ChildPage.GetType();
                 this.ChildPage.Connection.Reset();
-                var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage, this.ChildPage.Connection, this.Logger, 2009);
+                var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage);
                 childPage.Connect(pageUrl.Url);
                 childPage.Parse(parseChildren: parseChildren);
 
@@ -215,7 +212,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
                 {
                     Type tChildPage = this.ChildPage.GetType();
                     this.ChildPage.Connection.Reset();
-                    var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage, this.ChildPage.Connection, this.Logger, 2009);
+                    var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage);
                     childPage.Connect(pageUrl.Url);
                     childPage.Parse(parseChildren: false);
 
