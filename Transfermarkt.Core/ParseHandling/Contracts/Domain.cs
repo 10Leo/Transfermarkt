@@ -3,19 +3,19 @@ using System.Linq;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Domain<TValue> : IDomain<TValue> where TValue : IValue
+    public abstract class Domain : IDomain
     {
-        public IList<IElement<TValue>> Elements { get; set; }
+        public IList<IElement<IValue>> Elements { get; set; }
 
-        public IList<IDomain<TValue>> Children { get; set; }
+        public IList<IDomain> Children { get; set; }
 
         public Domain()
         {
-            Elements = new List<IElement<TValue>>();
-            Children = new List<IDomain<TValue>>();
+            Elements = new List<IElement<IValue>>();
+            Children = new List<IDomain>();
         }
 
-        public IElement<TValue> SetElement(IElement<TValue> element)
+        public IElement<IValue> SetElement(IElement<IValue> element)
         {
             if (element == null)
             {

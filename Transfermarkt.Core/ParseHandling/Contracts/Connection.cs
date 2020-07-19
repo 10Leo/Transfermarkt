@@ -10,6 +10,8 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
     {
         public Func<TNode> GetNodeFunc { get; set; }
 
+        public abstract bool IsConnected { get; }
+
         public abstract TNode Connect(string url);
 
         public TNode GetNode()
@@ -21,5 +23,7 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
             return default;
         }
+
+        public abstract void Reset();
     }
 }

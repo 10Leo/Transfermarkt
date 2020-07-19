@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Core.Test", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Logging.Test", "Transfermarkt.Logging.Test\Transfermarkt.Logging.Test.csproj", "{9CC5CA04-871A-4DB6-A9A7-4D330160F1A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transfermarkt.Console.Test", "Transfermarkt.Console.Test\Transfermarkt.Console.Test.csproj", "{0B966091-CB8D-45C8-B276-CFA727B50C61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{9CC5CA04-871A-4DB6-A9A7-4D330160F1A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CC5CA04-871A-4DB6-A9A7-4D330160F1A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CC5CA04-871A-4DB6-A9A7-4D330160F1A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B966091-CB8D-45C8-B276-CFA727B50C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B966091-CB8D-45C8-B276-CFA727B50C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B966091-CB8D-45C8-B276-CFA727B50C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B966091-CB8D-45C8-B276-CFA727B50C61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

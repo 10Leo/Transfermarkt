@@ -13,6 +13,8 @@ namespace Transfermarkt.Core.ParseHandling
     {
         public HtmlDocument doc = null;
 
+        public override bool IsConnected => doc != null;
+
         public override HtmlNode Connect(string url)
         {
             try
@@ -40,6 +42,11 @@ namespace Transfermarkt.Core.ParseHandling
             }
 
             return doc.DocumentNode;
+        }
+
+        public override void Reset()
+        {
+            doc = null;
         }
     }
 

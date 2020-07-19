@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Transfermarkt.Core.ParseHandling.Contracts
 {
-    public abstract class Page<TValue, TNode> : IPage<IDomain<TValue>, IElement<TValue>, TValue, TNode> where TValue : IValue
+    public abstract class Page<TValue, TNode> : IPage<IDomain, TNode> where TValue : IValue
     {
-        public IDomain<TValue> Domain { get; set; }
+        public ISection this[string name] => Sections?.FirstOrDefault(s => s.Name == name);
+
+        public string Url { get; private set; }
+
+        public IReadOnlyList<ISection> Sections { get; set; }
+
+        public IDomain Domain { get; set; }
 
         public IConnection<TNode> Connection { get; set; }
 
-        public IReadOnlyList<ISection<IElement<TValue>, TValue, TNode>> Sections { get; set; }
-        
         public event EventHandler<PageEventArgs> OnAfterParse;
         public event EventHandler<PageEventArgs> OnBeforeParse;
 
@@ -21,29 +26,44 @@ namespace Transfermarkt.Core.ParseHandling.Contracts
 
         #region Contract
 
-        public virtual IDomain<TValue> Parse(string url)
+        public void Connect(string url)
         {
-            this.Connection.Connect(url);
-
-            OnBeforeParse?.Invoke(this, new PageEventArgs(url));
-
-            if (Sections != null)
+            this.Url = url;
+            if (!this.Connection.IsConnected)
             {
-                foreach (var section in Sections)
-                {
-                    section.Parse(this);
-                }
+                this.Connection.Connect(url);
             }
-
-            OnAfterParse?.Invoke(this, new PageEventArgs(url));
-
-            return this.Domain;
         }
 
-        public virtual void Save()
+        public virtual void Parse(IEnumerable<ISection> sections = null, bool parseChildren = false)
         {
+            var sectionsToParse = sections == null ? Sections : sections?.Where(s => Sections.Contains(s));
+            ParseWith(sectionsToParse ?? Sections, parseChildren);
         }
 
         #endregion Contract
+
+        #region Private
+
+        private void ParseWith(IEnumerable<ISection> sectionsToParse, bool parseChildren = false)
+        {
+            OnBeforeParse?.Invoke(this, new PageEventArgs(this.Url));
+
+            this.Connect(this.Url);
+
+            if (sectionsToParse == null)
+            {
+                return;
+            }
+
+            foreach (ISection section in sectionsToParse)
+            {
+                section.Parse(parseChildren);
+            }
+
+            OnAfterParse?.Invoke(this, new PageEventArgs(this.Url));
+        }
+
+        #endregion Private
     }
 }

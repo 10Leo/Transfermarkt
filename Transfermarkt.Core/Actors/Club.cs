@@ -4,7 +4,7 @@ using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.Actors
 {
-    public class Club : Domain<IValue>
+    public class Club : Domain
     {
         public Club()
         {

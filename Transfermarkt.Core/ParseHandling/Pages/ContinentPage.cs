@@ -13,16 +13,17 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ContinentPage : Page<IValue, HtmlNode>
     {
-        public ContinentPage(HAPConnection connection, ILogger logger) : base(connection)
+        public ContinentPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Continent();
 
-            this.Sections = new List<ISection<IElement<IValue>, IValue, HtmlNode>>
+            this.Sections = new List<ISection>
             {
-                new ContinentPageSection(connection, logger),
-                new ContinentCompetitionsPageSection(connection, logger)
+                new ContinentPageSection(this, logger),
+                new ContinentCompetitionsPageSection(this, logger, year)
             };
 
+            // TODO create global string with placeholders for event texts: $"{EVT}: {TEXT}"
             this.OnBeforeParse += (o, e) => {
                 logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
@@ -33,9 +34,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentPageSection : ElementsSection<HtmlNode, IValue>
+    class ContinentPageSection : ElementsSection<HtmlNode>
     {
-        public ContinentPageSection(HAPConnection connection, ILogger logger)
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
+
+        public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Continent Details", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Continent.NameParser{ Converter = new StringConverter() },
@@ -45,9 +48,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             this.GetElementsNodes = () =>
             {
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
-                connection.GetNodeFunc = () => { return connection.doc.DocumentNode; };
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
-                elements.Add((null, connection.GetNode()));
+                elements.Add((null, Conn.GetNode()));
 
                 return elements;
             };
@@ -57,19 +60,24 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, IValue>
+    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
     {
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        public int? Season { get; }
+        public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(HAPConnection connection, ILogger logger)
+        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, logger, page.Connection)
         {
-            this.Page = new CompetitionPage(connection, logger);
+            this.Season = year;
+            this.ChildPage = new CompetitionPage(new HAPConnection(), logger, year);
 
             this.GetUrls = () =>
             {
-                IList<string> urls = new List<string>();
+                IList<Link> urls = new List<Link>();
 
-                HtmlNode table = connection.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
+                Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
+
+                HtmlNode table = Conn.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
                 if (table == null)
                 {
                     return null;
@@ -83,10 +91,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     try
                     {
-                        string competitionUrl = GetCompetitionUrl(cols[0]);
-                        string finalCompetitionUrl = TransformUrl(competitionUrl, BaseURL);
+                        var competitionUrl = GetCompetitionLink(cols);
+                        competitionUrl.Url = TransformUrl(competitionUrl.Url, BaseURL);
 
-                        urls.Add(finalCompetitionUrl);
+                        urls.Add(competitionUrl);
                     }
                     catch (Exception ex)
                     {
@@ -98,17 +106,20 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
         }
 
-        private string GetCompetitionUrl(HtmlNode node)
+        private Link GetCompetitionLink(HtmlNodeCollection cols)
         {
-            return node
+            var country = cols[1]
+                .SelectNodes("img")
+                .FirstOrDefault(n => n.Attributes["class"]?.Value == "flaggenrahmen")?.Attributes["Title"].Value;
+            var a = cols[0]
                 .SelectNodes("table//td[2]/a")
-                .FirstOrDefault()
-                .Attributes["href"].Value;
+                .FirstOrDefault();
+            return new Link { Title = $"{country}-{a.InnerText}", Url = a.Attributes["href"].Value };
         }
 
         private string TransformUrl(string url, string baseURL)
         {
-            return string.Format("{0}{1}", baseURL, url);
+            return string.Format("{0}{1}{2}{3}", baseURL, url, "/plus/?saison_id=", Season);
         }
 
     }
