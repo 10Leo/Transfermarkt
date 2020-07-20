@@ -77,29 +77,26 @@ namespace Page.Parser.Contracts
 
         public void Parse(bool parseChildren)
         {
-            if (this.Page == null)
-            {
-                return;
-            }
-            if (!this.Page.Connection.IsConnected)
-            {
-                throw new Exception("No connection to the page made yet.");
-            }
-            if (fetched == false)
-            {
-                Fetch();
-            }
-            if (Children == null || Children.Count == 0)
-            {
-                return;
-            }
+            Validate(Children);
+            P(Children, parseChildren, parseChildren);
+        }
 
+        public void Parse(IEnumerable<Link> links)
+        {
+            var linksToParse = links?.Where(s => Children.Contains(s));
+            
+            Validate(linksToParse);
+            P(linksToParse, true, false);
+        }
+
+        private void P(IEnumerable<Link> linksToParse, bool parseChildren, bool child)
+        {
             if (!parseChildren)// || this.ChildrenType == Contracts.Children.DIFF_PAGE)
             {
                 return;
             }
 
-            foreach (var pageUrl in Children)
+            foreach (Link pageUrl in linksToParse)
             {
                 if (linksParsed.ContainsKey(pageUrl) && linksParsed[pageUrl])
                 {
@@ -110,7 +107,7 @@ namespace Page.Parser.Contracts
                 TChildPage childPage = new TChildPage();
 
                 childPage.Connect(pageUrl.Url);
-                childPage.Parse(parseChildren: parseChildren);
+                childPage.Parse(parseChildren: child);
 
                 this.ChildrenPages.Add(childPage);
                 this.linksParsed[pageUrl] = true;
@@ -120,7 +117,7 @@ namespace Page.Parser.Contracts
             }
         }
 
-        public void Parse(IEnumerable<Link> links)
+        private void Validate(IEnumerable<Link> linksToParse)
         {
             if (this.Page == null)
             {
@@ -134,38 +131,9 @@ namespace Page.Parser.Contracts
             {
                 Fetch();
             }
-            if (Children == null || Children.Count == 0)
+            if (linksToParse == null || linksToParse.Count() == 0)
             {
                 return;
-            }
-
-            foreach (Link pageUrl in links)
-            {
-                Link pageToParse = Children.FirstOrDefault(c => c.Equals(pageUrl));
-                if (pageToParse == null)
-                {
-                    continue;
-                }
-
-                if (linksParsed.ContainsKey(pageToParse) && linksParsed[pageToParse])
-                {
-                    // Page already parsed
-                    continue;
-                }
-
-                TChildPage childPage = new TChildPage();
-
-                //if (this.HasChildren == Contracts.Children.DIFF_PAGE)
-                {
-                    childPage.Connect(pageUrl.Url);
-                    childPage.Parse(parseChildren: false);
-
-                    this.ChildrenPages.Add(childPage);
-                    this.linksParsed[pageUrl] = true;
-                    this.pagesParsed[pageUrl] = ChildrenPages.Count - 1;
-
-                    this.Page.Domain?.Children.Add(childPage.Domain);
-                }
             }
         }
     }
