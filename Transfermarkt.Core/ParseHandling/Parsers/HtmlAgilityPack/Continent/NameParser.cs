@@ -1,7 +1,5 @@
 ﻿using HtmlAgilityPack;
 using Page.Parser.Contracts;
-using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent
 {

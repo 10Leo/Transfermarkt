@@ -3,10 +3,7 @@ using Page.Parser.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text.RegularExpressions;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
 using Transfermarkt.Logging;
 
@@ -25,11 +22,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
 
             // TODO create global string with placeholders for event texts: $"{EVT}: {TEXT}"
-            this.OnBeforeParse += (o, e) => {
+            this.OnBeforeParse += (o, e) =>
+            {
                 logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
-            this.OnAfterParse += (o, e) => {
+            this.OnAfterParse += (o, e) =>
+            {
                 logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }

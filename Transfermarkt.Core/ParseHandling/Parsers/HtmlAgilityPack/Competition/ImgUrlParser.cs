@@ -1,7 +1,5 @@
 ﻿using HtmlAgilityPack;
 using Page.Parser.Contracts;
-using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
@@ -15,7 +13,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
             this.ParseFunc = node =>
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//div[@class='headerfoto']/img")?.GetAttributeValue<string>("src", null);
-                
+
                 return new ImgUrl { Value = Converter.Convert(parsedStr) };
             };
         }

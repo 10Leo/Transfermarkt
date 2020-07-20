@@ -53,7 +53,7 @@ namespace Transfermarkt.Core
             public const string ContinentFileNameFormat = "ContinentFileNameFormat";
             public const string CompetitionFileNameFormat = "CompetitionFileNameFormat";
             public const string ClubFileNameFormat = "ClubFileNameFormat";
-            
+
             public const string SimpleClubUrlFormat = "SimpleClubUrlFormat";
             public const string PlusClubUrlFormat = "PlusClubUrlFormat";
             public const string PlusClubUrlFormatV2 = "PlusClubUrlFormatV2";

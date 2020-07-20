@@ -1,6 +1,4 @@
-﻿using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Contracts.Converter;
-using Transfermarkt.Logging;
+﻿using Transfermarkt.Core.ParseHandling.Contracts.Converter;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {

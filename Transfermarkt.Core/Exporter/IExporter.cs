@@ -1,6 +1,4 @@
 ﻿using Page.Parser.Contracts;
-using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Exporter
 {

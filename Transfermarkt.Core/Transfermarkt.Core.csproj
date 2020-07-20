@@ -56,9 +56,7 @@
     <Compile Include="Actors\Competition.cs" />
     <Compile Include="Actors\Continent.cs" />
     <Compile Include="Actors\ContinentCode.cs" />
-    <Compile Include="Actors\Manager.cs" />
     <Compile Include="Actors\Nationality.cs" />
-    <Compile Include="Actors\Person.cs" />
     <Compile Include="Actors\Player.cs" />
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />

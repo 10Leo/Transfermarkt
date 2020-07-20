@@ -1,7 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Page.Parser.Contracts;
 using System.Linq;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
@@ -19,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault()
                     .InnerText;
 
-                return new ShortName{ Value = Converter.Convert(parsedStr) };
+                return new ShortName { Value = Converter.Convert(parsedStr) };
             };
         }
     }
