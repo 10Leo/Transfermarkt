@@ -107,11 +107,8 @@ namespace Page.Parser.Contracts
                     continue;
                 }
 
-                //TChildPage childType = new TChildPage();
+                TChildPage childPage = new TChildPage();
 
-                Type tChildPage = this.ChildPage.GetType();
-                this.ChildPage.Connection.Reset();
-                var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage);
                 childPage.Connect(pageUrl.Url);
                 childPage.Parse(parseChildren: parseChildren);
 
@@ -156,11 +153,10 @@ namespace Page.Parser.Contracts
                     continue;
                 }
 
+                TChildPage childPage = new TChildPage();
+
                 //if (this.HasChildren == Contracts.Children.DIFF_PAGE)
                 {
-                    Type tChildPage = this.ChildPage.GetType();
-                    this.ChildPage.Connection.Reset();
-                    var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage);
                     childPage.Connect(pageUrl.Url);
                     childPage.Parse(parseChildren: false);
 
