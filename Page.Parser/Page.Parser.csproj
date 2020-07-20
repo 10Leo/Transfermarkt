@@ -56,7 +56,13 @@
     <Compile Include="Link.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Section.cs" />
+    <Compile Include="Sections\ChildsSamePageSection.cs" />
+    <Compile Include="Sections\ChildsSection.cs" />
+    <Compile Include="Sections\ElementsSection.cs" />
+    <Compile Include="Values\DecimalValue.cs" />
+    <Compile Include="Values\DatetimeValue.cs" />
+    <Compile Include="Values\IntValue.cs" />
+    <Compile Include="Values\StringValue.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
