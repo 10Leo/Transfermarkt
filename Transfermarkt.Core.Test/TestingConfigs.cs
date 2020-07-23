@@ -14,7 +14,7 @@ namespace Transfermarkt.Core.Test
 {
     public struct Patterns
     {
-        public const string date = @"^((0[1-9]|[12]\d|3[01])-(0[1-9]|1[0-2])-[12]\d{3} 00:00:00)$";
+        public const string date = @"^((0[1-9]|[12]\d|3[01])-(0[1-9]|1[0-2])-[12]\d{3})$";
         public const string iso = @"^[a-zA-Z]{3}$";
         public const string year = @"^[0-9]{4}$";
         public const string link = @"(^http.+)|(\/)";
@@ -73,6 +73,8 @@ namespace Transfermarkt.Core.Test
 
         public static void DomainElementsCheck(IDomain domain)
         {
+            string dateFormat = "dd/MM/yyyy";
+
             for (int i = 0; i < domain.Elements.Count; i++)
             {
                 string value = null;
@@ -91,7 +93,7 @@ namespace Transfermarkt.Core.Test
                 }
                 else if (e.Value.Type == typeof(DateTime?))
                 {
-                    value = ((DatetimeValue)e.Value).Value?.ToString();
+                    value = ((DatetimeValue)e.Value).Value?.ToString(dateFormat);
                 }
                 else if (e.Value.Type == typeof(Nationality?))
                 {
