@@ -110,9 +110,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Page.Parser\Page.Parser.csproj">
-      <Project>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</Project>
-      <Name>Page.Parser</Name>
+    <ProjectReference Include="..\Page.Scraper\Page.Scraper.csproj">
+      <Project>{0e517dc1-76e0-43ad-b593-4bf2faa344ac}</Project>
+      <Name>Page.Scraper</Name>
     </ProjectReference>
     <ProjectReference Include="..\Transfermarkt.Logging\Transfermarkt.Logging.csproj">
       <Project>{3166b876-1387-4469-9b20-7be12bcd105e}</Project>
