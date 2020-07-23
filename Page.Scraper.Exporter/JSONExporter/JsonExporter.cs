@@ -1,16 +1,14 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Page.Parser.Contracts;
+using Page.Scraper.Contracts;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Exporter;
 using Transfermarkt.Core.ParseHandling;
-using Transfermarkt.Core.ParseHandling.Contracts;
 
-namespace Transfermarkt.Exporter.JSONExporter
+namespace Page.Scraper.Exporter.JSONExporter
 {
     public class JsonExporter : IExporter
     {

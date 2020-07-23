@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Page.Parser.Contracts
+namespace Page.Scraper.Contracts
 {
     public class DatetimeValue : IValue
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Page.Parser.Contracts
+namespace Page.Scraper.Contracts
 {
     public interface IPage<TDomain, TNode> where TDomain : IDomain
     {

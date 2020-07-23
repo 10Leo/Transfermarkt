@@ -1,6 +1,6 @@
-﻿using Page.Parser.Contracts;
+﻿using Page.Scraper.Contracts;
 
-namespace Transfermarkt.Core.Exporter
+namespace Page.Scraper.Exporter
 {
     public interface IExporter
     {

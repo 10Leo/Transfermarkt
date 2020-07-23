@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Page.Parser.Contracts
+namespace Page.Scraper.Contracts
 {
     public abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TValue, TNode> where TElement : IElement<TValue>, new() where TValue : IValue
     {

@@ -45,6 +45,7 @@
     <Compile Include="Domain.cs" />
     <Compile Include="Element.cs" />
     <Compile Include="ElementParser.cs" />
+    <Compile Include="Exporter\IExporter.cs" />
     <Compile Include="IConnection.cs" />
     <Compile Include="IConverter.cs" />
     <Compile Include="IDomain.cs" />

@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using Page.Parser.Contracts;
+using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Exporter;
+using Page.Scraper.Exporter;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
-using Transfermarkt.Exporter.JSONExporter;
+using Page.Scraper.Exporter.JSONExporter;
 using Transfermarkt.Logging;
 
 namespace Transfermarkt.Console

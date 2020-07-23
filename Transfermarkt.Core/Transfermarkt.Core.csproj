@@ -71,7 +71,6 @@
     <Compile Include="ParseHandling\Converters\DecimalConverter.cs" />
     <Compile Include="ParseHandling\Converters\INationalityConverter.cs" />
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
-    <Compile Include="Exporter\IExporter.cs" />
     <Compile Include="ParseHandling\Elements\Player\PlayerElements.cs" />
     <Compile Include="ParseHandling\HAPConnection.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Page.Parser.Contracts
+namespace Page.Scraper.Contracts
 {
     public interface IElementParser<out TElement, out TValue, TNode> where TElement : IElement<TValue> where TValue : IValue
     {

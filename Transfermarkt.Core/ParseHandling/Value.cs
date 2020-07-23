@@ -1,4 +1,4 @@
-﻿using Page.Parser.Contracts;
+﻿using Page.Scraper.Contracts;
 using System;
 
 namespace Transfermarkt.Core.ParseHandling

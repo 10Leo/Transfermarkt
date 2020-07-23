@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using Page.Parser.Contracts;
+using Page.Scraper.Contracts;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 

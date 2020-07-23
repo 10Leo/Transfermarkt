@@ -1,4 +1,4 @@
-﻿namespace Page.Parser.Contracts
+﻿namespace Page.Scraper.Contracts
 {
     public interface IConverter<TValue> where TValue : IValue
     {

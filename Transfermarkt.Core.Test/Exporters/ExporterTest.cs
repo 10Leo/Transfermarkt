@@ -2,12 +2,12 @@
 using System.Configuration;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Page.Parser.Contracts;
+using Page.Scraper.Contracts;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Exporter;
+using Page.Scraper.Exporter;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Exporter.JSONExporter;
+using Page.Scraper.Exporter.JSONExporter;
 
 namespace Transfermarkt.Core.Test.Exporters
 {

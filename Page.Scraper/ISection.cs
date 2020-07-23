@@ -1,4 +1,4 @@
-﻿namespace Page.Parser.Contracts
+﻿namespace Page.Scraper.Contracts
 {
     /// <summary>
     /// Section of a Page.

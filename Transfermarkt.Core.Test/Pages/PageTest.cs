@@ -5,7 +5,7 @@ using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Logging;
 using System.Linq;
 using System.Collections.Generic;
-using Page.Parser.Contracts;
+using Page.Scraper.Contracts;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {
