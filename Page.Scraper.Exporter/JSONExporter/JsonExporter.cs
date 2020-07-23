@@ -4,27 +4,23 @@ using Page.Scraper.Contracts;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Transfermarkt.Core;
-using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling;
 
 namespace Page.Scraper.Exporter.JSONExporter
 {
     public class JsonExporter : IExporter
     {
         private static readonly string dateFormat = "yyyy-MM-dd";
-        private static readonly string format = ".json";
+        private static readonly string extension = ".json";
         private static JsonSerializerSettings settings;
 
-        public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
-        public static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
-        public static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
+        private string filename = string.Empty;
+        private readonly string baseFolderPath = string.Empty;
+        private readonly string level1FolderFormat = string.Empty;
 
-        public static string BaseFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseFolderPath);
-        public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
-
-        public JsonExporter()
+        public JsonExporter(string baseFolderPath, string level1FolderFormat)
         {
+            this.baseFolderPath = baseFolderPath;
+            this.level1FolderFormat = level1FolderFormat;
             settings = new JsonSerializerSettings
             {
                 DateFormatString = dateFormat,
@@ -33,8 +29,10 @@ namespace Page.Scraper.Exporter.JSONExporter
             settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         }
 
-        public void Extract(IDomain domain)
+        public void Extract(IDomain domain, string template)
         {
+            this.filename = GenerateFileName(template, domain);
+
             var o = Extract(new JObject(), domain);
             string output = o?.ToString();
 
@@ -43,35 +41,13 @@ namespace Page.Scraper.Exporter.JSONExporter
                 return;
             }
 
-            string pathString = CreateBaseDir();
+            string pathString = CreateBaseDir(this.baseFolderPath, this.level1FolderFormat);
 
-            
-            string fileName = string.Empty;
-            if (domain is Continent)
-            {
-                fileName = GenerateFileName(ContinentFileNameFormat, domain);
-            }
-            else if(domain is Competition)
-            {
-                fileName = GenerateFileName(CompetitionFileNameFormat, domain);
-            }
-            else if (domain is Club)
-            {
-                fileName = GenerateFileName(ClubFileNameFormat, domain);
-
-                var country = (NationalityValue)domain.Elements.FirstOrDefault(e => e.InternalName == "Country")?.Value;
-                if (country != null && country.Value.HasValue)
-                {
-                    pathString = System.IO.Path.Combine(pathString, string.Format("{0}", country.Value.ToString()));
-                    System.IO.Directory.CreateDirectory(pathString);
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(fileName))
+            if (string.IsNullOrWhiteSpace(this.filename))
             {
                 return;
             }
-            pathString = System.IO.Path.Combine(pathString, fileName);
+            pathString = System.IO.Path.Combine(pathString, this.filename);
 
             WriteToFile(pathString, output);
         }
@@ -129,22 +105,6 @@ namespace Page.Scraper.Exporter.JSONExporter
             {
                 value = ((StringValue)element.Value).Value;
             }
-            else if (element.Value.Type == typeof(Nationality?))
-            {
-                value = ((NationalityValue)element.Value).Value?.ToString();
-            }
-            else if (element.Value.Type == typeof(Position?))
-            {
-                value = ((PositionValue)element.Value).Value?.ToString();
-            }
-            else if (element.Value.Type == typeof(Foot?))
-            {
-                value = ((FootValue)element.Value).Value?.ToString();
-            }
-            else if (element.Value.Type == typeof(ContinentCode?))
-            {
-                value = ((ContinentCodeValue)element.Value).Value?.ToString();
-            }
             else
             {
                 value = element.Value?.ToString();
@@ -181,7 +141,7 @@ namespace Page.Scraper.Exporter.JSONExporter
                 fileName = fileName.Replace($"{{{k}}}", value);
             }
 
-            fileName = MakeValidFileName(fileName) + format;
+            fileName = MakeValidFileName(fileName) + extension;
 
             return fileName;
         }
@@ -194,10 +154,10 @@ namespace Page.Scraper.Exporter.JSONExporter
             return Regex.Replace(name, invalidRegStr, "_");
         }
 
-        private static string CreateBaseDir()
+        private static string CreateBaseDir(string baseFolderPath, string level1FolderFormat)
         {
-            string level1FolderName = Level1FolderFormat.Replace("{0}", DateTime.Today.ToString("yyyyMMdd"));
-            string level1PathString = System.IO.Path.Combine(BaseFolderPath, level1FolderName);
+            string level1FolderName = level1FolderFormat.Replace("{0}", DateTime.Today.ToString("yyyyMMdd"));
+            string level1PathString = System.IO.Path.Combine(baseFolderPath, level1FolderName);
 
             System.IO.Directory.CreateDirectory(level1PathString);
 

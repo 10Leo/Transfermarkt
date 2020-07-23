@@ -41,7 +41,8 @@ namespace Transfermarkt.Core
             public const string Language = "Language";
             public const string BaseURL = "BaseURL";
             public const string BaseFolderPath = "BaseFolderPath";
-
+            public const string OutputFolderPath = "OutputFolderPath";
+            
             public const string SettingsFolderPath = "SettingsFolderPath";
             public const string SettingsPositionFile = "SettingsPositionFile";
             public const string SettingsNationalityFile = "SettingsNationalityFile";

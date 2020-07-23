@@ -14,10 +14,19 @@ namespace Transfermarkt.Core.Test.Exporters
     [TestClass]
     public class ExporterTest
     {
+        public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
+        public static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
+        public static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
+
+        //public static string BaseFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseFolderPath);
+        public static string OutputFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.OutputFolderPath);
+        public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
+
+
         [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsAClubAsJSON()
         {
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
             IDomain club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
 
@@ -27,7 +36,7 @@ namespace Transfermarkt.Core.Test.Exporters
             club.Children.Add(player01);
             club.Children.Add(player02);
 
-            exporter.Extract(club);
+            exporter.Extract(club, ClubFileNameFormat);
         }
 
         [TestMethod, TestCategory("Export")]
@@ -35,7 +44,7 @@ namespace Transfermarkt.Core.Test.Exporters
         {
             ConfigurationManager.AppSettings[Keys.Config.ClubFileNameFormat] = "{COUNTRY}-{NAME}_{Y}_{IMGURL}_{NOT}";
 
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
             IDomain club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
 
@@ -45,13 +54,13 @@ namespace Transfermarkt.Core.Test.Exporters
             club.Children.Add(player01);
             club.Children.Add(player02);
 
-            exporter.Extract(club);
+            exporter.Extract(club, ClubFileNameFormat);
         }
 
         [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsACompetitionAsJSON()
         {
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
             IDomain competition = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
 
@@ -71,13 +80,13 @@ namespace Transfermarkt.Core.Test.Exporters
 
             club02.Children.Add(player021);
 
-            exporter.Extract(competition);
+            exporter.Extract(competition, CompetitionFileNameFormat);
         }
 
         [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsAContinentAsJSON()
         {
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
             IDomain continent = MockContinent(ContinentCode.EEE, "Europe");
 
@@ -119,7 +128,7 @@ namespace Transfermarkt.Core.Test.Exporters
             club12.Children.Add(player121);
             club12.Children.Add(player122);
 
-            exporter.Extract(continent);
+            exporter.Extract(continent, ContinentFileNameFormat);
         }
 
         private Continent MockContinent(ContinentCode continentCode, string name)
