@@ -16,8 +16,10 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
     [TestClass]
     public class PagePerformanceTest
     {
-        private const string clubPerformanceFilePath = @"..\..\..\Tests\Performance\club.txt";
-        private string subjectClubPerformanceFile = $@"file://{Path.GetFullPath(@"..\..\..\")}Tests\Performance\club.html";
+        private const string performanceFolderPath = @"..\..\..\Tests\Performance\";
+
+        private readonly string clubPerformanceFilePath = $@"{performanceFolderPath}club.txt";
+        private readonly string subjectClubPerformanceFile = $@"file://{Path.GetFullPath(@"..\..\..\")}Tests\Performance\club.html";
 
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
         private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
