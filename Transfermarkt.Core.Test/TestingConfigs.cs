@@ -2,6 +2,7 @@
 using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -73,7 +74,7 @@ namespace Transfermarkt.Core.Test
 
         public static void DomainElementsCheck(IDomain domain)
         {
-            string dateFormat = "dd/MM/yyyy";
+            string dateFormat = "dd-MM-yyyy";
 
             for (int i = 0; i < domain.Elements.Count; i++)
             {
@@ -93,7 +94,7 @@ namespace Transfermarkt.Core.Test
                 }
                 else if (e.Value.Type == typeof(DateTime?))
                 {
-                    value = ((DatetimeValue)e.Value).Value?.ToString(dateFormat);
+                    value = ((DatetimeValue)e.Value).Value?.ToString(dateFormat, CultureInfo.InvariantCulture);
                 }
                 else if (e.Value.Type == typeof(Nationality?))
                 {
