@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Transfermarkt.Core.ParseHandling.Contracts
+namespace Page.Scraper.Contracts
 {
     public abstract class Page<TValue, TNode> : IPage<IDomain, TNode> where TValue : IValue
     {

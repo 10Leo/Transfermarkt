@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,13 +12,14 @@ namespace Transfermarkt.Logging
     public sealed class LoggerFactory
     {
         private static ILogger _logger;
+        private static readonly string _path = ConfigurationManager.AppSettings["LogPath"];// Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static readonly object _syncLock = new object();
 
         private LoggerFactory()
         {
         }
 
-        public static ILogger GetLogger(string path, int minimumLevel)
+        public static ILogger GetLogger(LogLevel minimumLevel)
         {
             if (_logger == null)
             {
@@ -23,7 +27,7 @@ namespace Transfermarkt.Logging
                 {
                     if (_logger == null)
                     {
-                        _logger = new Logger(path, minimumLevel);
+                        _logger = new Logger(_path, minimumLevel);
                     }
                 }
             }

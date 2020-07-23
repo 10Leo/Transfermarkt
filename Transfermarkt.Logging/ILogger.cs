@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Transfermarkt.Logging
 {
+    //TODO: this project can be taken off Transfermarkt namespace and put under its own to be used across different solutions.
     public interface ILogger
     {
         void LogMessage(LogLevel level, IList<string> messages);

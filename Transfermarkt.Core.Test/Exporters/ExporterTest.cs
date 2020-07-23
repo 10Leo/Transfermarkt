@@ -2,30 +2,58 @@
 using System.Configuration;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Page.Scraper.Contracts;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Exporter;
+using Page.Scraper.Exporter;
+using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Exporter.JSONExporter;
+using Page.Scraper.Exporter.JSONExporter;
+using System.Collections.Generic;
 
 namespace Transfermarkt.Core.Test.Exporters
 {
     [TestClass]
     public class ExporterTest
     {
+        public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
+        public static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
+        public static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
+
+        //public static string BaseFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseFolderPath);
+        public static string OutputFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.OutputFolderPath);
+        public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
+
+        private IDictionary<string, IDomain> domains = new Dictionary<string, IDomain>
+        {
+            { "Europe", MockContinent(ContinentCode.EEE, "Europe") },
+            { "Liga NOS", MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt") },
+            { "Liga BBVA", MockCompetition(Nationality.ESP, "Liga BBVA", 2020, "http://BBVA.pt", "http://BBVA.pt") },
+            { "Benfica", MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt") },
+            { "Porto", MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt") },
+            { "Real Madrid", MockClub(Nationality.ESP, "Real Madrid", 2020, "http://Madrid.pt", "http://Madrid.pt") },
+            { "Barcelona", MockClub(Nationality.ESP, "Barcelona", 2020, "http://Barcelona.pt", "http://Barcelona.pt") },
+            { "Matic", MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link") },
+            { "Jonas", MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link") },
+            { "Deco", MockPlayer("Deco", "Deco", new DateTime(1982, 1, 1), Nationality.BRA, 178, Foot.R, Position.AM, 10, 0, new DateTime(1999, 7, 1), new DateTime(2005, 7, 1), 6000000, "http://link", "http://link") },
+            { "Ramos", MockPlayer("Sergio Ramos", "Ramos", new DateTime(1984, 1, 1), Nationality.ESP, 188, Foot.R, Position.CB, 4, 0, new DateTime(2006, 7, 1), null, 70000000, "http://link", "http://link") },
+            { "Messi", MockPlayer("Lio Messi", "Messi", new DateTime(1986, 1, 1), Nationality.ARG, 171, Foot.L, Position.AM, 10, 1, new DateTime(2003, 7, 1), new DateTime(2022, 7, 1), 200000000, "http://link", "http://link") },
+            { "Busquets", MockPlayer("Sergio Busquets", "Busquets", new DateTime(1986, 1, 1), Nationality.ESP, 184, Foot.R, Position.DM, 6, 0, new DateTime(2008, 7, 1), null, 70000000, "http://link", "http://link") }
+        };
+
         [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsAClubAsJSON()
         {
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
-            IDomain club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
+            IDomain club = domains["Benfica"];
 
-            IDomain player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 1, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain player02 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain player01 = domains["Matic"];
+            IDomain player02 = domains["Jonas"];
 
             club.Children.Add(player01);
             club.Children.Add(player02);
 
-            exporter.Extract(club);
+            exporter.Extract(club, ClubFileNameFormat);
         }
 
         [TestMethod, TestCategory("Export")]
@@ -33,33 +61,33 @@ namespace Transfermarkt.Core.Test.Exporters
         {
             ConfigurationManager.AppSettings[Keys.Config.ClubFileNameFormat] = "{COUNTRY}-{NAME}_{Y}_{IMGURL}_{NOT}";
 
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
-            IDomain club = MockClub(Nationality.PRT, "Benfica", 2020, "http://benfica.pt", "http://benfica.pt");
+            IDomain club = domains["Benfica"];
 
-            IDomain player01 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 1, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain player02 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain player01 = domains["Matic"];
+            IDomain player02 = domains["Jonas"];
 
             club.Children.Add(player01);
             club.Children.Add(player02);
 
-            exporter.Extract(club);
+            exporter.Extract(club, ClubFileNameFormat);
         }
 
         [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsACompetitionAsJSON()
         {
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
-            IDomain competition = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
+            IDomain competition = domains["Liga NOS"];
 
-            IDomain club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt");
-            IDomain club02 = MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt");
+            IDomain club01 = domains["Benfica"];
+            IDomain club02 = domains["Porto"];
 
-            IDomain player011 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain player012 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
-            
-            IDomain player021 = MockPlayer("Deco", "Deco", new DateTime(1982, 1, 1), Nationality.BRA, 178, Foot.R, Position.AM, 10, 0, new DateTime(1999, 7, 1), new DateTime(2005, 7, 1), 6000000, "http://link", "http://link");
+            IDomain player011 = domains["Matic"];
+            IDomain player012 = domains["Jonas"];
+
+            IDomain player021 = domains["Deco"];
 
             competition.Children.Add(club01);
             competition.Children.Add(club02);
@@ -69,35 +97,35 @@ namespace Transfermarkt.Core.Test.Exporters
 
             club02.Children.Add(player021);
 
-            exporter.Extract(competition);
+            exporter.Extract(competition, CompetitionFileNameFormat);
         }
 
         [TestMethod, TestCategory("Export")]
         public void SuccessfullyExportsAContinentAsJSON()
         {
-            IExporter exporter = new JsonExporter();
+            IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
-            IDomain continent = MockContinent(ContinentCode.EEE, "Europe");
+            IDomain continent = domains["Europe"];
 
-            IDomain competition01 = MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt");
-            IDomain competition02 = MockCompetition(Nationality.ESP, "Liga BBVA", 2020, "http://BBVA.pt", "http://BBVA.pt");
+            IDomain competition01 = domains["Liga NOS"];
+            IDomain competition02 = domains["Liga BBVA"];
 
-            IDomain club01 = MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt");
-            IDomain club02 = MockClub(Nationality.PRT, "Porto", 2020, "http://Porto.pt", "http://Porto.pt");
+            IDomain club01 = domains["Benfica"];
+            IDomain club02 = domains["Porto"];
 
-            IDomain club11 = MockClub(Nationality.ESP, "Real Madrid", 2020, "http://Madrid.pt", "http://Madrid.pt");
-            IDomain club12 = MockClub(Nationality.ESP, "Barcelona", 2020, "http://Barcelona.pt", "http://Barcelona.pt");
+            IDomain club11 = domains["Real Madrid"];
+            IDomain club12 = domains["Barcelona"];
 
 
-            IDomain player011 = MockPlayer("Nemanja Matic", "Matic", new DateTime(1985, 1, 1), Nationality.SRB, 191, Foot.L, Position.CM, 6, 0, new DateTime(2012, 1, 1), new DateTime(2016, 7, 1), 600000000, "http://link", "http://link");
-            IDomain player012 = MockPlayer("Jonas", "Jonas", new DateTime(1981, 1, 1), Nationality.BRA, 182, Foot.R, Position.SS, 10, 0, new DateTime(2015, 7, 1), new DateTime(2020, 7, 1), 20000000, "http://link", "http://link");
+            IDomain player011 = domains["Matic"];
+            IDomain player012 = domains["Jonas"];
 
-            IDomain player021 = MockPlayer("Deco", "Deco", new DateTime(1982, 1, 1), Nationality.BRA, 178, Foot.R, Position.AM, 10, 0, new DateTime(1999, 7, 1), new DateTime(2005, 7, 1), 6000000, "http://link", "http://link");
+            IDomain player021 = domains["Deco"];
 
-            IDomain player111 = MockPlayer("Sergio Ramos", "Ramos", new DateTime(1984, 1, 1), Nationality.ESP, 188, Foot.R, Position.CB, 4, 0, new DateTime(2006, 7, 1), null, 70000000, "http://link", "http://link");
+            IDomain player111 = domains["Ramos"];
 
-            IDomain player121 = MockPlayer("Sergio Busquets", "Busquets", new DateTime(1986, 1, 1), Nationality.ESP, 184, Foot.R, Position.DM, 6, 0, new DateTime(2008, 7, 1), null, 70000000, "http://link", "http://link");
-            IDomain player122 = MockPlayer("Lio Messi", "Messi", new DateTime(1986, 1, 1), Nationality.ARG, 171, Foot.L, Position.AM, 10, 1, new DateTime(2003, 7, 1), new DateTime(2022, 7, 1), 200000000, "http://link", "http://link");
+            IDomain player121 = domains["Busquets"];
+            IDomain player122 = domains["Messi"];
 
             continent.Children.Add(competition01);
             continent.Children.Add(competition02);
@@ -117,10 +145,10 @@ namespace Transfermarkt.Core.Test.Exporters
             club12.Children.Add(player121);
             club12.Children.Add(player122);
 
-            exporter.Extract(continent);
+            exporter.Extract(continent, ContinentFileNameFormat);
         }
 
-        private Continent MockContinent(ContinentCode continentCode, string name)
+        private static Continent MockContinent(ContinentCode continentCode, string name)
         {
             Continent domain = new Continent();
 
@@ -130,7 +158,7 @@ namespace Transfermarkt.Core.Test.Exporters
             return domain;
         }
 
-        private Competition MockCompetition(Nationality nationality, string name, int season, string imgUrl, string countryImg)
+        private static Competition MockCompetition(Nationality nationality, string name, int season, string imgUrl, string countryImg)
         {
             Competition domain = new Competition();
 
@@ -143,7 +171,7 @@ namespace Transfermarkt.Core.Test.Exporters
             return domain;
         }
 
-        private Club MockClub(Nationality nationality, string name, int season, string imgUrl, string countryImg)
+        private static Club MockClub(Nationality nationality, string name, int season, string imgUrl, string countryImg)
         {
             Club domain = new Club();
 
@@ -156,7 +184,7 @@ namespace Transfermarkt.Core.Test.Exporters
             return domain;
         }
 
-        private Player MockPlayer(string name, string shortName, DateTime? birthDate, Nationality? nat, int? h, Foot foot, Position pos, int? number, int cap, DateTime? clubArrivalDate, DateTime? contractExpirationDate, decimal? mv, string imgUrl, string profileUrl)
+        private static Player MockPlayer(string name, string shortName, DateTime? birthDate, Nationality? nat, int? h, Foot foot, Position pos, int? number, int cap, DateTime? clubArrivalDate, DateTime? contractExpirationDate, decimal? mv, string imgUrl, string profileUrl)
         {
             Player domain = new Player();
 

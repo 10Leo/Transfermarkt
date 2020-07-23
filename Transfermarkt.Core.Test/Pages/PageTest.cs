@@ -5,6 +5,7 @@ using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Logging;
 using System.Linq;
 using System.Collections.Generic;
+using Page.Scraper.Contracts;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {
@@ -14,7 +15,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
         private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
 
-        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
+        private static readonly ILogger logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
 
         [TestMethod, TestCategory("Page")]
         public void TestPageMethods()

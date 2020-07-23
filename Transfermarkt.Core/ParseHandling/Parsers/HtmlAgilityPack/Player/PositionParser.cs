@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
+using Page.Scraper.Contracts;
 using System.Linq;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player

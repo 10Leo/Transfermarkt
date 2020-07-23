@@ -8,6 +8,8 @@ using Transfermarkt.Core.Actors;
 
 namespace Transfermarkt.Core
 {
+    //TODO: create config folder and separate classes in this file there
+    //TODO: create common project and move there whatever makes sense. e.g. ConfigManager can be used across different solutions.
     public static class ConfigManager
     {
         public static T GetAppSetting<T>(string key) where T : IConvertible
@@ -41,7 +43,8 @@ namespace Transfermarkt.Core
             public const string Language = "Language";
             public const string BaseURL = "BaseURL";
             public const string BaseFolderPath = "BaseFolderPath";
-
+            public const string OutputFolderPath = "OutputFolderPath";
+            
             public const string SettingsFolderPath = "SettingsFolderPath";
             public const string SettingsPositionFile = "SettingsPositionFile";
             public const string SettingsNationalityFile = "SettingsNationalityFile";
@@ -53,7 +56,7 @@ namespace Transfermarkt.Core
             public const string ContinentFileNameFormat = "ContinentFileNameFormat";
             public const string CompetitionFileNameFormat = "CompetitionFileNameFormat";
             public const string ClubFileNameFormat = "ClubFileNameFormat";
-            
+
             public const string SimpleClubUrlFormat = "SimpleClubUrlFormat";
             public const string PlusClubUrlFormat = "PlusClubUrlFormat";
             public const string PlusClubUrlFormatV2 = "PlusClubUrlFormatV2";

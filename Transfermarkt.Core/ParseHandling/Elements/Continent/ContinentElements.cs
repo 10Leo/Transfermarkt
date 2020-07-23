@@ -1,4 +1,4 @@
-﻿using Transfermarkt.Core.ParseHandling.Contracts;
+﻿using Page.Scraper.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.Continent
 {

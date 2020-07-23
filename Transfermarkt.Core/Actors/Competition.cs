@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Transfermarkt.Core.ParseHandling.Contracts;
+﻿using Page.Scraper.Contracts;
+using System.Collections.Generic;
 using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.Actors

@@ -2,8 +2,17 @@
 {
     public enum Foot
     {
+        /// <summary>
+        /// Right
+        /// </summary>
         R = 1,
+        /// <summary>
+        /// Left
+        /// </summary>
         L = 2,
-        A = 3
+        /// <summary>
+        /// Both
+        /// </summary>
+        B = 3
     }
 }

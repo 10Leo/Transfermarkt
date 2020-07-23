@@ -1,7 +1,5 @@
 ﻿using HtmlAgilityPack;
-using System;
-using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling.Contracts;
+using Page.Scraper.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Club;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club

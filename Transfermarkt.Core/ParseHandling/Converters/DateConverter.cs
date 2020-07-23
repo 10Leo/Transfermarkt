@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Page.Scraper.Contracts;
+using System;
 using System.Globalization;
-using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {

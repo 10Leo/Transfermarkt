@@ -1,10 +1,10 @@
 ﻿using HtmlAgilityPack;
+using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
 using Transfermarkt.Logging;
 
@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
-        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(@"c:\Transfermarkt\Logs", 2);
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
 
         public int? Year { get; set; }
 
@@ -20,25 +20,6 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         {
             Init();
         }
-
-        //public CompetitionPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
-        //{
-        //    this.Domain = new Competition();
-
-        //    this.Sections = new List<ISection>
-        //    {
-        //        new CompetitionPageSection(this, logger),
-        //        new CompetitionClubsPageSection(this, logger, year)
-        //    };
-
-        //    this.OnBeforeParse += (o, e) => {
-        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
-        //    };
-
-        //    this.OnAfterParse += (o, e) => {
-        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
-        //    };
-        //}
 
         private void Init()
         {
@@ -50,11 +31,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 new CompetitionClubsPageSection(this, Logger)
             };
 
-            this.OnBeforeParse += (o, e) => {
+            this.OnBeforeParse += (o, e) =>
+            {
                 Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
-            this.OnAfterParse += (o, e) => {
+            this.OnAfterParse += (o, e) =>
+            {
                 Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
@@ -79,7 +62,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 IList<(HtmlNode key, HtmlNode value)> elements = new List<(HtmlNode, HtmlNode)>();
                 Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
-                    elements.Add((null, Conn.GetNode()));
+                elements.Add((null, Conn.GetNode()));
 
                 return elements;
             };
@@ -109,7 +92,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 IList<Link> urls = new List<Link>();
 
                 Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
-                
+
                 HtmlNode table = Conn.GetNode().SelectSingleNode("//div[@id='yw1']/table[@class='items']");
                 if (table == null)
                 {
@@ -146,9 +129,11 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 .SelectNodes("a")
                 .FirstOrDefault(n => n.Attributes["class"]?.Value == "vereinprofil_tooltip");
 
-            return new Link{
+            return new Link
+            {
                 Title = a.InnerText,
-                Url = a.Attributes["href"].Value };
+                Url = a.Attributes["href"].Value
+            };
         }
 
         private string TransformUrl(string url, string baseURL, string simpleClubUrlFormat, string plusClubUrlFormat, string identifiersGetterPattern, string identifiersSetterPattern)

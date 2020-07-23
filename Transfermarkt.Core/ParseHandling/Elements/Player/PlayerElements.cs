@@ -1,5 +1,5 @@
-﻿using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
+﻿using Page.Scraper.Contracts;
+using System;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.Player
 {

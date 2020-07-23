@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Transfermarkt.Core.ParseHandling.Contracts
+namespace Page.Scraper.Contracts
 {
     public interface IConnection<TNode>
     {

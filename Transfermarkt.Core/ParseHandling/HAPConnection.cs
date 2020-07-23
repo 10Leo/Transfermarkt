@@ -1,11 +1,7 @@
 ﻿using HtmlAgilityPack;
+using Page.Scraper.Contracts;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.ParseHandling
 {
@@ -41,7 +37,7 @@ namespace Transfermarkt.Core.ParseHandling
                 //Debug.WriteLine(ex.StackTrace);
             }
 
-            return doc.DocumentNode;
+            return doc?.DocumentNode;
         }
 
         public override void Reset()

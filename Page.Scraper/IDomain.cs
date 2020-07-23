@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Transfermarkt.Core.ParseHandling.Contracts
+namespace Page.Scraper.Contracts
 {
     public interface IDomain
     {

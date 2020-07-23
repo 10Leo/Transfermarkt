@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Test
@@ -18,7 +20,7 @@ namespace Transfermarkt.Core.Test
         public const string link = @"(^http.+)|(\/)";
         public const string captain = @"(^[01]$)";
         public const string height = @"(^[12][0-9]{2}$)";
-        public const string foot = @"^([R|L|A]{1})$";
+        public const string foot = @"^([R|L|B]{1})$";
         public const string position = @"^[a-zA-Z]{2}$";
         public const string mv = @"[0-9]+";
         public const string shirt = @"[0-9]+";

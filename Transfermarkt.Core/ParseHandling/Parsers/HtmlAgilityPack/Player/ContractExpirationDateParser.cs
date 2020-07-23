@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
+using Page.Scraper.Contracts;
 using System;
 using System.Text.RegularExpressions;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Player;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player

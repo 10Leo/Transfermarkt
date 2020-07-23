@@ -1,10 +1,8 @@
 ﻿using HtmlAgilityPack;
-using System;
-using System.Linq;
+using Page.Scraper.Contracts;
 using System.Collections.Generic;
-using System.Net;
+using System.Linq;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Converters;
 using Transfermarkt.Logging;
 
@@ -12,33 +10,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ClubPage : Page<IValue, HtmlNode>
     {
-        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(@"c:\Transfermarkt\Logs", 2);
-        
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
+
         public ClubPage() : base(new HAPConnection())
         {
             Init();
         }
-
-        //public ClubPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
-        //{
-        //    this.Domain = new Club();
-
-        //    this.Sections = new List<ISection>
-        //    {
-        //        new ClubPageSection(this, logger),
-        //        new ClubPlayersPageSection(this, logger)
-        //    };
-
-        //    this.OnBeforeParse += (o, e) =>
-        //    {
-        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
-        //    };
-
-        //    this.OnAfterParse += (o, e) =>
-        //    {
-        //        logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
-        //    };
-        //}
 
         private void Init()
         {
@@ -94,7 +71,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
     class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode>
     {
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
-        
+
         public ClubPlayersPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Club - Players Section", page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {

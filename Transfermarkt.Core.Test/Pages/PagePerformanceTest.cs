@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Page.Scraper.Contracts;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
@@ -14,12 +16,12 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
     [TestClass]
     public class PagePerformanceTest
     {
-        private const string clubPerformanceFilePath = @"C:\Transfermarkt\Performance\club.txt";
+        private const string clubPerformanceFilePath = @"..\..\..\Output\Performance\club.txt";
 
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
         private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
 
-        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
+        private static readonly ILogger logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
 
         public PagePerformanceTest()
         {
@@ -36,7 +38,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
         {
-            string url = @"file://C:\Transfermarkt\Performance\club.html";
+            var solutionPath = Path.GetFullPath(@"..\..\..\");
+            string url = $@"file://{solutionPath}Output\Performance\club.html";
             IDomain domain = null;
 
             List<long> ellapsedMillis = new List<long>();

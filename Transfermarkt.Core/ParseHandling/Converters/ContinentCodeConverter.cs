@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Transfermarkt.Core.ParseHandling.Contracts;
-
+﻿using Page.Scraper.Contracts;
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
     class ContinentCodeConverter : IConverter<ContinentCodeValue>

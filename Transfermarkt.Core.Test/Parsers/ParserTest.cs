@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Page.Scraper.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts;
 
 namespace Transfermarkt.Core.Test.Parsers

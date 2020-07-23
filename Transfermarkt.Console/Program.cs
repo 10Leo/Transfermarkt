@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,11 +7,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.Exporter;
+using Page.Scraper.Exporter;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
-using Transfermarkt.Exporter.JSONExporter;
+using Page.Scraper.Exporter.JSONExporter;
 using Transfermarkt.Logging;
 
 namespace Transfermarkt.Console
@@ -27,7 +28,7 @@ namespace Transfermarkt.Console
         private const decimal CompetitionFactor = 1000000;
         private const decimal ClubFactor = 1000;
 
-        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
+        private static readonly ILogger logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
 
         private static IExporter exporter;
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transfermarkt.Core.ParseHandling.Contracts
+namespace Page.Scraper.Contracts
 {
     public abstract class Connection<TNode> : IConnection<TNode>
     {

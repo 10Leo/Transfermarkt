@@ -1,4 +1,4 @@
-﻿namespace Transfermarkt.Core.ParseHandling.Contracts
+﻿namespace Page.Scraper.Contracts
 {
     public abstract class Element<TValue> : IElement<TValue> where TValue : IValue
     {

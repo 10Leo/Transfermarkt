@@ -1,6 +1,5 @@
 ﻿using HtmlAgilityPack;
-using System;
-using Transfermarkt.Core.ParseHandling.Contracts;
+using Page.Scraper.Contracts;
 using Transfermarkt.Core.ParseHandling.Elements.Competition;
 
 namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
