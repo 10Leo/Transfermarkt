@@ -11,7 +11,7 @@ namespace Transfermarkt.Logging
     public class Logger : ILogger
     {
         private readonly string path = string.Empty;
-        private readonly LogLevel minimumLevel = 0;
+        private readonly LogLevel minimumLevel;
         private readonly string entryStart = "[[";
         private readonly string entryEnd = "]]";
 
@@ -59,7 +59,7 @@ namespace Transfermarkt.Logging
         private void LogWrite(LogLevel level, IList<string> logMessages)
         {
             //TODO: change received logMessages parameter to be a dictionary with its key being the code that it's now passed as part of the message.
-            if ((int)level < (int)this.minimumLevel)
+            if (level < this.minimumLevel)
             {
                 return;
             }

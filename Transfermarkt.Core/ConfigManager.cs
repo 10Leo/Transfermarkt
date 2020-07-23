@@ -8,6 +8,8 @@ using Transfermarkt.Core.Actors;
 
 namespace Transfermarkt.Core
 {
+    //TODO: create config folder and separate classes in this file there
+    //TODO: create common project and move there whatever makes sense. e.g. ConfigManager can be used across different solutions.
     public static class ConfigManager
     {
         public static T GetAppSetting<T>(string key) where T : IConvertible

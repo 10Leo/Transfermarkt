@@ -12,7 +12,6 @@ namespace Transfermarkt.Logging
     public sealed class LoggerFactory
     {
         private static ILogger _logger;
-        //TODO: relocate logger factory to Page.Scraper.
         private static readonly string _path = ConfigurationManager.AppSettings["LogPath"];// Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static readonly object _syncLock = new object();
 
