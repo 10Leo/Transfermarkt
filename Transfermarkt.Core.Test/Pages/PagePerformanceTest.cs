@@ -16,7 +16,10 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
     [TestClass]
     public class PagePerformanceTest
     {
-        private const string clubPerformanceFilePath = @"..\..\..\Output\Performance\club.txt";
+        private const string performanceFolderPath = @"..\..\..\Tests\Performance\";
+
+        private readonly string clubPerformanceFilePath = $@"{performanceFolderPath}club.txt";
+        private readonly string subjectClubPerformanceFile = $@"file://{Path.GetFullPath(@"..\..\..\")}Tests\Performance\club.html";
 
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
         private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
@@ -38,8 +41,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
         {
-            var solutionPath = Path.GetFullPath(@"..\..\..\");
-            string url = $@"file://{solutionPath}Output\Performance\club.html";
             IDomain domain = null;
 
             List<long> ellapsedMillis = new List<long>();
@@ -48,7 +49,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
                 ClubPage page = new ClubPage();
 
                 var watch = System.Diagnostics.Stopwatch.StartNew();
-                page.Connect(url);
+                page.Connect(subjectClubPerformanceFile);
                 page.Parse();
                 watch.Stop();
                 ellapsedMillis.Add(watch.ElapsedMilliseconds);

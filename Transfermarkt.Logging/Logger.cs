@@ -23,6 +23,8 @@ namespace Transfermarkt.Logging
             this.path = path + "\\" + $"log_{DateTime.Now.ToString("yyyyMMdd")}.txt";
             this.minimumLevel = minimumLevel;
 
+            _ = Directory.CreateDirectory(path);
+
             if (!File.Exists(this.path))
             {
                 using (FileStream fs = File.Create(this.path))

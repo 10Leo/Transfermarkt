@@ -164,21 +164,37 @@ namespace Transfermarkt.Core
 
         public static Nationality? GetNationality(string key)
         {
+            if (key == null || !nationalityMap.ContainsKey(key))
+            {
+                return null;
+            }
             return nationalityMap[key];
         }
 
         public static Position? GetPosition(string key)
         {
+            if (key == null || !positionMap.ContainsKey(key))
+            {
+                return null;
+            }
             return positionMap[key];
         }
 
         public static Foot? GetFoot(string key)
         {
+            if (key == null || !footMap.ContainsKey(key))
+            {
+                return null;
+            }
             return footMap[key];
         }
 
         internal static ContinentCode? GetContinent(string key)
         {
+            if (key == null || !continentMap.ContainsKey(key))
+            {
+                return null;
+            }
             return continentMap[key].FirstOrDefault();
         }
     }
