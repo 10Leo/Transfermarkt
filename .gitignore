@@ -24,6 +24,8 @@ bld/
 [Ll]ogs/
 Output/Logs/
 Output/TM*/
+Tests/Performance/*.txt
+
 LogsReader/
 
 # Visual Studio 2015 cache/options directory
