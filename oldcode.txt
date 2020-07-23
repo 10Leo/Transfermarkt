@@ -1,0 +1,1279 @@
+criar unit tests
+criar jsons para conterem os valores dos converters (positions, nationalities) e o seu mapeamento para os enums
+
+
+TOTO:
+- js para ver logs
+- melhorar istema de aceder a dictionarios para haver menos exceçoes
+
+
+
+
+method (Func<string> func)
+try{
+	func
+}
+catch()
+
+
+
+PlusClubUrlFormatV2	https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011
+PlusClubUrlFormat	https://www.transfermarkt.pt/inter-mailand/kader/verein/46/saison_id/2019/plus/1
+
+
+
+
+
+profileUrl = TryGetValue(GetProfileUrl, cols, profileUrlIndex.Value);
+shirtNumber = TryGetValue(GetShirtNumber, cols, shirtNumberIndex.Value);
+
+private string TryGetValue(Func<HtmlNode, string> parserFunction, HtmlNodeCollection cols, int? columnIndex)
+{
+	string value = null;
+	try
+	{
+		if (columnIndex.HasValue)
+		{
+			value = parserFunction(cols[columnIndex.Value]);
+		}
+	}
+	catch (Exception ex)
+	{
+		//log
+	}
+
+	return value;
+}
+
+
+
+foreach (PositionJSON p in positions.Positions)
+{
+	Enum.TryParse(p.DO, out Position toDomainObject);
+	positionMapper.Add(p.Name, toDomainObject);
+}
+
+//foreach (Actors.Position item in Enum.GetValues(typeof(Actors.Position)))
+//{
+//    Assert.IsTrue(retValue.Value == Actors.Position.GR, $"Expected {Actors.Position.GR}. Got {retValue.Value}.");
+//}
+
+
+
+
+private void Validate()
+{
+	if (doc.ParseErrors != null && doc.ParseErrors.Count() > 0)
+	{
+		// Handle any parse errors as required
+		throw new Exception("Erros no parse do doc");
+	}
+
+	if (doc.DocumentNode == null)
+	{
+		throw new Exception("Document Node null");
+	}
+}
+
+Settings
+
+
+Actors
+Parser
+	Contracts
+		Page
+			-IClubPage
+			-ICompetitionPage
+			-IContinentPage
+		Element
+			-IMarketValueParser
+			-INationalityParser
+		Converter
+			
+		-IPage
+		-IElementParser
+		-IConverter
+		-IDomain
+	Pages
+	Converters
+	Elements
+Exporter
+
+
+
+IExporter<IDomain>
+
+
+
+
+NATO also continues to use reserved codes for continents:
+ABB Asia
+EEE Europe
+FFF Africa
+NNN North America
+SRR South America
+UUU Oceania
+NTT NATO countries
+
+
+
+this.Season = new SeasonParser();
+
+this.Country = new CountryParser();
+
+this.Name = new NameParser();
+
+this.CountryImg = new CountryImgParser();
+
+this.ImgUrl = new ImgUrlParser();
+
+
+
+Tirar dependência das classes IElementParser<TNode, TValue> em relação aos HtmlNode (HtmlAgilityPack) é transformar:
+
+public abstract class ElementParser<TNode, TValue> : IElementParser<TNode, TValue>
+{
+	public Predicate<TNode> CanParsePredicate { get; set; }
+	public Func<TNode, TValue> ParseFunc { get; set; }
+
+	public bool CanParse() {
+		return CanHandlePredicate?.Invoke()
+	}
+	public virtual TValue Parse(){
+		return ParseFunc?.Invoke();
+	}
+}
+
+class NameElementParser : ElementParser<HtmlNode, string> where T : IRequest
+{
+	NameElementParser(){
+		CanHandlePredicate = node => node?.InnerText?.Trim(' ', '\t', '\n') == "Name"
+		ParseFunc = ParseE;
+	}
+	
+	private string ParseE(HtmlNode node)
+    {
+		//Converter.Convert();
+		return node.InnerText;
+	}
+}
+
+
+
+
+
+
+
+public virtual void HandleRequest(T request)
+{
+	if (Handler != null)
+	{
+		Handler(request);
+	}
+}
+
+protected virtual void OnApproveRequest(T request)
+{
+}
+
+public void ApproveRequest(T request)
+{
+	request.NullCheck();
+	if (Parse != null)
+	{
+		V parsed = Parse(request);
+	}
+	OnApproveRequest(request);
+	if (AfterApproval != null)
+	{
+		AfterApproval(request);
+	}
+}
+
+
+
+
+
+
+
+
+//var page = new ClubPage();
+//page.Parse($"{BaseURL}{finalClubUrl}");
+//this.Domain.Children.Add(page.Domain);
+
+
+
+-		$exception	{"Não é possível associar o objecto de tipo 'ClubPage' ao tipo 'IPage<IDomain, HtmlNode, IElement]'."}	System.InvalidCastException
+
+
+
+https://tmssl.akamaized.net//images/logo/normal/po1.png?lm=1485174349
+https://tmssl.akamaized.net//images/flagge/small/136.png?lm=1520611569
+
+
+
+
+
+
+
+public interface IPage<TDomain, TNode, TElement> where TDomain : IDomain where TElement : IElement
+{
+	TDomain Domain { get; set; }
+	IReadOnlyList<ISection<TNode, TElement>> Sections { get; set; }
+	TDomain Parse(string url);
+}
+public interface ISection<TNode, TElement> where TElement : IElement
+{
+	void Parse(IPage<IDomain, TNode, TElement> page);
+}
+public interface IChildsSection<TDomain, TNode, TElement> : ISection<TNode, TElement> where TDomain : IDomain where TElement : IElement
+{
+	IPage<TDomain, TNode, TElement> Page { get; set; }
+}
+public abstract class ChildsSamePageSection<TDomain, TNode> : IChildsSamePageSection<TNode, IElement> where TDomain : IDomain, new()  
+class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode>
+    
+
+
+
+
+public interface IElementsSection<TNode, TElement> : ISection<TNode, TElement> where TElement : IElement
+{
+	IEnumerable<IElementParser<TElement, TNode, object>> Parsers { get; set; }
+}
+public interface IElementParser<TElement, TNode, TValue> where TElement : IElement
+{
+	TElement Element { get; }
+	TElement Parse(TNode node);
+}
+abstract class ElementParser<TElement, TNode> : IElementParser<TElement, TNode, object> where TElement: IElement
+class CountryImgParser : ElementParser<CountryImg, HtmlNode>
+
+
+
+
+
+
+
+this.Parsers.ToList().ForEach(p => (p).OnSuccess += (o, e) =>
+{
+	var ea = (ParserEventArgs<HtmlNode, IElement>)e;
+	logger.LogMessage(LogLevel.Info, $"[Success parsing {ea.Element.InternalName}]");
+});
+this.Parsers.ToList().ForEach(p => (p).OnFailure += (o, e) =>
+{
+	var ea = (ParserEventArgs<HtmlNode, IElement>)e;
+	logger.LogException(LogLevel.Warning, $"[Error parsing {ea.Element.InternalName} on node {ea.Node.Name}], innertext: [{ea.Node?.InnerText}], innerhtml: [{ea.Node?.InnerHtml}]", ea.Exception);
+});
+
+
+
+
+Type t = this.Page.Domain.GetType();
+this.Page.Domain = (IDomain)Activator.CreateInstance(t);
+
+
+
+
+
+
+
+
+
+
+public interface IElement<out TValue>
+{
+	string Name { get; }
+	TValue Value { get; }
+}
+
+public abstract class Element<TValue> : IElement<TValue>
+{
+	public string Name { get; }
+	public TValue Value { get; set; }
+
+	public Element(string name)
+	{
+		Name = name;
+	}
+}
+
+public class Name : Element<string>
+{
+	public Name() : base("Name") { }
+}
+
+public class Height : Element<int>
+{
+	public Height() : base("Height") { }
+}
+
+
+IElement<object> element1 = new Name();
+IElement<object> element2 = new Height();
+
+
+
+
+
+
+
+ in an interface with object as generic parameter
+
+
+
+
+
+
+IntV {
+	int Value;
+}
+
+
+
+Boxing does not preserve identity
+
+
+string, Type
+"21", typeof(int)
+
+
+
+Parsers - unit test to guarantee all of them have the suffix "Parser", which is expected on load of theses configs
+
+
+
+
+public void TestMethod1<T, TV, N>() where T: Core.ParseHandling.Contracts.IElement<TV> where TV : Core.ParseHandling.Contracts.IValue
+{
+	var d = AppDomain.CurrentDomain.GetAssemblies();
+
+	Type[] typelist = GetTypesInNamespace(Assembly.GetAssembly(typeof(Transfermarkt.Core.ParseHandling.Contracts.IElementParser<T, TV, N>)), "Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player");
+	for (int i = 0; i < typelist.Length; i++)
+	{
+		Console.WriteLine(typelist[i].Name);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+private dynamic GetDynamicPatternsDomain()
+{
+	var competitionMock = new
+	{
+		Type = typeof(Competition),
+		Elements = new[] {
+			new { Type = typeof(Core.ParseHandling.Elements.Competition.Country), Pattern = Patterns.iso },
+			new { Type = typeof(Core.ParseHandling.Elements.Competition.Name), Pattern = Patterns.name },
+			new { Type = typeof(Core.ParseHandling.Elements.Competition.Season), Pattern = Patterns.year },
+			new { Type = typeof(Core.ParseHandling.Elements.Competition.ImgUrl), Pattern = Patterns.link },
+			new { Type = typeof(Core.ParseHandling.Elements.Competition.CountryImg), Pattern = Patterns.link }
+		},
+		Child = new
+		{
+			Type = typeof(Club),
+			Elements = new[] {
+				new { Type = typeof(Core.ParseHandling.Elements.Club.Country), Pattern = Patterns.iso },
+				new { Type = typeof(Core.ParseHandling.Elements.Club.Name), Pattern = Patterns.name },
+				new { Type = typeof(Core.ParseHandling.Elements.Club.Season), Pattern = Patterns.year },
+				new { Type = typeof(Core.ParseHandling.Elements.Club.ImgUrl), Pattern = Patterns.link },
+				new { Type = typeof(Core.ParseHandling.Elements.Club.CountryImg), Pattern = Patterns.link }
+			},
+			Child = new
+			{
+				Type = typeof(Player),
+				Elements = new[] {
+					new { Type = typeof(Core.ParseHandling.Elements.Player.Name), Pattern = Patterns.name },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.ShortName), Pattern = Patterns.abbrevName },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.BirthDate), Pattern = Patterns.date },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.Nationality), Pattern = Patterns.iso },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.Height), Pattern = Patterns.height },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.PreferredFoot), Pattern = Patterns.foot },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.Position), Pattern = Patterns.position },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.ShirtNumber), Pattern = Patterns.shirt },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.Captain), Pattern = Patterns.captain },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.ClubArrivalDate), Pattern = Patterns.date },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.ContractExpirationDate), Pattern = Patterns.date },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.MarketValue), Pattern = Patterns.mv },
+					//new { Type = typeof(Core.ParseHandling.Elements.Player.ImgUrl), Pattern = Patterns.link },
+					new { Type = typeof(Core.ParseHandling.Elements.Player.ProfileUrl), Pattern = Patterns.link }
+				}
+			}
+		}
+	};
+
+	return competitionMock;
+}
+
+private IDomain<IValue> GetPatternsDomain()
+{
+	var competitionMock = new Competition();
+	competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Country() { Value = new NationalityV { Pattern = Patterns.iso } });
+	competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Name() { Value = new StringV { Pattern = Patterns.name } });
+	competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.Season() { Value = new IntV { Pattern = Patterns.year } });
+	competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.ImgUrl() { Value = new StringV { Pattern = Patterns.link } });
+	competitionMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Competition.CountryImg() { Value = new StringV { Pattern = Patterns.link } });
+
+	var clubMock = new Club();
+	clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Country() { Value = new NationalityV { Pattern = Patterns.iso } });
+	clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Name() { Value = new StringV { Pattern = Patterns.name } });
+	clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.Season() { Value = new IntV { Pattern = Patterns.year } });
+	clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.ImgUrl() { Value = new StringV { Pattern = Patterns.link } });
+	clubMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Club.CountryImg() { Value = new StringV { Pattern = Patterns.link } });
+	competitionMock.Children.Add(clubMock);
+
+	var playerMock = new Player();
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Name() { Value = new StringV { Pattern = Patterns.name } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ShortName() { Value = new StringV { Pattern = Patterns.abbrevName } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.BirthDate() { Value = new DatetimeV { Pattern = Patterns.date } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Nationality() { Value = new NationalityV { Pattern = Patterns.iso } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Height() { Value = new IntV { Pattern = Patterns.height } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.PreferredFoot() { Value = new FootV { Pattern = Patterns.foot } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Position() { Value = new PositionV { Pattern = Patterns.position } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ShirtNumber() { Value = new IntV { Pattern = Patterns.shirt } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.Captain() { Value = new IntV { Pattern = Patterns.captain } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ClubArrivalDate() { Value = new DatetimeV { Pattern = Patterns.date } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ContractExpirationDate() { Value = new DatetimeV { Pattern = Patterns.date } });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.MarketValue() { Value = new DecimalV { Pattern = Patterns.mv } });
+	//playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ImgUrl() { Value = Patterns.linkPattern });
+	playerMock.SetElement(new Transfermarkt.Core.ParseHandling.Elements.Player.ProfileUrl() { Value = new StringV { Pattern = Patterns.link } });
+	clubMock.Children.Add(playerMock);
+
+	return competitionMock;
+}
+
+
+
+
+
+
+
+public class StringV : StringValue
+{
+	public string Pattern { get; set; }
+}
+
+public class IntV : IntValue
+{
+	public string Pattern { get; set; }
+}
+
+public class DecimalV : DecimalValue
+{
+	public string Pattern { get; set; }
+}
+
+public class DatetimeV : DatetimeValue
+{
+	public string Pattern { get; set; }
+}
+
+public class NationalityV : NationalityValue
+{
+	public string Pattern { get; set; }
+}
+
+public class PositionV : PositionValue
+{
+	public string Pattern { get; set; }
+}
+
+public class FootV : FootValue
+{
+	public string Pattern { get; set; }
+}
+
+
+
+
+
+
+
+
+
+
+public static class Keys
+    {
+public struct WebConfigKeys
+{
+	//public const string WCFAjax = "WCFAjax";
+
+	public const string WCFUserName = "WCFUserName";
+	public const string WCFUserPassword = "WCFUserPassword";
+
+	public const string IgnoreSslErrors = "IgnoreSslErrors";
+	public const string ValidateSslOrigin = "ValidateSslOrigin";
+	public const string SelfSignedCertificateFriendlyName = "SelfSignedCertificateFriendlyName";
+}
+}
+
+
+
+
+public void ExtractCompetition(Competition competition)
+{
+	string pathString = CreateBaseDir();
+
+	string fileName = competitionFileFormat;
+	//fileName = fileName.Replace("{COUNTRY}", competition.Country?.ToString());
+	//fileName = fileName.Replace("{COMPETITION_NAME}", competition.Name);
+	//fileName = fileName.Replace("{SEASON}", competition.Season.ToString());
+
+	pathString = System.IO.Path.Combine(pathString, fileName);
+
+	string output = JsonConvert.SerializeObject(competition, settings);
+
+	WriteToFile(pathString, output);
+}
+
+public void ExtractClub(Club club)
+{
+	//string pathString = CreateBaseDir();
+
+	//pathString = System.IO.Path.Combine(pathString, string.Format("{0}", club.Country));
+	//System.IO.Directory.CreateDirectory(pathString);
+
+	//string fileName = clubFileFormat;
+	//fileName = fileName.Replace("{COUNTRY}", club.Country?.ToString());
+	//fileName = fileName.Replace("{CLUB_NAME}", club.Name);
+	//fileName = fileName.Replace("{SEASON}", club.Season.ToString());
+
+	//pathString = System.IO.Path.Combine(pathString, fileName);
+
+	//string output = JsonConvert.SerializeObject(club, settings);
+
+	//WriteToFile(pathString, output);
+}
+
+
+
+string cmdToParse = GenerateCmd(
+	"f",
+	new List<(string k, string v)>
+	{
+		("y", "1999")
+	},
+	new List<(int i1, int i2)> {
+		(1, 1),
+		(1, 2),
+		(1, 3),
+		(6, 1),
+		(6, 2),
+		(6, 3)
+	}
+);
+
+
+
+
+\[[^\]]*\]
+
+
+
+
+\[\[[\s\S^[[]+\]\]\r?\n
+
+\[\[([\s\S^]*)\]\]\r?\n
+
+
+
+[^\[\[\]\]]+
+(?<=This is)(.*)(?=sentence)
+
+
+(?<=\[\[)(.*?)(?=\s*\]\])
+
+
+(?<=\[\[)([^\[][^\[][^\]][^\]]*)(?=\s*\]\])
+
+(?<=\[\[)([^\[][^\[]|[^\]][^\]]*)(?=\s*\]\])
+
+
+
+<ul id="logs-list" class="list-unstyled">
+</ul>
+
+
+<li class="logEntry media my-4">
+<div class="media-body">
+  <h5 class="mt-0 mb-1">
+	<span class="logEntry__title">Título</span>
+  </h5>
+  <p class="logEntry__text">Texto.</p>
+</div>
+</li>
+
+
+<template id="logEntry-template">
+  <li class="logEntry media my-4">
+	<div class="media-body">
+		<span class="logEntry__date"></span>
+		<span class="logEntry__type"></span>
+		<span class="logEntry__evt"></span>
+		<span class="logEntry__innerText"></span>
+		<span class="logEntry__innerHtml"></span>
+		<span class="logEntry__ex"></span>
+	</div>
+  </li>
+</template>
+
+
+
+^https:\/\/.+(\/[.]+)
+
+
+https?:\/\/www\.?([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)
+
+
+https?:\/\/[^\/]*(?<L>[-a-zA-Z0-9()@:%_\+.~#?&//=]*)
+
+
+
+(\d[.\d]?[.\d]?)
+(\d+[.\d]*[.\d]*)
+
+
+1.1.1
+
+f y:2010 1.1 1.2
+
+-f -y 2009 -o 1.1 1.1
+
+
+-c eee afr
+-l eng esp prt
+
+-c 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+relva escura: 197, 255, 189
+relva clara: 214, 255, 209
+
+
+
+var SomeCell = (Range)ShortsCells.Cells[0, 0];
+SomeCell.Borders[XlBordersIndex.xlEdgeTop].Color = ColorTranslator.ToOle(LineColor);
+SomeCell.Borders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
+
+//int ii = 0;
+//foreach (Range r in ShortsCells.Cells)
+//{
+//    if (ii > 1)
+//    {
+//        r.Borders[XlBordersIndex.xlEdgeTop].Color = ColorTranslator.ToOle(LineColor);
+//        r.Borders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
+//    }
+//    ii++;
+//}
+
+
+//for (int i = 3; i <= ShortsCells.Cells.Count; i++)
+//{
+//    SomeCell = (Range)ShortsCells.Cells[i];
+
+//    SomeCell.Borders[XlBordersIndex.xlEdgeTop].Color = ColorTranslator.ToOle(LineColor);
+//    SomeCell.Borders[XlBordersIndex.xlEdgeTop].LineStyle = XlLineStyle.xlContinuous;
+//}
+
+
+
+
+
+
+
+
+ private int[] CalculatePoints()
+{
+	int[] points = new int[4];
+
+	var center = fieldView.CentralCell;
+
+	var defenseLength = playerView.Length * 4;
+	var midfieldAndAttackLength = playerView.Length * 3;
+
+	var emptyDefLength = fieldView.NumberOfRows - defenseLength;
+	var emptyMidAndAttLength = fieldView.NumberOfRows - midfieldAndAttackLength;
+
+	var r = (1 / emptyDefLength);
+
+	if (emptyDefLength == 1)
+	{
+		points[0] = 1 + (playerView.Length * 0);
+		points[1] = 1 + (playerView.Length * 1);
+		points[2] = 1 + (playerView.Length * 2) + (1 * r * emptyDefLength);
+		points[3] = 1 + (playerView.Length * 3) + (1 * r * emptyDefLength);
+	}
+	if (emptyDefLength == 2)
+	{
+		points[0] = 1 + (playerView.Length * 0);
+		points[1] = 1 + (playerView.Length * 1) + (1 * r * emptyDefLength);
+		points[2] = 1 + (playerView.Length * 2) + (1 * r * emptyDefLength);
+		points[3] = 1 + (playerView.Length * 3) + (2 * r * emptyDefLength);
+	}
+
+	if (emptyDefLength == 3)
+	{
+		points[0] = 1 + (playerView.Length * 0);
+		points[1] = 1 + (playerView.Length * 1) + (1 * r * emptyDefLength);
+		points[2] = 1 + (playerView.Length * 2) + (2 * r * emptyDefLength);
+		points[3] = 1 + (playerView.Length * 3) + (3 * r * emptyDefLength);
+	}
+
+	if (emptyDefLength == 4)
+	{
+		points[0] = 1 + (playerView.Length * 0);
+		points[1] = 1 + (playerView.Length * 1) + (1 * r * emptyDefLength);
+		points[2] = 1 + (playerView.Length * 2) + ((1 + 2) * r * emptyDefLength);
+		points[3] = 1 + (playerView.Length * 3) + ((1 + 2 + 1) * r * emptyDefLength);
+	}
+
+	if (emptyDefLength == 5)
+	{
+		points[0] = 1 + (playerView.Length * 0) + (1 * r * emptyDefLength);
+		points[1] = 1 + (playerView.Length * 1) + (2 * r * emptyDefLength);
+		points[2] = 1 + (playerView.Length * 2) + (3 * r * emptyDefLength);
+		points[3] = 1 + (playerView.Length * 3) + (4 * r * emptyDefLength);
+	}
+
+	if (emptyDefLength == 6)
+	{
+		points[0] = 1 + (playerView.Length * 0) + (1 * r * emptyDefLength);
+		points[1] = 1 + (playerView.Length * 1) + (2 * r * emptyDefLength);
+		points[2] = 1 + (playerView.Length * 2) + (3 * r * emptyDefLength);
+		points[3] = 1 + (playerView.Length * 3) + (4 * r * emptyDefLength);
+	}
+
+	return points;
+}
+
+
+Position05.Row = 1 + (playerView.Length * 0) + (1 * rr * emptyDefHeight);
+Position04.Row = 1 + (playerView.Length * 1) + (2 * rr * emptyDefHeight);
+Position03.Row = 1 + (playerView.Length * 2) + (3 * rr * emptyDefHeight);
+Position02.Row = 1 + (playerView.Length * 3) + (4 * rr * emptyDefHeight);
+
+Position05.Column = 1 + (playerView.Length * 0) + (1 * r * emptyDefLength);
+Position04.Column = 1 + (playerView.Length * 1) + (2 * r * emptyDefLength);
+Position03.Column = 1 + (playerView.Length * 2) + (3 * r * emptyDefLength);
+Position02.Column = 1 + (playerView.Length * 3) + (4 * r * emptyDefLength);
+
+
+
+Position05.Row = 1 + (playerView.Height) + emptyDefHeight;
+Position04.Row = 1 + (playerView.Height);
+Position03.Row = 1 + (playerView.Height);
+Position02.Row = 1 + (playerView.Height);
+
+
+
+(?<=[1-9]0*)
+
+
+
+
+
+
+var continentPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
+IDictionary<decimal, Link> competitionsLinks = new Dictionary<decimal, Link>();
+
+List<int> continentChosenIndexes = ((Index1ParameterValue)continentCmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
+
+foreach (int continentChosenIndex in continentChosenIndexes)
+{
+	var inde = continentChosenIndex * ContinentFactor;
+	string chosenContinent = $"{BaseURL}/wettbewerbe/{continent[inde].internalName}";
+
+	var continentPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
+	continentPages.Add(continentPage);
+	List<Link> competitionsUrls = continentPage.Fetch(chosenContinent);
+
+	for (int i = 0; i < competitionsUrls.Count; i++)
+	{
+		var ind = (continentChosenIndex * ContinentFactor) + ((i + 1) * CompetitionFactor);
+		competitionsLinks.Add(ind, competitionsUrls[i]);
+	}
+
+	if (continentCmd.CommandType == CommandType.P)
+	{
+		continentPage.Parse(chosenContinent);
+		exporter.Extract(continentPage.Domain);
+	}
+}
+
+
+
+System.Console.WriteLine("Escolha uma das seguintes opções:");
+System.Console.WriteLine(string.Format("0: Todas"));
+var vs = continent.Values.ToList();
+for (int i = 0; i < vs.Count; i++)
+{
+	System.Console.WriteLine(string.Format("{0}: {1}", (continent.Keys.ElementAt(i)), vs[i].displayName));
+}
+
+
+
+//List<List<Link>> continentsCompetitionsUrls = Get(continentCmd, continentsCompetitionsUrls);
+
+//var continentPages = new List<IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>>();
+//IDictionary<string, Link> competitionsLinks = new Dictionary<string, Link>();
+
+//List<int> continentChosenIndexes = ((Index1ParameterValue)continentCmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.O).Val).Indexes;
+
+//foreach (int continentChosenIndex in continentChosenIndexes)
+//{
+//    string chosenContinent = continent[continentChosenIndex.ToString()].Url;
+
+//    var continentPage = (IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode>)Activator.CreateInstance(pageTypes[2], new HAPConnection(), logger);
+//    continentPages.Add(continentPage);
+//    List<Link> competitionsUrls = continentPage.Fetch(chosenContinent);
+
+//    for (int i = 0; i < competitionsUrls.Count; i++)
+//    {
+//        var ind = (continentChosenIndex * ContinentFactor) + ((i + 1) * CompetitionFactor);
+//        competitionsLinks.Add(continentChosenIndex + "." + (i + 1).ToString(), competitionsUrls[i]);
+//    }
+
+//    if (continentCmd.CommandType == CommandType.P)
+//    {
+//        continentPage.Parse(chosenContinent);
+//        exporter.Extract(continentPage.Domain);
+//    }
+//}
+
+
+
+
+private static readonly string[] continentUrls = new string[]
+{
+	"https://www.transfermarkt.pt/wettbewerbe/europa",
+	"https://www.transfermarkt.pt/wettbewerbe/amerika",
+	"https://www.transfermarkt.pt/wettbewerbe/asien",
+	"https://www.transfermarkt.pt/wettbewerbe/afrika"
+};
+
+private static readonly IDictionary<string, (int id, string internalName)> clubs = new Dictionary<string, (int, string)>
+{
+	["Barcelona"] = (131, "fc-barcelona"),
+	["Nacional"] = (982, "cd-nacional"),
+	["V. Guimarães"] = (2420, "vitoria-sc"),
+};
+
+private static IDictionary<Nationality, (string internalName, string d1, string d2)> competitions = new Dictionary<Nationality, (string internalName, string d1, string d2)>
+{
+	[Nationality.ITA] = ("serie-a", "IT1", "")
+};
+
+private static int currentSeason = (DateTime.Today.Year < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+
+
+
+
+static void Main(string[] args)
+{
+	pageTypes.Add(2, typeof(ContinentPage));
+	pageTypes.Add(3, typeof(CompetitionPage));
+	pageTypes.Add(4, typeof(ClubPage));
+	exporter = new JsonExporter();
+
+	System.Console.WriteLine("Transfermarkt Web Scrapper\n");
+
+	PresentOptions(continent);
+
+	bool exit = false;
+	while (!exit)
+	{
+		try
+		{
+			Command cmd = GetInput();
+
+			exit = CheckIfExit(cmd);
+
+			if (!exit)
+			{
+				(ParameterName Cmd, IParameterValue Val) y = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.Y);
+
+
+				IndexesParameterValue i = cmd.Parameters.FirstOrDefault(a => a.Cmd == ParameterName.I).Val as IndexesParameterValue;
+
+				foreach (IIndex ind in i.Indexes)
+				{
+					if (ind is Index1ParameterValue)
+					{
+						int index = (ind as Index1ParameterValue).Index1;
+
+						if (!continent.ContainsKey(index.ToString()))
+						{
+							continue;
+						}
+
+						(Link L, ContinentPage P) choice = continent[index.ToString()];
+
+						if (choice.P != null)
+						{
+							continue;
+						}
+
+						(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[2], choice.L.Url);
+						choice.P = (ContinentPage)e.Page;
+						continent[index.ToString()] = choice;
+
+						for (int l = 0; l < e.Links.Count; l++)
+						{
+							var key = $"{index + "." + (l + 1)}";
+
+							if (!competition.ContainsKey(key))
+							{
+								competition.Add(key, (e.Links[l], null));
+							}
+						}
+
+						// Present options
+						System.Console.WriteLine();
+						for (int l = 0; l < e.Links.Count; l++)
+						{
+							var key = $"{index + "." + (l + 1)}";
+
+							System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(competition[key].L.Title) ? competition[key].L.Title : competition[key].L.Url)));
+						}
+					}
+					else if (ind is Index2ParameterValue)
+					{
+						int Index1 = (ind as Index2ParameterValue).Index1;
+						int Index2 = (ind as Index2ParameterValue).Index2;
+						string index = $"{Index1 + "." + Index2}";
+
+						if (!competition.ContainsKey(index.ToString()))
+						{
+							if (!continent.ContainsKey(Index1.ToString()))
+							{
+								continue;
+							}
+
+							(Link L, ContinentPage P) continentChoice = continent[Index1.ToString()];
+
+							if (continentChoice.P == null)
+							{
+								(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e1 = ExecuteAction(cmd, pageTypes[2], continentChoice.L.Url);
+								continentChoice.P = (ContinentPage)e1.Page;
+								continent[index.ToString()] = continentChoice;
+
+								for (int l = 0; l < e1.Links.Count; l++)
+								{
+									var key = $"{index + "." + (l + 1)}";
+
+									if (!competition.ContainsKey(key))
+									{
+										competition.Add(key, (e1.Links[l], null));
+									}
+								}
+							}
+						}
+
+						if (!competition.ContainsKey(index.ToString()))
+						{
+							continue;
+						}
+
+						(Link L, CompetitionPage P) competitionChoice = competition[index.ToString()];
+
+						if (competitionChoice.P != null)
+						{
+							continue;
+						}
+
+						(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e2 = ExecuteAction(cmd, pageTypes[3], competitionChoice.L.Url);
+						competitionChoice.P = (CompetitionPage)e2.Page;
+						competition[index.ToString()] = competitionChoice;
+
+						for (int l = 0; l < e2.Links.Count; l++)
+						{
+							var key = $"{Index1 + "." + Index2 + "." + (l + 1)}";
+
+							if (!club.ContainsKey(key))
+							{
+								club.Add(key, (e2.Links[l], null));
+							}
+						}
+
+						// Present options
+						System.Console.WriteLine();
+						for (int l = 0; l < e2.Links.Count; l++)
+						{
+							var key = $"{index + "." + (l + 1)}";
+
+							System.Console.WriteLine(string.Format("\t{0}: {1}", key, (!string.IsNullOrEmpty(club[key].L.Title) ? club[key].L.Title : club[key].L.Url)));
+						}
+					}
+					else if (ind is Index3ParameterValue)
+					{
+						int Index1 = (ind as Index3ParameterValue).Index1;
+						int Index2 = (ind as Index3ParameterValue).Index2;
+						int Index3 = (ind as Index3ParameterValue).Index3;
+						string index = $"{Index1 + "." + Index2 + "." + Index3}";
+
+						if (!club.ContainsKey(index.ToString()))
+						{
+							if (!competition.ContainsKey(index.ToString()))
+							{
+								if (!continent.ContainsKey(Index1.ToString()))
+								{
+									continue;
+								}
+
+								(Link L, ContinentPage P) continentChoice = continent[Index1.ToString()];
+
+								if (continentChoice.P == null)
+								{
+									(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e1 = ExecuteAction(cmd, pageTypes[2], continentChoice.L.Url);
+									continentChoice.P = (ContinentPage)e1.Page;
+									continent[index.ToString()] = continentChoice;
+
+									for (int l = 0; l < e1.Links.Count; l++)
+									{
+										var key = $"{index + "." + (l + 1)}";
+
+										if (!competition.ContainsKey(key))
+										{
+											competition.Add(key, (e1.Links[l], null));
+										}
+									}
+								}
+							}
+
+							if (!competition.ContainsKey(index.ToString()))
+							{
+								continue;
+							}
+
+							(Link L, CompetitionPage P) competitionChoice = competition[index.ToString()];
+
+							if (competitionChoice.P != null)
+							{
+								continue;
+							}
+
+							(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e3 = ExecuteAction(cmd, pageTypes[3], competitionChoice.L.Url);
+							competitionChoice.P = (CompetitionPage)e3.Page;
+							competition[index.ToString()] = competitionChoice;
+
+							for (int l = 0; l < e3.Links.Count; l++)
+							{
+								var key = $"{Index1 + "." + Index2 + "." + (l + 1)}";
+
+								if (!club.ContainsKey(key))
+								{
+									club.Add(key, (e3.Links[l], null));
+								}
+							}
+						}
+
+						if (!club.ContainsKey(index.ToString()))
+						{
+							continue;
+						}
+
+						(Link L, ClubPage P) clubChoice = club[index.ToString()];
+
+						if (clubChoice.P != null)
+						{
+							continue;
+						}
+
+						(IPage<IDomain<IValue>, IElement<IValue>, IValue, HtmlNode> Page, List<Link> Links) e = ExecuteAction(cmd, pageTypes[4], clubChoice.L.Url);
+						clubChoice.P = (ClubPage)e.Page;
+						club[index.ToString()] = clubChoice;
+					}
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			System.Console.WriteLine("Error reading or interpreting chosen option.");
+			System.Console.WriteLine(ex.Message);
+		}
+	}
+}
+
+
+
+
+-------------------------------------------------------------
+
+public virtual void Fetch()
+        {
+            this.Connect(this.Url);
+
+            if (Sections == null)
+            {
+                return;
+            }
+
+            var urls = new List<Link>();
+
+            var childSections = Sections.OfType<ChildsSection<TNode, TValue>>();
+            var sections = Sections.Where(s => !(s is ChildsSection<TNode, TValue>));
+
+            if (sections == null)
+            {
+                return;
+            }
+
+            foreach (var section in sections)
+            {
+                section.Parse();
+            }
+
+            if (!(childSections.Any()))
+            {
+                return;
+            }
+
+            foreach (var section in Sections)
+            {
+                if (section is IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)
+                {
+                    urls.AddRange(((IChildsSection<IDomain<TValue>, IElement<TValue>, TValue, TNode>)section).Fetch().ToArray());
+                }
+            }
+        }
+
+        public virtual IDomain<TValue> Parse(IReadOnlyList<ISection> sections = null)
+        {
+            OnBeforeParse?.Invoke(this, new PageEventArgs(this.Url));
+            
+            this.Connect(this.Url);
+
+            // Sections that have children shouldn't be parsed.
+            var ss = Sections.Where(s => !(s is ChildsSection<TNode, TValue>));
+            if (sections != null)
+            {
+                ss = ss.Where(s => sections.Contains(s));
+            }
+
+            if (ss == null)
+            {
+                return this.Domain;
+            }
+
+            foreach (var section in ss)
+            {
+                section.Parse();
+            }
+
+            OnAfterParse?.Invoke(this, new PageEventArgs(this.Url));
+
+            return this.Domain;
+        }
+
+        public virtual IDomain<TValue> ParseChildren()
+        {
+            OnBeforeParse?.Invoke(this, new PageEventArgs(this.Url));
+
+            this.Connect(this.Url);
+
+            var ss = Sections.Where(s => (s is ChildsSection<TNode, TValue>));
+
+            if (ss == null)
+            {
+                return this.Domain;
+            }
+
+            foreach (var section in ss)
+            {
+                section.Parse();
+            }
+
+            OnAfterParse?.Invoke(this, new PageEventArgs(this.Url));
+
+            return this.Domain;
+        }
+-------------------------------------------------------------
+
+
+
+
+
+Match splitArguments = Regex.Match(v.ToString(), @"(?<Continent>[0-9]?[0-9]?[0-9])(?<League>[0-9][0-9][0-9])(?<Club>[0-9][0-9][0-9])(?<Player>[0-9][0-9][0-9])$");
+var continent = int.Parse(splitArguments.Groups["Continent"].Value);
+var competition = int.Parse(splitArguments.Groups["League"].Value);
+var club = int.Parse(splitArguments.Groups["Club"].Value);
+
+var ss = new List<int>();
+if (continent > 0)
+{
+	ss.Add(continent);
+}
+if (competition > 0)
+{
+	ss.Add(competition);
+}
+if (club > 0)
+{
+	ss.Add(club);
+}
+
+System.Console.WriteLine(string.Format("\t{0}: {1}", string.Join(".", ss), (!string.IsNullOrEmpty(urls[v].Title) ? urls[v].Title : urls[v].Url)));
+
+
+
+switch (cmd.CommandType)
+{
+	case CommandType.F:
+		choice.P.Fetch(choice.L.Url);
+		break;
+	case CommandType.P:
+		if (isFinal)
+		{
+			choice.P.Fetch(choice.L.Url);
+			choice.P.Parse(choice.L.Url);
+			exporter.Extract(choice.P.Domain);
+		}
+		break;
+	default:
+		break;
+}
+
+
+Type tChildPage = this.ChildPage.GetType();
+this.ChildPage.Connection.Reset();
+var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage);
+
+
+
+git clone --branch develop --origin origin --progress -v https://github.com/10Leo/Transfermarkt.git c:\ws\Transfermarkt3
+
+
+
+
+60	0	0
+65	0	0
+74	0	0
+92	0	0
+105	0	0
+128	0	0
+150	0	0
+195	0	0
+255	30	30
+255	143	143
+255	255	255
+

@@ -20,7 +20,7 @@ namespace Transfermarkt.Core.Test
         public const string link = @"(^http.+)|(\/)";
         public const string captain = @"(^[01]$)";
         public const string height = @"(^[12][0-9]{2}$)";
-        public const string foot = @"^([R|L|A]{1})$";
+        public const string foot = @"^([R|L|B]{1})$";
         public const string position = @"^[a-zA-Z]{2}$";
         public const string mv = @"[0-9]+";
         public const string shirt = @"[0-9]+";

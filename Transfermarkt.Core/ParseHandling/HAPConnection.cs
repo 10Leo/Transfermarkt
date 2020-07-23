@@ -37,7 +37,7 @@ namespace Transfermarkt.Core.ParseHandling
                 //Debug.WriteLine(ex.StackTrace);
             }
 
-            return doc.DocumentNode;
+            return doc?.DocumentNode;
         }
 
         public override void Reset()
