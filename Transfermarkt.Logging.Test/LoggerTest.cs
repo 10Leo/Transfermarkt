@@ -12,7 +12,7 @@ namespace Transfermarkt.Logging.Test
         [TestMethod, TestCategory("Logger")]
         public void LogsAnException()
         {
-            var logger = LoggerFactory.GetLogger(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 0);
+            var logger = LoggerFactory.GetLogger(0);
             for (int i = 0; i < 10; i++)
             {
                 logger.LogException(LogLevel.Error, new List<string> { "this message" }, new Exception("this is supposed to be an exception"));
@@ -22,7 +22,7 @@ namespace Transfermarkt.Logging.Test
         [TestMethod, TestCategory("Logger")]
         public void LogsAMessage()
         {
-            var logger = LoggerFactory.GetLogger(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), 0);
+            var logger = LoggerFactory.GetLogger(0);
             for (int i = 0; i < 10; i++)
             {
                 logger.LogMessage(LogLevel.Info, new List<string> { "this is a message from the past me" });

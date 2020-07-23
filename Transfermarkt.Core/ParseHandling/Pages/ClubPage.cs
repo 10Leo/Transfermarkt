@@ -10,7 +10,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ClubPage : Page<IValue, HtmlNode>
     {
-        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(@"c:\Transfermarkt\Logs", 2);
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
 
         public ClubPage() : base(new HAPConnection())
         {

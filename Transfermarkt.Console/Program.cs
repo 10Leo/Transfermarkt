@@ -28,7 +28,7 @@ namespace Transfermarkt.Console
         private const decimal CompetitionFactor = 1000000;
         private const decimal ClubFactor = 1000;
 
-        private static readonly ILogger logger = LoggerFactory.GetLogger(LogPath, MinimumLoggingLevel);
+        private static readonly ILogger logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
 
         private static IExporter exporter;
 

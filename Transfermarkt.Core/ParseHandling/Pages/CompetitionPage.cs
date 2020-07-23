@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
-        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(@"c:\Transfermarkt\Logs", 2);
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
 
         public int? Year { get; set; }
 

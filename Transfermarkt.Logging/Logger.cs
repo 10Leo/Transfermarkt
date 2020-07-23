@@ -10,20 +10,20 @@ namespace Transfermarkt.Logging
 {
     public class Logger : ILogger
     {
-        private string path = string.Empty;
-        private readonly int minimumLevel = 0;
+        private readonly string path = string.Empty;
+        private readonly LogLevel minimumLevel = 0;
         private readonly string entryStart = "[[";
         private readonly string entryEnd = "]]";
 
         private readonly string separatorStart = "<||";
         private readonly string separatorEnd = "||>";
 
-        public Logger(string path, int minimumLevel)
+        public Logger(string path, LogLevel minimumLevel)
         {
             this.path = path + "\\" + $"log_{DateTime.Now.ToString("yyyyMMdd")}.txt";
             this.minimumLevel = minimumLevel;
 
-            //if (!File.Exists(this.path))
+            if (!File.Exists(this.path))
             {
                 using (FileStream fs = File.Create(this.path))
                 {
@@ -59,7 +59,7 @@ namespace Transfermarkt.Logging
         private void LogWrite(LogLevel level, IList<string> logMessages)
         {
             //TODO: change received logMessages parameter to be a dictionary with its key being the code that it's now passed as part of the message.
-            if ((int)level < this.minimumLevel)
+            if ((int)level < (int)this.minimumLevel)
             {
                 return;
             }
