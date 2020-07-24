@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = node.InnerText?.Split(new[] { " (" }, StringSplitOptions.None)?[0];
 
-                return new BirthDate { Value = Converter.Convert(parsedStr) };
+                return new BirthDate(parsedStr);
             };
         }
     }

@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault(n => (n.Attributes["class"]?.Value).Contains("kapitaenicon-table"));
                 var parsedStr = (cap == null) ? "0" : "1";
 
-                return new Captain { Value = Converter.Convert(parsedStr) };
+                return new Captain(parsedStr);
             };
         }
     }

@@ -8,7 +8,7 @@ namespace Transfermarkt.Core.Actors
     {
         public Competition()
         {
-            Elements = new List<IElement<IValue>>
+            Elements = new List<IElement<IValue, IConverter<IValue>>>
             {
                 new Country(),
                 new Name(),

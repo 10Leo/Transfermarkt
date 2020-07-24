@@ -5,17 +5,17 @@ namespace Page.Scraper.Contracts
 {
     public abstract class Domain : IDomain
     {
-        public IList<IElement<IValue>> Elements { get; set; }
+        public IList<IElement<IValue, IConverter<IValue>>> Elements { get; set; }
 
         public IList<IDomain> Children { get; set; }
 
         public Domain()
         {
-            Elements = new List<IElement<IValue>>();
+            Elements = new List<IElement<IValue, IConverter<IValue>>>();
             Children = new List<IDomain>();
         }
 
-        public IElement<IValue> SetElement(IElement<IValue> element)
+        public IElement<IValue, IConverter<IValue>> SetElement(IElement<IValue, IConverter<IValue>> element)
         {
             if (element == null)
             {

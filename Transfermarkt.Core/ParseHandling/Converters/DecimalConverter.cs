@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
-    class DecimalConverter : IConverter<DecimalValue>
+    public class DecimalConverter : IConverter<DecimalValue>
     {
         public DecimalValue Convert(string stringToConvert)
         {

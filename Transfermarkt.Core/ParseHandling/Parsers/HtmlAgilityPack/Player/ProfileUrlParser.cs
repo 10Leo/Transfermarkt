@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault(n => n.Attributes["class"]?.Value == "spielprofil_tooltip")
                     .Attributes["href"].Value;
 
-                return new ProfileUrl { Value = Converter.Convert(parsedStr) };
+                return new ProfileUrl(parsedStr);
             };
         }
     }

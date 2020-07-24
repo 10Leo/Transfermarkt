@@ -49,12 +49,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public CompetitionPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition Details", page)
         {
-            this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
-                new Parsers.HtmlAgilityPack.Competition.CountryParser{ Converter = new NationalityConverter() },
-                new Parsers.HtmlAgilityPack.Competition.NameParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Competition.SeasonParser{ Converter = new IntConverter() },
-                new Parsers.HtmlAgilityPack.Competition.ImgUrlParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Competition.CountryImgParser{ Converter = new StringConverter() },
+            this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
+                new Parsers.HtmlAgilityPack.Competition.CountryParser(),
+                new Parsers.HtmlAgilityPack.Competition.NameParser(),
+                new Parsers.HtmlAgilityPack.Competition.SeasonParser(),
+                new Parsers.HtmlAgilityPack.Competition.ImgUrlParser(),
+                new Parsers.HtmlAgilityPack.Competition.CountryImgParser(),
             };
 
             this.GetElementsNodes = () =>

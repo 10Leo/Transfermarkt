@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .Where(n => n.Attributes["class"]?.Value == "flaggenrahmen")
                     .Select(n => n.Attributes["title"].Value)?.ToArray().FirstOrDefault().Trim();
 
-                return new Nationality { Value = Converter.Convert(parsedStr) };
+                return new Nationality(parsedStr);
             };
         }
     }

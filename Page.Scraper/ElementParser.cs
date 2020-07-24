@@ -2,14 +2,12 @@
 
 namespace Page.Scraper.Contracts
 {
-    public abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TValue, TNode> where TElement : IElement<TValue>, new() where TValue : IValue
+    public abstract class ElementParser<TElement, TValue, TNode> : IElementParser<TElement, TValue, TNode> where TElement : IElement<TValue, IConverter<TValue>>, new() where TValue : IValue
     {
         private bool parsedAlready = false;
 
         public Predicate<TNode> CanParsePredicate { get; set; }
         public Func<TNode, TElement> ParseFunc { get; set; }
-
-        public IConverter<TValue> Converter { get; set; }
 
         public event EventHandler<ParserEventArgs<TNode>> OnSuccess;
         public event EventHandler<ParserEventArgs<TNode>> OnFailure;
@@ -32,11 +30,11 @@ namespace Page.Scraper.Contracts
             {
                 e = ParseFunc(node);
 
-                OnSuccess?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value.ToString())));
+                OnSuccess?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value?.ToString())));
             }
             catch (Exception ex)
             {
-                OnFailure?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value.ToString()), ex));
+                OnFailure?.Invoke(this, new ParserEventArgs<TNode>(node, (e.InternalName, e.Value?.ToString()), ex));
             }
             finally
             {

@@ -45,12 +45,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public ClubPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Club Details", page)
         {
-            this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
-                new Parsers.HtmlAgilityPack.Club.CountryParser{ Converter = new NationalityConverter() },
-                new Parsers.HtmlAgilityPack.Club.NameParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Club.SeasonParser{ Converter = new IntConverter() },
-                new Parsers.HtmlAgilityPack.Club.ImgUrlParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Club.CountryImgParser{ Converter = new StringConverter() }
+            this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
+                new Parsers.HtmlAgilityPack.Club.CountryParser(),
+                new Parsers.HtmlAgilityPack.Club.NameParser(),
+                new Parsers.HtmlAgilityPack.Club.SeasonParser(),
+                new Parsers.HtmlAgilityPack.Club.ImgUrlParser(),
+                new Parsers.HtmlAgilityPack.Club.CountryImgParser()
             };
 
             this.GetElementsNodes = () =>
@@ -74,21 +74,21 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public ClubPlayersPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Club - Players Section", page)
         {
-            this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
-                new Parsers.HtmlAgilityPack.Player.NameParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Player.ShortNameParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Player.BirthDateParser{ Converter = new DateConverter() },
-                new Parsers.HtmlAgilityPack.Player.NationalityParser{ Converter = new NationalityConverter() },
-                new Parsers.HtmlAgilityPack.Player.HeightParser{ Converter = new IntConverter() },
-                new Parsers.HtmlAgilityPack.Player.PreferredFootParser{ Converter = new FootConverter() },
-                new Parsers.HtmlAgilityPack.Player.PositionParser{ Converter = new PositionConverter() },
-                new Parsers.HtmlAgilityPack.Player.ShirtNumberParser{ Converter = new IntConverter() },
-                new Parsers.HtmlAgilityPack.Player.CaptainParser{ Converter = new IntConverter() },
-                new Parsers.HtmlAgilityPack.Player.ClubArrivalDateParser{ Converter = new DateConverter() },
-                new Parsers.HtmlAgilityPack.Player.ContractExpirationDateParser{ Converter = new DateConverter() },
-                new Parsers.HtmlAgilityPack.Player.MarketValueParser{ Converter = new DecimalConverter() },
-                new Parsers.HtmlAgilityPack.Player.ImgUrlParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Player.ProfileUrlParser{ Converter = new StringConverter() }
+            this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
+                new Parsers.HtmlAgilityPack.Player.NameParser(),
+                new Parsers.HtmlAgilityPack.Player.ShortNameParser(),
+                new Parsers.HtmlAgilityPack.Player.BirthDateParser(),
+                new Parsers.HtmlAgilityPack.Player.NationalityParser(),
+                new Parsers.HtmlAgilityPack.Player.HeightParser(),
+                new Parsers.HtmlAgilityPack.Player.PreferredFootParser(),
+                new Parsers.HtmlAgilityPack.Player.PositionParser(),
+                new Parsers.HtmlAgilityPack.Player.ShirtNumberParser(),
+                new Parsers.HtmlAgilityPack.Player.CaptainParser(),
+                new Parsers.HtmlAgilityPack.Player.ClubArrivalDateParser(),
+                new Parsers.HtmlAgilityPack.Player.ContractExpirationDateParser(),
+                new Parsers.HtmlAgilityPack.Player.MarketValueParser(),
+                new Parsers.HtmlAgilityPack.Player.ImgUrlParser(),
+                new Parsers.HtmlAgilityPack.Player.ProfileUrlParser()
             };
 
             this.GetChildsNodes = () =>

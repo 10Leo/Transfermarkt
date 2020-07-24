@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = Regex.Replace(node.InnerText, @"\.", "/");
 
-                return new ContractExpirationDate(DateTime.Now) { Value = Converter.Convert(parsedStr) };
+                return new ContractExpirationDate(parsedStr);
             };
         }
     }

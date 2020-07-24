@@ -2,7 +2,7 @@
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
-    class IntConverter : IConverter<IntValue>
+    public class IntConverter : IConverter<IntValue>
     {
         public IntValue Convert(string stringToConvert)
         {

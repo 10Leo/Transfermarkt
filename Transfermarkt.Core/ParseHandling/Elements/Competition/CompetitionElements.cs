@@ -1,44 +1,40 @@
 ﻿using Page.Scraper.Contracts;
+using Transfermarkt.Core.ParseHandling.Converters;
 
 namespace Transfermarkt.Core.ParseHandling.Elements.Competition
 {
-    public class Name : Element<StringValue>
+    public class Name : Element<StringValue, StringConverter>
     {
-        public Name() : base("Name", "Name")
-        {
-            this.Value = new StringValue();
-        }
+        public Name() : this(null) { }
+
+        public Name(string value) : base("Name", "Name", value) { }
     }
 
-    public class Season : Element<IntValue>
+    public class Season : Element<IntValue, IntConverter>
     {
-        public Season() : base("Y", "Season")
-        {
-            this.Value = new IntValue();
-        }
+        public Season() : this(null) { }
+
+        public Season(string value) : base("Y", "Season", value) { }
     }
 
-    public class ImgUrl : Element<StringValue>
+    public class ImgUrl : Element<StringValue, StringConverter>
     {
-        public ImgUrl() : base("ImgUrl", "Img Url")
-        {
-            this.Value = new StringValue();
-        }
+        public ImgUrl() : this(null) { }
+
+        public ImgUrl(string value) : base("ImgUrl", "Img Url", value) { }
     }
 
-    public class Country : Element<NationalityValue>
+    public class Country : Element<NationalityValue, NationalityConverter>
     {
-        public Country() : base("Country", "Country")
-        {
-            this.Value = new NationalityValue();
-        }
+        public Country() : this(null) { }
+
+        public Country(string value) : base("Country", "Country", value) { }
     }
 
-    public class CountryImg : Element<StringValue>
+    public class CountryImg : Element<StringValue, StringConverter>
     {
-        public CountryImg() : base("CountryImg", "Country Img")
-        {
-            this.Value = new StringValue();
-        }
+        public CountryImg() : this(null) { }
+
+        public CountryImg(string value) : base("CountryImg", "Country Img", value) { }
     }
 }

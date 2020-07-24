@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault()
                     .InnerText;
 
-                return new Position { Value = Converter.Convert(parsedStr) };
+                return new Position(parsedStr);
             };
         }
     }

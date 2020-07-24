@@ -33,7 +33,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     n = n * 1000;
                 }
 
-                return new MarketValue { Value = Converter.Convert(n.ToString()) };
+                return new MarketValue(n.ToString());
             };
         }
     }

@@ -39,7 +39,7 @@ namespace Transfermarkt.Core.Test.Parsers
         private List<string> TestParserOfType<TNode>(Assembly[] assemblies)
         {
             return assemblies.SelectMany(x => x.GetTypes())
-                .Where(x => typeof(IElementParser<IElement<IValue>, IValue, TNode>).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                .Where(x => typeof(IElementParser<IElement<IValue, IConverter<IValue>>, IValue, TNode>).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
                 .Select(x => x.Name).ToList();
         }
 

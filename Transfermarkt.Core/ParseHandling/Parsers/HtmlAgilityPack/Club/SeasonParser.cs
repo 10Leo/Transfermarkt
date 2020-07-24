@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
                     parsedStr = 0;
                 }
 
-                return new Season { Value = Converter.Convert(parsedStr.ToString()) };
+                return new Season(parsedStr.ToString());
             };
         }
     }
