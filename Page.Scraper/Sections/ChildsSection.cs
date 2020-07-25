@@ -12,7 +12,7 @@ namespace Page.Scraper.Contracts
         {
             get
             {
-                var index = 0;
+                var index = -1;
                 for (int i = 0; i < Children.Count; i++)
                 {
                     if (Children[i].Title == name)
@@ -22,7 +22,7 @@ namespace Page.Scraper.Contracts
                     }
                 }
 
-                if (index == 0)
+                if (index == -1)
                 {
                     return null;
                 }
