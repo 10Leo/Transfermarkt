@@ -31,16 +31,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             { Actors.ContinentCode.FFF, "https://www.transfermarkt.pt/wettbewerbe/afrika" }
         };
 
-        [TestMethod, TestCategory("Page")]
-        public void TestPageMethods()
-        {
-            ClubPage page = new ClubPage();
-            var section = page["Club - Players Section"];
-
-            Assert.IsNotNull(section, "The returned Section is null.");
-            Assert.IsTrue(section.Name == "Club - Players Section", "The returned Section was different than the one expected.");
-        }
-
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
         {
@@ -192,20 +182,20 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
             foreach (string pageName in linksToParse)
             {
-                IPage<IDomain, HtmlAgilityPack.HtmlNode> compPage = childSection[pageName];
+                IPage<IDomain, HtmlAgilityPack.HtmlNode> compPage = childSection[new Dictionary<string, string> { { "Title", pageName } }];
                 Assert.IsNotNull(compPage, $"The returned Page {pageName} is null.");
                 Assert.IsTrue(compPage.Domain.Children.Count == 0, $"No Club children should exist for {pageName}.");
             }
 
 
-            IPage<IDomain, HtmlAgilityPack.HtmlNode> compPagePT = childSection[ptComp];
+            IPage<IDomain, HtmlAgilityPack.HtmlNode> compPagePT = childSection[new Dictionary<string, string> { { "Nationality", Actors.Nationality.PRT.ToString() } }];
             Assert.IsNotNull(compPagePT, $"The returned Page {ptComp} is null.");
 
             compPagePT.Parse(parseChildren: true);
             Assert.IsTrue(compPagePT.Domain.Children.Count > 0, $"There should exist club children on {ptComp}.");
             foreach (string pageName in linksToParse.Where(l => l != ptComp))
             {
-                IPage<IDomain, HtmlAgilityPack.HtmlNode> compPage = childSection[pageName];
+                IPage<IDomain, HtmlAgilityPack.HtmlNode> compPage = childSection[new Dictionary<string, string> { { "Title", pageName } }];
                 Assert.IsNotNull(compPage, $"The returned Page {pageName} is null.");
                 Assert.IsTrue(compPage.Domain.Children.Count == 0, $"No Club children should exist for {pageName}.");
             }
