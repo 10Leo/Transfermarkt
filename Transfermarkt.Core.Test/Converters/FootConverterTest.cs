@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Transfermarkt.Core.ParseHandling;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Contracts.Converter;
 using Transfermarkt.Core.ParseHandling.Converters;
 
@@ -16,7 +15,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
         public static string SettingsFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFolderPath);
         public static string SettingsFile { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SettingsFootFile);
 
-        private IDictionary<string, Type> languages = new Dictionary<string, Type>();
+        private readonly IDictionary<string, Type> languages = new Dictionary<string, Type>();
 
         public FootConverterTest()
         {

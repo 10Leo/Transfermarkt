@@ -14,12 +14,7 @@ namespace Page.Scraper.Contracts
 
         public virtual bool CanParse(TNode node)
         {
-            if (parsedAlready)
-            {
-                return false;
-            }
-
-            return (CanParsePredicate != null) ? CanParsePredicate(node) : false;
+            return !parsedAlready && CanParsePredicate != null && CanParsePredicate(node);
         }
 
         public virtual TElement Parse(TNode node)

@@ -4,8 +4,6 @@ namespace Page.Scraper.Contracts
 {
     public interface IElementParser<out TElement, out TValue, TNode> where TElement : IElement<TValue, IConverter<TValue>> where TValue : IValue
     {
-        //IConverter<TValue> Converter { get; set; }
-
         event EventHandler<ParserEventArgs<TNode>> OnSuccess;
         event EventHandler<ParserEventArgs<TNode>> OnFailure;
 
