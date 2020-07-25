@@ -76,6 +76,10 @@
     <Folder Include="Elements\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LJMB.Common\LJMB.Common.csproj">
+      <Project>{417AFA74-AD2E-4F9F-8EB1-E177EABA4CE5}</Project>
+      <Name>LJMB.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Page.Scraper\Page.Scraper.csproj">
       <Project>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</Project>
       <Name>Page.Scraper</Name>

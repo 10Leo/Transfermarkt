@@ -49,6 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
+    <Compile Include="Config\Configs.cs" />
+    <Compile Include="Config\ConvertersConfig.cs" />
+    <Compile Include="Config\ParsersConfig.cs" />
     <Compile Include="ParseHandling\Converters\ContinentCodeConverter.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
     <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
@@ -60,7 +63,6 @@
     <Compile Include="Actors\Player.cs" />
     <Compile Include="Actors\Position.cs" />
     <Compile Include="Actors\Foot.cs" />
-    <Compile Include="ConfigManager.cs" />
     <Compile Include="ParseHandling\Converters\IFootConverter.cs" />
     <Compile Include="ParseHandling\Converters\IPositionConverter.cs" />
     <Compile Include="ParseHandling\Converters\DateConverter.cs" />
@@ -109,6 +111,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LJMB.Common\LJMB.Common.csproj">
+      <Project>{417afa74-ad2e-4f9f-8eb1-e177eaba4ce5}</Project>
+      <Name>LJMB.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Page.Scraper\Page.Scraper.csproj">
       <Project>{0e517dc1-76e0-43ad-b593-4bf2faa344ac}</Project>
       <Name>Page.Scraper</Name>

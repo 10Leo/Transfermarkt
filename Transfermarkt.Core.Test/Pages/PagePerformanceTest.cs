@@ -1,4 +1,5 @@
-﻿using LJMB.Logging;
+﻿using LJMB.Common;
+using LJMB.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Page.Scraper.Contracts;
 using System;

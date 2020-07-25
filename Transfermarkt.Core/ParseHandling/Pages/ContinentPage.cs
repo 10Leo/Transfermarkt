@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using LJMB.Common;
 using LJMB.Logging;
 using Page.Scraper.Contracts;
 using System;
