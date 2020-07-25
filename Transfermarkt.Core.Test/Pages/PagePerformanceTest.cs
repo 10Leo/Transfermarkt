@@ -1,15 +1,12 @@
-﻿using System;
+﻿using LJMB.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Page.Scraper.Contracts;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Page.Scraper.Contracts;
-using Transfermarkt.Core.ParseHandling;
-using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
-using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {

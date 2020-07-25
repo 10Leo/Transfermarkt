@@ -1,13 +1,11 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Transfermarkt.Core.ParseHandling;
-using Transfermarkt.Core.ParseHandling.Contracts;
-using Transfermarkt.Core.ParseHandling.Pages;
-using Transfermarkt.Logging;
-using System.Linq;
-using System.Collections.Generic;
+﻿using LJMB.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Page.Scraper.Contracts;
-using Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Continent;
+using System.Collections.Generic;
+using System.Linq;
+using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Elements.Continent;
+using Transfermarkt.Core.ParseHandling.Pages;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {

@@ -88,9 +88,9 @@
       <Project>{51E667D6-B895-494F-95DA-EB080DD8EEBB}</Project>
       <Name>Page.Scraper.Exporter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Transfermarkt.Logging\Transfermarkt.Logging.csproj">
+    <ProjectReference Include="..\LJMB.Logging\LJMB.Logging.csproj">
       <Project>{3166B876-1387-4469-9B20-7BE12BCD105E}</Project>
-      <Name>Transfermarkt.Logging</Name>
+      <Name>LJMB.Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

@@ -113,9 +113,9 @@
       <Project>{0e517dc1-76e0-43ad-b593-4bf2faa344ac}</Project>
       <Name>Page.Scraper</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Transfermarkt.Logging\Transfermarkt.Logging.csproj">
+    <ProjectReference Include="..\LJMB.Logging\LJMB.Logging.csproj">
       <Project>{3166b876-1387-4469-9b20-7be12bcd105e}</Project>
-      <Name>Transfermarkt.Logging</Name>
+      <Name>LJMB.Logging</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
