@@ -81,12 +81,12 @@ namespace Page.Scraper.Contracts
             P(Children, parseChildren, parseChildren);
         }
 
-        public void Parse(IEnumerable<Link> links)
+        public void Parse(IEnumerable<Link> links, bool parseChildren = false)
         {
             var linksToParse = links?.Where(s => Children.Contains(s));
             
             Validate(linksToParse);
-            P(linksToParse, true, false);
+            P(linksToParse, true, parseChildren);
         }
 
         private void P(IEnumerable<Link> linksToParse, bool parseChildren, bool child)
