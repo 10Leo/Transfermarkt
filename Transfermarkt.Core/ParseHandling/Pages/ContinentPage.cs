@@ -40,9 +40,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
         public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Continent Details", page)
         {
-            this.Parsers = new List<IElementParser<IElement<IValue>, IValue, HtmlNode>>() {
-                new Parsers.HtmlAgilityPack.Continent.NameParser{ Converter = new StringConverter() },
-                new Parsers.HtmlAgilityPack.Continent.ContinentCodeParser{ Converter = new ContinentCodeConverter() },
+            this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
+                new Parsers.HtmlAgilityPack.Continent.NameParser(),
+                new Parsers.HtmlAgilityPack.Continent.ContinentCodeParser()
             };
 
             this.GetElementsNodes = () =>

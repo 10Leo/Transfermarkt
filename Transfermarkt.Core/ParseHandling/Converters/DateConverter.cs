@@ -4,7 +4,7 @@ using System.Globalization;
 
 namespace Transfermarkt.Core.ParseHandling.Converters
 {
-    class DateConverter : IConverter<DatetimeValue>
+    public class DateConverter : IConverter<DatetimeValue>
     {
         private readonly string dateFormat = "dd/MM/yyyy";
         

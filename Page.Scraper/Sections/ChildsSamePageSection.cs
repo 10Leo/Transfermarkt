@@ -13,7 +13,7 @@ namespace Page.Scraper.Contracts
         protected IPage<IDomain, TNode> Page { get; set; }
 
         public string Name { get; set; }
-        public IEnumerable<IElementParser<IElement<IValue>, IValue, TNode>> Parsers { get; set; }
+        public IEnumerable<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, TNode>> Parsers { get; set; }
         public Children ChildrenType { get; private set; }
 
         public ChildsSamePageSection(string name, IPage<IDomain, TNode> page)

@@ -54,7 +54,7 @@ namespace Page.Scraper.Exporter.JSONExporter
 
         private JObject Extract(JObject baseObj, IDomain domain)
         {
-            foreach (IElement<IValue> element in domain.Elements)
+            foreach (IElement<IValue, IConverter<IValue>> element in domain.Elements)
             {
                 object value = GetValue(element);
                 var prop = new JProperty(element.InternalName, value);
@@ -80,7 +80,7 @@ namespace Page.Scraper.Exporter.JSONExporter
             return baseObj;
         }
 
-        private object GetValue(IElement<IValue> element)
+        private object GetValue(IElement<IValue, IConverter<IValue>> element)
         {
             object value = string.Empty;
 
@@ -130,7 +130,7 @@ namespace Page.Scraper.Exporter.JSONExporter
                 var k = key.Groups["Key"];
                 var v = k.Value;
 
-                IElement<IValue> element = domain.Elements.FirstOrDefault(e => e.InternalName.ToUpperInvariant() == v.ToUpperInvariant());
+                IElement<IValue, IConverter<IValue>> element = domain.Elements.FirstOrDefault(e => e.InternalName.ToUpperInvariant() == v.ToUpperInvariant());
                 string value = GetValue(element)?.ToString();
 
                 if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))

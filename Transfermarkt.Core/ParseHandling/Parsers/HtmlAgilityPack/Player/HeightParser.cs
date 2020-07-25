@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = Regex.Replace(node.InnerText, "([a-zA-Z,_ ]+|(?<=[a-zA-Z ])[/-])", "");
 
-                return new Height { Value = Converter.Convert(parsedStr) };
+                return new Height(parsedStr);
             };
         }
     }

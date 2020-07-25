@@ -14,7 +14,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
             {
                 var parsedStr = node.InnerText;
 
-                return new ClubArrivalDate { Value = Converter.Convert(parsedStr) };
+                return new ClubArrivalDate(parsedStr);
             };
         }
     }

@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Club
                 HtmlNode countryNode = node.SelectSingleNode("//div[@id='verein_head']//span[@class='mediumpunkt']//img[@class='flaggenrahmen vm']");
                 string parsedStr = countryNode?.GetAttributeValue<string>("title", null);
 
-                return new Country { Value = Converter.Convert(parsedStr) };
+                return new Country(parsedStr);
             };
         }
     }

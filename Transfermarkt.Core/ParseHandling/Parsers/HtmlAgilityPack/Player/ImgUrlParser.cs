@@ -18,7 +18,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                     .FirstOrDefault(n => n.Attributes["class"]?.Value == "bilderrahmen-fixed")
                     .Attributes["src"].Value;
 
-                return new ImgUrl { Value = Converter.Convert(parsedStr) };
+                return new ImgUrl(parsedStr);
             };
         }
     }

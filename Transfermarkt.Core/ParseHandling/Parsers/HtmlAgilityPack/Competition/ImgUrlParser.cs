@@ -14,7 +14,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Competition
             {
                 var parsedStr = node.SelectSingleNode("//div[@id='wettbewerb_head']//div[@class='headerfoto']/img")?.GetAttributeValue<string>("src", null);
 
-                return new ImgUrl { Value = Converter.Convert(parsedStr) };
+                return new ImgUrl(parsedStr);
             };
         }
     }

@@ -15,7 +15,7 @@ namespace Transfermarkt.Core.ParseHandling.Parsers.HtmlAgilityPack.Player
                 var parsedStr = node
                     .InnerText;
 
-                return new PreferredFoot { Value = Converter.Convert(parsedStr) };
+                return new PreferredFoot(parsedStr);
             };
         }
     }

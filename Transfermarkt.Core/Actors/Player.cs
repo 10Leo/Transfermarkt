@@ -7,7 +7,7 @@ namespace Transfermarkt.Core.Actors
     {
         public Player()
         {
-            Elements = new List<IElement<IValue>>
+            Elements = new List<IElement<IValue, IConverter<IValue>>>
             {
                 new Transfermarkt.Core.ParseHandling.Elements.Player.Name(),
                 new Transfermarkt.Core.ParseHandling.Elements.Player.ShortName(),
