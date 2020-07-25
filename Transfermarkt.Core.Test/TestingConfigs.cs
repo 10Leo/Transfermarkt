@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.Test
         public const string position = @"^[a-zA-Z]{2}$";
         public const string mv = @"[0-9]+";
         public const string shirt = @"[0-9]+";
-        public const string name = @"^(\D)*$";
+        public const string name = ".+";//@"^(\D)*$";
         public const string abbrevName = @"^(\D)*$";
     }
 
