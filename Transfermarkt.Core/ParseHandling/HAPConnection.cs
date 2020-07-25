@@ -13,29 +13,10 @@ namespace Transfermarkt.Core.ParseHandling
 
         public override HtmlNode Connect(string url)
         {
-            try
-            {
-                string htmlString = "";
-                //TODO: consider separate the loading of the file from it's loading by HAP.
-                using (WebClient client = new WebClient())
-                {
-                    Uri uri = new Uri(url);
-                    client.Encoding = System.Text.Encoding.GetEncoding("UTF-8");
-                    client.Headers.Add(HttpRequestHeader.UserAgent, "AvoidError");
-                    htmlString = client.DownloadString(uri);
-                }
-                doc = new HtmlAgilityPack.HtmlDocument();
-                doc.LoadHtml(htmlString);
-            }
-            catch (System.Net.WebException ex)
-            {
-                //Debug.WriteLine(ex.StackTrace);
-                System.Environment.Exit(-1);
-            }
-            catch (Exception ex)
-            {
-                //Debug.WriteLine(ex.StackTrace);
-            }
+            string htmlString = Connector.Connect(url);
+
+            doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(htmlString);
 
             return doc?.DocumentNode;
         }

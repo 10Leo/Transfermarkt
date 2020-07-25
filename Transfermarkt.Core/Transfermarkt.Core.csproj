@@ -52,6 +52,7 @@
     <Compile Include="Config\Configs.cs" />
     <Compile Include="Config\ConvertersConfig.cs" />
     <Compile Include="Config\ParsersConfig.cs" />
+    <Compile Include="ParseHandling\Connector.cs" />
     <Compile Include="ParseHandling\Converters\ContinentCodeConverter.cs" />
     <Compile Include="ParseHandling\Elements\Club\ClubElements.cs" />
     <Compile Include="ParseHandling\Elements\Competition\CompetitionElements.cs" />
