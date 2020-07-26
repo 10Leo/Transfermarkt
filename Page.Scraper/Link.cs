@@ -9,6 +9,8 @@ namespace Page.Scraper.Contracts
     public class Link
     {
         public string Title { get; set; }
+        public IDictionary<string, string> Identifiers { get; set; } = new Dictionary<string, string>();
+
         public string Url { get; set; }
 
         public override string ToString()

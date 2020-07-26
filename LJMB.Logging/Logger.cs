@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace Transfermarkt.Logging
+namespace LJMB.Logging
 {
     public class Logger : ILogger
     {

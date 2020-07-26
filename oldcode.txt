@@ -1260,6 +1260,9 @@ var childPage = (IPage<IDomain, TNode>)Activator.CreateInstance(tChildPage);
 
 
 
+//page.Parse(url, new Link[] { new Link { ID = "1.1.1", Title = "" } });
+
+
 git clone --branch develop --origin origin --progress -v https://github.com/10Leo/Transfermarkt.git c:\ws\Transfermarkt3
 
 

@@ -9,6 +9,7 @@ using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Page.Scraper.Exporter.JSONExporter;
 using System.Collections.Generic;
+using LJMB.Common;
 
 namespace Transfermarkt.Core.Test.Exporters
 {

@@ -12,7 +12,8 @@ using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Contracts;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Page.Scraper.Exporter.JSONExporter;
-using Transfermarkt.Logging;
+using LJMB.Logging;
+using LJMB.Common;
 
 namespace Transfermarkt.Console
 {

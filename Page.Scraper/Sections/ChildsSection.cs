@@ -8,21 +8,57 @@ namespace Page.Scraper.Contracts
 {
     public abstract class ChildsSection<TNode, TChildPage> : ISection where TChildPage : IPage<IDomain, TNode>, new()
     {
-        public IPage<IDomain, TNode> this[string name]
+        public IPage<IDomain, TNode> this[IDictionary<string, string> ids]
         {
             get
             {
-                var index = 0;
-                for (int i = 0; i < Children.Count; i++)
+                var index = -1;
+
+                if (ids.ContainsKey("URL"))
                 {
-                    if (Children[i].Title == name)
+                    for (int i = 0; i < Children.Count; i++)
                     {
-                        index = i;
-                        break;
+                        if (Children[i].Url == ids["URL"].ToString())
+                        {
+                            index = i;
+                            break;
+                        }
                     }
                 }
+                else if (ids.ContainsKey("Title"))
+                {
+                    for (int i = 0; i < Children.Count; i++)
+                    {
+                        if (Children[i].Title == ids["Title"].ToString())
+                        {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    Link child = Children.FirstOrDefault(c =>
+                    {
+                        foreach (KeyValuePair<string, string> id in ids)
+                        {
+                            if (c.Identifiers.ContainsKey(id.Key))
+                            {
+                                var k = c.Identifiers[id.Key];
+                                if (k != id.Value)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
 
-                if (index == 0)
+                        return true;
+                    });
+
+                    index = Children.IndexOf(child);
+                }
+
+                if (index == -1)
                 {
                     return null;
                 }
@@ -81,12 +117,12 @@ namespace Page.Scraper.Contracts
             P(Children, parseChildren, parseChildren);
         }
 
-        public void Parse(IEnumerable<Link> links)
+        public void Parse(IEnumerable<Link> links, bool parseChildren = false)
         {
             var linksToParse = links?.Where(s => Children.Contains(s));
             
             Validate(linksToParse);
-            P(linksToParse, true, false);
+            P(linksToParse, true, parseChildren);
         }
 
         private void P(IEnumerable<Link> linksToParse, bool parseChildren, bool child)

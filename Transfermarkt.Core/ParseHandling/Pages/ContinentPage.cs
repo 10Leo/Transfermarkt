@@ -1,11 +1,11 @@
 ﻿using HtmlAgilityPack;
+using LJMB.Common;
+using LJMB.Logging;
 using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling.Converters;
-using Transfermarkt.Logging;
 
 namespace Transfermarkt.Core.ParseHandling.Pages
 {
@@ -91,7 +91,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     try
                     {
-                        var competitionUrl = GetCompetitionLink(cols);
+                        Link competitionUrl = GetCompetitionLink(cols);
                         competitionUrl.Url = TransformUrl(competitionUrl.Url, BaseURL);
 
                         urls.Add(competitionUrl);
@@ -111,10 +111,17 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             var country = cols[1]
                 .SelectNodes("img")
                 .FirstOrDefault(n => n.Attributes["class"]?.Value == "flaggenrahmen")?.Attributes["Title"].Value;
-            var a = cols[0]
+            var aLeagueName = cols[0]
                 .SelectNodes("table//td[2]/a")
                 .FirstOrDefault();
-            return new Link { Title = $"{country}-{a.InnerText}", Url = a.Attributes["href"].Value };
+
+            var nat = ConvertersConfig.GetNationality(country);
+
+            Link link = new Link { Title = $"{country}-{aLeagueName.InnerText}", Url = aLeagueName.Attributes["href"].Value };
+            link.Identifiers.Add("Nationality", ConvertersConfig.GetNationality(country)?.ToString());
+            link.Identifiers.Add("League Name", aLeagueName.InnerText);
+
+            return link;
         }
 
         private string TransformUrl(string url, string baseURL)

@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
-namespace Transfermarkt.Logging
+namespace LJMB.Logging
 {
     public sealed class LoggerFactory
     {
