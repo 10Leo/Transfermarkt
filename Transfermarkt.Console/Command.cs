@@ -77,6 +77,7 @@ namespace Transfermarkt.Console
         public int Index3 { get; set; }
     }
 
+    // TODO: Reformat code so that these actions become classes with all the logic that pertains to them in themselves.
     public enum Action
     {
         /// <summary>

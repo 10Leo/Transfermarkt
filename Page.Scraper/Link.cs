@@ -8,6 +8,7 @@ namespace Page.Scraper.Contracts
 {
     public class Link
     {
+        // TODO: pages could live inside Links.
         public string Title { get; set; }
         public IDictionary<string, string> Identifiers { get; set; } = new Dictionary<string, string>();
 
