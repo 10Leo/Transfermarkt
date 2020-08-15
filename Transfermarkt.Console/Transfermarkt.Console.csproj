@@ -48,9 +48,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Command.cs" />
+    <Compile Include="Context.cs" />
+    <Compile Include="ExitCommand.cs" />
+    <Compile Include="FetchCommand.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="ParseCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CommandUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
