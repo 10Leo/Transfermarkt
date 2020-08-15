@@ -1,4 +1,7 @@
-﻿namespace Transfermarkt.Console
+﻿using LJMB.Command;
+using LJMB.Command.Commands;
+
+namespace Transfermarkt.Console
 {
     public class Program
     {
@@ -6,7 +9,7 @@
         {
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
-            Context context = new Context();
+            IContext context = new Context();
             _ = new FetchCommand(context);
             _ = new ParseCommand(context);
             _ = new ExitCommand(context);

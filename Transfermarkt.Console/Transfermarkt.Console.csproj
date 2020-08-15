@@ -47,12 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
     <Compile Include="Context.cs" />
-    <Compile Include="ExitCommand.cs" />
-    <Compile Include="FetchCommand.cs" />
-    <Compile Include="ICommand.cs" />
-    <Compile Include="ParseCommand.cs" />
+    <Compile Include="Commands\FetchCommand.cs" />
+    <Compile Include="Commands\ParseCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -61,6 +58,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LJMB.Command\LJMB.Command.csproj">
+      <Project>{db5490d0-a4a6-4bd2-87c5-7fbf528c4dde}</Project>
+      <Name>LJMB.Command</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LJMB.Common\LJMB.Common.csproj">
       <Project>{417AFA74-AD2E-4F9F-8EB1-E177EABA4CE5}</Project>
       <Name>LJMB.Common</Name>

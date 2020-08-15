@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using LJMB.Command;
 using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,14 @@ namespace Transfermarkt.Console
         public string ContinentFileNameFormat { get; private set; }
         public string CompetitionFileNameFormat { get; private set; }
 
-        public Context Context { get; set; }
-        
-        public ParseCommand(Context context)
+        public IContext Ctx { get; set; }
+        public Context DescendantCtx { get { return (Context)Ctx; } set { DescendantCtx = value; } }
+
+        public ParseCommand(IContext context)
         {
             this.Name = "parse";
-            this.Context = context;
-            this.Context.RegisterCommand(this);
+            this.Ctx = context;
+            this.Ctx.RegisterCommand(this);
         }
 
         public override bool CanParse(string cmdToParse)
@@ -51,12 +53,12 @@ namespace Transfermarkt.Console
             {
                 var y = new StringParameterValue
                 {
-                    Value = Context.lastSelectedSeason
+                    Value = DescendantCtx.lastSelectedSeason
                 };
                 Parameters.Add((OptionName.Y, y));
             }
 
-            Context.lastSelectedSeason = ((StringParameterValue)this[OptionName.Y]).Value;
+            DescendantCtx.lastSelectedSeason = ((StringParameterValue)this[OptionName.Y]).Value;
 
             foreach (IIndex ind in i.Indexes)
             {
@@ -105,14 +107,14 @@ namespace Transfermarkt.Console
 
             var k = $"{year}.{i1}";
 
-            if (!Context.cont.ContainsKey(i1.ToString()))
+            if (!DescendantCtx.cont.ContainsKey(i1.ToString()))
             {
                 return false;
             }
 
-            if (!Context.continent.ContainsKey(k))
+            if (!DescendantCtx.continent.ContainsKey(k))
             {
-                Context.continent.Add(k, (Context.cont[i1.ToString()].L, null));
+                DescendantCtx.continent.Add(k, (DescendantCtx.cont[i1.ToString()].L, null));
             }
 
             return true;
@@ -124,20 +126,20 @@ namespace Transfermarkt.Console
 
             var k = $"{year}.{i1}";
 
-            if (!Context.continent.ContainsKey(k))
+            if (!DescendantCtx.continent.ContainsKey(k))
             {
                 return false;
             }
-            (Link L, ContinentPage P) choice = Context.continent[k];
+            (Link L, ContinentPage P) choice = DescendantCtx.continent[k];
 
             bool isFinal = !i2.HasValue && !i3.HasValue;
 
             if (choice.P == null || !choice.P.Connection.IsConnected)
             {
-                choice.P = (ContinentPage)Activator.CreateInstance(typeof(ContinentPage), new HAPConnection(), Context.Logger, year);
+                choice.P = (ContinentPage)Activator.CreateInstance(typeof(ContinentPage), new HAPConnection(), DescendantCtx.Logger, year);
                 //var c = Activator.CreateInstance<ContinentPage>();
                 //c.Connection = new HAPConnection();
-                Context.continent[k] = choice;
+                DescendantCtx.continent[k] = choice;
 
                 choice.P.Connect(choice.L.Url);
 
@@ -154,7 +156,7 @@ namespace Transfermarkt.Console
 
             if (isFinal)
             {
-                Context.Exporter.Extract(choice.P.Domain, ContinentFileNameFormat);
+                DescendantCtx.Exporter.Extract(choice.P.Domain, ContinentFileNameFormat);
             }
 
             if (isFinal || !i2.HasValue)
@@ -178,7 +180,7 @@ namespace Transfermarkt.Console
 
             if (isFinal)
             {
-                Context.Exporter.Extract(competitionPage.Domain, CompetitionFileNameFormat);
+                DescendantCtx.Exporter.Extract(competitionPage.Domain, CompetitionFileNameFormat);
             }
 
             if (isFinal || !i3.HasValue)
@@ -197,7 +199,7 @@ namespace Transfermarkt.Console
 
             if (isFinal)
             {
-                Context.Exporter.Extract(clubPage.Domain, ClubFileNameFormat);
+                DescendantCtx.Exporter.Extract(clubPage.Domain, ClubFileNameFormat);
             }
 
             return true;

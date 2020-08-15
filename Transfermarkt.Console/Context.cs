@@ -1,4 +1,5 @@
-﻿using LJMB.Common;
+﻿using LJMB.Command;
+using LJMB.Common;
 using LJMB.Logging;
 using Page.Scraper.Contracts;
 using Page.Scraper.Exporter;
@@ -12,7 +13,7 @@ using Transfermarkt.Core.ParseHandling.Pages;
 
 namespace Transfermarkt.Console
 {
-    public class Context
+    public class Context : IContext
     {
         private static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
@@ -24,6 +25,7 @@ namespace Transfermarkt.Console
         public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
 
         private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+        public bool Exit { get; set; } = false;
 
         public string lastSelectedSeason { get; set; } = currentSeason.ToString();
 
@@ -44,8 +46,6 @@ namespace Transfermarkt.Console
 
         public (Link L, ContinentPage P) Choice { get; }
 
-        public bool Exit { get; internal set; } = false;
-
         public Context()
         {
             //Commands.Add(new ExitCommand(this));
@@ -56,7 +56,7 @@ namespace Transfermarkt.Console
             Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
         }
 
-        internal void Run()
+        public void Run()
         {
             for (int i = 0; i < cont.Count; i++)
             {

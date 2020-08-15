@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transfermarkt.Console
+namespace LJMB.Command.Commands
 {
     public class ExitCommand : Command
     {
-        public Context Context { get; set; }
+        public IContext Context { get; set; }
         
-        public ExitCommand(Context context)
+        public ExitCommand(IContext context)
         {
             this.Name = "exit";
             this.Context = context;

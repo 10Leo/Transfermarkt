@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Transfermarkt.Console
+namespace LJMB.Command
 {
     public interface ICommand
     {

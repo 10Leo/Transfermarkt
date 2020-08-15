@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Transfermarkt.Console
+namespace LJMB.Command
 {
     public abstract class Command : ICommand
     {
