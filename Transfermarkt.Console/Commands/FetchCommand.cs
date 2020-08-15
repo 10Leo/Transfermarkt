@@ -18,7 +18,7 @@ namespace Transfermarkt.Console
         public string ContinentFileNameFormat { get; private set; }
         public string CompetitionFileNameFormat { get; private set; }
         public IContext Ctx { get; set; }
-        public Context DescendantCtx { get { return (Context)Ctx; } set { DescendantCtx = value; } }
+        public TMContext DescendantCtx { get { return (TMContext)Ctx; } set { DescendantCtx = value; } }
 
         public FetchCommand(IContext context)
         {
@@ -149,7 +149,7 @@ namespace Transfermarkt.Console
             if (continentCompetitionsSection != null)
             {
                 System.Console.WriteLine();
-                Context.PresentOptions(continentCompetitionsSection.Children, $"{i1}", 1);
+                TMContext.PresentOptions(continentCompetitionsSection.Children, $"{i1}", 1);
             }
 
 
@@ -169,7 +169,7 @@ namespace Transfermarkt.Console
             if (clubsSection != null)
             {
                 System.Console.WriteLine();
-                Context.PresentOptions(clubsSection.Children, $"{i1}.{i2}", 2);
+                TMContext.PresentOptions(clubsSection.Children, $"{i1}.{i2}", 2);
             }
 
 

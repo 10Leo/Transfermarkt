@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Context.cs" />
+    <Compile Include="TMContext.cs" />
     <Compile Include="Commands\FetchCommand.cs" />
     <Compile Include="Commands\ParseCommand.cs" />
     <Compile Include="Program.cs" />

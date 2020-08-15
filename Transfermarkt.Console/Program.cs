@@ -9,7 +9,7 @@ namespace Transfermarkt.Console
         {
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
-            IContext context = new Context();
+            IContext context = new TMContext();
             _ = new FetchCommand(context);
             _ = new ParseCommand(context);
             _ = new ExitCommand(context);
