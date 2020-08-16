@@ -9,30 +9,49 @@ namespace LJMB.Command
 {
     public abstract class Command : ICommand
     {
-        private static readonly List<string> AllowedYearStringCmd = new List<string> { "y", "year" };
-        private static readonly List<string> AllowedObjStringCmd = new List<string> { "i" };
-
-        private const string g1 = "I1";
-        private const string g2 = "I2";
-        private const string g3 = "I3";
-
         public string Name { get; set; }
-        public List<(OptionName Cmd, IParameterValue Val)> Parameters { get; set; } = new List<(OptionName Cmd, IParameterValue Val)>();
+        protected ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
-        public IParameterValue this[OptionName parameter]
+        //public ISet<IOption> AllowedOptions { get; set; }
+        public ISet<IOption> Options { get; set; } = new HashSet<IOption>();
+
+        public IArgument this[string option]
         {
             get
             {
-                if (Parameters.Any(p => p.Cmd == parameter))
+                var opt = Options.FirstOrDefault(o => o.Name == option);
+
+                if (opt == null)
                 {
-                    return Parameters.FirstOrDefault(p => p.Cmd == parameter).Val;
+                    return null;
                 }
 
-                return null;
+                return opt.Args.FirstOrDefault();
             }
         }
 
-        public abstract bool CanParse(string cmdToParse);
+        //public IOption this[string option]
+        //{
+        //    get
+        //    {
+        //        return Options.FirstOrDefault(o => o.Name == option);
+        //    }
+        //}
+
+        public void RegisterOption(IOption option)
+        {
+            if (Options.Contains(option))
+            {
+                throw new Exception("Option already registered.");
+            }
+
+            Options.Add(option);
+        }
+
+        public virtual bool CanParse(string cmdToParse)
+        {
+            return AllowedAlias.Contains(cmdToParse);
+        }
 
         public virtual void Parse(string completeCmdToParse)
         {
@@ -62,10 +81,16 @@ namespace LJMB.Command
                         throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
                     }
 
-                    OptionName? aa = ToArgument(a);
-                    IParameterValue vv = ToValue(aa.Value, v);
+                    var aa = a.Substring(1);
 
-                    this.Parameters.Add((aa.Value, vv));
+                    foreach (IOption option in Options)
+                    {
+                        if (option.AllowedAlias.Contains(aa))
+                        {
+                            option.Parse(v);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -74,157 +99,15 @@ namespace LJMB.Command
 
         public abstract void Execute();
 
-        protected static OptionName? ToArgument(string a)
-        {
-            var aa = a.Substring(1);
-
-            if (AllowedYearStringCmd.Contains(aa))
-            {
-                return OptionName.Y;
-            }
-            if (AllowedObjStringCmd.Contains(aa))
-            {
-                return OptionName.I;
-            }
-
-            return null;
-        }
-
-        protected static IParameterValue ToValue(OptionName a, string v)
-        {
-            switch (a)
-            {
-                case OptionName.Y:
-                    var year = new StringParameterValue
-                    {
-                        Value = ParseYear(v).ToString()
-                    };
-                    return year;
-
-                case OptionName.I:
-                    var g1 = "I1";
-                    var g2 = "I2";
-                    var g3 = "I3";
-                    var pattern = $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))";
-
-                    MatchCollection splitArguments = Regex.Matches(v, pattern);
-
-                    IndexesParameterValue indexes = new IndexesParameterValue();
-
-                    foreach (Match argument in splitArguments)
-                    {
-                        var i = DetermineNumberOfIndexes(argument);
-                        indexes.Indexes.Add(i);
-                    }
-
-                    return indexes;
-                default:
-                    break;
-            }
-
-            return null;
-        }
-
-        private static IIndex DetermineNumberOfIndexes(Match argument)
-        {
-            var o1 = argument.Groups[g1].Value.Trim();
-            var o2 = argument.Groups[g2].Value.Trim();
-            var o3 = argument.Groups[g3].Value.Trim();
-
-            if (string.IsNullOrEmpty(o1) || string.IsNullOrWhiteSpace(o1))
-            {
-                throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
-            }
-            else if (string.IsNullOrEmpty(o2) || string.IsNullOrWhiteSpace(o2))
-            {
-                return new Index1ParameterValue { Index1 = int.Parse(o1) };
-            }
-            else if (string.IsNullOrEmpty(o3) || string.IsNullOrWhiteSpace(o3))
-            {
-                return new Index2ParameterValue { Index1 = int.Parse(o1), Index2 = int.Parse(o2) };
-            }
-            else
-            {
-                return new Index3ParameterValue { Index1 = int.Parse(o1), Index2 = int.Parse(o2), Index3 = int.Parse(o3) };
-            }
-        }
-
-        private static int ParseYear(string yearCmd)
-        {
-            return int.Parse(yearCmd);
-        }
-
         public override string ToString()
         {
             string cmdToParse = $"{Name}";
-            if (Parameters?.Count > 0)
+            if (Options?.Count > 0)
             {
-                cmdToParse += $" {string.Join(" ", Parameters.Select(t => string.Format("{0}:{1}", t.Cmd, t.Val)))}";
+                cmdToParse += $" {string.Join(" ", Options.Select(t => string.Format("{0}", t)))}";
             }
 
             return cmdToParse;
         }
-    }
-
-    public class Option
-    {
-        public OptionName Name { get; set; }
-        public IParameterValue Value { get; set; }
-    }
-
-    public interface IParameterValue
-    {
-    }
-
-    public class StringParameterValue : IParameterValue
-    {
-        public string Value { get; set; }
-    }
-    public class IndexesParameterValue : IParameterValue
-    {
-        public List<IIndex> Indexes { get; set; } = new List<IIndex>();
-    }
-
-    public interface IIndex
-    {
-    }
-
-    public class Index1ParameterValue : IIndex
-    {
-        public int Index1 { get; set; }
-    }
-
-    public class Index2ParameterValue : IIndex
-    {
-        public int Index1 { get; set; }
-        public int Index2 { get; set; }
-    }
-
-    public class Index3ParameterValue : IIndex
-    {
-        public int Index1 { get; set; }
-        public int Index2 { get; set; }
-        public int Index3 { get; set; }
-    }
-
-    public enum OptionName
-    {
-        /// <summary>
-        /// Year.
-        /// </summary>
-        Y,
-        /// <summary>
-        /// Page(s) indexes to fetch/parse.
-        /// </summary>
-        I
-    }
-
-    public struct ErrorMsg
-    {
-        public static readonly string ERROR_MSG_CMD = "Command not specified.";
-        public static readonly string ERROR_MSG_INTERPRET = "Error reading or interpreting chosen option.";//"Error reading or interpreting supplied numbers.";
-        public static readonly string ERROR_MSG_CMD_NOT_FOUND = "Command not found.";
-        public static readonly string ERROR_MSG_NO_OPTIONS_PASSED = "No options passed.";
-        public static readonly string ERROR_MSG_ARGS = "Args not specified.";
     }
 }

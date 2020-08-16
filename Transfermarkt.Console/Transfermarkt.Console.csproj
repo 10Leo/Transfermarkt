@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Options\IndexesOption.cs" />
+    <Compile Include="Options\YearOption.cs" />
+    <Compile Include="TMCommand.cs" />
     <Compile Include="TMContext.cs" />
     <Compile Include="Commands\FetchCommand.cs" />
     <Compile Include="Commands\ParseCommand.cs" />

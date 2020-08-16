@@ -10,6 +10,8 @@ namespace LJMB.Command
     {
         string Name { get; set; }
 
+        ISet<IOption> Options { get; set; }
+
         bool CanParse(string cmdToParse);
         void Parse(string completeCmdToParse);
         void Validate();

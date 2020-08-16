@@ -44,8 +44,12 @@
     <Compile Include="Command.cs" />
     <Compile Include="Commands\ExitCommand.cs" />
     <Compile Include="Context.cs" />
+    <Compile Include="ErrorMsg.cs" />
+    <Compile Include="IArgument.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="IContext.cs" />
+    <Compile Include="IOption.cs" />
+    <Compile Include="Option.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Actors;
+using Transfermarkt.Console.Options;
 
 namespace Transfermarkt.Console
 {
@@ -43,20 +44,26 @@ namespace Transfermarkt.Console
 
         private void Proccess()
         {
-            IndexesParameterValue i = Parameters.FirstOrDefault(a => a.Cmd == OptionName.I).Val as IndexesParameterValue;
+            IArgument idx = this["Indexes"];
+            IndexesParameterArgument i = idx as IndexesParameterArgument;
+            //IndexesParameterArgument i = Options.FirstOrDefault(a => a.Name == "Indexes").Args as IndexesParameterArgument;
 
             // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
-            var yy = this[OptionName.Y];
+            var yy = this["Year"];
             if (yy == null)
             {
-                var y = new StringParameterValue
+                var y = new StringParameterArgument
                 {
                     Value = DescendantCtx.lastSelectedSeason
                 };
-                Parameters.Add((OptionName.Y, y));
+                //var yearOpt = new YearOption();
+                //yearOpt.Args.Add(y);
+                //Options.Add(yearOpt);
+
+                Options.FirstOrDefault(o => o.Name == "Year")?.Args.Add(y);
             }
 
-            DescendantCtx.lastSelectedSeason = ((StringParameterValue)this[OptionName.Y]).Value;
+            DescendantCtx.lastSelectedSeason = ((StringParameterArgument)this["Year"]).Value;
 
             foreach (IIndex ind in i.Indexes)
             {
@@ -101,7 +108,7 @@ namespace Transfermarkt.Console
 
         private bool ContinentsP(int i1)
         {
-            var year = ((StringParameterValue)this[OptionName.Y]).Value;
+            var year = ((StringParameterArgument)this["Year"]).Value;
 
             var k = $"{year}.{i1}";
 
@@ -120,7 +127,7 @@ namespace Transfermarkt.Console
 
         private bool Comm(int? i1, int? i2, int? i3)
         {
-            var year = int.Parse(((StringParameterValue)this[OptionName.Y]).Value);
+            var year = int.Parse(((StringParameterArgument)this["Year"]).Value);
 
             var k = $"{year}.{i1}";
 
