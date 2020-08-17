@@ -12,6 +12,6 @@ namespace LJMB.Command
         ISet<string> AllowedAlias { get; }
         ISet<IArgument> Args { get; set; }
 
-        void Parse(string value);
+        void Parse(string toParse);
     }
 }

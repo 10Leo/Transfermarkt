@@ -9,34 +9,34 @@ namespace LJMB.Command
 {
     public abstract class Command : ICommand
     {
-        public string Name { get; set; }
         protected ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
+        public string Name { get; set; }
         //public ISet<IOption> AllowedOptions { get; set; }
         public ISet<IOption> Options { get; set; } = new HashSet<IOption>();
 
-        public IArgument this[string option]
-        {
-            get
-            {
-                var opt = Options.FirstOrDefault(o => o.Name == option);
-
-                if (opt == null)
-                {
-                    return null;
-                }
-
-                return opt.Args.FirstOrDefault();
-            }
-        }
-
-        //public IOption this[string option]
+        //public IArgument this[string option]
         //{
         //    get
         //    {
-        //        return Options.FirstOrDefault(o => o.Name == option);
+        //        var opt = Options.FirstOrDefault(o => o.Name == option);
+
+        //        if (opt == null)
+        //        {
+        //            return null;
+        //        }
+
+        //        return opt.Args.FirstOrDefault();
         //    }
         //}
+
+        public IOption this[string option]
+        {
+            get
+            {
+                return Options.FirstOrDefault(o => o.Name == option);
+            }
+        }
 
         public void RegisterOption(IOption option)
         {

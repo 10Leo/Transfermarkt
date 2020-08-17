@@ -44,47 +44,41 @@ namespace Transfermarkt.Console
 
         private void Proccess()
         {
-            IArgument idx = this["Indexes"];
-            IndexesParameterArgument i = idx as IndexesParameterArgument;
-            //IndexesParameterArgument i = Options.FirstOrDefault(a => a.Name == "Indexes").Args as IndexesParameterArgument;
+            IOption idx = this["Indexes"];
+            IOption yy = this["Year"];
 
             // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
-            var yy = this["Year"];
-            if (yy == null)
+            if (yy.Args.Count == 0)
             {
-                var y = new StringParameterArgument
+                var y = new StringArgument
                 {
                     Value = DescendantCtx.lastSelectedSeason
                 };
-                //var yearOpt = new YearOption();
-                //yearOpt.Args.Add(y);
-                //Options.Add(yearOpt);
-
-                Options.FirstOrDefault(o => o.Name == "Year")?.Args.Add(y);
+                yy.Args.Add(y);
             }
 
-            DescendantCtx.lastSelectedSeason = ((StringParameterArgument)this["Year"]).Value;
+            DescendantCtx.lastSelectedSeason = ((StringArgument)yy.Args.First()).Value;
 
-            foreach (IIndex ind in i.Indexes)
+            foreach (IArgument ind in idx.Args)
             {
                 int i1 = 0;
                 int i2 = 0;
                 int i3 = 0;
 
-                if (ind is Index1ParameterValue)
+                if (ind is Index1Argument)
                 {
-                    i1 = (ind as Index1ParameterValue).Index1;
+                    i1 = (ind as Index1Argument).Index1;
                 }
-                else if (ind is Index2ParameterValue)
+                else if (ind is Index2Argument)
                 {
-                    i1 = (ind as Index2ParameterValue).Index1;
-                    i2 = (ind as Index2ParameterValue).Index2;
+                    i1 = (ind as Index2Argument).Index1;
+                    i2 = (ind as Index2Argument).Index2;
                 }
-                else if (ind is Index3ParameterValue)
+                else if (ind is Index3Argument)
                 {
-                    i1 = (ind as Index3ParameterValue).Index1;
-                    i2 = (ind as Index3ParameterValue).Index2;
-                    i3 = (ind as Index3ParameterValue).Index3;
+                    i1 = (ind as Index3Argument).Index1;
+                    i2 = (ind as Index3Argument).Index2;
+                    i3 = (ind as Index3Argument).Index3;
                 }
 
                 bool proceed = ContinentsP(i1);
@@ -102,13 +96,13 @@ namespace Transfermarkt.Console
                 //}
 
                 if (proceed && i1 != 0)
-                    Comm(i1 == 0 ? (int?)null : i1, i2 == 0 ? (int?)null : i2, i3 == 0 ? (int?)null : i3);
+                    ProccessCommand(i1 == 0 ? (int?)null : i1, i2 == 0 ? (int?)null : i2, i3 == 0 ? (int?)null : i3);
             }
         }
 
         private bool ContinentsP(int i1)
         {
-            var year = ((StringParameterArgument)this["Year"]).Value;
+            var year = ((StringArgument)this["Year"].Args.First()).Value;
 
             var k = $"{year}.{i1}";
 
@@ -125,9 +119,9 @@ namespace Transfermarkt.Console
             return true;
         }
 
-        private bool Comm(int? i1, int? i2, int? i3)
+        private bool ProccessCommand(int? i1, int? i2, int? i3)
         {
-            var year = int.Parse(((StringParameterArgument)this["Year"]).Value);
+            var year = int.Parse(((StringArgument)this["Year"].Args.First()).Value);
 
             var k = $"{year}.{i1}";
 

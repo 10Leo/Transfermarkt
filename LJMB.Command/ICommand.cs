@@ -12,8 +12,8 @@ namespace LJMB.Command
 
         ISet<IOption> Options { get; set; }
 
-        bool CanParse(string cmdToParse);
-        void Parse(string completeCmdToParse);
+        bool CanParse(string toParse);
+        void Parse(string toParse);
         void Validate();
         void Execute();
     }

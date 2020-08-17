@@ -15,7 +15,7 @@ namespace Transfermarkt.Console.Options
 
         public void Parse(string value)
         {
-            var year = new StringParameterArgument
+            var year = new StringArgument
             {
                 Value = ParseYear(value).ToString()
             };

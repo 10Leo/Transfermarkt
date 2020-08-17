@@ -24,18 +24,14 @@ namespace Transfermarkt.Console.Options
 
             MatchCollection splitArguments = Regex.Matches(value, pattern);
 
-            IndexesParameterArgument indexes = new IndexesParameterArgument();
-
             foreach (Match argument in splitArguments)
             {
                 var i = DetermineNumberOfIndexes(argument);
-                indexes.Indexes.Add(i);
+                Args.Add(i);
             }
-
-            Args.Add(indexes);
         }
 
-        private static IIndex DetermineNumberOfIndexes(Match argument)
+        private static IArgument DetermineNumberOfIndexes(Match argument)
         {
             var o1 = argument.Groups[g1].Value.Trim();
             var o2 = argument.Groups[g2].Value.Trim();
@@ -47,38 +43,31 @@ namespace Transfermarkt.Console.Options
             }
             else if (string.IsNullOrEmpty(o2) || string.IsNullOrWhiteSpace(o2))
             {
-                return new Index1ParameterValue { Index1 = int.Parse(o1) };
+                return new Index1Argument { Index1 = int.Parse(o1) };
             }
             else if (string.IsNullOrEmpty(o3) || string.IsNullOrWhiteSpace(o3))
             {
-                return new Index2ParameterValue { Index1 = int.Parse(o1), Index2 = int.Parse(o2) };
+                return new Index2Argument { Index1 = int.Parse(o1), Index2 = int.Parse(o2) };
             }
             else
             {
-                return new Index3ParameterValue { Index1 = int.Parse(o1), Index2 = int.Parse(o2), Index3 = int.Parse(o3) };
+                return new Index3Argument { Index1 = int.Parse(o1), Index2 = int.Parse(o2), Index3 = int.Parse(o3) };
             }
         }
     }
 
-    public class IndexesParameterArgument : IArgument
-    {
-        public List<IIndex> Indexes { get; set; } = new List<IIndex>();
-    }
-
-    public interface IIndex { }
-
-    public class Index1ParameterValue : IIndex
+    public class Index1Argument : IArgument
     {
         public int Index1 { get; set; }
     }
 
-    public class Index2ParameterValue : IIndex
+    public class Index2Argument : IArgument
     {
         public int Index1 { get; set; }
         public int Index2 { get; set; }
     }
 
-    public class Index3ParameterValue : IIndex
+    public class Index3Argument : IArgument
     {
         public int Index1 { get; set; }
         public int Index2 { get; set; }
