@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Console.Arguments;
+using Transfermarkt.Console.Options;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Pages;
@@ -26,6 +27,8 @@ namespace Transfermarkt.Console
             this.AllowedAlias.Add("parse");
             this.Context = context;
             this.Context.RegisterCommand(this);
+            this.RegisterOption(new YearOption());
+            this.RegisterOption(new IndexesOption());
         }
 
         public override void Validate()

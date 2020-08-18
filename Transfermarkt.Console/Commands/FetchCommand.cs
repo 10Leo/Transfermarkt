@@ -8,6 +8,7 @@ using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Console.Arguments;
+using Transfermarkt.Console.Options;
 
 namespace Transfermarkt.Console
 {
@@ -25,6 +26,8 @@ namespace Transfermarkt.Console
             this.AllowedAlias.Add("fetch");
             this.Context = context;
             this.Context.RegisterCommand(this);
+            this.RegisterOption(new YearOption());
+            this.RegisterOption(new IndexesOption());
         }
 
         public override void Validate()

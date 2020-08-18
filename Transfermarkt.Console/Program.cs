@@ -15,12 +15,6 @@ namespace Transfermarkt.Console
             var p = new ParseCommand(context);
             _ = new ExitCommand(context);
 
-            //TODO: register of options probablly makes more sense to be done inside each Command constructor because each command performs in its execution method
-            //the logic of each option.
-            f.RegisterOption(new YearOption());
-            f.RegisterOption(new IndexesOption());
-            p.RegisterOption(new YearOption());
-            p.RegisterOption(new IndexesOption());
             context.Run();
         }
     }
