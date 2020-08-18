@@ -16,11 +16,11 @@ namespace Transfermarkt.Console.Options
         public ISet<string> AllowedAlias { get; } = new HashSet<string> { "i" };
         public ISet<IArgument> Args { get; } = new HashSet<IArgument>();
 
-        public void Parse(string value)
+        public void Parse(string toParse)
         {
             var pattern = $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))";
 
-            MatchCollection splitArguments = Regex.Matches(value, pattern);
+            MatchCollection splitArguments = Regex.Matches(toParse, pattern);
 
             foreach (Match argument in splitArguments)
             {

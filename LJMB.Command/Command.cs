@@ -31,19 +31,19 @@ namespace LJMB.Command
             Options.Add(option);
         }
 
-        public virtual bool CanParse(string cmdToParse)
+        public virtual bool CanParse(string toParse)
         {
-            return AllowedAlias.Contains(cmdToParse);
+            return AllowedAlias.Contains(toParse);
         }
 
-        public virtual void Parse(string completeCmdToParse)
+        public virtual void Parse(string toParse)
         {
             var cmdGroup = "CMD";
             var argsGroup = "Args";
             var argNameGroup = "ArgName";
             var argValueGroup = "ArgValue";
 
-            var m = Regex.Matches(completeCmdToParse, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)\s+(?<{argValueGroup}>[^-]+))");
+            var m = Regex.Matches(toParse, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)\s+(?<{argValueGroup}>[^-]+))");
 
             if (m.Count > 1)
             {
