@@ -11,10 +11,6 @@ namespace Transfermarkt.Console
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
             IContext context = new TMContext();
-            var f = new FetchCommand(context);
-            var p = new ParseCommand(context);
-            _ = new ExitCommand(context);
-
             context.Run();
         }
     }

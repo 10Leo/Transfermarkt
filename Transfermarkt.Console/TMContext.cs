@@ -1,4 +1,5 @@
 ﻿using LJMB.Command;
+using LJMB.Command.Commands;
 using LJMB.Common;
 using LJMB.Logging;
 using Page.Scraper.Contracts;
@@ -44,9 +45,9 @@ namespace Transfermarkt.Console
 
         public TMContext()
         {
-            //Commands.Add(new ExitCommand(this));
-            //Commands.Add(new FetchCommand(this));
-            //Commands.Add(new ParseCommand(this));
+            this.RegisterCommand(new ExitCommand(this));
+            this.RegisterCommand(new FetchCommand(this));
+            this.RegisterCommand(new ParseCommand(this));
 
             Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
             Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);

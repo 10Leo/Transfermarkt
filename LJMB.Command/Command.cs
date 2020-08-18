@@ -21,7 +21,7 @@ namespace LJMB.Command
             }
         }
 
-        public void RegisterOption(IOption option)
+        protected void RegisterOption(IOption option)
         {
             if (Options.Contains(option))
             {

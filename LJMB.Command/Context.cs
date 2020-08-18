@@ -10,11 +10,6 @@ namespace LJMB.Command
 
         protected readonly IList<ICommand> Commands = new List<ICommand>();
 
-        //public Context()
-        //{
-        //    //Commands.Add(new ExitCommand(this));
-        //}
-
         public virtual void Run()
         {
             while (!Exit)
