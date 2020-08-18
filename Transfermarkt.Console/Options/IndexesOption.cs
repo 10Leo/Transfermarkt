@@ -1,10 +1,8 @@
 ﻿using LJMB.Command;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Transfermarkt.Console.Arguments;
 
 namespace Transfermarkt.Console.Options
 {
@@ -14,9 +12,9 @@ namespace Transfermarkt.Console.Options
         private const string g2 = "I2";
         private const string g3 = "I3";
 
-        public string Name { get; set; } = "Indexes";
+        public string Name { get; } = "Indexes";
         public ISet<string> AllowedAlias { get; } = new HashSet<string> { "i" };
-        public ISet<IArgument> Args { get; set; } = new HashSet<IArgument>();
+        public ISet<IArgument> Args { get; } = new HashSet<IArgument>();
 
         public void Parse(string value)
         {
@@ -54,23 +52,5 @@ namespace Transfermarkt.Console.Options
                 return new Index3Argument { Index1 = int.Parse(o1), Index2 = int.Parse(o2), Index3 = int.Parse(o3) };
             }
         }
-    }
-
-    public class Index1Argument : IArgument
-    {
-        public int Index1 { get; set; }
-    }
-
-    public class Index2Argument : IArgument
-    {
-        public int Index1 { get; set; }
-        public int Index2 { get; set; }
-    }
-
-    public class Index3Argument : IArgument
-    {
-        public int Index1 { get; set; }
-        public int Index2 { get; set; }
-        public int Index3 { get; set; }
     }
 }

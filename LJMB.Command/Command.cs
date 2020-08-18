@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace LJMB.Command
 {
@@ -12,23 +10,8 @@ namespace LJMB.Command
         protected ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
         public string Name { get; set; }
-        //public ISet<IOption> AllowedOptions { get; set; }
+        public IContext Context { get; set; }
         public ISet<IOption> Options { get; set; } = new HashSet<IOption>();
-
-        //public IArgument this[string option]
-        //{
-        //    get
-        //    {
-        //        var opt = Options.FirstOrDefault(o => o.Name == option);
-
-        //        if (opt == null)
-        //        {
-        //            return null;
-        //        }
-
-        //        return opt.Args.FirstOrDefault();
-        //    }
-        //}
 
         public IOption this[string option]
         {

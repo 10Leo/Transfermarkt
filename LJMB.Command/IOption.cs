@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LJMB.Command
 {
     public interface IOption
     {
-        string Name { get; set; }
+        string Name { get; }
         ISet<string> AllowedAlias { get; }
-        ISet<IArgument> Args { get; set; }
+        ISet<IArgument> Args { get; }
 
         void Parse(string toParse);
     }

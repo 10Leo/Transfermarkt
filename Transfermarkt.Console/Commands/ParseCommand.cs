@@ -4,10 +4,7 @@ using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Transfermarkt.Console.Options;
+using Transfermarkt.Console.Arguments;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling;
 using Transfermarkt.Core.ParseHandling.Pages;
@@ -20,19 +17,15 @@ namespace Transfermarkt.Console
         public string ContinentFileNameFormat { get; private set; }
         public string CompetitionFileNameFormat { get; private set; }
 
-        public IContext Ctx { get; set; }
-        public TMContext DescendantCtx { get { return (TMContext)Ctx; } set { DescendantCtx = value; } }
+        public TMContext TMContext { get { return (TMContext)Context; } set { TMContext = value; } }
 
         public ParseCommand(IContext context)
         {
             this.Name = "parse";
-            this.Ctx = context;
-            this.Ctx.RegisterCommand(this);
-        }
-
-        public override bool CanParse(string cmdToParse)
-        {
-            return cmdToParse == "p";
+            this.AllowedAlias.Add("p");
+            this.AllowedAlias.Add("parse");
+            this.Context = context;
+            this.Context.RegisterCommand(this);
         }
 
         public override void Validate()
@@ -54,12 +47,12 @@ namespace Transfermarkt.Console
             {
                 var y = new StringArgument
                 {
-                    Value = DescendantCtx.lastSelectedSeason
+                    Value = TMContext.lastSelectedSeason
                 };
                 yy.Args.Add(y);
             }
 
-            DescendantCtx.lastSelectedSeason = ((StringArgument)yy.Args.First()).Value;
+            TMContext.lastSelectedSeason = ((StringArgument)yy.Args.First()).Value;
 
             foreach (IArgument ind in idx.Args)
             {
@@ -108,14 +101,14 @@ namespace Transfermarkt.Console
 
             var k = $"{year}.{i1}";
 
-            if (!DescendantCtx.cont.ContainsKey(i1.ToString()))
+            if (!TMContext.cont.ContainsKey(i1.ToString()))
             {
                 return false;
             }
 
-            if (!DescendantCtx.continent.ContainsKey(k))
+            if (!TMContext.continent.ContainsKey(k))
             {
-                DescendantCtx.continent.Add(k, (DescendantCtx.cont[i1.ToString()].L, null));
+                TMContext.continent.Add(k, (TMContext.cont[i1.ToString()].L, null));
             }
 
             return true;
@@ -127,20 +120,20 @@ namespace Transfermarkt.Console
 
             var k = $"{year}.{i1}";
 
-            if (!DescendantCtx.continent.ContainsKey(k))
+            if (!TMContext.continent.ContainsKey(k))
             {
                 return false;
             }
-            (Link L, ContinentPage P) choice = DescendantCtx.continent[k];
+            (Link L, ContinentPage P) choice = TMContext.continent[k];
 
             bool isFinal = !i2.HasValue && !i3.HasValue;
 
             if (choice.P == null || !choice.P.Connection.IsConnected)
             {
-                choice.P = (ContinentPage)Activator.CreateInstance(typeof(ContinentPage), new HAPConnection(), DescendantCtx.Logger, year);
+                choice.P = (ContinentPage)Activator.CreateInstance(typeof(ContinentPage), new HAPConnection(), TMContext.Logger, year);
                 //var c = Activator.CreateInstance<ContinentPage>();
                 //c.Connection = new HAPConnection();
-                DescendantCtx.continent[k] = choice;
+                TMContext.continent[k] = choice;
 
                 choice.P.Connect(choice.L.Url);
 
@@ -157,7 +150,7 @@ namespace Transfermarkt.Console
 
             if (isFinal)
             {
-                DescendantCtx.Exporter.Extract(choice.P.Domain, ContinentFileNameFormat);
+                TMContext.Exporter.Extract(choice.P.Domain, ContinentFileNameFormat);
             }
 
             if (isFinal || !i2.HasValue)
@@ -181,7 +174,7 @@ namespace Transfermarkt.Console
 
             if (isFinal)
             {
-                DescendantCtx.Exporter.Extract(competitionPage.Domain, CompetitionFileNameFormat);
+                TMContext.Exporter.Extract(competitionPage.Domain, CompetitionFileNameFormat);
             }
 
             if (isFinal || !i3.HasValue)
@@ -200,7 +193,7 @@ namespace Transfermarkt.Console
 
             if (isFinal)
             {
-                DescendantCtx.Exporter.Extract(clubPage.Domain, ClubFileNameFormat);
+                TMContext.Exporter.Extract(clubPage.Domain, ClubFileNameFormat);
             }
 
             return true;

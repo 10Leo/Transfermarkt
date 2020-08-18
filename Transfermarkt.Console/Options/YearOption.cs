@@ -1,23 +1,19 @@
 ﻿using LJMB.Command;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Transfermarkt.Console.Options
 {
     public class YearOption : IOption
     {
-        public string Name { get; set; } = "Year";
+        public string Name { get; } = "Year";
         public ISet<string> AllowedAlias { get; } = new HashSet<string> { "y", "year" };
-        public ISet<IArgument> Args { get; set; } = new HashSet<IArgument>();
+        public ISet<IArgument> Args { get; } = new HashSet<IArgument>();
 
-        public void Parse(string value)
+        public void Parse(string toParse)
         {
             var year = new StringArgument
             {
-                Value = ParseYear(value).ToString()
+                Value = ParseYear(toParse).ToString()
             };
 
             Args.Add(year);

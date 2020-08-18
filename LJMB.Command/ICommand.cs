@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LJMB.Command
 {
     public interface ICommand
     {
+        IOption this[string option] { get; }
+
         string Name { get; set; }
 
+        IContext Context { get; set; }
         ISet<IOption> Options { get; set; }
 
         bool CanParse(string toParse);
