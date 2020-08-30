@@ -7,7 +7,7 @@ namespace Transfermarkt.Console.Options
     {
         public string Name { get; } = "Year";
         public ISet<string> AllowedAlias { get; } = new HashSet<string> { "y", "year" };
-        public ISet<IArgument> Args { get; } = new HashSet<IArgument>();
+        public ISet<IArgument> Args { get; } = new HashSet<IArgument>(1);
 
         public void Parse(string toParse)
         {
