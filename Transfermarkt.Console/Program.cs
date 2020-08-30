@@ -8,6 +8,7 @@ namespace Transfermarkt.Console
     {
         static void Main(string[] args)
         {
+            //TODO: create a progress marker to show how much was processed whenever a command is issued.
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
             IContext context = new TMContext();
