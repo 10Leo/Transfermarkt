@@ -29,6 +29,11 @@ namespace Transfermarkt.Console.Options
             }
         }
 
+        public void Reset()
+        {
+            Args.Clear();
+        }
+
         private static IArgument DetermineNumberOfIndexes(Match argument)
         {
             var o1 = argument.Groups[g1].Value.Trim();

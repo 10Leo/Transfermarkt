@@ -82,6 +82,12 @@ namespace LJMB.Command
 
         public abstract void Execute();
 
+
+        public void Reset()
+        {
+            Options.ToList().ForEach(o => o.Reset());
+        }
+
         public override string ToString()
         {
             string cmdToParse = $"{Name}";

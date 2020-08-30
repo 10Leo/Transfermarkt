@@ -13,15 +13,15 @@ namespace Transfermarkt.Console.Options
         {
             var year = new StringArgument
             {
-                Value = ParseYear(toParse).ToString()
+                Value = int.Parse(toParse).ToString()
             };
 
             Args.Add(year);
         }
 
-        private static int ParseYear(string yearCmd)
+        public void Reset()
         {
-            return int.Parse(yearCmd);
+            Args.Clear();
         }
     }
 }

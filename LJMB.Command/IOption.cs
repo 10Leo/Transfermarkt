@@ -9,5 +9,6 @@ namespace LJMB.Command
         ISet<IArgument> Args { get; }
 
         void Parse(string toParse);
+        void Reset();
     }
 }

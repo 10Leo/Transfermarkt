@@ -82,6 +82,8 @@ namespace LJMB.Command
 
             sentCmd.Parse(inputCmd);
             sentCmd.Execute();
+
+            sentCmd.Reset();
         }
     }
 }

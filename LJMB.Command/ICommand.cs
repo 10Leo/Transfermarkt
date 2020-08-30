@@ -15,5 +15,6 @@ namespace LJMB.Command
         void Parse(string toParse);
         void Validate();
         void Execute();
+        void Reset();
     }
 }

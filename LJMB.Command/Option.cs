@@ -12,5 +12,10 @@ namespace LJMB.Command
         public ISet<IArgument> Args { get; set; } = new HashSet<IArgument>();
 
         public abstract void Parse(string value);
+
+        public void Reset()
+        {
+            Args.Clear();
+        }
     }
 }
