@@ -8,27 +8,16 @@ namespace LJMB.Command.Commands
 {
     public class ExitCommand : Command
     {
-        public IContext Context { get; set; }
-        
         public ExitCommand(IContext context)
         {
             this.Name = "exit";
+            this.AllowedAlias.Add("e");
+            this.AllowedAlias.Add("exit");
             this.Context = context;
             this.Context.RegisterCommand(this);
         }
 
-        public override bool CanParse(string cmdToParse)
-        {
-            return cmdToParse == "e";
-        }
-
-        public override void Parse(string completeCmdToParse)
-        {
-        }
-
-        public override void Validate()
-        {
-        }
+        public override void Parse(string completeCmdToParse) { }
 
         public override void Execute()
         {

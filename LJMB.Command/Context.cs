@@ -6,9 +6,9 @@ namespace LJMB.Command
 {
     public abstract class Context : IContext
     {
-        public bool Exit { get; set; } = false;
-
         protected readonly IList<ICommand> Commands = new List<ICommand>();
+        
+        public bool Exit { get; set; } = false;
 
         public virtual void Run()
         {

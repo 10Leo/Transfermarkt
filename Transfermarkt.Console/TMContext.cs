@@ -46,8 +46,8 @@ namespace Transfermarkt.Console
         public TMContext()
         {
             this.RegisterCommand(new ExitCommand(this));
-            this.RegisterCommand(new FetchCommand(this));
-            this.RegisterCommand(new ParseCommand(this));
+            this.RegisterCommand(new FetchCommand(this) { ContinentFileNameFormat = ContinentFileNameFormat, CompetitionFileNameFormat = CompetitionFileNameFormat, ClubFileNameFormat = ClubFileNameFormat });
+            this.RegisterCommand(new ParseCommand(this) { ContinentFileNameFormat = ContinentFileNameFormat, CompetitionFileNameFormat = CompetitionFileNameFormat, ClubFileNameFormat = ClubFileNameFormat });
 
             Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
             Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
@@ -79,6 +79,11 @@ namespace Transfermarkt.Console
 
                 System.Console.WriteLine(string.Format($"{tabs}{presentationKey}: {(!string.IsNullOrEmpty(links[l].Title) ? links[l].Title : links[l].Url)}"));
             }
+        }
+
+        internal object GenerateKey(int year, int i1)
+        {
+            return $"{year}.{i1}";
         }
     }
 }

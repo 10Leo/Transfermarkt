@@ -11,7 +11,7 @@ namespace LJMB.Command
 
         public string Name { get; set; }
         public IContext Context { get; set; }
-        public ISet<IOption> Options { get; set; } = new HashSet<IOption>();
+        public ISet<IOption> Options { get; } = new HashSet<IOption>();
 
         public IOption this[string option]
         {
@@ -19,16 +19,6 @@ namespace LJMB.Command
             {
                 return Options.FirstOrDefault(o => o.Name == option);
             }
-        }
-
-        protected void RegisterOption(IOption option)
-        {
-            if (Options.Contains(option))
-            {
-                throw new Exception("Option already registered.");
-            }
-
-            Options.Add(option);
         }
 
         public virtual bool CanParse(string toParse)
@@ -76,12 +66,23 @@ namespace LJMB.Command
                     }
                 }
             }
+
+            Validate();
         }
 
-        public abstract void Validate();
+        public virtual void Validate() { }
 
         public abstract void Execute();
 
+        protected void RegisterOption(IOption option)
+        {
+            if (Options.Contains(option))
+            {
+                throw new Exception("Option already registered.");
+            }
+
+            Options.Add(option);
+        }
 
         public void Reset()
         {

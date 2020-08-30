@@ -14,10 +14,50 @@ namespace Transfermarkt.Console
 {
     public class FetchCommand : Command
     {
-        public string ClubFileNameFormat { get; private set; }
-        public string ContinentFileNameFormat { get; private set; }
-        public string CompetitionFileNameFormat { get; private set; }
-        public TMContext TMContext { get { return (TMContext)Context; } set { TMContext = value; } }
+        public string ClubFileNameFormat { get; set; }
+        public string ContinentFileNameFormat { get; set; }
+        public string CompetitionFileNameFormat { get; set; }
+
+        public TMContext TMContext { get { return (TMContext)Context; } }
+
+        private IOption year = null;
+        public IOption Year
+        {
+            get
+            {
+                if (year == null)
+                {
+                    year = this["Year"];
+                }
+                return year;
+            }
+        }
+
+        private IOption indexes = null;
+        public IOption Indexes
+        {
+            get
+            {
+                if (indexes == null)
+                {
+                    indexes = this["Indexes"];
+                }
+                return indexes;
+            }
+        }
+
+        public int? YearValue
+        {
+            get
+            {
+                if (Year == null || Year.Args == null || Year.Args.Count == 0)
+                {
+                    throw new Exception("Season was not defined.");
+                }
+
+                return int.Parse(((StringArgument)Year.Args.First()).Value);
+            }
+        }
 
         public FetchCommand(IContext context)
         {

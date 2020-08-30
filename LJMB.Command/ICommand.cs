@@ -6,10 +6,10 @@ namespace LJMB.Command
     {
         IOption this[string option] { get; }
 
-        string Name { get; set; }
+        string Name { get; }
 
-        IContext Context { get; set; }
-        ISet<IOption> Options { get; set; }
+        IContext Context { get; }
+        ISet<IOption> Options { get; }
 
         bool CanParse(string toParse);
         void Parse(string toParse);
