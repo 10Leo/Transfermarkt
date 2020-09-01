@@ -15,6 +15,7 @@ namespace Page.Scraper.Contracts
         public string Name { get; set; }
         public IEnumerable<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, TNode>> Parsers { get; set; }
         public Children ChildrenType { get; private set; }
+        public ParseLevel ParseLevel { get; set; }
 
         public ChildsSamePageSection(string name, IPage<IDomain, TNode> page)
         {
@@ -51,6 +52,8 @@ namespace Page.Scraper.Contracts
                         }
                     }
                 }
+
+                this.ParseLevel = (parseChildren ? ParseLevel.Parsed : ParseLevel.Fetched);
 
                 Parsers.ToList().ForEach(p =>
                 {

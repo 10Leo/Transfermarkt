@@ -81,6 +81,7 @@ namespace Page.Scraper.Contracts
         public Children ChildrenType { get; private set; }
 
         public IConnection<TNode> Connection { get; set; }
+        public ParseLevel ParseLevel { get; set; }
 
         public ChildsSection(string name, IPage<IDomain, TNode> page, IConnection<TNode> connection)
         {
@@ -104,6 +105,7 @@ namespace Page.Scraper.Contracts
             Children = GetUrls?.Invoke();
 
             fetched = true;
+            this.ParseLevel = ParseLevel.Fetched;
             Children?.ToList().ForEach(l => linksParsed.Add(l, false));
             Children?.ToList().ForEach(l => pagesParsed.Add(l, -1));
             ChildrenPages = new List<IPage<IDomain, TNode>>(Children.Count);
@@ -151,6 +153,8 @@ namespace Page.Scraper.Contracts
 
                 this.Page.Domain?.Children.Add(childPage.Domain);
             }
+
+            this.ParseLevel = (parseChildren ? ParseLevel.Parsed : ParseLevel.Fetched);
         }
 
         private void Validate(IEnumerable<Link> linksToParse)

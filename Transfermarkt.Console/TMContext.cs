@@ -26,12 +26,11 @@ namespace Transfermarkt.Console
 
         private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
-        public string lastSelectedSeason { get; set; } = currentSeason.ToString();
-
         public ILogger Logger { get; }
         public IExporter Exporter { get; }
+        public string LastSelectedSeason { get; set; } = currentSeason.ToString();
 
-        public IDictionary<string, (Link L, ContinentPage P)> cont = new Dictionary<string, (Link, ContinentPage)>
+        public IDictionary<string, (Link L, ContinentPage P)> Continents = new Dictionary<string, (Link, ContinentPage)>
         {
             [$"1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
             [$"2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
@@ -39,7 +38,7 @@ namespace Transfermarkt.Console
             [$"4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
         };
 
-        public readonly IDictionary<string, (Link L, ContinentPage P)> continent = new Dictionary<string, (Link, ContinentPage)>();
+        public readonly IDictionary<string, (Link L, ContinentPage P)> Continent = new Dictionary<string, (Link, ContinentPage)>();
 
         public (Link L, ContinentPage P) Choice { get; }
 
@@ -55,9 +54,9 @@ namespace Transfermarkt.Console
 
         public override void Run()
         {
-            for (int i = 0; i < cont.Count; i++)
+            for (int i = 0; i < Continents.Count; i++)
             {
-                System.Console.WriteLine($"{(i + 1)}: {cont.ElementAt(i).Value.L.Title}");
+                System.Console.WriteLine($"{(i + 1)}: {Continents.ElementAt(i).Value.L.Title}");
             }
 
             base.Run();

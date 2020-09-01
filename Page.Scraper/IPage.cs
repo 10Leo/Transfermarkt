@@ -9,7 +9,7 @@ namespace Page.Scraper.Contracts
         IReadOnlyList<ISection> Sections { get; set; }
 
         string Url { get; }
-
+        ParseLevel ParseLevel { get; }
         TDomain Domain { get; set; }
 
         IConnection<TNode> Connection { get; set; }
@@ -34,5 +34,12 @@ namespace Page.Scraper.Contracts
             this.Message = message;
             this.Exception = exception;
         }
+    }
+
+    public enum ParseLevel
+    {
+        NotYet,
+        Fetched,
+        Parsed
     }
 }

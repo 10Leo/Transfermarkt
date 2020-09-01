@@ -9,6 +9,7 @@ namespace Page.Scraper.Contracts
         public ISection this[string name] => Sections?.FirstOrDefault(s => s.Name == name);
 
         public string Url { get; private set; }
+        public ParseLevel ParseLevel { get; protected set; } = ParseLevel.NotYet;
 
         public IReadOnlyList<ISection> Sections { get; set; }
 
@@ -59,6 +60,15 @@ namespace Page.Scraper.Contracts
             foreach (ISection section in sectionsToParse)
             {
                 section.Parse(parseChildren);
+            }
+
+            if (sectionsToParse.All(s => s.ParseLevel == ParseLevel.Fetched))
+            {
+                this.ParseLevel = ParseLevel.Fetched;
+            }
+            else if (sectionsToParse.All(s => s.ParseLevel == ParseLevel.Parsed))
+            {
+                this.ParseLevel = ParseLevel.Parsed;
             }
 
             OnAfterParse?.Invoke(this, new PageEventArgs(this.Url));

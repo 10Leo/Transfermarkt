@@ -72,6 +72,28 @@ namespace Transfermarkt.Console
 
         public override void Validate()
         {
+            if (Year != null)
+            {
+                // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
+                if (Year.Args.Count == 0)
+                {
+                    var y = new StringArgument
+                    {
+                        Value = TMContext.LastSelectedSeason
+                    };
+                    Year.Args.Add(y);
+                }
+            }
+            TMContext.LastSelectedSeason = YearValue.ToString();
+
+            if (Indexes == null)
+            {
+                throw new Exception("Fetch requires the -i option.");
+            }
+            if (Indexes.Args.Count == 0)
+            {
+                throw new Exception("Fetch requires 1+ indexes passed to proccess.");
+            }
         }
 
         public override void Execute()
@@ -81,126 +103,101 @@ namespace Transfermarkt.Console
 
         private void Proccess()
         {
-            IOption idx = this["Indexes"];
-            IOption yy = this["Year"];
-
-            // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
-            if (yy.Args.Count == 0)
+            foreach (IArgument ind in Indexes.Args)
             {
-                var y = new StringArgument
+                (int i1, int i2, int i3) = ind.GetIndexes();
+
+                if (!ContinentExists(i1))
                 {
-                    Value = TMContext.lastSelectedSeason
-                };
-                yy.Args.Add(y);
-            }
-
-            TMContext.lastSelectedSeason = ((StringArgument)yy.Args.First()).Value;
-
-            foreach (IArgument ind in idx.Args)
-            {
-                int i1 = 0;
-                int i2 = 0;
-                int i3 = 0;
-
-                if (ind is Index1Argument)
-                {
-                    i1 = (ind as Index1Argument).Index1;
+                    continue;
                 }
-                else if (ind is Index2Argument)
-                {
-                    i1 = (ind as Index2Argument).Index1;
-                    i2 = (ind as Index2Argument).Index2;
-                }
-                else if (ind is Index3Argument)
-                {
-                    i1 = (ind as Index3Argument).Index1;
-                    i2 = (ind as Index3Argument).Index2;
-                    i3 = (ind as Index3Argument).Index3;
-                }
+                AddNewYearContinentIfDoesntExist(i1);
 
-                bool proceed = ContinentsP(i1);
-                //if (proceed && i1 != 0)
-                //{
-                //    proceed = ContinentP(cmd, $"{i1.ToString()}", ind is Index1ParameterValue);
-                //}
-                //if (proceed && i2 != 0)
-                //{
-                //    proceed = CompetitionP(cmd, $"{i1.ToString()}.{i2.ToString()}", i2, i3, ind is Index2ParameterValue);
-                //}
-                //if (proceed && i3 != 0)
-                //{
-                //    //proceed = ClubP(cmd, $"{i1.ToString()}.{i2.ToString()}.{i3.ToString()}", ind is Index3ParameterValue);
-                //}
-
+                bool proceed = true;
                 if (proceed && i1 != 0)
-                    ProccessCommand(i1 == 0 ? (int?)null : i1, i2 == 0 ? (int?)null : i2, i3 == 0 ? (int?)null : i3);
+                {
+                    proceed = ProcessIndex1(i1, ind is Index1Argument);
+                }
+                if (proceed && i2 != 0)
+                {
+                    proceed = ProcessIndex2(i1, i2, ind is Index2Argument);
+                }
+                if (proceed && i3 != 0)
+                {
+                    proceed = ProcessIndex3(i1, i2, i3, ind is Index3Argument);
+                }
+
+                //if (proceed && i1 != 0)
+                //    ProccessCommand(i1 == 0 ? (int?)null : i1, i2 == 0 ? (int?)null : i2, i3 == 0 ? (int?)null : i3);
             }
         }
 
-        private bool ContinentsP(int i1)
+        private bool ContinentExists(int i1)
         {
-            var year = ((StringArgument)this["Year"].Args.First()).Value;
-
-            var k = $"{year}.{i1}";
-
-            if (!TMContext.cont.ContainsKey(i1.ToString()))
-            {
-                return false;
-            }
-
-            if (!TMContext.continent.ContainsKey(k))
-            {
-                TMContext.continent.Add(k, (TMContext.cont[i1.ToString()].L, null));
-            }
-
-            return true;
+            return TMContext.Continents.ContainsKey(i1.ToString());
         }
 
-        private bool ProccessCommand(int? i1, int? i2, int? i3)
+        private void AddNewYearContinentIfDoesntExist(int i1)
         {
-            var year = int.Parse(((StringArgument)this["Year"].Args.First()).Value);
+            var key = GenerateKey(i1);
+            if (!TMContext.Continent.ContainsKey(key))
+            {
+                TMContext.Continent.Add(key, (TMContext.Continents[i1.ToString()].L, null));
+            }
+        }
 
-            var k = $"{year}.{i1}";
+        private bool ProcessIndex1(int i1, bool isFinal)
+        {
+            var key = GenerateKey(i1);
 
-            if (!TMContext.continent.ContainsKey(k))
+            if (!TMContext.Continent.ContainsKey(key))
             {
                 return false;
             }
-            (Link L, ContinentPage P) choice = TMContext.continent[k];
+            (Link L, ContinentPage P) choice = TMContext.Continent[key];
 
-            bool isFinal = !i2.HasValue && !i3.HasValue;
-
-            if (choice.P == null || !choice.P.Connection.IsConnected)
+            if (choice.P == null)
             {
-                choice.P = (ContinentPage)Activator.CreateInstance(typeof(ContinentPage), new HAPConnection(), TMContext.Logger, year);
-                //var c = Activator.CreateInstance<ContinentPage>();
-                //c.Connection = new HAPConnection();
-                TMContext.continent[k] = choice;
+                choice.P = new ContinentPage(new HAPConnection(), TMContext.Logger, YearValue);
+                TMContext.Continent[key] = choice;
+            }
 
+            if (!choice.P.Connection.IsConnected)
+            {
                 choice.P.Connect(choice.L.Url);
+            }
 
-                // do a fetch or a parse according to conditions.
+            if (choice.P.ParseLevel == ParseLevel.NotYet)
+            {
                 choice.P.Parse(parseChildren: false);
             }
 
             var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)choice.P["Continent - Competitions Section"];
             if (continentCompetitionsSection != null)
             {
-                System.Console.WriteLine();
                 TMContext.PresentOptions(continentCompetitionsSection.Children, $"{i1}", 1);
             }
 
+            return !isFinal;
+        }
 
-            if (isFinal || !i2.HasValue)
+        private bool ProcessIndex2(int i1, int i2, bool isFinal)
+        {
+            var key = GenerateKey(i1);
+
+            if (!TMContext.Continent.ContainsKey(key))
             {
-                return true;
+                return false;
             }
+            (Link L, ContinentPage P) = TMContext.Continent[key];
 
+            var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)P["Continent - Competitions Section"];
 
-            isFinal = !i3.HasValue;
-
-            Link chosenCompetitionLink = continentCompetitionsSection.Children[i2.Value - 1];
-            continentCompetitionsSection.Parse(new[] { chosenCompetitionLink }, parseChildren: false);
+            Link chosenCompetitionLink = continentCompetitionsSection.Children[i2 - 1];
+            //if (continentCompetitionsSection.ParseLevel == ParseLevel.NotYet)
+            {
+                continentCompetitionsSection.Parse(new[] { chosenCompetitionLink }, parseChildren: false);
+            }
 
             IPage<IDomain, HtmlNode> competitionPage = continentCompetitionsSection[new Dictionary<string, string> { { "Title", chosenCompetitionLink.Title } }];
             var clubsSection = (ChildsSection<HtmlNode, ClubPage>)competitionPage["Competition - Clubs Section"];
@@ -210,27 +207,41 @@ namespace Transfermarkt.Console
                 TMContext.PresentOptions(clubsSection.Children, $"{i1}.{i2}", 2);
             }
 
+            return !isFinal;
+        }
 
-            if (isFinal || !i3.HasValue)
+        private bool ProcessIndex3(int i1, int i2, int i3, bool isFinal)
+        {
+            var key = GenerateKey(i1);
+
+            if (!TMContext.Continent.ContainsKey(key))
             {
-                return true;
+                return false;
             }
+            (Link L, ContinentPage P) = TMContext.Continent[key];
 
+            var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)P["Continent - Competitions Section"];
 
-            isFinal = true;
+            Link chosenCompetitionLink = continentCompetitionsSection.Children[i2 - 1];
 
-            Link chosenClubLink = clubsSection.Children[i3.Value - 1];
-            clubsSection.Parse(new[] { chosenClubLink }, true);
+            IPage<IDomain, HtmlNode> competitionPage = continentCompetitionsSection[new Dictionary<string, string> { { "Title", chosenCompetitionLink.Title } }];
+            var clubsSection = (ChildsSection<HtmlNode, ClubPage>)competitionPage["Competition - Clubs Section"];
+
+            Link chosenClubLink = clubsSection.Children[i3 - 1];
+            //if (clubsSection.ParseLevel == ParseLevel.NotYet)
+            {
+                clubsSection.Parse(new[] { chosenClubLink }, parseChildren: false);
+            }
 
             IPage<IDomain, HtmlNode> clubPage = clubsSection[new Dictionary<string, string> { { "Title", chosenClubLink.Title } }];
             var playersSection = (ChildsSamePageSection<Player, HtmlNode>)clubPage["Club - Players Section"];
 
-            //if (isFinal)
-            //{
-            //    Context.exporter.Extract(clubPage.Domain, ClubFileNameFormat);
-            //}
+            return !isFinal;
+        }
 
-            return true;
+        private string GenerateKey(int i1)
+        {
+            return $"{YearValue}.{i1}";
         }
     }
 }

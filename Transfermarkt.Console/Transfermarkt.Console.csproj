@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arguments\IndexesArguments.cs" />
+    <Compile Include="CommandUtils.cs" />
     <Compile Include="Options\IndexesOption.cs" />
     <Compile Include="Options\YearOption.cs" />
     <Compile Include="TMContext.cs" />
