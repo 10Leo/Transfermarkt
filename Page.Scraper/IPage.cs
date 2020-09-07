@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Page.Scraper.Contracts
 {
-    public interface IPage<TDomain, TNode> where TDomain : IDomain
+    public interface IPage<out TDomain, TNode> where TDomain : IDomain
     {
         ISection this[string name] { get; }
         IReadOnlyList<ISection> Sections { get; set; }
 
         string Url { get; }
         ParseLevel ParseLevel { get; }
-        TDomain Domain { get; set; }
+        TDomain Domain { get; }
 
-        IConnection<TNode> Connection { get; set; }
+        IConnection<TNode> Connection { get; }
 
         event EventHandler<PageEventArgs> OnBeforeParse;
         event EventHandler<PageEventArgs> OnAfterParse;
