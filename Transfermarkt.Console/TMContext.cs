@@ -1,4 +1,5 @@
-﻿using LJMB.Command;
+﻿using HtmlAgilityPack;
+using LJMB.Command;
 using LJMB.Command.Commands;
 using LJMB.Common;
 using LJMB.Logging;
@@ -30,17 +31,17 @@ namespace Transfermarkt.Console
         public IExporter Exporter { get; }
         public string LastSelectedSeason { get; set; } = currentSeason.ToString();
 
-        public IDictionary<string, (Link L, ContinentPage P)> Continents = new Dictionary<string, (Link, ContinentPage)>
+        public IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>
         {
-            [$"1"] = (new Link { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
-            [$"2"] = (new Link { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
-            [$"3"] = (new Link { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
-            [$"4"] = (new Link { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
+            [$"1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
+            [$"2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
+            [$"3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
+            [$"4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
         };
 
-        public readonly IDictionary<string, (Link L, ContinentPage P)> Continent = new Dictionary<string, (Link, ContinentPage)>();
+        public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continent = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
 
-        public (Link L, ContinentPage P) Choice { get; }
+        public (Link<HtmlNode, CompetitionPage> L, ContinentPage P) Choice { get; }
 
         public TMContext()
         {
@@ -62,7 +63,25 @@ namespace Transfermarkt.Console
             base.Run();
         }
 
-        public static void PresentOptions(IList<Link> links, string key, int level)
+        public static void PresentOptions(IList<Link<HtmlNode, CompetitionPage>> links, string key, int level)
+        {
+            if (links == null || links.Count == 0)
+            {
+                return;
+            }
+
+            string tabs = string.Join("", Enumerable.Repeat("\t", level).ToArray());
+
+            System.Console.WriteLine();
+            for (int l = 0; l < links.Count; l++)
+            {
+                var presentationKey = $"{key}.{(l + 1)}";
+
+                System.Console.WriteLine(string.Format($"{tabs}{presentationKey}: {(!string.IsNullOrEmpty(links[l].Title) ? links[l].Title : links[l].Url)}"));
+            }
+        }
+
+        public static void PresentOptions(IList<Link<HtmlNode, ClubPage>> links, string key, int level)
         {
             if (links == null || links.Count == 0)
             {

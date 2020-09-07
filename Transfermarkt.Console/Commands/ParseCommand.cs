@@ -154,7 +154,7 @@ namespace Transfermarkt.Console
             {
                 return false;
             }
-            (Link L, ContinentPage P) choice = TMContext.Continent[key];
+            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) choice = TMContext.Continent[key];
 
             if (choice.P == null)
             {
@@ -196,11 +196,11 @@ namespace Transfermarkt.Console
             {
                 return false;
             }
-            (Link L, ContinentPage P) = TMContext.Continent[key];
+            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) = TMContext.Continent[key];
 
             var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)P["Continent - Competitions Section"];
 
-            Link chosenCompetitionLink = continentCompetitionsSection.Children[i2 - 1];
+            Link<HtmlNode, CompetitionPage> chosenCompetitionLink = continentCompetitionsSection.Children[i2 - 1];
             //if (continentCompetitionsSection.ParseLevel == ParseLevel.NotYet || (continentCompetitionsSection.ParseLevel == ParseLevel.Fetched && isFinal))
             {
                 // do a fetch or a parse according to conditions.
@@ -231,16 +231,16 @@ namespace Transfermarkt.Console
             {
                 return false;
             }
-            (Link L, ContinentPage P) = TMContext.Continent[key];
+            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) = TMContext.Continent[key];
 
             var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)P["Continent - Competitions Section"];
 
-            Link chosenCompetitionLink = continentCompetitionsSection.Children[i2 - 1];
+            Link<HtmlNode, CompetitionPage> chosenCompetitionLink = continentCompetitionsSection.Children[i2 - 1];
 
             IPage<IDomain, HtmlNode> competitionPage = continentCompetitionsSection[new Dictionary<string, string> { { "Title", chosenCompetitionLink.Title } }];
             var clubsSection = (ChildsSection<HtmlNode, ClubPage>)competitionPage["Competition - Clubs Section"];
 
-            Link chosenClubLink = clubsSection.Children[i3 - 1];
+            Link<HtmlNode, ClubPage> chosenClubLink = clubsSection.Children[i3 - 1];
             //if (clubsSection.ParseLevel == ParseLevel.NotYet || clubsSection.ParseLevel == ParseLevel.Fetched)
             {
                 clubsSection.Parse(new[] { chosenClubLink }, parseChildren: true);

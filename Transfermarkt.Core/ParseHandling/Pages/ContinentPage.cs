@@ -32,6 +32,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
                 logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
+
+        private void Init() { }
     }
 
     class ContinentPageSection : ElementsSection<HtmlNode>
@@ -73,7 +75,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.GetUrls = () =>
             {
-                IList<Link> urls = new List<Link>();
+                IList<Link<HtmlNode, CompetitionPage>> urls = new List<Link<HtmlNode, CompetitionPage>>();
 
                 Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
@@ -91,7 +93,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     try
                     {
-                        Link competitionUrl = GetCompetitionLink(cols);
+                        Link<HtmlNode, CompetitionPage> competitionUrl = GetCompetitionLink(cols);
                         competitionUrl.Url = TransformUrl(competitionUrl.Url, BaseURL);
 
                         urls.Add(competitionUrl);
@@ -106,7 +108,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
         }
 
-        private Link GetCompetitionLink(HtmlNodeCollection cols)
+        private Link<HtmlNode, CompetitionPage> GetCompetitionLink(HtmlNodeCollection cols)
         {
             var country = cols[1]
                 .SelectNodes("img")
@@ -117,7 +119,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             var nat = ConvertersConfig.GetNationality(country);
 
-            Link link = new Link { Title = $"{country}-{aLeagueName.InnerText}", Url = aLeagueName.Attributes["href"].Value };
+            Link<HtmlNode, CompetitionPage> link = new Link<HtmlNode, CompetitionPage> { Title = $"{country}-{aLeagueName.InnerText}", Url = aLeagueName.Attributes["href"].Value };
             link.Identifiers.Add("Nationality", ConvertersConfig.GetNationality(country)?.ToString());
             link.Identifiers.Add("League Name", aLeagueName.InnerText);
 

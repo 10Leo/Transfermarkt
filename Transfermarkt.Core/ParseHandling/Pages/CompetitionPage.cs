@@ -89,7 +89,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.GetUrls = () =>
             {
-                IList<Link> urls = new List<Link>();
+                IList<Link<HtmlNode, ClubPage>> urls = new List<Link<HtmlNode, ClubPage>>();
 
                 Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
@@ -108,7 +108,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     try
                     {
-                        Link clubUrl = GetClubLink(cols[2]);
+                        Link<HtmlNode, ClubPage> clubUrl = GetClubLink(cols[2]);
                         clubUrl.Url = TransformUrl(clubUrl.Url, BaseURL, SimpleClubUrlFormat, PlusClubUrlFormat, IdentifiersGetterPattern, IdentifiersSetterPattern);
 
                         urls.Add(clubUrl);
@@ -123,13 +123,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
         }
 
-        private Link GetClubLink(HtmlNode node)
+        private Link<HtmlNode, ClubPage> GetClubLink(HtmlNode node)
         {
             var a = node
                 .SelectNodes("a")
                 .FirstOrDefault(n => n.Attributes["class"]?.Value == "vereinprofil_tooltip");
 
-            return new Link
+            return new Link<HtmlNode, ClubPage>
             {
                 Title = a.InnerText,
                 Url = a.Attributes["href"].Value
