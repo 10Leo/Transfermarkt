@@ -146,16 +146,24 @@ namespace Transfermarkt.Console
             }
         }
 
+        private (Link<HtmlNode, CompetitionPage> L, ContinentPage P) GetSeasonContinent(string key)
+        {
+            if (!TMContext.Continent.ContainsKey(key))
+            {
+                return (null, null);
+            }
+            return TMContext.Continent[key];
+        }
+
         private bool ProcessIndex1(int i1, bool isFinal)
         {
             var key = GenerateKey(i1);
 
-            if (!TMContext.Continent.ContainsKey(key))
+            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) choice = GetSeasonContinent(key);
+            if (choice.L == null)
             {
                 return false;
             }
-            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) choice = TMContext.Continent[key];
-
             if (choice.P == null)
             {
                 choice.P = new ContinentPage(new HAPConnection(), TMContext.Logger, YearValue);
@@ -167,7 +175,7 @@ namespace Transfermarkt.Console
                 choice.P.Connect(choice.L.Url);
             }
 
-            if (choice.P.ParseLevel == ParseLevel.NotYet)
+            //if (choice.P.ParseLevel == ParseLevel.NotYet)
             {
                 choice.P.Parse(parseChildren: false);
             }
@@ -185,11 +193,7 @@ namespace Transfermarkt.Console
         {
             var key = GenerateKey(i1);
 
-            if (!TMContext.Continent.ContainsKey(key))
-            {
-                return false;
-            }
-            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) = TMContext.Continent[key];
+            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) = GetSeasonContinent(key);
 
             var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)P["Continent - Competitions Section"];
 
@@ -214,11 +218,7 @@ namespace Transfermarkt.Console
         {
             var key = GenerateKey(i1);
 
-            if (!TMContext.Continent.ContainsKey(key))
-            {
-                return false;
-            }
-            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) = TMContext.Continent[key];
+            (Link<HtmlNode, CompetitionPage> L, ContinentPage P) = GetSeasonContinent(key);
 
             var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)P["Continent - Competitions Section"];
 

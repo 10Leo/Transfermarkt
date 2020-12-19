@@ -12,8 +12,6 @@ namespace Page.Scraper.Contracts
         {
             get
             {
-                var index = -1;
-
                 if (ids.ContainsKey("URL"))
                 {
                     return Children.FirstOrDefault(c => c.Url == ids["URL"].ToString()).Page;
