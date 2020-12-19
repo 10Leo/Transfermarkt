@@ -4,11 +4,11 @@ using Page.Scraper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Transfermarkt.Core.ParseHandling;
-using Transfermarkt.Core.ParseHandling.Pages;
-using Transfermarkt.Core.Actors;
 using Transfermarkt.Console.Arguments;
 using Transfermarkt.Console.Options;
+using Transfermarkt.Core.Actors;
+using Transfermarkt.Core.ParseHandling;
+using Transfermarkt.Core.ParseHandling.Pages;
 
 namespace Transfermarkt.Console
 {
@@ -18,7 +18,18 @@ namespace Transfermarkt.Console
         public string ContinentFileNameFormat { get; set; }
         public string CompetitionFileNameFormat { get; set; }
 
-        public TMContext TMContext { get { return (TMContext)Context; } }
+        private TMContext tmContext = null;
+        public TMContext TMContext
+        {
+            get
+            {
+                if (tmContext == null)
+                {
+                    tmContext = (TMContext)Context;
+                }
+                return tmContext;
+            }
+        }
 
         private IOption year = null;
         public IOption Year
@@ -98,10 +109,10 @@ namespace Transfermarkt.Console
 
         public override void Execute()
         {
-            Proccess();
+            Process();
         }
 
-        private void Proccess()
+        private void Process()
         {
             foreach (IArgument ind in Indexes.Args)
             {
@@ -150,7 +161,7 @@ namespace Transfermarkt.Console
         {
             if (!TMContext.Continent.ContainsKey(key))
             {
-                return (null, null);
+                throw new KeyNotFoundException("Specified key doesn't exist.");
             }
             return TMContext.Continent[key];
         }

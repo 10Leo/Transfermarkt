@@ -18,7 +18,18 @@ namespace Transfermarkt.Console
         public string ContinentFileNameFormat { get; set; }
         public string CompetitionFileNameFormat { get; set; }
 
-        public TMContext TMContext { get { return (TMContext)Context; } }
+        private TMContext tmContext = null;
+        public TMContext TMContext
+        {
+            get
+            {
+                if (tmContext == null)
+                {
+                    tmContext = (TMContext)Context;
+                }
+                return tmContext;
+            }
+        }
 
         private IOption year = null;
         public IOption Year
@@ -150,7 +161,7 @@ namespace Transfermarkt.Console
         {
             if (!TMContext.Continent.ContainsKey(key))
             {
-                return (null, null);
+                throw new KeyNotFoundException("Specified key doesn't exist.");
             }
             return TMContext.Continent[key];
         }
