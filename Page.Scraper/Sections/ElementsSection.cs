@@ -53,6 +53,10 @@ namespace Page.Scraper.Contracts
 
             this.ParseLevel = (parseChildren ? ParseLevel.Parsed : ParseLevel.Fetched);
 
+            Reset();
+        }
+
+        private void Reset() {
             Parsers.ToList().ForEach(p =>
             {
                 //TODO: recreate an instance of the parser? if yes, relocate this logic to the beginning of this method.

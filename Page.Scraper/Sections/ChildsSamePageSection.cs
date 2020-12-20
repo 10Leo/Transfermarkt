@@ -55,11 +55,16 @@ namespace Page.Scraper.Contracts
 
                 this.ParseLevel = (parseChildren ? ParseLevel.Parsed : ParseLevel.Fetched);
 
-                Parsers.ToList().ForEach(p =>
-                {
-                    p.Reset();
-                });
+                Reset();
             }
+        }
+
+        private void Reset()
+        {
+            Parsers.ToList().ForEach(p =>
+            {
+                p.Reset();
+            });
         }
     }
 }
