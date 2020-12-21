@@ -71,7 +71,7 @@ namespace Page.Scraper.Contracts
 
         public IList<Link<TNode, TChildPage>> Peek()
         {
-            if (this.ParseLevel <= ParseLevel.NotYet)
+            if (this.ParseLevel > ParseLevel.NotYet)
             {
                 return Children;
             }

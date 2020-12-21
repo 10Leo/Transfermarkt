@@ -9,22 +9,28 @@ namespace Page.Scraper.Contracts
         public ISection this[string name] => Sections?.FirstOrDefault(s => s.Name == name);
 
         public string Url { get; private set; }
+
+        private ParseLevel parseLevel = ParseLevel.NotYet;
         public ParseLevel ParseLevel
         {
             get
             {
                 if (Sections.All(s => s.ParseLevel == ParseLevel.Parsed))
                 {
-                    return ParseLevel.Parsed;
+                    parseLevel = ParseLevel.Parsed;
                 }
                 else if (Sections.All(s => s.ParseLevel == ParseLevel.NotYet))
                 {
-                    return ParseLevel.NotYet;
+                    parseLevel = ParseLevel.NotYet;
+                }
+                else
+                {
+                    parseLevel = ParseLevel.Partial;
                 }
 
-                return ParseLevel.Partial;
+                return parseLevel;
             }
-            protected set { ParseLevel = value; }
+            protected set { parseLevel = value; }
         }
 
         public IReadOnlyList<ISection> Sections { get; set; }
