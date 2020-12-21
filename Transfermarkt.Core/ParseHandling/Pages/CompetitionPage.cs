@@ -45,9 +45,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionPageSection : ElementsSection<HtmlNode>
     {
+        public static readonly string SectionName = "Competition Details";
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition Details", page)
+        public CompetitionPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base(SectionName, page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser(),
@@ -74,6 +75,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionClubsPageSection : ChildsSection<HtmlNode, ClubPage>
     {
+        public static readonly string SectionName = "Competition - Clubs Section";
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public string SimpleClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
         public string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
@@ -82,7 +84,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition - Clubs Section", page, page.Connection)
+        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base(SectionName, page, page.Connection)
         {
             this.Season = null;
             this.ChildPage = new ClubPage();

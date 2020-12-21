@@ -11,6 +11,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ContinentPage : Page<IValue, HtmlNode>
     {
+        //TODO: section names should be hold as variables in the page and passed to its child sections
         public ContinentPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
             this.Domain = new Continent();
@@ -38,9 +39,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class ContinentPageSection : ElementsSection<HtmlNode>
     {
+        public static readonly string SectionName = "Continent Details";
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Continent Details", page)
+        public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base(SectionName, page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Continent.NameParser(),
@@ -64,11 +66,12 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
     {
+        public static readonly string SectionName = "Continent - Competitions Section";
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, page.Connection)
+        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base(SectionName, page, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new CompetitionPage();

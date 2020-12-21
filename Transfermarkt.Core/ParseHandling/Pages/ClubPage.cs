@@ -40,9 +40,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class ClubPageSection : ElementsSection<HtmlNode>
     {
+        public static readonly string SectionName = "Club Details";
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ClubPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Club Details", page)
+        public ClubPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base(SectionName, page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Club.CountryParser(),
@@ -69,6 +70,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class ClubPlayersPageSection : ChildsSamePageSection<Player, HtmlNode>
     {
+        public static readonly string SectionName = "Club - Players Section";
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
         public ClubPlayersPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Club - Players Section", page)
