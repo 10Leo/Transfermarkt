@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Page.Scraper.Contracts
 {
+    /// <summary>
+    /// Pages that contain links to other (child) pages.
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
+    /// <typeparam name="TChildPage"></typeparam>
     public abstract class ChildsSection<TNode, TChildPage> : ISection where TChildPage : IPage<IDomain, TNode>, new()
     {
         public TChildPage this[IDictionary<string, string> ids]

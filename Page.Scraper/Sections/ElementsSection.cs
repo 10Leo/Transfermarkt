@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Page.Scraper.Contracts
 {
+    /// <summary>
+    /// The section of a page that contains the elements that describe/pertain to it.
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
     public abstract class ElementsSection<TNode> : ISection
     {
         private IList<(TNode key, TNode value)> elementsNodes;

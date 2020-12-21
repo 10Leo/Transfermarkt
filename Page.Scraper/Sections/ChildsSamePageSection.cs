@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace Page.Scraper.Contracts
 {
+    /// <summary>
+    /// For children domain objects that exist in the same page as the parent domain object.
+    /// </summary>
+    /// <typeparam name="TDomain"></typeparam>
+    /// <typeparam name="TNode"></typeparam>
     public abstract class ChildsSamePageSection<TDomain, TNode> : ISection where TDomain : IDomain, new()
     {
         private IList<List<(TNode key, TNode value)>> childDomainNodes;
