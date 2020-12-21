@@ -53,9 +53,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LJMB.Command\LJMB.Command.csproj">
+      <Project>{DB5490D0-A4A6-4BD2-87C5-7FBF528C4DDE}</Project>
+      <Name>LJMB.Command</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Transfermarkt.Console\Transfermarkt.Console.csproj">
       <Project>{ba0bbd16-d971-4936-8697-96db70ba8e52}</Project>
       <Name>Transfermarkt.Console</Name>
