@@ -12,7 +12,7 @@ using Transfermarkt.Core.ParseHandling.Pages;
 
 namespace Transfermarkt.Console
 {
-    public class FetchCommand : Command
+    public class PeekCommand : Command
     {
         public string ClubFileNameFormat { get; set; }
         public string ContinentFileNameFormat { get; set; }
@@ -70,11 +70,16 @@ namespace Transfermarkt.Console
             }
         }
 
-        public FetchCommand(IContext context)
+        public static readonly string PEEK_ERROR_MSG = "Peek requires 1+ indexes passed to proccess.";
+        public static readonly string PEEK_NAME_OPTION = "Peek requires the -i option.";
+        public static readonly string KEY_ERROR = "Specified key doesn't exist.";
+
+        public PeekCommand(IContext context)
         {
-            this.Name = "fetch";
+            this.Name = "peek";
             this.AllowedAlias.Add("f");
             this.AllowedAlias.Add("fetch");
+            this.AllowedAlias.Add("peek");
             this.Context = context;
             this.Context.RegisterCommand(this);
             this.RegisterOption(new YearOption());
@@ -99,11 +104,11 @@ namespace Transfermarkt.Console
 
             if (Indexes == null)
             {
-                throw new Exception("Fetch requires the -i option.");
+                throw new ArgumentException(PEEK_NAME_OPTION);
             }
             if (Indexes.Args.Count == 0)
             {
-                throw new Exception("Fetch requires 1+ indexes passed to proccess.");
+                throw new ArgumentException(PEEK_ERROR_MSG);
             }
         }
 
@@ -161,7 +166,7 @@ namespace Transfermarkt.Console
         {
             if (!TMContext.Continent.ContainsKey(key))
             {
-                throw new KeyNotFoundException("Specified key doesn't exist.");
+                throw new KeyNotFoundException(KEY_ERROR);
             }
             return TMContext.Continent[key];
         }

@@ -46,7 +46,7 @@ namespace Transfermarkt.Console
         public TMContext()
         {
             this.RegisterCommand(new ExitCommand(this));
-            this.RegisterCommand(new FetchCommand(this) { ContinentFileNameFormat = ContinentFileNameFormat, CompetitionFileNameFormat = CompetitionFileNameFormat, ClubFileNameFormat = ClubFileNameFormat });
+            this.RegisterCommand(new PeekCommand(this) { ContinentFileNameFormat = ContinentFileNameFormat, CompetitionFileNameFormat = CompetitionFileNameFormat, ClubFileNameFormat = ClubFileNameFormat });
             this.RegisterCommand(new ParseCommand(this) { ContinentFileNameFormat = ContinentFileNameFormat, CompetitionFileNameFormat = CompetitionFileNameFormat, ClubFileNameFormat = ClubFileNameFormat });
 
             Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);

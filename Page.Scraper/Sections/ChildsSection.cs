@@ -66,7 +66,7 @@ namespace Page.Scraper.Contracts
             this.Connection = connection;
         }
 
-        public IList<Link<TNode, TChildPage>> Fetch()
+        public IList<Link<TNode, TChildPage>> Peek()
         {
             if (fetched)
             {
@@ -88,7 +88,7 @@ namespace Page.Scraper.Contracts
         public void Parse(bool parseChildren)
         {
             Validate(Children);
-            P(Children, parseChildren, parseChildren);
+            Parse(Children, parseChildren, parseChildren);
         }
 
         public void Parse(IEnumerable<Link<TNode, TChildPage>> links, bool parseChildren = false)
@@ -96,10 +96,10 @@ namespace Page.Scraper.Contracts
             var linksToParse = links?.Where(s => Children.Contains(s));
             
             Validate(linksToParse);
-            P(linksToParse, true, parseChildren);
+            Parse(linksToParse, true, parseChildren);
         }
 
-        private void P(IEnumerable<Link<TNode, TChildPage>> linksToParse, bool parseChildren, bool child)
+        private void Parse(IEnumerable<Link<TNode, TChildPage>> linksToParse, bool parseChildren, bool child)
         {
             if (!parseChildren)// || this.ChildrenType == Contracts.Children.DIFF_PAGE)
             {
@@ -146,7 +146,7 @@ namespace Page.Scraper.Contracts
             }
             if (fetched == false)
             {
-                Fetch();
+                Peek();
             }
             if (linksToParse == null || linksToParse.Count() == 0)
             {
