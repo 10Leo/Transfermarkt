@@ -13,12 +13,12 @@ namespace Transfermarkt.Console.Test
     {
         private const string peekCmd = "f";
         private const string parseCmd = "p";
+        private const string exitCmd = "e";
         private const string yearCmdOpt = "-y";
         private const string indexesCmdOpt = "-i";
         private const int yearValue = 1999;
 
         protected readonly IList<ICommand> Commands = new List<ICommand>();
-
         protected IContext context = null;
 
         [TestInitialize]
@@ -136,7 +136,6 @@ namespace Transfermarkt.Console.Test
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
-        [ExpectedException(typeof(ArgumentException), "There should have been thrown an exception because no indexes were passed.")]
         public void TestExceptionIsThrownIfNoIndexPassed()
         {
             var args = new List<(string k, string v)>
@@ -148,7 +147,9 @@ namespace Transfermarkt.Console.Test
             Command cmd = GetCommand(CommandKey.Peek);
             Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
 
-            cmd.Parse(cmdToParse);
+            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
+
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
@@ -159,17 +160,12 @@ namespace Transfermarkt.Console.Test
             var opts = new List<(int i1, int i2)>();
             string cmdToParse = GenerateCmd(peekCmd, args);
 
-            try
-            {
-                Command cmd = GetCommand(CommandKey.Peek);
-                Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
+            Command cmd = GetCommand(CommandKey.Peek);
+            Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
 
-                cmd.Parse(cmdToParse);
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG);
-            }
+            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
+        }
         }
 
         private string FormatIndexes(List<(int i1, int i2)> opts)
