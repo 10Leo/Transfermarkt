@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LJMB.Command
 {
@@ -32,6 +33,10 @@ namespace LJMB.Command
 
         public void RegisterCommand(ICommand command)
         {
+            if (Commands.Any(c => c.Name == command.Name))
+            {
+                throw new Exception("Command already registered.");
+            }
             Commands.Add(command);
         }
 

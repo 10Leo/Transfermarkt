@@ -80,7 +80,7 @@ namespace Transfermarkt.Console
             this.AllowedAlias.Add("p");
             this.AllowedAlias.Add("parse");
             this.Context = context;
-            this.Context.RegisterCommand(this);
+            //this.Context.RegisterCommand(this);
             this.RegisterOption(new YearOption());
             this.RegisterOption(new IndexesOption());
         }

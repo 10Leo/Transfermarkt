@@ -81,7 +81,7 @@ namespace Transfermarkt.Console
             this.AllowedAlias.Add("fetch");
             this.AllowedAlias.Add("peek");
             this.Context = context;
-            this.Context.RegisterCommand(this);
+            //this.Context.RegisterCommand(this);
             this.RegisterOption(new YearOption());
             this.RegisterOption(new IndexesOption());
         }

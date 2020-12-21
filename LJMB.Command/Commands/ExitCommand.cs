@@ -14,7 +14,7 @@ namespace LJMB.Command.Commands
             this.AllowedAlias.Add("e");
             this.AllowedAlias.Add("exit");
             this.Context = context;
-            this.Context.RegisterCommand(this);
+            //this.Context.RegisterCommand(this);
         }
 
         public override void Parse(string completeCmdToParse) { }
