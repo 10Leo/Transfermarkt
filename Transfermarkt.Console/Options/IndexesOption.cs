@@ -8,13 +8,15 @@ namespace Transfermarkt.Console.Options
 {
     public class IndexesOption : IOption
     {
-        private const string g1 = "I1";
-        private const string g2 = "I2";
-        private const string g3 = "I3";
+        public const string Key = "Indexes";
 
         public string Name { get; } = "Indexes";
         public ISet<string> AllowedAlias { get; } = new HashSet<string> { "i" };
         public ISet<IArgument> Args { get; } = new HashSet<IArgument>();
+
+        private const string g1 = "I1";
+        private const string g2 = "I2";
+        private const string g3 = "I3";
 
         public void Parse(string toParse)
         {

@@ -5,6 +5,8 @@ namespace Transfermarkt.Console.Options
 {
     public class YearOption : IOption
     {
+        public const string Key = "Year";
+
         public string Name { get; } = "Year";
         public ISet<string> AllowedAlias { get; } = new HashSet<string> { "y", "year" };
         public ISet<IArgument> Args { get; } = new HashSet<IArgument>(1);
