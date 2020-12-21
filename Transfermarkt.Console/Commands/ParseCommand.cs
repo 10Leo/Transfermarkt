@@ -190,7 +190,7 @@ namespace Transfermarkt.Console
                 choice.P.Connect(choice.L.Url);
             }
 
-            if (choice.P.ParseLevel == ParseLevel.NotYet || (choice.P.ParseLevel == ParseLevel.Fetched && isFinal))
+            if (choice.P.ParseLevel == ParseLevel.NotYet || (choice.P.ParseLevel == ParseLevel.Peeked && isFinal))
             {
                 // do a fetch or a parse according to conditions.
                 choice.P.Parse(parseChildren: isFinal);

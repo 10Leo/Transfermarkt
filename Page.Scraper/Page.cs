@@ -9,7 +9,23 @@ namespace Page.Scraper.Contracts
         public ISection this[string name] => Sections?.FirstOrDefault(s => s.Name == name);
 
         public string Url { get; private set; }
-        public ParseLevel ParseLevel { get; protected set; } = ParseLevel.NotYet;
+        public ParseLevel ParseLevel
+        {
+            get
+            {
+                if (Sections.All(s => s.ParseLevel == ParseLevel.Parsed))
+                {
+                    return ParseLevel.Parsed;
+                }
+                else if (Sections.All(s => s.ParseLevel == ParseLevel.NotYet))
+                {
+                    return ParseLevel.NotYet;
+                }
+
+                return ParseLevel.Partial;
+            }
+            protected set { ParseLevel = value; }
+        }
 
         public IReadOnlyList<ISection> Sections { get; set; }
 
@@ -23,6 +39,7 @@ namespace Page.Scraper.Contracts
         public Page(IConnection<TNode> connection)
         {
             this.Connection = connection ?? throw new Exception("Can't use a null connection.");
+            this.ParseLevel = ParseLevel.NotYet;
         }
 
         #region Contract
@@ -62,9 +79,9 @@ namespace Page.Scraper.Contracts
                 section.Parse(parseChildren);
             }
 
-            if (sectionsToParse.All(s => s.ParseLevel == ParseLevel.Fetched))
+            if (sectionsToParse.All(s => s.ParseLevel == ParseLevel.Peeked))
             {
-                this.ParseLevel = ParseLevel.Fetched;
+                this.ParseLevel = ParseLevel.Peeked;
             }
             else if (sectionsToParse.All(s => s.ParseLevel == ParseLevel.Parsed))
             {

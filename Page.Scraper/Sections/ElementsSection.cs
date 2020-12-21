@@ -55,7 +55,8 @@ namespace Page.Scraper.Contracts
                 }
             }
 
-            this.ParseLevel = (parseChildren ? ParseLevel.Parsed : ParseLevel.Fetched);
+            // as long as this method it's called the page can there only be a status: parsed
+            this.ParseLevel = ParseLevel.Parsed;
 
             Reset();
         }

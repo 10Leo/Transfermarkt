@@ -50,8 +50,6 @@ namespace Page.Scraper.Contracts
             }
         }
 
-        private bool fetched = false;
-
         protected IPage<IDomain, TNode> Page { get; set; }
         protected IPage<IDomain, TNode> ChildPage { get; set; }
         protected Func<IList<Link<TNode, TChildPage>>> GetUrls { get; set; }
@@ -73,7 +71,7 @@ namespace Page.Scraper.Contracts
 
         public IList<Link<TNode, TChildPage>> Peek()
         {
-            if (fetched)
+            if (this.ParseLevel <= ParseLevel.NotYet)
             {
                 return Children;
             }
@@ -84,8 +82,7 @@ namespace Page.Scraper.Contracts
 
             Children = GetUrls?.Invoke();
 
-            fetched = true;
-            this.ParseLevel = ParseLevel.Fetched;
+            this.ParseLevel = ParseLevel.Peeked;
 
             return Children;
         }
@@ -136,7 +133,16 @@ namespace Page.Scraper.Contracts
                 this.Page.Domain?.Children.Add(childPage.Domain);
             }
 
-            this.ParseLevel = (parseChildren ? ParseLevel.Parsed : ParseLevel.Fetched);
+
+            if (Children.All(l => l.Page != null && l.Page.ParseLevel == ParseLevel.Parsed))
+            {
+                this.ParseLevel = ParseLevel.Parsed;
+
+            }
+            else if(Children.Any(l => l.Page != null))
+            {
+                this.ParseLevel = ParseLevel.Partial;
+            }
         }
 
         private void Validate(IEnumerable<Link<TNode, TChildPage>> linksToParse)
@@ -149,7 +155,7 @@ namespace Page.Scraper.Contracts
             {
                 throw new Exception("No connection to the page made yet.");
             }
-            if (fetched == false)
+            if (this.ParseLevel <= ParseLevel.NotYet)
             {
                 Peek();
             }

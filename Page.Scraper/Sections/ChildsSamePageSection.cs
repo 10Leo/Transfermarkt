@@ -58,7 +58,8 @@ namespace Page.Scraper.Contracts
                     }
                 }
 
-                this.ParseLevel = (parseChildren ? ParseLevel.Parsed : ParseLevel.Fetched);
+                // No other state applies
+                this.ParseLevel = ParseLevel.Parsed;
 
                 Reset();
             }
