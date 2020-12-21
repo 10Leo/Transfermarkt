@@ -70,6 +70,10 @@ namespace Transfermarkt.Console
             }
         }
 
+        public static readonly string PARSE_NAME_OPTION = "Parse requires the -i option.";
+        public static readonly string PARSE_ERROR_MSG = "Parse requires 1+ indexes passed to proccess.";
+        public static readonly string KEY_ERROR = "Specified key doesn't exist.";
+
         public ParseCommand(IContext context)
         {
             this.Name = "parse";
@@ -99,11 +103,11 @@ namespace Transfermarkt.Console
 
             if (Indexes == null)
             {
-                throw new Exception("Parse requires the -i option.");
+                throw new ArgumentException(PARSE_NAME_OPTION);
             }
             if (Indexes.Args.Count == 0)
             {
-                throw new Exception("Parse requires 1+ indexes passed to proccess.");
+                throw new ArgumentException(PARSE_ERROR_MSG);
             }
         }
 
@@ -161,7 +165,7 @@ namespace Transfermarkt.Console
         {
             if (!TMContext.Continent.ContainsKey(key))
             {
-                throw new KeyNotFoundException("Specified key doesn't exist.");
+                throw new KeyNotFoundException(KEY_ERROR);
             }
             return TMContext.Continent[key];
         }
