@@ -19,13 +19,13 @@ namespace Page.Scraper.Contracts
                 {
                     parseLevel = ParseLevel.Parsed;
                 }
-                else if (Sections.All(s => s.ParseLevel == ParseLevel.NotYet))
+                else if (Sections.All(s => s.ParseLevel == ParseLevel.Peeked))
                 {
-                    parseLevel = ParseLevel.NotYet;
+                    parseLevel = ParseLevel.Peeked;
                 }
                 else
                 {
-                    parseLevel = ParseLevel.Partial;
+                    parseLevel = ParseLevel.NotYet;
                 }
 
                 return parseLevel;
@@ -45,7 +45,6 @@ namespace Page.Scraper.Contracts
         public Page(IConnection<TNode> connection)
         {
             this.Connection = connection ?? throw new Exception("Can't use a null connection.");
-            this.ParseLevel = ParseLevel.NotYet;
         }
 
         #region Contract
@@ -83,15 +82,6 @@ namespace Page.Scraper.Contracts
             foreach (ISection section in sectionsToParse)
             {
                 section.Parse(parseChildren);
-            }
-
-            if (sectionsToParse.All(s => s.ParseLevel == ParseLevel.Peeked))
-            {
-                this.ParseLevel = ParseLevel.Peeked;
-            }
-            else if (sectionsToParse.All(s => s.ParseLevel == ParseLevel.Parsed))
-            {
-                this.ParseLevel = ParseLevel.Parsed;
             }
 
             OnAfterParse?.Invoke(this, new PageEventArgs(this.Url));

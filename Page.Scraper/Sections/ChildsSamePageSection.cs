@@ -31,6 +31,15 @@ namespace Page.Scraper.Contracts
 
         public void Parse(bool parseChildren)
         {
+            if (ParseLevel == ParseLevel.Parsed)
+            {
+                return;
+            }
+            if (ParseLevel == ParseLevel.Peeked && !parseChildren)
+            {
+                return;
+            }
+
             childDomainNodes = GetChildsNodes?.Invoke();
 
             if (childDomainNodes == null || childDomainNodes.Count == 0)
@@ -58,7 +67,7 @@ namespace Page.Scraper.Contracts
                     }
                 }
 
-                // No other state applies
+                // No other state really applies
                 this.ParseLevel = ParseLevel.Parsed;
 
                 Reset();

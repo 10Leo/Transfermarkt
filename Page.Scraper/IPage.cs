@@ -39,7 +39,6 @@ namespace Page.Scraper.Contracts
     public enum ParseLevel
     {
         NotYet,
-        Partial,
         Peeked,
         Parsed
     }

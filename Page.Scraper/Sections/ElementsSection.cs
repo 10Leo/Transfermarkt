@@ -32,6 +32,11 @@ namespace Page.Scraper.Contracts
 
         public void Parse(bool parseChildren)
         {
+            if (ParseLevel == ParseLevel.Parsed)
+            {
+                return;
+            }
+
             if (Parsers == null)
             {
                 return;
@@ -55,7 +60,7 @@ namespace Page.Scraper.Contracts
                 }
             }
 
-            // as long as this method it's called the page can there only be a status: parsed
+            // No other state really applies
             this.ParseLevel = ParseLevel.Parsed;
 
             Reset();

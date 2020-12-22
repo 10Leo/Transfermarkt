@@ -103,6 +103,11 @@ namespace Page.Scraper.Contracts
 
         private void Parse(IEnumerable<Link<TNode, TChildPage>> linksToParse, bool parseChildren, bool child)
         {
+            if (this.ParseLevel == ParseLevel.Parsed)
+            {
+                return;
+            }
+
             if (!parseChildren)// || this.ChildrenType == Contracts.Children.DIFF_PAGE)
             {
                 return;
@@ -113,7 +118,7 @@ namespace Page.Scraper.Contracts
                 Link<TNode, TChildPage> found = Children.FirstOrDefault(c => c == pageUrl);
                 if (found == null)
                 {
-                    // Link pretended not found
+                    // Pretended Link not found
                     continue;
                 }
 
@@ -133,16 +138,7 @@ namespace Page.Scraper.Contracts
                 this.Page.Domain?.Children.Add(childPage.Domain);
             }
 
-
-            if (Children.All(l => l.Page != null && l.Page.ParseLevel == ParseLevel.Parsed))
-            {
-                this.ParseLevel = ParseLevel.Parsed;
-
-            }
-            else if(Children.Any(l => l.Page != null))
-            {
-                this.ParseLevel = ParseLevel.Partial;
-            }
+            this.ParseLevel = CalculateParseLevel();
         }
 
         private void Validate(IEnumerable<Link<TNode, TChildPage>> linksToParse)
@@ -155,7 +151,7 @@ namespace Page.Scraper.Contracts
             {
                 throw new Exception("No connection to the page made yet.");
             }
-            if (this.ParseLevel <= ParseLevel.NotYet)
+            if (this.ParseLevel < ParseLevel.Peeked)
             {
                 Peek();
             }
@@ -163,6 +159,16 @@ namespace Page.Scraper.Contracts
             {
                 return;
             }
+        }
+
+        private ParseLevel CalculateParseLevel()
+        {
+            if (Children.All(l => l.Page != null && l.Page.ParseLevel == ParseLevel.Parsed))
+            {
+                return ParseLevel.Parsed;
+            }
+
+            return ParseLevel.NotYet;
         }
     }
 }
