@@ -33,10 +33,10 @@ namespace Transfermarkt.Console
 
         public IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>
         {
-            [$"1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
-            [$"2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
-            [$"3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
-            [$"4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
+            ["1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
+            ["2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
+            ["3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
+            ["4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
         };
 
         public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continent = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
@@ -99,7 +99,7 @@ namespace Transfermarkt.Console
             }
         }
 
-        internal object GenerateKey(int year, int i1)
+        internal string GenerateKey(int year, int i1)
         {
             return $"{year}.{i1}";
         }
