@@ -166,6 +166,24 @@ namespace Transfermarkt.Console.Test
             var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
             Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
         }
+
+        [TestMethod, TestCategory("CMD Parsing")]
+        public void TestFullProcess()
+        {
+            var indexes = new List<(int i1, int i2)> { (1, 1) };
+            var args = new List<(string k, string v)> { (indexesCmdOpt, FormatIndexes(indexes)) };
+            string cmdToParse = GenerateCmd(peekCmd, args);
+
+            var indexes2 = new List<(int i1, int i2)> { (1, 2) };
+            var args2 = new List<(string k, string v)> { (indexesCmdOpt, FormatIndexes(indexes2)) };
+            string cmdToParse2 = GenerateCmd(peekCmd, args2);
+
+            string cmdToParse3 = exitCmd;
+
+            var cmds = new List<string> { cmdToParse, cmdToParse2, cmdToParse3 };
+
+            context.GetCommands = () => cmds;
+            context.Run();
         }
 
         private string FormatIndexes(List<(int i1, int i2)> opts)

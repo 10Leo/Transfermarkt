@@ -8,19 +8,24 @@ namespace LJMB.Command
     {
         protected readonly IList<ICommand> Commands = new List<ICommand>();
 
+        public Func<IEnumerable<string>> GetCommands { get; set; }
+
         public bool Exit { get; set; } = false;
 
         public virtual void Run()
         {
-            while (!Exit)
+            //while (!Exit)
             {
                 try
                 {
-                    var inputCmd = GetInput();
-
-                    if (!string.IsNullOrEmpty(inputCmd))
+                    foreach (var inputCmd in GetCommands.Invoke())
                     {
-                        Command.ParseAndExecuteCommand(inputCmd, Commands);
+                        //var inputCmd = GetCmd?.Invoke();
+
+                        if (!string.IsNullOrEmpty(inputCmd))
+                        {
+                            Command.ParseAndExecuteCommand(inputCmd, Commands);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -38,13 +43,6 @@ namespace LJMB.Command
                 throw new Exception("Command already registered.");
             }
             Commands.Add(command);
-        }
-
-        private static string GetInput()
-        {
-            System.Console.Write("> ");
-            string input = System.Console.ReadLine();
-            return input;
         }
     }
 }
