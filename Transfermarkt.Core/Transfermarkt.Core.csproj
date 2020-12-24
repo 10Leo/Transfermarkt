@@ -107,6 +107,7 @@
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Player\ShortNameParser.cs" />
     <Compile Include="ParseHandling\Value.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\TMService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

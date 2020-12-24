@@ -5,6 +5,8 @@ namespace LJMB.Command
 {
     public interface IContext
     {
+        IList<ICommand> Commands { get; }
+
         Func<IEnumerable<string>> GetCommands { get; set; }
 
         bool Exit { get; set; }

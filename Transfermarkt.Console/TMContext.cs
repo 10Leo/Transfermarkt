@@ -11,54 +11,40 @@ using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Core;
 using Transfermarkt.Core.ParseHandling.Pages;
+using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console
 {
     public class TMContext : Context
     {
-        private static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
-        public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
-        public static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
-        public static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
+        private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+        public string LastSelectedSeason { get; set; } = currentSeason.ToString(); 
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
         private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
         public static string OutputFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.OutputFolderPath);
         public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
 
-        private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
-
         public ILogger Logger { get; }
         public IExporter Exporter { get; }
-        public string LastSelectedSeason { get; set; } = currentSeason.ToString();
-
-        public IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>
-        {
-            ["1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"{BaseURL}/wettbewerbe/europa" }, null),
-            ["2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"{BaseURL}/wettbewerbe/amerika" }, null),
-            ["3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"{BaseURL}/wettbewerbe/asien" }, null),
-            ["4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"{BaseURL}/wettbewerbe/afrika" }, null)
-        };
-
-        public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continent = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
-
-        public (Link<HtmlNode, CompetitionPage> L, ContinentPage P) Choice { get; }
+        public TMService TMService { get; set; }
 
         public TMContext()
         {
             this.RegisterCommand(new ExitCommand(this));
-            this.RegisterCommand(new PeekCommand(this) { ContinentFileNameFormat = ContinentFileNameFormat, CompetitionFileNameFormat = CompetitionFileNameFormat, ClubFileNameFormat = ClubFileNameFormat });
-            this.RegisterCommand(new ParseCommand(this) { ContinentFileNameFormat = ContinentFileNameFormat, CompetitionFileNameFormat = CompetitionFileNameFormat, ClubFileNameFormat = ClubFileNameFormat });
+            this.RegisterCommand(new PeekCommand(this));
+            this.RegisterCommand(new ParseCommand(this));
 
             Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
             Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
+            TMService = new TMService();
         }
 
         public override void Run()
         {
-            for (int i = 0; i < Continents.Count; i++)
-            {
-                System.Console.WriteLine($"{(i + 1)}: {Continents.ElementAt(i).Value.L.Title}");
-            }
+            //for (int i = 0; i < Continents.Count; i++)
+            //{
+            //    System.Console.WriteLine($"{(i + 1)}: {Continents.ElementAt(i).Value.L.Title}");
+            //}
 
             base.Run();
         }
@@ -97,11 +83,6 @@ namespace Transfermarkt.Console
 
                 System.Console.WriteLine(string.Format($"{tabs}{presentationKey}: {(!string.IsNullOrEmpty(links[l].Title) ? links[l].Title : links[l].Url)}"));
             }
-        }
-
-        internal string GenerateKey(int year, int i1)
-        {
-            return $"{year}.{i1}";
         }
     }
 }

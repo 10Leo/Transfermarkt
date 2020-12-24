@@ -6,7 +6,7 @@ namespace LJMB.Command
 {
     public abstract class Context : IContext
     {
-        protected readonly IList<ICommand> Commands = new List<ICommand>();
+        public IList<ICommand> Commands { get; }  = new List<ICommand>();
 
         public Func<IEnumerable<string>> GetCommands { get; set; }
 
