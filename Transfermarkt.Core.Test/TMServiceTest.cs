@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using LJMB.Common;
 using LJMB.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Page.Scraper.Contracts;
 using Page.Scraper.Exporter;
 using Page.Scraper.Exporter.JSONExporter;
+using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Core.Test
@@ -107,17 +109,14 @@ namespace Transfermarkt.Core.Test
         public void TMServiceMultipleIterationsTest()
         {
             //TMService.ParseContinent(2010, 1);
-            IDomain domain = TMService.Parse(2010, 1, 1, 1);
+            IDomain domain = null;
+            
+            domain = TMService.Parse(2020, 1, peek: true);
+            domain = TMService.Parse(2020, 1, 1, peek: true);
+            domain = TMService.Parse(2020, 1, 2, 1);
 
-            Assert.IsNotNull(domain, "The returned Domain is null.");
-
-            TestingConfigs.DomainElementsCheck(domain);
-            for (int i = 0; i < domain.Children.Count; i++)
-            {
-                TestingConfigs.DomainElementsCheck(domain.Children[i]);
-            }
-
-            var cs = TMService.Continents;
+            
+            IDictionary<string, (Link<HtmlAgilityPack.HtmlNode, CompetitionPage> L, ContinentPage P)> continents = TMService.Continent;
         }
     }
 }

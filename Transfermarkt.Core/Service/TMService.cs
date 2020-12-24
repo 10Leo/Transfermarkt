@@ -25,17 +25,23 @@ namespace Transfermarkt.Core.Service
 
         public ILogger Logger { get; set; }
 
-        public IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>
-        {
-            ["1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }, null),
-            ["2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"/wettbewerbe/amerika" }, null),
-            ["3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }, null),
-            ["4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" }, null)
-        };
+        public IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continents { get; private set; }
 
-        public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continent = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
+        public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continent = null;
 
         public (Link<HtmlNode, CompetitionPage> L, ContinentPage P) Choice { get; }
+
+        public TMService()
+        {
+            Continents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>
+            {
+                ["1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }, null),
+                ["2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"/wettbewerbe/amerika" }, null),
+                ["3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }, null),
+                ["4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" }, null)
+            };
+            Continent = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
+        }
 
         public IDomain Parse(int year, int? continentsIndex = null, int? competitionsIndex = null, int? clubsIndex = null, bool peek = false)
         {
