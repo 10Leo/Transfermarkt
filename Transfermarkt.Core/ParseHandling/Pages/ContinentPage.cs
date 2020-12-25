@@ -11,30 +11,44 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ContinentPage : Page<IValue, HtmlNode>
     {
+        //TODO: logger should come from the top level layer and not instantiated in here
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
+        public int? Year { get; set; }
+
+        public ContinentPage() : base(new HAPConnection()) {
+            //TODO: if this constructor is called, the Year prop will not be used, as at the moment of this call is yet to be set
+            Init();
+        }
+
         //TODO: section names should be hold as variables in the page and passed to its child sections
         public ContinentPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
+            this.Logger = logger;
+            this.Year = year;
+
+            Init();
+        }
+
+        private void Init() {
             this.Domain = new Continent();
 
             this.Sections = new List<ISection>
             {
-                new ContinentPageSection(this, logger),
-                new ContinentCompetitionsPageSection(this, logger, year)
+                new ContinentPageSection(this, Logger),
+                new ContinentCompetitionsPageSection(this, Logger, Year)
             };
 
             // TODO create global string with placeholders for event texts: $"{EVT}: {TEXT}"
             this.OnBeforeParse += (o, e) =>
             {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
             this.OnAfterParse += (o, e) =>
             {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
-
-        private void Init() { }
     }
 
     class ContinentPageSection : ElementsSection<HtmlNode>

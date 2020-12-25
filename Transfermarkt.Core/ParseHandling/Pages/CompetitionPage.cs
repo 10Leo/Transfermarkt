@@ -12,6 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
+        //TODO: logger should come from the top level layer and not instantiated in here
         public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
 
         public int? Year { get; set; }

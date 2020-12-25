@@ -18,7 +18,7 @@ namespace LJMB.Command
             {
                 try
                 {
-                    foreach (var inputCmd in GetCommands.Invoke())
+                    foreach (var inputCmd in GetCommands?.Invoke())
                     {
                         //var inputCmd = GetCmd?.Invoke();
 

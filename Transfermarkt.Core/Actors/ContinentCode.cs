@@ -5,26 +5,18 @@
         /// <summary>
         /// Europe
         /// </summary>
-        EEE = 1,
+        EU = 1,
         /// <summary>
-        /// South America
+        /// America
         /// </summary>
-        SRR,
-        /// <summary>
-        /// North America
-        /// </summary>
-        NNN,
+        A,
         /// <summary>
         /// Asia
         /// </summary>
-        ABB,
+        AS,
         /// <summary>
         /// Africa
         /// </summary>
-        FFF,
-        /// <summary>
-        /// Oceania
-        /// </summary>
-        UUU
+        AF
     }
 }

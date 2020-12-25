@@ -18,21 +18,22 @@ namespace Transfermarkt.Console
     public class TMContext : Context
     {
         private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
-        public string LastSelectedSeason { get; set; } = currentSeason.ToString();
 
+        public string LastSelectedSeason { get; set; }
         public ILogger Logger { get; }
         public IExporter Exporter { get; }
         public TMService TMService { get; set; }
 
         public TMContext(ILogger logger, IExporter exporter, TMService tmService)
         {
-            this.RegisterCommand(new ExitCommand(this));
-            this.RegisterCommand(new PeekCommand(this));
-            this.RegisterCommand(new ParseCommand(this));
-
             this.Logger = logger;
             this.Exporter = exporter;
             this.TMService = tmService;
+            this.LastSelectedSeason = currentSeason.ToString();
+
+            this.RegisterCommand(new ExitCommand(this));
+            this.RegisterCommand(new PeekCommand(this));
+            this.RegisterCommand(new ParseCommand(this));
         }
 
         public override void Run()

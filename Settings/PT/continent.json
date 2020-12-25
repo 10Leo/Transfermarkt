@@ -4,27 +4,26 @@
 	{
 		  "Name": "Ligas & competições da taça asiática /  oceânica"
 		, "DO": [
-			"ABB",
-			"UUU"
+			"AS"
 		],
 	},
 	{
 		  "Name": "Campeonatos & Taças - Europa"
 		, "DO": [
-			"EEE"
+			"EU"
 		],
 	},
 	{
 		  "Name": "Ligas & Taças africanas"
 		, "DO": [
-			"FFF"
+			"AF"
 		],
 	},
 	{
 		  "Name": "Ligas & competições da taça da América do Norte e do Sul"
 		, "DO": [
 			"SRR",
-			"NNN"
+			"A"
 		],
 	}
   ]

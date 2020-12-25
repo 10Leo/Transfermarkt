@@ -110,7 +110,7 @@ namespace Transfermarkt.Core.Test
             int y = 2020;
             int continentIndex = 1;
 
-            IDictionary<string, (Link<HtmlAgilityPack.HtmlNode, CompetitionPage> L, ContinentPage P)> seasonContinents = TMService.SeasonContinents;
+            IDictionary<string, Link<HtmlAgilityPack.HtmlNode, ContinentPage>> seasonContinents = TMService.SeasonContinents;
 
             domain = TMService.Parse(y, continentIndex, peek: true);
 

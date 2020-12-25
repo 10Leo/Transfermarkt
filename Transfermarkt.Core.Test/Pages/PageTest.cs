@@ -23,11 +23,10 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         private readonly string append = "/wettbewerbe?plus=1";
         private readonly IDictionary<Actors.ContinentCode, string> urls = new Dictionary<Actors.ContinentCode, string>
         {
-            { Actors.ContinentCode.EEE, "https://www.transfermarkt.pt/wettbewerbe/europa" },
-            { Actors.ContinentCode.SRR, "https://www.transfermarkt.pt/wettbewerbe/amerika" },
-            { Actors.ContinentCode.NNN, "https://www.transfermarkt.pt/wettbewerbe/amerika" },
-            { Actors.ContinentCode.ABB, "https://www.transfermarkt.pt/wettbewerbe/asien" },
-            { Actors.ContinentCode.FFF, "https://www.transfermarkt.pt/wettbewerbe/afrika" }
+            { Actors.ContinentCode.EU, "https://www.transfermarkt.pt/wettbewerbe/europa" },
+            { Actors.ContinentCode.A, "https://www.transfermarkt.pt/wettbewerbe/amerika" },
+            { Actors.ContinentCode.AS, "https://www.transfermarkt.pt/wettbewerbe/asien" },
+            { Actors.ContinentCode.AF, "https://www.transfermarkt.pt/wettbewerbe/afrika" }
         };
 
         [TestMethod, TestCategory("Page Parsing")]
@@ -92,11 +91,11 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             //}
 
             ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, 2008);
-            continentPage.Connect(urls[Actors.ContinentCode.EEE]);
+            continentPage.Connect(urls[Actors.ContinentCode.EU]);
 
             var continentSectionsToParse = new List<ISection> { continentPage["Continent Details"] };
             continentPage.Parse(continentSectionsToParse);
-            Assert.IsTrue(((ContinentCode)continentPage.Domain.Elements.FirstOrDefault(e => e.InternalName == "Code")).Value.Value == Actors.ContinentCode.EEE);
+            Assert.IsTrue(((ContinentCode)continentPage.Domain.Elements.FirstOrDefault(e => e.InternalName == "Code")).Value.Value == Actors.ContinentCode.EU);
             Assert.IsTrue(continentPage.Domain.Children.Count == 0, "No children should exist yet as no ChildSection was passed to be parsed.");
 
             foreach (var section in continentSectionsToParse)
@@ -177,12 +176,12 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, 2009);
 
             //TODO: consider passing url in constructor making it a required param and as a result, always available to the functions.
-            continentPage.Connect(urls[Actors.ContinentCode.EEE]);
+            continentPage.Connect(urls[Actors.ContinentCode.EU]);
 
             var sectionsToParse = new List<ISection> { continentPage["Continent Details"] };
             continentPage.Parse(sectionsToParse);
 
-            Assert.IsTrue(((ContinentCode)continentPage.Domain.Elements.FirstOrDefault(e => e.InternalName == "Code")).Value.Value == Actors.ContinentCode.EEE);
+            Assert.IsTrue(((ContinentCode)continentPage.Domain.Elements.FirstOrDefault(e => e.InternalName == "Code")).Value.Value == Actors.ContinentCode.EU);
             Assert.IsTrue(continentPage.Domain.Children.Count == 0, "No children should exist yet as no ChildSection was passed to be parsed.");
 
             //sectionsToParse = new List<ISection> { continentPage["Continent - Competitions Section"] };

@@ -16,8 +16,12 @@ namespace Transfermarkt.Core.Service
     {
         private const string Message = "Continent not found";
         private static readonly string KEY_ERROR = "Specified key doesn't exist.";
+
+        //TODO: create Page<Continents> to represent these links
+        private IDictionary<ContinentCode, Link<HtmlNode, ContinentPage>> Continents { get; set; }
+
         public static readonly string KEY_PATTERN = "{0}.{1}";
-        
+
         public string BaseURL { get; set; }
         public string ContinentFileNameFormat { get; set; }
         public string CompetitionFileNameFormat { get; set; }
@@ -25,23 +29,18 @@ namespace Transfermarkt.Core.Service
 
         public ILogger Logger { get; set; }
 
-        //TODO: create Page to represent these links
-        public IDictionary<string, Link<HtmlNode, CompetitionPage>> Continents { get; private set; }
-
-        public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> SeasonContinents = null;
-
-        public (Link<HtmlNode, CompetitionPage> L, ContinentPage P) Choice { get; }
+        public readonly IDictionary<string, Link<HtmlNode, ContinentPage>> SeasonContinents = null;
 
         public TMService()
         {
-            Continents = new Dictionary<string, Link<HtmlNode, CompetitionPage>>
+            Continents = new Dictionary<ContinentCode, Link<HtmlNode, ContinentPage>>
             {
-                ["1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }),
-                ["2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"/wettbewerbe/amerika" }),
-                ["3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }),
-                ["4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" })
+                [ContinentCode.EU] = (new Link<HtmlNode, ContinentPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }),
+                [ContinentCode.A] = (new Link<HtmlNode, ContinentPage> { Title = "America", Url = $"/wettbewerbe/amerika" }),
+                [ContinentCode.AS] = (new Link<HtmlNode, ContinentPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }),
+                [ContinentCode.AF] = (new Link<HtmlNode, ContinentPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" })
             };
-            SeasonContinents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
+            SeasonContinents = new Dictionary<string, Link<HtmlNode, ContinentPage>>();
         }
 
         public IDomain Parse(int year, int? continentsIndex = null, int? competitionsIndex = null, int? clubsIndex = null, bool peek = false)
@@ -61,16 +60,16 @@ namespace Transfermarkt.Core.Service
                 throw new IndexOutOfRangeException("Passed indexes must be all positive numbers");
             }
 
-            var key = GenerateKey(year, continentsIndex.Value);
+            var key = GenerateKey(year, (ContinentCode)continentsIndex.Value);
 
-            if (!ContinentExists(continentsIndex.Value))
+            if (!ContinentExists((ContinentCode)continentsIndex.Value))
             {
                 throw new KeyNotFoundException(Message);
             }
-            AddNewYearContinentIfDoesntExist(year, continentsIndex.Value);
+            AddNewYearContinentIfDoesntExist(year, (ContinentCode)continentsIndex.Value);
 
-            (Link<HtmlNode, CompetitionPage> Link, ContinentPage Page) choice = GetSeasonContinent(key);
-            if (choice.Link == null)
+            Link<HtmlNode, ContinentPage> choice = GetSeasonContinent(key);
+            if (choice == null)
             {
                 return null;
             }
@@ -82,7 +81,7 @@ namespace Transfermarkt.Core.Service
 
             if (!choice.Page.Connection.IsConnected)
             {
-                choice.Page.Connect($"{BaseURL}{choice.Link.Url}");
+                choice.Page.Connect($"{BaseURL}{choice.Url}");
             }
 
             //TODO: cretae enum to hold parse and peek values and pass them to the Parse methods
@@ -128,21 +127,21 @@ namespace Transfermarkt.Core.Service
             return clubPage.Domain;
         }
 
-        private bool ContinentExists(int i1)
+        private bool ContinentExists(ContinentCode i1)
         {
-            return Continents.ContainsKey(i1.ToString());
+            return Continents.ContainsKey(i1);
         }
 
-        private void AddNewYearContinentIfDoesntExist(int year, int i1)
+        private void AddNewYearContinentIfDoesntExist(int year, ContinentCode i1)
         {
             var key = GenerateKey(year, i1);
             if (!SeasonContinents.ContainsKey(key))
             {
-                SeasonContinents.Add(key, (Continents[i1.ToString()], null));
+                SeasonContinents.Add(key, Continents[i1]);
             }
         }
 
-        private (Link<HtmlNode, CompetitionPage> Link, ContinentPage Page) GetSeasonContinent(string key)
+        private Link<HtmlNode, ContinentPage> GetSeasonContinent(string key)
         {
             if (!SeasonContinents.ContainsKey(key))
             {
@@ -151,9 +150,9 @@ namespace Transfermarkt.Core.Service
             return SeasonContinents[key];
         }
 
-        private string GenerateKey(int year, int i1)
+        private string GenerateKey(int year, ContinentCode i1)
         {
-            return string.Format(KEY_PATTERN, year, i1);
+            return string.Format(KEY_PATTERN, year, (int)i1);
         }
     }
 }
