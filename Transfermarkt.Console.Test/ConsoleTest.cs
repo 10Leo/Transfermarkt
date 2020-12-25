@@ -21,11 +21,11 @@ namespace Transfermarkt.Console.Test
         protected static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
         protected static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat); 
         
-        private readonly static string peekCmd = PeekCommand.NAME;
-        private readonly static string parseCmd = ParseCommand.NAME;
-        private readonly static string exitCmd = ExitCommand.NAME;
-        private const string yearCmdOpt = "-" + YearOption.NAME;
-        private const string indexesCmdOpt = "-" + IndexesOption.NAME;
+        private readonly static string peekCmd = PeekCommand.KEY;
+        private readonly static string parseCmd = ParseCommand.KEY;
+        private readonly static string exitCmd = ExitCommand.KEY;
+        private const string yearCmdOpt = "-" + YearOption.KEY;
+        private const string indexesCmdOpt = "-" + IndexesOption.KEY;
         private const int yearValue = 1999;
 
         protected readonly IList<ICommand> Commands = new List<ICommand>();
@@ -240,9 +240,9 @@ namespace Transfermarkt.Console.Test
             if (yy.k != null)
             {
                 // args.Count(a => a.k == yearCmdOpt) == 1
-                var yearOpt = cmd[YearOption.KEY] as YearOption;
+                var yearOpt = cmd[YearOption.NAME] as YearOption;
 
-                Assert.IsNotNull(yearOpt, $"{YearOption.KEY} option not found");
+                Assert.IsNotNull(yearOpt, $"{YearOption.NAME} option not found");
                 Assert.IsTrue((yearOpt.Args.FirstOrDefault() as StringArgument).Value == yy.v.Trim().ToLowerInvariant());
             }
         }
@@ -252,9 +252,9 @@ namespace Transfermarkt.Console.Test
             (string k, string v) ii = args.FirstOrDefault(a => a.k.Trim().ToLowerInvariant() == indexesCmdOpt);
             if (ii.k != null)
             {
-                var indexesOpt = cmd[IndexesOption.KEY] as IndexesOption;
+                var indexesOpt = cmd[IndexesOption.NAME] as IndexesOption;
 
-                Assert.IsNotNull(indexesOpt, $"{YearOption.KEY} option not found");
+                Assert.IsNotNull(indexesOpt, $"{YearOption.NAME} option not found");
 
                 for (int j = 0; j < indexes.Count; j++)
                 {

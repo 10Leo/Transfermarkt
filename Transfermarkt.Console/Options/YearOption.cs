@@ -5,13 +5,13 @@ namespace Transfermarkt.Console.Options
 {
     public class YearOption : Option
     {
-        public const string KEY = "Year";
-        public const string NAME = "y";
+        public const string NAME = "Year";
+        public const string KEY = "y";
 
         public YearOption()
         {
-            Name = KEY;
-            AllowedAlias = new HashSet<string> { NAME, KEY.ToLower() };
+            Name = NAME;
+            AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
             Args = new HashSet<IArgument>(1);
         }
 

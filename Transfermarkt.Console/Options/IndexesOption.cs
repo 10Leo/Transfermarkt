@@ -8,8 +8,8 @@ namespace Transfermarkt.Console.Options
 {
     public class IndexesOption : Option
     {
-        public const string KEY = "Indexes";
-        public const string NAME = "i";
+        public const string NAME = "Indexes";
+        public const string KEY = "i";
 
         private const string g1 = "I1";
         private const string g2 = "I2";
@@ -17,8 +17,8 @@ namespace Transfermarkt.Console.Options
 
         public IndexesOption()
         {
-            Name = KEY;
-            AllowedAlias = new HashSet<string> { NAME, KEY.ToLower() };
+            Name = NAME;
+            AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
         }
 
         public override void Parse(string toParse)

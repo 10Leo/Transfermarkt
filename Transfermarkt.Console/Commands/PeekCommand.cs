@@ -15,8 +15,8 @@ namespace Transfermarkt.Console
 {
     public class PeekCommand : Command
     {
-        public const string NAME = "f";
-        public const string DISPLAY_NAME = "Peek";
+        public const string KEY = "f";
+        public const string NAME = "Peek";
 
         public const string PEEK_ERROR_MSG = "Peek requires 1+ indexes passed to proccess.";
         public const string PEEK_NAME_OPTION_ERROR_MSG = "Peek requires the -i option.";
@@ -47,7 +47,7 @@ namespace Transfermarkt.Console
             {
                 if (year == null)
                 {
-                    year = this[YearOption.KEY];
+                    year = this[YearOption.NAME];
                 }
                 return year;
             }
@@ -58,7 +58,7 @@ namespace Transfermarkt.Console
             {
                 if (indexes == null)
                 {
-                    indexes = this[IndexesOption.KEY];
+                    indexes = this[IndexesOption.NAME];
                 }
                 return indexes;
             }
@@ -82,9 +82,9 @@ namespace Transfermarkt.Console
 
         public PeekCommand(IContext context)
         {
-            this.Name = DISPLAY_NAME.ToLower();
-            this.AllowedAlias.Add(NAME);
-            this.AllowedAlias.Add(DISPLAY_NAME.ToLower());
+            this.Name = NAME.ToLower();
+            this.AllowedAlias.Add(KEY);
+            this.AllowedAlias.Add(NAME.ToLower());
             this.AllowedAlias.Add("fetch");
             this.Context = context;
             //this.Context.RegisterCommand(this);

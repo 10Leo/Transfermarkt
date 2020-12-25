@@ -8,13 +8,14 @@ namespace LJMB.Command.Commands
 {
     public class ExitCommand : Command
     {
-        public const string NAME = "e";
+        public const string KEY = "e";
+        public const string NAME = "Exit";
 
         public ExitCommand(IContext context)
         {
-            this.Name = "exit";
-            this.AllowedAlias.Add(NAME);
-            this.AllowedAlias.Add("exit");
+            this.Name = NAME.ToLower();
+            this.AllowedAlias.Add(KEY);
+            this.AllowedAlias.Add(NAME.ToLower());
             this.Context = context;
             //this.Context.RegisterCommand(this);
         }
