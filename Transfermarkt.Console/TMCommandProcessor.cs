@@ -110,49 +110,5 @@ namespace Transfermarkt.Console
                 }
             }
         }
-
-        private void PrintContinentOptions()
-        {
-            for (int i = 0; i < TMService.Continents.Count; i++)
-            {
-                System.Console.WriteLine($"{(i + 1)}: {TMService.Continents.ElementAt(i).Value.Title}");
-            }
-        }
-
-        public static void PrintOptions(IList<Link<HtmlNode, CompetitionPage>> links, string key, int level)
-        {
-            if (links == null || links.Count == 0)
-            {
-                return;
-            }
-
-            string tabs = string.Join("", Enumerable.Repeat("\t", level).ToArray());
-
-            System.Console.WriteLine();
-            for (int l = 0; l < links.Count; l++)
-            {
-                var presentationKey = $"{key}.{(l + 1)}";
-
-                System.Console.WriteLine(string.Format($"{tabs}{presentationKey}: {(!string.IsNullOrEmpty(links[l].Title) ? links[l].Title : links[l].Url)}"));
-            }
-        }
-
-        public static void PrintOptions(IList<Link<HtmlNode, ClubPage>> links, string key, int level)
-        {
-            if (links == null || links.Count == 0)
-            {
-                return;
-            }
-
-            string tabs = string.Join("", Enumerable.Repeat("\t", level).ToArray());
-
-            System.Console.WriteLine();
-            for (int l = 0; l < links.Count; l++)
-            {
-                var presentationKey = $"{key}.{(l + 1)}";
-
-                System.Console.WriteLine(string.Format($"{tabs}{presentationKey}: {(!string.IsNullOrEmpty(links[l].Title) ? links[l].Title : links[l].Url)}"));
-            }
-        }
     }
 }
