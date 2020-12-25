@@ -168,7 +168,7 @@ namespace Page.Scraper.Contracts
                 return ParseLevel.Parsed;
             }
 
-            return ParseLevel.NotYet;
+            return this.ParseLevel;
         }
     }
 }
