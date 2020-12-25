@@ -11,7 +11,7 @@ namespace LJMB.Command.Commands
         public const string KEY = "e";
         public const string NAME = "Exit";
 
-        public ExitCommand(IContext context)
+        public ExitCommand(IProcessor context)
         {
             this.Name = NAME.ToLower();
             this.AllowedAlias.Add(KEY);

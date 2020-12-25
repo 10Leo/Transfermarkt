@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace LJMB.Command
 {
-    public abstract class Context : IContext
+    public abstract class Processor : IProcessor
     {
         public IList<ICommand> Commands { get; }  = new List<ICommand>();
 

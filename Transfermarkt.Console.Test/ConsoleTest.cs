@@ -29,7 +29,7 @@ namespace Transfermarkt.Console.Test
         private const int yearValue = 1999;
 
         protected readonly IList<ICommand> Commands = new List<ICommand>();
-        protected IContext context = null;
+        protected IProcessor context = null;
         protected TMService TMService { get; private set; }
 
         [TestInitialize]
@@ -44,7 +44,7 @@ namespace Transfermarkt.Console.Test
                 ClubFileNameFormat = ClubFileNameFormat
             };
 
-            context = new TMContext(null, null, TMService);
+            context = new TMCommandProcessor(null, null, TMService);
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
@@ -271,9 +271,9 @@ namespace Transfermarkt.Console.Test
             switch (key)
             {
                 case CommandKey.Peek:
-                    return new PeekCommand(new TMContext(null, null, TMService));
+                    return new PeekCommand(new TMCommandProcessor(null, null, TMService));
                 case CommandKey.Parse:
-                    return new ParseCommand(new TMContext(null, null, TMService));
+                    return new ParseCommand(new TMCommandProcessor(null, null, TMService));
                 default:
                     return null;
             }

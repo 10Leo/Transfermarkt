@@ -11,7 +11,7 @@ namespace LJMB.Command
         protected ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
         public string Name { get; set; }
-        public IContext Context { get; set; }
+        public IProcessor Context { get; set; }
         public ISet<IOption> Options { get; } = new HashSet<IOption>();
 
         public IOption this[string option]

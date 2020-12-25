@@ -27,13 +27,13 @@ namespace Transfermarkt.Console
         //public string ContinentFileNameFormat { get; set; }
         //public string CompetitionFileNameFormat { get; set; }
 
-        public TMContext TMContext
+        public TMCommandProcessor TMContext
         {
             get
             {
                 if (tmContext == null)
                 {
-                    tmContext = (TMContext)Context;
+                    tmContext = (TMCommandProcessor)Context;
                 }
                 return tmContext;
             }
@@ -74,11 +74,11 @@ namespace Transfermarkt.Console
             }
         }
 
-        private TMContext tmContext = null;
+        private TMCommandProcessor tmContext = null;
         private IOption year = null;
         private IOption indexes = null;
 
-        public ParseCommand(IContext context)
+        public ParseCommand(IProcessor context)
         {
             this.Name = NAME.ToLower();
             this.AllowedAlias.Add(KEY);

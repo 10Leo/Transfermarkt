@@ -23,7 +23,7 @@ namespace Transfermarkt.Console
         protected static string OutputFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.OutputFolderPath);
         protected static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
 
-        protected static IContext Context { get; private set; }
+        protected static IProcessor Context { get; private set; }
         protected static ILogger Logger { get; private set; }
         protected static IExporter Exporter { get; private set; }
         protected static TMService TMService { get; private set; }
@@ -44,7 +44,7 @@ namespace Transfermarkt.Console
                 ClubFileNameFormat = ClubFileNameFormat
             };
 
-            Context = new TMContext(Logger, Exporter, TMService)
+            Context = new TMCommandProcessor(Logger, Exporter, TMService)
             {
                 GetCommands = () => Get()
             };

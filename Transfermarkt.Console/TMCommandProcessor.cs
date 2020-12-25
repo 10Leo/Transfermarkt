@@ -16,16 +16,16 @@ using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console
 {
-    public class TMContext : Context
+    public class TMCommandProcessor : Processor
     {
-        private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
-
-        public string LastSelectedSeason { get; set; }
         public ILogger Logger { get; }
         public IExporter Exporter { get; }
         public TMService TMService { get; set; }
+        public string LastSelectedSeason { get; set; }
 
-        public TMContext(ILogger logger, IExporter exporter, TMService tmService)
+        private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
+
+        public TMCommandProcessor(ILogger logger, IExporter exporter, TMService tmService)
         {
             this.Logger = logger;
             this.Exporter = exporter;

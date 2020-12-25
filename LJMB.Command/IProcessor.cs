@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LJMB.Command
 {
-    public interface IContext
+    public interface IProcessor
     {
         IList<ICommand> Commands { get; }
 
