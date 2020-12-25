@@ -3,15 +3,19 @@ using System.Collections.Generic;
 
 namespace Transfermarkt.Console.Options
 {
-    public class YearOption : IOption
+    public class YearOption : Option
     {
-        public const string Key = "Year";
+        public const string KEY = "Year";
+        public const string NAME = "y";
 
-        public string Name { get; } = "Year";
-        public ISet<string> AllowedAlias { get; } = new HashSet<string> { "y", "year" };
-        public ISet<IArgument> Args { get; } = new HashSet<IArgument>(1);
+        public YearOption()
+        {
+            Name = KEY;
+            AllowedAlias = new HashSet<string> { NAME, KEY.ToLower() };
+            Args = new HashSet<IArgument>(1);
+        }
 
-        public void Parse(string toParse)
+        public override void Parse(string toParse)
         {
             var year = new StringArgument
             {
@@ -19,11 +23,6 @@ namespace Transfermarkt.Console.Options
             };
 
             Args.Add(year);
-        }
-
-        public void Reset()
-        {
-            Args.Clear();
         }
     }
 }
