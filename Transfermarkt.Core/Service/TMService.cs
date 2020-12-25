@@ -16,7 +16,7 @@ namespace Transfermarkt.Core.Service
     {
         private const string Message = "Continent not found";
         private static readonly string KEY_ERROR = "Specified key doesn't exist.";
-        private static readonly string KEY_PATTERN = "{0}.{1}";
+        public static readonly string KEY_PATTERN = "{0}.{1}";
         
         public string BaseURL { get; set; }
         public string ContinentFileNameFormat { get; set; }
@@ -25,22 +25,23 @@ namespace Transfermarkt.Core.Service
 
         public ILogger Logger { get; set; }
 
-        public IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continents { get; private set; }
+        //TODO: create Page to represent these links
+        public IDictionary<string, Link<HtmlNode, CompetitionPage>> Continents { get; private set; }
 
-        public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> Continent = null;
+        public readonly IDictionary<string, (Link<HtmlNode, CompetitionPage> L, ContinentPage P)> SeasonContinents = null;
 
         public (Link<HtmlNode, CompetitionPage> L, ContinentPage P) Choice { get; }
 
         public TMService()
         {
-            Continents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>
+            Continents = new Dictionary<string, Link<HtmlNode, CompetitionPage>>
             {
-                ["1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }, null),
-                ["2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"/wettbewerbe/amerika" }, null),
-                ["3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }, null),
-                ["4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" }, null)
+                ["1"] = (new Link<HtmlNode, CompetitionPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }),
+                ["2"] = (new Link<HtmlNode, CompetitionPage> { Title = "America", Url = $"/wettbewerbe/amerika" }),
+                ["3"] = (new Link<HtmlNode, CompetitionPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }),
+                ["4"] = (new Link<HtmlNode, CompetitionPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" })
             };
-            Continent = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
+            SeasonContinents = new Dictionary<string, (Link<HtmlNode, CompetitionPage>, ContinentPage)>();
         }
 
         public IDomain Parse(int year, int? continentsIndex = null, int? competitionsIndex = null, int? clubsIndex = null, bool peek = false)
@@ -76,7 +77,7 @@ namespace Transfermarkt.Core.Service
             if (choice.Page == null)
             {
                 choice.Page = new ContinentPage(new HAPConnection(), Logger, year);
-                Continent[key] = choice;
+                SeasonContinents[key] = choice;
             }
 
             if (!choice.Page.Connection.IsConnected)
@@ -135,19 +136,19 @@ namespace Transfermarkt.Core.Service
         private void AddNewYearContinentIfDoesntExist(int year, int i1)
         {
             var key = GenerateKey(year, i1);
-            if (!Continent.ContainsKey(key))
+            if (!SeasonContinents.ContainsKey(key))
             {
-                Continent.Add(key, (Continents[i1.ToString()].L, null));
+                SeasonContinents.Add(key, (Continents[i1.ToString()], null));
             }
         }
 
         private (Link<HtmlNode, CompetitionPage> Link, ContinentPage Page) GetSeasonContinent(string key)
         {
-            if (!Continent.ContainsKey(key))
+            if (!SeasonContinents.ContainsKey(key))
             {
                 throw new KeyNotFoundException(KEY_ERROR);
             }
-            return Continent[key];
+            return SeasonContinents[key];
         }
 
         private string GenerateKey(int year, int i1)

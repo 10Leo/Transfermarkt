@@ -31,7 +31,8 @@ namespace Transfermarkt.Core.Test
         {
             Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
 
-            TMService = new TMService {
+            TMService = new TMService
+            {
                 Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel),
                 BaseURL = BaseURL,
                 ContinentFileNameFormat = ContinentFileNameFormat,
@@ -43,7 +44,6 @@ namespace Transfermarkt.Core.Test
         [TestMethod]
         public void TMServiceContinentParsingTest()
         {
-            //TMService.ParseContinent(2010, 1);
             IDomain domain = TMService.Parse(2010, 1);
 
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -71,7 +71,6 @@ namespace Transfermarkt.Core.Test
         [TestMethod]
         public void TMServiceCompetitionParsingTest()
         {
-            //TMService.ParseContinent(2010, 1);
             IDomain domain = TMService.Parse(2010, 1, 1);
 
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -93,7 +92,6 @@ namespace Transfermarkt.Core.Test
         [TestMethod]
         public void TMServiceClubParsingTest()
         {
-            //TMService.ParseContinent(2010, 1);
             IDomain domain = TMService.Parse(2010, 1, 1, 1);
 
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -108,15 +106,21 @@ namespace Transfermarkt.Core.Test
         [TestMethod]
         public void TMServiceMultipleIterationsTest()
         {
-            //TMService.ParseContinent(2010, 1);
             IDomain domain = null;
-            
-            domain = TMService.Parse(2020, 1, peek: true);
-            domain = TMService.Parse(2020, 1, 1, peek: true);
-            domain = TMService.Parse(2020, 1, 2, 1);
+            int y = 2020;
+            int continentIndex = 1;
 
-            
-            IDictionary<string, (Link<HtmlAgilityPack.HtmlNode, CompetitionPage> L, ContinentPage P)> continents = TMService.Continent;
+            IDictionary<string, (Link<HtmlAgilityPack.HtmlNode, CompetitionPage> L, ContinentPage P)> seasonContinents = TMService.SeasonContinents;
+
+            domain = TMService.Parse(y, continentIndex, peek: true);
+
+            Assert.IsTrue(seasonContinents.ContainsKey(string.Format(TMService.KEY_PATTERN, y, continentIndex)), $"Continent's season {string.Format(TMService.KEY_PATTERN, y, continentIndex)} not found");
+
+
+            //domain = TMService.Parse(y, continentIndex, 1, peek: true);
+            //domain = TMService.Parse(y, continentIndex, 2, 1);
+
+
         }
     }
 }

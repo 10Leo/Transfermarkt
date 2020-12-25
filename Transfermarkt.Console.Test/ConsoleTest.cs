@@ -2,15 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using LJMB.Command;
+using LJMB.Common;
+using LJMB.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Console.Arguments;
 using Transfermarkt.Console.Options;
+using Transfermarkt.Core;
+using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console.Test
 {
     [TestClass]
     public class ConsoleTest
     {
+        protected static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        protected static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
+        protected static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
+        protected static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat); 
+        
         private const string peekCmd = "f";
         private const string parseCmd = "p";
         private const string exitCmd = "e";
@@ -20,11 +29,21 @@ namespace Transfermarkt.Console.Test
 
         protected readonly IList<ICommand> Commands = new List<ICommand>();
         protected IContext context = null;
+        protected TMService TMService { get; private set; }
 
         [TestInitialize]
         public void Initialize()
         {
-            context = new TMContext();
+            TMService = new TMService
+            {
+                Logger = LoggerFactory.GetLogger(LogLevel.Error),
+                BaseURL = BaseURL,
+                ContinentFileNameFormat = ContinentFileNameFormat,
+                CompetitionFileNameFormat = CompetitionFileNameFormat,
+                ClubFileNameFormat = ClubFileNameFormat
+            };
+
+            context = new TMContext(null, null, TMService);
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
@@ -251,9 +270,9 @@ namespace Transfermarkt.Console.Test
             switch (key)
             {
                 case CommandKey.Peek:
-                    return new PeekCommand(new TMContext());
+                    return new PeekCommand(new TMContext(null, null, TMService));
                 case CommandKey.Parse:
-                    return new ParseCommand(new TMContext());
+                    return new ParseCommand(new TMContext(null, null, TMService));
                 default:
                     return null;
             }

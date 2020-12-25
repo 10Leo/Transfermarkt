@@ -18,25 +18,21 @@ namespace Transfermarkt.Console
     public class TMContext : Context
     {
         private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
-        public string LastSelectedSeason { get; set; } = currentSeason.ToString(); 
-        private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
-        private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
-        public static string OutputFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.OutputFolderPath);
-        public static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
+        public string LastSelectedSeason { get; set; } = currentSeason.ToString();
 
         public ILogger Logger { get; }
         public IExporter Exporter { get; }
         public TMService TMService { get; set; }
 
-        public TMContext()
+        public TMContext(ILogger logger, IExporter exporter, TMService tmService)
         {
             this.RegisterCommand(new ExitCommand(this));
             this.RegisterCommand(new PeekCommand(this));
             this.RegisterCommand(new ParseCommand(this));
 
-            Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
-            Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
-            TMService = new TMService();
+            this.Logger = logger;
+            this.Exporter = exporter;
+            this.TMService = tmService;
         }
 
         public override void Run()

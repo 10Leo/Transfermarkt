@@ -31,7 +31,11 @@ namespace Transfermarkt.Console
                 return tmContext;
             }
         }
-        public TMService TMService { get { return TMContext.TMService; } }
+
+        public TMService TMService
+        {
+            get { return TMContext.TMService; }
+        }
 
         private IOption year = null;
         public IOption Year

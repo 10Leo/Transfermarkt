@@ -119,5 +119,43 @@ namespace Transfermarkt.Core.Test
                 }
             }
         }
+
+        public static void AssertParseLevel(bool peek, ParseLevel parseLevel, IReadOnlyList<ISection> sections)
+        {
+            foreach (var section in sections)
+            {
+                switch (section.ChildrenType)
+                {
+                    case Children.NO:
+                        Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
+                        break;
+                    case Children.SAME_PAGE:
+                        Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
+                        break;
+                    case Children.DIFF_PAGE:
+                        if (peek)
+                        {
+                            Assert.IsTrue(section.ParseLevel == ParseLevel.Peeked);
+                        }
+                        else
+                        {
+                            Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
+                        }
+                        break;
+                    default:
+                        Assert.Fail("A New State was added and it's not yet contemplated in this test. Please add it to the switch condition.");
+                        break;
+                }
+            }
+
+            if (peek)
+            {
+                Assert.IsTrue(parseLevel == ParseLevel.NotYet, $"Page was expected to not have all sections parsed and as such its state must be {ParseLevel.NotYet.ToString()}.");
+            }
+            else
+            {
+                Assert.IsTrue(parseLevel == ParseLevel.Parsed, $"Page was expected to have all sections parsed and as such its state must be {ParseLevel.Parsed.ToString()}.");
+            }
+        }
     }
 }

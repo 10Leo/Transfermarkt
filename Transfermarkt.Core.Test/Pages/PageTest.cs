@@ -39,6 +39,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             page.Connect(url);
             page.Parse(parseChildren: true);
 
+            TestingConfigs.AssertParseLevel(false, page.ParseLevel, page.Sections);
+
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
 
@@ -57,6 +59,8 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             CompetitionPage page = new CompetitionPage();
             page.Connect(url);
             page.Parse(parseChildren: true);
+
+            TestingConfigs.AssertParseLevel(false, page.ParseLevel, page.Sections);
 
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -90,26 +94,55 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, 2008);
             continentPage.Connect(urls[Actors.ContinentCode.EEE]);
 
-            var sectionsToParse = new List<ISection> { continentPage["Continent Details"] };
-            continentPage.Parse(sectionsToParse);
+            var continentSectionsToParse = new List<ISection> { continentPage["Continent Details"] };
+            continentPage.Parse(continentSectionsToParse);
             Assert.IsTrue(((ContinentCode)continentPage.Domain.Elements.FirstOrDefault(e => e.InternalName == "Code")).Value.Value == Actors.ContinentCode.EEE);
             Assert.IsTrue(continentPage.Domain.Children.Count == 0, "No children should exist yet as no ChildSection was passed to be parsed.");
 
-            var childSection = (ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>)continentPage["Continent - Competitions Section"];
-            Assert.IsNotNull(childSection, "The returned Section is null.");
-            Assert.IsTrue(childSection.Name == "Continent - Competitions Section", "The returned Section was different than the one expected.");
+            foreach (var section in continentSectionsToParse)
+            {
+                Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
+            }
+            Assert.IsTrue(continentPage.ParseLevel == ParseLevel.NotYet, "Page wasn't parsed yet, only one of its section.");
 
-            childSection.Parse(false);
-            Assert.IsTrue(childSection.Children.Count > 0, "Children Links should have been fetched.");
+            var continentChildSection = (ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>)continentPage["Continent - Competitions Section"];
+            Assert.IsNotNull(continentChildSection, "The returned Section is null.");
+            Assert.IsTrue(continentChildSection.Name == "Continent - Competitions Section", "The returned Section was different than the one expected.");
+
+            continentChildSection.Parse(false);
+            Assert.IsTrue(continentChildSection.Children.Count > 0, "Children Links should have been fetched.");
             Assert.IsTrue(continentPage.Domain.Children.Count == 0, "No domain children should exist yet as the param parseChildren was set to false.");
+            Assert.IsTrue(continentChildSection.ParseLevel == ParseLevel.Peeked, $"These section state should be {ParseLevel.Peeked.ToString()}.");
 
-            IList<string> linksToParse = new List<string> { spaComp };
+            IList<string> competitionLinksToParse = new List<string> { spaComp };
 
-            var childrenToParse = childSection.Children.Where(u => linksToParse.Contains(u.Title));
-            childSection.Parse(childrenToParse, true);
-            Assert.IsTrue(continentPage.Domain.Children.Count == linksToParse.Count(), $"There should exist {linksToParse.Count} children.");
+            var continentChildrenCompetitionsToParse = continentChildSection.Children.Where(u => competitionLinksToParse.Contains(u.Title));
+            continentChildSection.Parse(continentChildrenCompetitionsToParse, true);
+            Assert.IsTrue(continentPage.Domain.Children.Count == competitionLinksToParse.Count(), $"There should exist {competitionLinksToParse.Count} children.");
 
-            var ctp = linksToParse.Select(l => l.Split('-')?[1]);
+            foreach (var continentChildCompetition in continentChildrenCompetitionsToParse)
+            {
+                TestingConfigs.AssertParseLevel(false, continentChildCompetition.Page.ParseLevel, continentChildCompetition.Page.Sections);
+
+                foreach (var competitionSection in continentChildCompetition.Page.Sections)
+                {
+                    if (competitionSection is ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>)
+                    {
+                        var childSec = competitionSection as ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>;
+
+                        foreach (var clubChild in childSec.Children)
+                        {
+                            TestingConfigs.AssertParseLevel(false, clubChild.Page.ParseLevel, clubChild.Page.Sections);
+                        }
+                    }
+                    else
+                    {
+                        Assert.IsTrue(competitionSection.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
+                    }
+                }
+            }
+
+            var ctp = competitionLinksToParse.Select(l => l.Split('-')?[1]);
             for (int i = 0; i < continentPage.Domain.Children.Count; i++)
             {
                 var childCompetition = continentPage.Domain.Children[i];

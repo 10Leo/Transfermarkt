@@ -1,29 +1,55 @@
 ﻿using LJMB.Command;
 using LJMB.Command.Commands;
 using LJMB.Common;
+using LJMB.Logging;
+using Page.Scraper.Exporter;
+using Page.Scraper.Exporter.JSONExporter;
+using System.Collections.Generic;
 using Transfermarkt.Console.Options;
 using Transfermarkt.Core;
+using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console
 {
     public class Program
     {
-        private static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
-        public static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
-        public static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
-        public static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
+        protected static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        protected static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
+        protected static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
+        protected static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat);
 
-        private static IContext context;
+        protected static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
+        protected static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
+        protected static string OutputFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.OutputFolderPath);
+        protected static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
+
+        protected static IContext Context { get; private set; }
+        protected static ILogger Logger { get; private set; }
+        protected static IExporter Exporter { get; private set; }
+        protected static TMService TMService { get; private set; }
 
         static void Main(string[] args)
         {
             //TODO: create a progress marker to show how much was processed whenever a command is issued.
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
-            context = new TMContext();
-            context.GetCommands = () => Get();
+            Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
+            Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
+            TMService = new TMService
+            {
+                Logger = Logger,
+                BaseURL = BaseURL,
+                ContinentFileNameFormat = ContinentFileNameFormat,
+                CompetitionFileNameFormat = CompetitionFileNameFormat,
+                ClubFileNameFormat = ClubFileNameFormat
+            };
 
-            context.Run();
+            Context = new TMContext(Logger, Exporter, TMService)
+            {
+                GetCommands = () => Get()
+            };
+
+            Context.Run();
         }
 
         private static string GetInput()
@@ -33,9 +59,9 @@ namespace Transfermarkt.Console
             return input;
         }
 
-        public static System.Collections.Generic.IEnumerable<string> Get()
+        public static IEnumerable<string> Get()
         {
-            while (!context.Exit)
+            while (!Context.Exit)
             {
                 yield return GetInput();
             }
