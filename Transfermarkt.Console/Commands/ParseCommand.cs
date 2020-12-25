@@ -140,6 +140,8 @@ namespace Transfermarkt.Console
                     domain = TMService.Parse(YearValue.Value, i1, i2, i3);
                 }
             }
+
+            TMContext.PrintOptions(YearValue);
         }
     }
 }

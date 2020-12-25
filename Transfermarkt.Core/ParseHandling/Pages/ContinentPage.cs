@@ -51,7 +51,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentPageSection : ElementsSection<HtmlNode>
+    public class ContinentPageSection : ElementsSection<HtmlNode>
     {
         public static readonly string SectionName = "Continent Details";
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
@@ -78,7 +78,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
+    public class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
     {
         public static readonly string SectionName = "Continent - Competitions Section";
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);

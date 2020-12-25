@@ -142,6 +142,8 @@ namespace Transfermarkt.Console
                     TMService.Parse(YearValue.Value, i1, i2, i3, peek: true);
                 }
             }
+
+            TMContext.PrintOptions(YearValue);
         }
     }
 }
