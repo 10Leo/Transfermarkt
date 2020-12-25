@@ -83,7 +83,7 @@ namespace Transfermarkt.Core.Service
                 choice.Page.Connect($"{BaseURL}{choice.Url}");
             }
 
-            //TODO: cretae enum to hold parse and peek values and pass them to the Parse methods
+            //TODO: create enum to hold parse and peek values and pass them to the Parse methods
             bool shouldParse = (!peek && !competitionsIndex.HasValue);
             choice.Page.Parse(parseChildren: shouldParse);
 

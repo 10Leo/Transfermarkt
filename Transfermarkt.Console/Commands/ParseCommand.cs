@@ -15,11 +15,18 @@ namespace Transfermarkt.Console
 {
     public class ParseCommand : Command
     {
+        public const string NAME = "p";
+        public const string DISPLAY_NAME = "Parse";
+
+        public const string PARSE_NAME_OPTION_ERROR_MSG = "Parse requires the -i option.";
+        public const string PARSE_ERROR_MSG = "Parse requires 1+ indexes passed to proccess.";
+        public const string KEY_ERROR_MSG = "Specified key doesn't exist.";
+        public const string SEASON_ERROR_MSG = "Season was not defined.";
+
         //public string ClubFileNameFormat { get; set; }
         //public string ContinentFileNameFormat { get; set; }
         //public string CompetitionFileNameFormat { get; set; }
 
-        private TMContext tmContext = null;
         public TMContext TMContext
         {
             get
@@ -32,57 +39,50 @@ namespace Transfermarkt.Console
             }
         }
         public TMService TMService { get { return TMContext.TMService; } }
-
-        private IOption year = null;
         public IOption Year
         {
             get
             {
                 if (year == null)
                 {
-                    year = this["Year"];
+                    year = this[YearOption.KEY];
                 }
                 return year;
             }
         }
-
-        private IOption indexes = null;
         public IOption Indexes
         {
             get
             {
                 if (indexes == null)
                 {
-                    indexes = this["Indexes"];
+                    indexes = this[IndexesOption.KEY];
                 }
                 return indexes;
             }
         }
-
         public int? YearValue
         {
             get
             {
                 if (Year == null || Year.Args == null || Year.Args.Count == 0)
                 {
-                    throw new Exception("Season was not defined.");
+                    throw new Exception(SEASON_ERROR_MSG);
                 }
 
                 return int.Parse(((StringArgument)Year.Args.First()).Value);
             }
         }
 
-        public static readonly string PARSE_NAME_OPTION = "Parse requires the -i option.";
-        public static readonly string PARSE_ERROR_MSG = "Parse requires 1+ indexes passed to proccess.";
-        public static readonly string KEY_ERROR = "Specified key doesn't exist.";
-
-        public const string NAME = "p";
+        private TMContext tmContext = null;
+        private IOption year = null;
+        private IOption indexes = null;
 
         public ParseCommand(IContext context)
         {
-            this.Name = "parse";
+            this.Name = DISPLAY_NAME.ToLower();
             this.AllowedAlias.Add(NAME);
-            this.AllowedAlias.Add("parse");
+            this.AllowedAlias.Add(DISPLAY_NAME.ToLower());
             this.Context = context;
             //this.Context.RegisterCommand(this);
             this.RegisterOption(new YearOption());
@@ -107,7 +107,7 @@ namespace Transfermarkt.Console
 
             if (Indexes == null)
             {
-                throw new ArgumentException(PARSE_NAME_OPTION);
+                throw new ArgumentException(PARSE_NAME_OPTION_ERROR_MSG);
             }
             if (Indexes.Args.Count == 0)
             {
