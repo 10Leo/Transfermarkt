@@ -87,6 +87,7 @@ namespace Transfermarkt.Console
             //this.Context.RegisterCommand(this);
             this.RegisterOption(new YearOption());
             this.RegisterOption(new IndexesOption());
+            //TODO: add export option
         }
 
         public override void Validate()
