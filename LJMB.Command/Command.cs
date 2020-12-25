@@ -7,6 +7,7 @@ namespace LJMB.Command
 {
     public abstract class Command : ICommand
     {
+        //TODO: create additional command to list all registered commands
         protected ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
         public string Name { get; set; }
