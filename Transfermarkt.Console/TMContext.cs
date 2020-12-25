@@ -38,15 +38,20 @@ namespace Transfermarkt.Console
 
         public override void Run()
         {
-            //for (int i = 0; i < Continents.Count; i++)
-            //{
-            //    System.Console.WriteLine($"{(i + 1)}: {Continents.ElementAt(i).Value.L.Title}");
-            //}
+            PrintContinentOptions();
 
             base.Run();
         }
 
-        public static void PresentOptions(IList<Link<HtmlNode, CompetitionPage>> links, string key, int level)
+        private void PrintContinentOptions()
+        {
+            for (int i = 0; i < TMService.Continents.Count; i++)
+            {
+                System.Console.WriteLine($"{(i + 1)}: {TMService.Continents.ElementAt(i).Value.Title}");
+            }
+        }
+
+        public static void PrintOptions(IList<Link<HtmlNode, CompetitionPage>> links, string key, int level)
         {
             if (links == null || links.Count == 0)
             {
@@ -64,7 +69,7 @@ namespace Transfermarkt.Console
             }
         }
 
-        public static void PresentOptions(IList<Link<HtmlNode, ClubPage>> links, string key, int level)
+        public static void PrintOptions(IList<Link<HtmlNode, ClubPage>> links, string key, int level)
         {
             if (links == null || links.Count == 0)
             {

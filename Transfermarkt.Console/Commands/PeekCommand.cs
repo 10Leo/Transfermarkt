@@ -79,6 +79,8 @@ namespace Transfermarkt.Console
         public static readonly string PEEK_ERROR_MSG = "Peek requires 1+ indexes passed to proccess.";
         public static readonly string PEEK_NAME_OPTION = "Peek requires the -i option.";
 
+        public static readonly string NAME = "f";
+
         public PeekCommand(IContext context)
         {
             this.Name = "peek";

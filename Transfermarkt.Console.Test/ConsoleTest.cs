@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using LJMB.Command;
+using LJMB.Command.Commands;
 using LJMB.Common;
 using LJMB.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -20,9 +21,9 @@ namespace Transfermarkt.Console.Test
         protected static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
         protected static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat); 
         
-        private const string peekCmd = "f";
-        private const string parseCmd = "p";
-        private const string exitCmd = "e";
+        private readonly static string peekCmd = PeekCommand.NAME;
+        private readonly static string parseCmd = ParseCommand.NAME;
+        private readonly static string exitCmd = ExitCommand.NAME;
         private const string yearCmdOpt = "-y";
         private const string indexesCmdOpt = "-i";
         private const int yearValue = 1999;

@@ -8,6 +8,8 @@ namespace LJMB.Command.Commands
 {
     public class ExitCommand : Command
     {
+        public static readonly string NAME = "e";
+
         public ExitCommand(IContext context)
         {
             this.Name = "exit";

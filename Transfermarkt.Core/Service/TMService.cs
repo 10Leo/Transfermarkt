@@ -17,9 +17,6 @@ namespace Transfermarkt.Core.Service
         private const string Message = "Continent not found";
         private static readonly string KEY_ERROR = "Specified key doesn't exist.";
 
-        //TODO: create Page<Continents> to represent these links
-        private IDictionary<ContinentCode, Link<HtmlNode, ContinentPage>> Continents { get; set; }
-
         public static readonly string KEY_PATTERN = "{0}.{1}";
 
         public string BaseURL { get; set; }
@@ -29,6 +26,8 @@ namespace Transfermarkt.Core.Service
 
         public ILogger Logger { get; set; }
 
+        //TODO: create Page<Continents> to represent these links
+        public IDictionary<ContinentCode, Link<HtmlNode, ContinentPage>> Continents { get; set; }
         public readonly IDictionary<string, Link<HtmlNode, ContinentPage>> SeasonContinents = null;
 
         public TMService()

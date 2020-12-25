@@ -76,6 +76,8 @@ namespace Transfermarkt.Console
         public static readonly string PARSE_ERROR_MSG = "Parse requires 1+ indexes passed to proccess.";
         public static readonly string KEY_ERROR = "Specified key doesn't exist.";
 
+        public static readonly string NAME = "p";
+
         public ParseCommand(IContext context)
         {
             this.Name = "parse";
