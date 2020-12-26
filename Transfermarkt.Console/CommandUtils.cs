@@ -1,5 +1,4 @@
 ﻿using LJMB.Command;
-using System.Linq;
 using Transfermarkt.Console.Arguments;
 
 namespace Transfermarkt.Console

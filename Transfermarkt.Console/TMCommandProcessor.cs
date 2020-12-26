@@ -1,15 +1,12 @@
 ﻿using HtmlAgilityPack;
 using LJMB.Command;
 using LJMB.Command.Commands;
-using LJMB.Common;
 using LJMB.Logging;
 using Page.Scraper.Contracts;
 using Page.Scraper.Exporter;
-using Page.Scraper.Exporter.JSONExporter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Service;

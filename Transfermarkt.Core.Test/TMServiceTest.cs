@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using LJMB.Common;
+﻿using LJMB.Common;
 using LJMB.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Page.Scraper.Contracts;
 using Page.Scraper.Exporter;
 using Page.Scraper.Exporter.JSONExporter;
+using System.Collections.Generic;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Service;
 

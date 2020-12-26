@@ -1,14 +1,9 @@
-﻿using HtmlAgilityPack;
-using LJMB.Command;
+﻿using LJMB.Command;
 using Page.Scraper.Contracts;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Console.Arguments;
 using Transfermarkt.Console.Options;
-using Transfermarkt.Core.Actors;
-using Transfermarkt.Core.ParseHandling;
-using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console

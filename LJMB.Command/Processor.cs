@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace LJMB.Command
 {
     public abstract class Processor : IProcessor
     {
-        public IList<ICommand> Commands { get; }  = new List<ICommand>();
+        public IList<ICommand> Commands { get; } = new List<ICommand>();
 
         public Func<IEnumerable<string>> GetCommands { get; set; }
 
