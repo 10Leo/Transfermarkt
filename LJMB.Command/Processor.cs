@@ -25,7 +25,8 @@ namespace LJMB.Command
 
                         if (!string.IsNullOrEmpty(inputCmd))
                         {
-                            ParseAndExecuteCommand(inputCmd, Commands);
+                            ICommand cmd = Find(inputCmd, Commands);
+                            Execute(cmd, inputCmd, Commands);
                         }
                     }
                 }
@@ -46,7 +47,7 @@ namespace LJMB.Command
             Commands.Add(command);
         }
 
-        public static void ParseAndExecuteCommand(string inputCmd, IList<ICommand> commands)
+        public virtual ICommand Find(string inputCmd, IList<ICommand> commands)
         {
             if (string.IsNullOrEmpty(inputCmd = inputCmd?.Trim()))
             {
@@ -78,6 +79,11 @@ namespace LJMB.Command
                 }
             }
 
+            return sentCmd;
+        }
+
+        public virtual void Execute(ICommand sentCmd, string inputCmd, IList<ICommand> commands)
+        {
             if (sentCmd == null)
             {
                 throw new Exception(ErrorMsg.ERROR_MSG_CMD_NOT_FOUND);
