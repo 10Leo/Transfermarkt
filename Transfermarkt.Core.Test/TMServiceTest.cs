@@ -106,20 +106,40 @@ namespace Transfermarkt.Core.Test
         public void TMServiceMultipleIterationsTest()
         {
             IDomain domain = null;
-            int y = 2020;
+            int y = 2009;
             int continentIndex = 1;
+            string key = string.Format(TMService.KEY_PATTERN, y, continentIndex);
 
             IDictionary<string, Link<HtmlAgilityPack.HtmlNode, ContinentPage>> seasonContinents = TMService.SeasonContinents;
-
             domain = TMService.Parse(y, continentIndex, peek: true);
 
-            Assert.IsTrue(seasonContinents.ContainsKey(string.Format(TMService.KEY_PATTERN, y, continentIndex)), $"Continent's season {string.Format(TMService.KEY_PATTERN, y, continentIndex)} not found");
+            Link<HtmlAgilityPack.HtmlNode, ContinentPage> choice = seasonContinents[key];
+            Assert.IsTrue(seasonContinents.ContainsKey(key), $"Continent's season {key} not found.");
+            Assert.IsTrue(choice.Page != null, "A page of type ContinentPage should have been created by the Parse command.");
+            Assert.IsTrue(choice.Page.Year == y, $"The page shoud have been set to get the {y} year.");
 
+            TestingConfigs.AssertParseLevel(true, choice.Page.ParseLevel, choice.Page.Sections);
 
+            foreach (var continentSection in choice.Page.Sections)
+            {
+                if (continentSection is ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>)
+                {
+                    var continentChildSec = continentSection as ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>;
+
+                    Assert.IsTrue(continentChildSec.Children != null && continentChildSec.Children.Count > 0, $"Children Competitions should exist.");
+
+                    foreach (var competitionChild in continentChildSec.Children)
+                    {
+                        Assert.IsNull(competitionChild.Page, $"Page should be null.");
+                    }
+                }
+                else
+                {
+                    Assert.IsTrue(continentSection.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
+                }
+            }
             //domain = TMService.Parse(y, continentIndex, 1, peek: true);
             //domain = TMService.Parse(y, continentIndex, 2, 1);
-
-
         }
     }
 }

@@ -120,7 +120,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        public static void AssertParseLevel(bool peek, ParseLevel parseLevel, IReadOnlyList<ISection> sections)
+        public static void AssertParseLevel(bool peek, ParseLevel? parseLevel, IReadOnlyList<ISection> sections)
         {
             foreach (var section in sections)
             {
@@ -150,7 +150,7 @@ namespace Transfermarkt.Core.Test
 
             if (peek)
             {
-                Assert.IsTrue(parseLevel == ParseLevel.NotYet, $"Page was expected to not have all sections parsed and as such its state must be {ParseLevel.NotYet.ToString()}.");
+                Assert.IsTrue(parseLevel == ParseLevel.Peeked, $"Page was expected to not have all sections parsed and as such its state must be the minimum child section level {ParseLevel.Peeked.ToString()}.");
             }
             else
             {
