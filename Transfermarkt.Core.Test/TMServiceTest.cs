@@ -40,9 +40,10 @@ namespace Transfermarkt.Core.Test
             };
         }
 
-        [TestMethod]
+        [TestMethod, Priority(3)]
         public void TMServiceContinentParsingTest()
         {
+            // Costly operation as it will parse every club in every competition in every continent
             IDomain domain = TMService.Parse(2010, 1);
 
             Assert.IsNotNull(domain, "The returned Domain is null.");
