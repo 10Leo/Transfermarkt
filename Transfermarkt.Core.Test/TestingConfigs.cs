@@ -139,7 +139,7 @@ namespace Transfermarkt.Core.Test
                         Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
                         break;
                     case Children.DIFF_PAGE:
-                        if (!peek || isFinal)
+                        if (isFinal)
                         {
                             Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
                         }
@@ -154,7 +154,7 @@ namespace Transfermarkt.Core.Test
                 }
             }
 
-            if (!peek || isFinal)
+            if (isFinal)
             {
                 Assert.IsTrue(parseLevel == ParseLevel.Parsed, $"Page was expected to have all sections parsed and as such its state must be {ParseLevel.Parsed.ToString()}.");
             }
