@@ -41,7 +41,7 @@ namespace Transfermarkt.Core.Test
             };
         }
 
-        [TestMethod, Priority(3)]
+        [TestMethod, TestCategory("TMService"), Priority(3)]
         public void TMServiceContinentParsingTest()
         {
             // Costly operation as it will parse every club in every competition in every continent
@@ -69,7 +69,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("TMService")]
         public void TMServiceCompetitionParsingTest()
         {
             IDomain domain = TMService.Parse(2010, 1, 1);
@@ -90,7 +90,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("TMService")]
         public void TMServiceClubParsingTest()
         {
             IDomain domain = TMService.Parse(2010, 1, 1, 1);
@@ -104,50 +104,78 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("TMService")]
         public void TMServiceMultipleIterationsTest()
         {
             IDomain domain = null;
-            int y = 2009;
-            int continentIndex = 1;
-            int competitionIndex = 1;
-            int clubIndex = 1;
-            List<int> parsedI1 = new List<int>();
-            List<int> parsedI2 = new List<int>();
-            List<int> parsedI3 = new List<int>();
-            string key = string.Format(TMService.KEY_PATTERN, y, continentIndex);
             IDictionary<string, Link<HtmlAgilityPack.HtmlNode, ContinentPage>> seasonContinents = TMService.SeasonContinents;
+            List<(Option? option, int year, int? i1, int? i2, int? i3)> cmdHistory = new List<(Option? option, int year, int? i1, int? i2, int? i3)>();
+            (Option? option, int year, int? i1, int? i2, int? i3) cmd = (null, 2020, null, null, null);
 
-
-            var op = ParseLevel.Peeked;
 
             // Peek one continent
-            domain = TMService.Parse(y, continentIndex, peek: (op == ParseLevel.Parsed ? false : true));
+            cmd = (Option.Peek, 2009, 1, null, null);
+            domain = PassCommand(cmd);
+            cmdHistory.Add(cmd);
+            AssertTMService(cmd, cmdHistory);
 
-            Assert.IsTrue(seasonContinents.ContainsKey(key), $"Continent's season {key} not found.");
-            Link<HtmlAgilityPack.HtmlNode, ContinentPage> choice = seasonContinents[key];
 
+            // Peek the same continent again
+            cmd = (Option.Peek, 2009, 1, null, null);
+            domain = PassCommand(cmd);
+            cmdHistory.Add(cmd);
+            AssertTMService(cmd, cmdHistory);
+
+
+            // Peek the first competition on the same continent
+            cmd = (Option.Peek, 2009, 1, 1, null);
+            domain = PassCommand(cmd);
+            cmdHistory.Add(cmd);
+            AssertTMService(cmd, cmdHistory);
+
+
+            // Peek another continent's competition's club
+            cmd = (Option.Peek, 2009, 2, 1, 1);
+            domain = PassCommand(cmd);
+            cmdHistory.Add(cmd);
+            AssertTMService(cmd, cmdHistory);
+
+
+            // Peek all clubs in a competition
+            for (int i = 0; i < 16; i++)
+            {
+                cmd = (Option.Peek, 2009, 1, 6, (i + 1));
+                domain = PassCommand(cmd);
+                cmdHistory.Add(cmd);
+                AssertTMService(cmd, cmdHistory);
+            }
+
+
+            // Parse a competition
+            cmd = (Option.Parse, 2009, 1, 2, null);
+            domain = PassCommand(cmd);
+            cmdHistory.Add(cmd);
+            AssertTMService(cmd, cmdHistory);
+        }
+
+        private IDomain PassCommand((Option? option, int year, int? i1, int? i2, int? i3) cmd) {
+            return TMService.Parse(cmd.year, cmd.i1, cmd.i2, cmd.i3, peek: (cmd.option == Option.Peek ? true : false));
+        }
+
+        private void AssertTMService((Option? option, int year, int? i1, int? i2, int? i3) cmd, List<(Option? option, int year, int? i1, int? i2, int? i3)> cmdHistory)
+        {
+            // validate continent and season
+            string key = string.Format(TMService.KEY_PATTERN, cmd.year, cmd.i1);
+            Assert.IsTrue(TMService.SeasonContinents.ContainsKey(key), $"Continent's season {key} not found.");
+            Link<HtmlAgilityPack.HtmlNode, ContinentPage> choice = TMService.SeasonContinents[key];
             Assert.IsTrue(choice.Page != null, "A page of type ContinentPage should have been created by the Parse command.");
-            //YearTester(choice.Page.Year.Value, y);
-            //PageTester(choice.Page);
 
-            PageTester(choice.Page, (op == ParseLevel.Parsed ? true : false), y, parsedI1, parsedI2, parsedI3, competitionIndex);
+            var p = choice.Page;
 
-            parsedI1.Add(continentIndex);
+            YearTester(p.Year.Value, cmd.year);
 
-
-
-
-
-
-            op = ParseLevel.Peeked;
-            domain = TMService.Parse(y, continentIndex, /*competitionIndex,*/ peek: true);
-
-
-            var p = (ContinentPage)choice.Page;
-
-            YearTester(p.Year.Value, y);
-            TestingConfigs.AssertParseLevel(true, p.ParseLevel, p.Sections);
+            var cdt = cmdHistory.Where(c => c.option == Option.Parse && c.year == cmd.year && c.i1 == cmd.i1 && c.i2 == null);
+            TestingConfigs.AssertParseLevel(cmd.option == Option.Peek, p.ParseLevel, p.Sections, cdt.Any());
 
             foreach (var childSection in p.Sections.ToList().OfType<ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>>())
             {
@@ -155,314 +183,69 @@ namespace Transfermarkt.Core.Test
 
                 for (int i2 = 0; i2 < childSection.Children.Count; i2++)
                 {
-                    var competitionPage = childSection.Children[i2].Page;
-                    if (!parsedI2.Contains(i2 + 1))
+                    var competitionLink = childSection.Children[i2];
+                    var index2 = i2 + 1;
+
+                    // p -y year -i cmdi1 cmdi1.index2.*
+                    var findParsed2 = cmdHistory.Where(
+                        c => c.option == Option.Parse && c.year == cmd.year
+                        && ((c.i1 == cmd.i1 && c.i2 == null) || (c.i1 == cmd.i1 && c.i2 == index2/* && c.i3 == null*/))
+                    );
+                    // f -y year -i cmdi1.index2
+                    var findPeeked2 = cmdHistory.Where(
+                        c => c.option == Option.Peek && c.year == cmd.year
+                        && c.i1 == cmd.i1 && c.i2 == index2
+                    );
+                    if (findParsed2.Any() || findPeeked2.Any())
                     {
-                        Assert.IsNull(competitionPage, $"Page should be null.");
-                    }
-                    else
-                    {
-                        Assert.IsNotNull(competitionPage, $"Page should not be null.");
+                        Assert.IsNotNull(competitionLink.Page, $"Page should not be null.");
 
+                        //YearTester(competitionPage.Year.Value, cmd.year);
 
-                        YearTester(competitionPage.Year.Value, y);
-                        TestingConfigs.AssertParseLevel(true, competitionPage.ParseLevel, competitionPage.Sections);
+                        bool isCompetitionAlreadyParsed = false;
+                        bool areAllCompetitionsChildrenClubsPeekedOrParsed = true;
 
-                        foreach (var competitionsChildSection in competitionPage.Sections.ToList().OfType<ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>>())
+                        foreach (var competitionsChildSection in competitionLink.Page.Sections.ToList().OfType<ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>>())
                         {
                             Assert.IsTrue(competitionsChildSection.Children != null && competitionsChildSection.Children.Count > 0, $"Children Competitions should exist.");
 
-                            for (int i3 = 0; i3 < competitionsChildSection.Children.Count; i3++)
+                            for (int i = 0; i < competitionsChildSection.Children.Count; i++)
                             {
-                                if (!parsedI3.Contains(i3 + 1))
+                                areAllCompetitionsChildrenClubsPeekedOrParsed = cmdHistory.Any(
+                                    fp => (fp.option == Option.Peek || fp.option == Option.Parse) && fp.year == cmd.year && fp.i1 == cmd.i1
+                                    && fp.i2 == index2
+                                    && fp.i3 == (i + 1)
+                                );
+                                if (areAllCompetitionsChildrenClubsPeekedOrParsed == false)
                                 {
-                                    Assert.IsNull(competitionsChildSection.Children[i3].Page, $"Page should be null.");
-                                }
-                                else
-                                {
-                                    Assert.IsNotNull(competitionsChildSection.Children[i3].Page, $"Page should not be null.");
+                                    break;
                                 }
                             }
-                        }
-                    }
-                }
-            }
-
-            if (!parsedI1.Contains(continentIndex))
-            {
-                parsedI1.Add(continentIndex);
-            }
-
-
-
-
-
-
-
-
-
-
-
-            op = ParseLevel.Peeked;
-            domain = TMService.Parse(y, continentIndex, competitionIndex, peek: true);
-
-            if (!parsedI1.Contains(continentIndex))
-            {
-                parsedI1.Add(continentIndex);
-            }
-            if (!parsedI2.Contains(competitionIndex))
-            {
-                parsedI2.Add(competitionIndex);
-            }
-
-
-
-            p = (ContinentPage)choice.Page;
-
-            YearTester(p.Year.Value, y);
-            TestingConfigs.AssertParseLevel(true, p.ParseLevel, p.Sections);
-
-            foreach (var childSection in p.Sections.ToList().OfType<ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>>())
-            {
-                Assert.IsTrue(childSection.Children != null && childSection.Children.Count > 0, $"Children Competitions should exist.");
-
-                for (int i2 = 0; i2 < childSection.Children.Count; i2++)
-                {
-                    var competitionPage = childSection.Children[i2].Page;
-                    if (!parsedI2.Contains(i2 + 1))
-                    {
-                        Assert.IsNull(competitionPage, $"Page should be null.");
-                    }
-                    else
-                    {
-                        Assert.IsNotNull(competitionPage, $"Page should not be null.");
-
-
-                        //YearTester(competitionPage.Year.Value, y);
-                        TestingConfigs.AssertParseLevel(true, competitionPage.ParseLevel, competitionPage.Sections);
-
-                        foreach (var competitionsChildSection in competitionPage.Sections.ToList().OfType<ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>>())
-                        {
-                            Assert.IsTrue(competitionsChildSection.Children != null && competitionsChildSection.Children.Count > 0, $"Children Competitions should exist.");
 
                             for (int i3 = 0; i3 < competitionsChildSection.Children.Count; i3++)
                             {
-                                if (!parsedI3.Contains(i3 + 1))
-                                {
-                                    Assert.IsNull(competitionsChildSection.Children[i3].Page, $"Page should be null.");
-                                }
-                                else
+                                var index3 = i3 + 1;
+                                var findParsed3 = cmdHistory.Where(c => c.option == Option.Parse && c.year == cmd.year && ((c.i1 == cmd.i1 && c.i2 == null) || (c.i1 == cmd.i1 && c.i2 == index2 && c.i3 == null) || (c.i1 == cmd.i1 && c.i2 == index2 && c.i3 == index3)));
+                                var findPeeked3 = cmdHistory.Where(c => c.option == Option.Peek && c.year == cmd.year && c.i1 == cmd.i1 && c.i2 == index2 && c.i3 == index3);
+                                
+                                if (findParsed3.Any() || findPeeked3.Any())
                                 {
                                     Assert.IsNotNull(competitionsChildSection.Children[i3].Page, $"Page should not be null.");
                                 }
-                            }
-                        }
-                    }
-                }
-            }
-
-            
-
-
-
-
-
-
-
-
-
-
-            //domain = TMService.Parse(y, continentIndex, 2, 1);
-        }
-
-        private void PageTester(IPage<IDomain, HtmlAgilityPack.HtmlNode> page, bool parse, int y, List<int> parsedI1, List<int> parsedI2, List<int> parsedI3, int? i1 = null, int? i2 = null, int? i3 = null)
-        {
-            if (page is ContinentPage)
-            {
-                var p = (ContinentPage)page;
-
-                YearTester(p.Year.Value, y);
-                TestingConfigs.AssertParseLevel(!parse, p.ParseLevel, p.Sections);
-
-                foreach (var section in page.Sections)
-                {
-                    if (section is ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>)
-                    {
-                        var childSection = section as ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>;
-
-                        Assert.IsTrue(childSection.Children != null && childSection.Children.Count > 0, $"Children Competitions should exist.");
-
-                        foreach (var childLink in childSection.Children)
-                        {
-                            if (parse)
-                            {
-                                //PageTester(competitionChild.Page);
-                                PageTester(childLink.Page, parse, y);
-                            }
-                            else
-                            {
-                                if (!parsedI1.Contains(i1.Value))
+                                else
                                 {
-                                    Assert.IsNull(childLink.Page, $"Page should be null.");
+                                    Assert.IsNull(competitionsChildSection.Children[i3].Page, $"Page should be null.");
                                 }
                             }
                         }
+
+                        isCompetitionAlreadyParsed = findParsed2.Any(fp => (fp.i1 == cmd.i1 && fp.i2 == index2 && fp.i3 == null) || (fp.i1 == cmd.i1 && fp.i2 == null && fp.i3 == null));
+                        TestingConfigs.AssertParseLevel(cmd.option == Option.Peek, competitionLink.Page.ParseLevel, competitionLink.Page.Sections, isCompetitionAlreadyParsed || areAllCompetitionsChildrenClubsPeekedOrParsed);
                     }
                     else
                     {
-                        //Assert.IsTrue(continentSection.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
+                        Assert.IsNull(competitionLink.Page, $"Page should be null.");
                     }
-                }
-            }
-            else if (page is CompetitionPage)
-            {
-                var p = (CompetitionPage)page;
-
-                YearTester(p.Year.Value, y);
-                TestingConfigs.AssertParseLevel(!parse, p.ParseLevel, p.Sections);
-
-                foreach (var section in page.Sections)
-                {
-                    if (section is ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>)
-                    {
-                        var childSection = section as ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>;
-
-                        Assert.IsTrue(childSection.Children != null && childSection.Children.Count > 0, $"Children Clubs should exist.");
-
-                        foreach (var childLink in childSection.Children)
-                        {
-                            if (parse)
-                            {
-                                //PageTester(competitionChild.Page);
-                                PageTester(childLink.Page, parse, y);
-                            }
-                            else
-                            {
-                                Assert.IsNull(childLink.Page, $"Page should be null.");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //Assert.IsTrue(continentSection.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
-                    }
-                }
-            }
-            else if (page is ClubPage)
-            {
-                var p = (ClubPage)page;
-
-                TestingConfigs.AssertParseLevel(!parse, p.ParseLevel, p.Sections);
-
-                foreach (var section in page.Sections)
-                {
-                    
-                }
-            }
-        }
-
-        private void PageTester(IPage<IDomain, HtmlAgilityPack.HtmlNode> page, bool parse, int y)
-        {
-            if (page is ContinentPage)
-            {
-                var p = (ContinentPage)page;
-
-                YearTester(p.Year.Value, y);
-                TestingConfigs.AssertParseLevel(!parse, p.ParseLevel, p.Sections);
-
-                foreach (var section in page.Sections)
-                {
-                    if (section is ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>)
-                    {
-                        var childSection = section as ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>;
-
-                        Assert.IsTrue(childSection.Children != null && childSection.Children.Count > 0, $"Children Competitions should exist.");
-
-                        foreach (var childLink in childSection.Children)
-                        {
-                            if (parse)
-                            {
-                                //PageTester(competitionChild.Page);
-                                PageTester(childLink.Page, parse, y);
-                            }
-                            else
-                            {
-                                Assert.IsNull(childLink.Page, $"Page should be null.");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //Assert.IsTrue(continentSection.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
-                    }
-                }
-            }
-            else if (page is CompetitionPage)
-            {
-                var p = (CompetitionPage)page;
-
-                YearTester(p.Year.Value, y);
-                TestingConfigs.AssertParseLevel(!parse, p.ParseLevel, p.Sections);
-
-                foreach (var section in page.Sections)
-                {
-                    if (section is ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>)
-                    {
-                        var childSection = section as ChildsSection<HtmlAgilityPack.HtmlNode, ClubPage>;
-
-                        Assert.IsTrue(childSection.Children != null && childSection.Children.Count > 0, $"Children Clubs should exist.");
-
-                        foreach (var childLink in childSection.Children)
-                        {
-                            if (parse)
-                            {
-                                //PageTester(competitionChild.Page);
-                                PageTester(childLink.Page, parse, y);
-                            }
-                            else
-                            {
-                                Assert.IsNull(childLink.Page, $"Page should be null.");
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //Assert.IsTrue(continentSection.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
-                    }
-                }
-            }
-            else if (page is ClubPage)
-            {
-                var p = (ClubPage)page;
-
-                TestingConfigs.AssertParseLevel(!parse, p.ParseLevel, p.Sections);
-
-                foreach (var section in page.Sections)
-                {
-
-                }
-            }
-        }
-
-        private void PageTester(IPage<IDomain, HtmlAgilityPack.HtmlNode> page)
-        {
-            foreach (var continentSection in page.Sections)
-            {
-                if (continentSection is ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>)
-                {
-                    var continentChildSec = continentSection as ChildsSection<HtmlAgilityPack.HtmlNode, CompetitionPage>;
-
-                    Assert.IsTrue(continentChildSec.Children != null && continentChildSec.Children.Count > 0, $"Children Competitions should exist.");
-
-                    foreach (var competitionChild in continentChildSec.Children)
-                    {
-                        Assert.IsNull(competitionChild.Page, $"Page should be null.");
-                        PageTester(competitionChild.Page);
-                    }
-                }
-                else
-                {
-                    Assert.IsTrue(continentSection.ParseLevel == ParseLevel.Parsed, "These sections were already parsed.");
                 }
             }
         }
@@ -487,8 +270,6 @@ namespace Transfermarkt.Core.Test
         private void YearTester(int year, int y)
         {
             Assert.IsTrue(year == y, $"The page shoud have been set to get the {y} year.");
-        }
-    
         }
     }
 }

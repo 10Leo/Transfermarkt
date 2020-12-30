@@ -29,6 +29,12 @@ namespace Transfermarkt.Core.Test
         public const string abbrevName = @"^(\D)*$";
     }
 
+    public enum Option
+    {
+        Peek = 1,
+        Parse = 2
+    }
+
     class TestingConfigs
     {
         public static readonly IDictionary<Type, string> PatternsMap = new Dictionary<Type, string> {
@@ -120,7 +126,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        public static void AssertParseLevel(bool peek, ParseLevel? parseLevel, IReadOnlyList<ISection> sections)
+        public static void AssertParseLevel(bool peek, ParseLevel? parseLevel, IReadOnlyList<ISection> sections, bool isFinal)
         {
             foreach (var section in sections)
             {
@@ -133,13 +139,13 @@ namespace Transfermarkt.Core.Test
                         Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
                         break;
                     case Children.DIFF_PAGE:
-                        if (peek)
+                        if (!peek || isFinal)
                         {
-                            Assert.IsTrue(section.ParseLevel == ParseLevel.Peeked);
+                            Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
                         }
                         else
                         {
-                            Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
+                            Assert.IsTrue(section.ParseLevel == ParseLevel.Peeked);
                         }
                         break;
                     default:
@@ -148,13 +154,13 @@ namespace Transfermarkt.Core.Test
                 }
             }
 
-            if (peek)
+            if (!peek || isFinal)
             {
-                Assert.IsTrue(parseLevel == ParseLevel.Peeked, $"Page was expected to not have all sections parsed and as such its state must be the minimum child section level {ParseLevel.Peeked.ToString()}.");
+                Assert.IsTrue(parseLevel == ParseLevel.Parsed, $"Page was expected to have all sections parsed and as such its state must be {ParseLevel.Parsed.ToString()}.");
             }
             else
             {
-                Assert.IsTrue(parseLevel == ParseLevel.Parsed, $"Page was expected to have all sections parsed and as such its state must be {ParseLevel.Parsed.ToString()}.");
+                Assert.IsTrue(parseLevel == ParseLevel.Peeked, $"Page was expected to not have all sections parsed and as such its state must be the minimum child section level {ParseLevel.Peeked.ToString()}.");
             }
         }
     }

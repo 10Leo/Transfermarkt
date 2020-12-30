@@ -38,7 +38,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             page.Connect(url);
             page.Parse(parseChildren: true);
 
-            TestingConfigs.AssertParseLevel(false, page.ParseLevel, page.Sections);
+            TestingConfigs.AssertParseLevel(false, page.ParseLevel, page.Sections, true);
 
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -59,7 +59,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             page.Connect(url);
             page.Parse(parseChildren: true);
 
-            TestingConfigs.AssertParseLevel(false, page.ParseLevel, page.Sections);
+            TestingConfigs.AssertParseLevel(false, page.ParseLevel, page.Sections, true);
 
             var domain = page.Domain;
             Assert.IsNotNull(domain, "The returned Domain is null.");
@@ -121,7 +121,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
             foreach (var continentChildCompetition in continentChildrenCompetitionsToParse)
             {
-                TestingConfigs.AssertParseLevel(false, continentChildCompetition.Page.ParseLevel, continentChildCompetition.Page.Sections);
+                TestingConfigs.AssertParseLevel(false, continentChildCompetition.Page.ParseLevel, continentChildCompetition.Page.Sections, true);
 
                 foreach (var competitionSection in continentChildCompetition.Page.Sections)
                 {
@@ -131,7 +131,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
                         foreach (var clubChild in childSec.Children)
                         {
-                            TestingConfigs.AssertParseLevel(false, clubChild.Page.ParseLevel, clubChild.Page.Sections);
+                            TestingConfigs.AssertParseLevel(false, clubChild.Page.ParseLevel, clubChild.Page.Sections, true);
                         }
                     }
                     else
