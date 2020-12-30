@@ -26,7 +26,7 @@ namespace Transfermarkt.Core.Test.Exporters
 
         private IDictionary<string, IDomain> domains = new Dictionary<string, IDomain>
         {
-            { "Europe", MockContinent(ContinentCode.EEE, "Europe") },
+            { "Europe", MockContinent(ContinentCode.EU, "Europe") },
             { "Liga NOS", MockCompetition(Nationality.PRT, "Liga NOS", 2020, "http://NOS.pt", "http://NOS.pt") },
             { "Liga BBVA", MockCompetition(Nationality.ESP, "Liga BBVA", 2020, "http://BBVA.pt", "http://BBVA.pt") },
             { "Benfica", MockClub(Nationality.PRT, "Benfica", 2020, "http://Benfica.pt", "http://Benfica.pt") },

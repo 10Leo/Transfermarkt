@@ -29,6 +29,12 @@ namespace Transfermarkt.Core.Test
         public const string abbrevName = @"^(\D)*$";
     }
 
+    public enum Option
+    {
+        Peek = 1,
+        Parse = 2
+    }
+
     class TestingConfigs
     {
         public static readonly IDictionary<Type, string> PatternsMap = new Dictionary<Type, string> {
@@ -117,6 +123,44 @@ namespace Transfermarkt.Core.Test
                     var m = rgx.Match(str);
                     Assert.IsTrue(rgx.IsMatch(str), $"{e.InternalName} returned an unexpected value: {value}");
                 }
+            }
+        }
+
+        public static void AssertParseLevel(bool peek, ParseLevel? parseLevel, IReadOnlyList<ISection> sections, bool isFinal)
+        {
+            foreach (var section in sections)
+            {
+                switch (section.ChildrenType)
+                {
+                    case Children.NO:
+                        Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
+                        break;
+                    case Children.SAME_PAGE:
+                        Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
+                        break;
+                    case Children.DIFF_PAGE:
+                        if (isFinal)
+                        {
+                            Assert.IsTrue(section.ParseLevel == ParseLevel.Parsed);
+                        }
+                        else
+                        {
+                            Assert.IsTrue(section.ParseLevel == ParseLevel.Peeked);
+                        }
+                        break;
+                    default:
+                        Assert.Fail("A New State was added and it's not yet contemplated in this test. Please add it to the switch condition.");
+                        break;
+                }
+            }
+
+            if (isFinal)
+            {
+                Assert.IsTrue(parseLevel == ParseLevel.Parsed, $"Page was expected to have all sections parsed and as such its state must be {ParseLevel.Parsed.ToString()}.");
+            }
+            else
+            {
+                Assert.IsTrue(parseLevel == ParseLevel.Peeked, $"Page was expected to not have all sections parsed and as such its state must be the minimum child section level {ParseLevel.Peeked.ToString()}.");
             }
         }
     }

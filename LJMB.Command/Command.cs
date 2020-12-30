@@ -7,10 +7,11 @@ namespace LJMB.Command
 {
     public abstract class Command : ICommand
     {
+        //TODO: create additional command to list all registered commands
         protected ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
         public string Name { get; set; }
-        public IContext Context { get; set; }
+        public IProcessor Context { get; set; }
         public ISet<IOption> Options { get; } = new HashSet<IOption>();
 
         public IOption this[string option]
@@ -87,49 +88,6 @@ namespace LJMB.Command
         public void Reset()
         {
             Options.ToList().ForEach(o => o.Reset());
-        }
-
-        public static void ParseAndExecuteCommand(string inputCmd, IList<ICommand> commands)
-        {
-            if (string.IsNullOrEmpty(inputCmd = inputCmd?.Trim()))
-            {
-                throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-            }
-
-            var cmdGroup = "CMD";
-            var m = Regex.Matches(inputCmd, $@"^(?<{cmdGroup}>\w)\s*");
-
-            if (m == null || m.Count == 0)
-            {
-                throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-            }
-
-            var cm = m[0].Groups[cmdGroup];
-            if (cm == null || string.IsNullOrEmpty(cm.Value) || string.IsNullOrWhiteSpace(cm.Value))
-            {
-                throw new Exception(ErrorMsg.ERROR_MSG_CMD);
-            }
-
-
-            ICommand sentCmd = null;
-            foreach (ICommand c in commands)
-            {
-                if (c.CanParse(cm.Value.Trim().ToLowerInvariant()))
-                {
-                    sentCmd = c;
-                    break;
-                }
-            }
-
-            if (sentCmd == null)
-            {
-                throw new Exception(ErrorMsg.ERROR_MSG_CMD_NOT_FOUND);
-            }
-
-            sentCmd.Parse(inputCmd);
-            sentCmd.Execute();
-
-            sentCmd.Reset();
         }
 
         public override string ToString()

@@ -8,7 +8,7 @@ namespace LJMB.Command
 
         string Name { get; }
 
-        IContext Context { get; }
+        IProcessor Context { get; }
         ISet<IOption> Options { get; }
 
         bool CanParse(string toParse);

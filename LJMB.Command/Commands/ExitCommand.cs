@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LJMB.Command.Commands
+﻿namespace LJMB.Command.Commands
 {
     public class ExitCommand : Command
     {
-        public ExitCommand(IContext context)
+        public const string KEY = "e";
+        public const string NAME = "Exit";
+
+        public ExitCommand(IProcessor context)
         {
-            this.Name = "exit";
-            this.AllowedAlias.Add("e");
-            this.AllowedAlias.Add("exit");
+            this.Name = NAME.ToLower();
+            this.AllowedAlias.Add(KEY);
+            this.AllowedAlias.Add(NAME.ToLower());
             this.Context = context;
             //this.Context.RegisterCommand(this);
         }

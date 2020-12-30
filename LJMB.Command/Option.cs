@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace LJMB.Command
 {
     public abstract class Option : IOption
     {
-        public string Name { get; set; }
+        public string Name { get; protected set; }
 
-        public ISet<string> AllowedAlias { get; }
+        public ISet<string> AllowedAlias { get; protected set; }
 
-        public ISet<IArgument> Args { get; set; } = new HashSet<IArgument>();
+        public ISet<IArgument> Args { get; protected set; } = new HashSet<IArgument>();
 
         public abstract void Parse(string value);
 

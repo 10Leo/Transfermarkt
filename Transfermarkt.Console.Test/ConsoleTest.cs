@@ -1,30 +1,50 @@
-﻿using System;
+﻿using LJMB.Command;
+using LJMB.Command.Commands;
+using LJMB.Common;
+using LJMB.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using LJMB.Command;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Transfermarkt.Console.Arguments;
 using Transfermarkt.Console.Options;
+using Transfermarkt.Core;
+using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console.Test
 {
     [TestClass]
     public class ConsoleTest
     {
-        private const string peekCmd = "f";
-        private const string parseCmd = "p";
-        private const string exitCmd = "e";
-        private const string yearCmdOpt = "-y";
-        private const string indexesCmdOpt = "-i";
+        protected static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        protected static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
+        protected static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
+        protected static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat); 
+        
+        private readonly static string peekCmd = PeekCommand.KEY;
+        private readonly static string parseCmd = ParseCommand.KEY;
+        private readonly static string exitCmd = ExitCommand.KEY;
+        private const string yearCmdOpt = "-" + YearOption.KEY;
+        private const string indexesCmdOpt = "-" + IndexesOption.KEY;
         private const int yearValue = 1999;
 
         protected readonly IList<ICommand> Commands = new List<ICommand>();
-        protected IContext context = null;
+        protected IProcessor context = null;
+        protected TMService TMService { get; private set; }
 
         [TestInitialize]
         public void Initialize()
         {
-            context = new TMContext();
+            TMService = new TMService
+            {
+                Logger = LoggerFactory.GetLogger(LogLevel.Error),
+                BaseURL = BaseURL,
+                ContinentFileNameFormat = ContinentFileNameFormat,
+                CompetitionFileNameFormat = CompetitionFileNameFormat,
+                ClubFileNameFormat = ClubFileNameFormat
+            };
+
+            context = new TMCommandProcessor(null, null, TMService);
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
@@ -166,6 +186,24 @@ namespace Transfermarkt.Console.Test
             var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
             Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
         }
+
+        [TestMethod, TestCategory("CMD Parsing")]
+        public void TestFullProcess()
+        {
+            var indexes = new List<(int i1, int i2)> { (1, 1) };
+            var args = new List<(string k, string v)> { (indexesCmdOpt, FormatIndexes(indexes)) };
+            string cmdToParse = GenerateCmd(peekCmd, args);
+
+            var indexes2 = new List<(int i1, int i2)> { (1, 2) };
+            var args2 = new List<(string k, string v)> { (indexesCmdOpt, FormatIndexes(indexes2)) };
+            string cmdToParse2 = GenerateCmd(peekCmd, args2);
+
+            string cmdToParse3 = exitCmd;
+
+            var cmds = new List<string> { cmdToParse, cmdToParse2, cmdToParse3 };
+
+            context.GetCommands = () => cmds;
+            context.Run();
         }
 
         private string FormatIndexes(List<(int i1, int i2)> opts)
@@ -202,9 +240,9 @@ namespace Transfermarkt.Console.Test
             if (yy.k != null)
             {
                 // args.Count(a => a.k == yearCmdOpt) == 1
-                var yearOpt = cmd[YearOption.Key] as YearOption;
+                var yearOpt = cmd[YearOption.NAME] as YearOption;
 
-                Assert.IsNotNull(yearOpt, $"{YearOption.Key} option not found");
+                Assert.IsNotNull(yearOpt, $"{YearOption.NAME} option not found");
                 Assert.IsTrue((yearOpt.Args.FirstOrDefault() as StringArgument).Value == yy.v.Trim().ToLowerInvariant());
             }
         }
@@ -214,9 +252,9 @@ namespace Transfermarkt.Console.Test
             (string k, string v) ii = args.FirstOrDefault(a => a.k.Trim().ToLowerInvariant() == indexesCmdOpt);
             if (ii.k != null)
             {
-                var indexesOpt = cmd[IndexesOption.Key] as IndexesOption;
+                var indexesOpt = cmd[IndexesOption.NAME] as IndexesOption;
 
-                Assert.IsNotNull(indexesOpt, $"{YearOption.Key} option not found");
+                Assert.IsNotNull(indexesOpt, $"{YearOption.NAME} option not found");
 
                 for (int j = 0; j < indexes.Count; j++)
                 {
@@ -233,9 +271,9 @@ namespace Transfermarkt.Console.Test
             switch (key)
             {
                 case CommandKey.Peek:
-                    return new PeekCommand(new TMContext());
+                    return new PeekCommand(new TMCommandProcessor(null, null, TMService));
                 case CommandKey.Parse:
-                    return new ParseCommand(new TMContext());
+                    return new ParseCommand(new TMCommandProcessor(null, null, TMService));
                 default:
                     return null;
             }

@@ -6,19 +6,22 @@ using Transfermarkt.Console.Arguments;
 
 namespace Transfermarkt.Console.Options
 {
-    public class IndexesOption : IOption
+    public class IndexesOption : Option
     {
-        public const string Key = "Indexes";
-
-        public string Name { get; } = "Indexes";
-        public ISet<string> AllowedAlias { get; } = new HashSet<string> { "i" };
-        public ISet<IArgument> Args { get; } = new HashSet<IArgument>();
+        public const string NAME = "Indexes";
+        public const string KEY = "i";
 
         private const string g1 = "I1";
         private const string g2 = "I2";
         private const string g3 = "I3";
 
-        public void Parse(string toParse)
+        public IndexesOption()
+        {
+            Name = NAME;
+            AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
+        }
+
+        public override void Parse(string toParse)
         {
             var pattern = $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))";
 
@@ -29,11 +32,6 @@ namespace Transfermarkt.Console.Options
                 var i = DetermineNumberOfIndexes(argument);
                 Args.Add(i);
             }
-        }
-
-        public void Reset()
-        {
-            Args.Clear();
         }
 
         private static IArgument DetermineNumberOfIndexes(Match argument)

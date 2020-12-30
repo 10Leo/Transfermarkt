@@ -10,27 +10,21 @@ namespace Page.Scraper.Contracts
 
         public string Url { get; private set; }
 
-        private ParseLevel parseLevel = ParseLevel.NotYet;
         public ParseLevel ParseLevel
         {
             get
             {
-                if (Sections.All(s => s.ParseLevel == ParseLevel.Parsed))
+                int min = int.MaxValue;
+                Sections.ToList().ForEach(s =>
                 {
-                    parseLevel = ParseLevel.Parsed;
-                }
-                else if (Sections.All(s => s.ParseLevel == ParseLevel.Peeked))
-                {
-                    parseLevel = ParseLevel.Peeked;
-                }
-                else
-                {
-                    parseLevel = ParseLevel.NotYet;
-                }
-
-                return parseLevel;
+                    int l = (int)s.ParseLevel;
+                    if (l < min)
+                    {
+                        min = l;
+                    }
+                });
+                return (ParseLevel)min;
             }
-            protected set { parseLevel = value; }
         }
 
         public IReadOnlyList<ISection> Sections { get; set; }
@@ -61,14 +55,14 @@ namespace Page.Scraper.Contracts
         public virtual void Parse(IEnumerable<ISection> sections = null, bool parseChildren = false)
         {
             var sectionsToParse = sections == null ? Sections : sections?.Where(s => Sections.Contains(s));
-            ParseWith(sectionsToParse ?? Sections, parseChildren);
+            ParseSections(sectionsToParse ?? Sections, parseChildren);
         }
 
         #endregion Contract
 
         #region Private
 
-        private void ParseWith(IEnumerable<ISection> sectionsToParse, bool parseChildren = false)
+        private void ParseSections(IEnumerable<ISection> sectionsToParse, bool parseChildren = false)
         {
             OnBeforeParse?.Invoke(this, new PageEventArgs(this.Url));
 
