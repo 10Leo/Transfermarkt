@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Page.Scraper.Contracts
 {
-    public class Link
+    public class Link<TNode, TPage> where TPage : IPage<IDomain, TNode>, new()
     {
         public string Title { get; set; }
         public IDictionary<string, string> Identifiers { get; set; } = new Dictionary<string, string>();
 
         public string Url { get; set; }
+        public TPage Page { get; set; }
 
         public override string ToString()
         {
@@ -22,7 +23,7 @@ namespace Page.Scraper.Contracts
 
         public override bool Equals(object obj)
         {
-            if (!(obj is Link item))
+            if (!(obj is Link<TNode, TPage> item))
             {
                 return false;
             }

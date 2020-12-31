@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Page.Scraper.Contracts
 {
+    /// <summary>
+    /// For children domain objects that exist in the same page as the parent domain object.
+    /// </summary>
+    /// <typeparam name="TDomain"></typeparam>
+    /// <typeparam name="TNode"></typeparam>
     public abstract class ChildsSamePageSection<TDomain, TNode> : ISection where TDomain : IDomain, new()
     {
         private IList<List<(TNode key, TNode value)>> childDomainNodes;
@@ -15,6 +18,7 @@ namespace Page.Scraper.Contracts
         public string Name { get; set; }
         public IEnumerable<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, TNode>> Parsers { get; set; }
         public Children ChildrenType { get; private set; }
+        public ParseLevel ParseLevel { get; set; }
 
         public ChildsSamePageSection(string name, IPage<IDomain, TNode> page)
         {
@@ -25,6 +29,15 @@ namespace Page.Scraper.Contracts
 
         public void Parse(bool parseChildren)
         {
+            if (ParseLevel == ParseLevel.Parsed)
+            {
+                return;
+            }
+            if (ParseLevel == ParseLevel.Peeked && !parseChildren)
+            {
+                return;
+            }
+
             childDomainNodes = GetChildsNodes?.Invoke();
 
             if (childDomainNodes == null || childDomainNodes.Count == 0)
@@ -52,11 +65,19 @@ namespace Page.Scraper.Contracts
                     }
                 }
 
-                Parsers.ToList().ForEach(p =>
-                {
-                    p.Reset();
-                });
+                // No other state really applies
+                this.ParseLevel = ParseLevel.Parsed;
+
+                Reset();
             }
+        }
+
+        private void Reset()
+        {
+            Parsers.ToList().ForEach(p =>
+            {
+                p.Reset();
+            });
         }
     }
 }

@@ -11,34 +11,52 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class ContinentPage : Page<IValue, HtmlNode>
     {
+        //TODO: logger should come from the top level layer and not instantiated in here
+        public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
+        public int? Year { get; set; }
+
+        public ContinentPage() : base(new HAPConnection()) {
+            //TODO: if this constructor is called, the Year prop will not be used, as at the moment of this call is yet to be set
+            Init();
+        }
+
+        //TODO: section names should be hold as variables in the page and passed to its child sections
         public ContinentPage(HAPConnection connection, ILogger logger, int? year) : base(connection)
         {
+            this.Logger = logger;
+            this.Year = year;
+
+            Init();
+        }
+
+        private void Init() {
             this.Domain = new Continent();
 
             this.Sections = new List<ISection>
             {
-                new ContinentPageSection(this, logger),
-                new ContinentCompetitionsPageSection(this, logger, year)
+                new ContinentPageSection(this, Logger),
+                new ContinentCompetitionsPageSection(this, Logger, Year)
             };
 
             // TODO create global string with placeholders for event texts: $"{EVT}: {TEXT}"
             this.OnBeforeParse += (o, e) =>
             {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Started parsing.", $"URL: {e.Url}" });
             };
 
             this.OnAfterParse += (o, e) =>
             {
-                logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
+                Logger.LogMessage(LogLevel.Milestone, new List<string> { $"EVT: Finished parsing.", $"URL: {e.Url}" });
             };
         }
     }
 
-    class ContinentPageSection : ElementsSection<HtmlNode>
+    public class ContinentPageSection : ElementsSection<HtmlNode>
     {
+        public static readonly string SectionName = "Continent Details";
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Continent Details", page)
+        public ContinentPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base(SectionName, page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Continent.NameParser(),
@@ -60,20 +78,21 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
+    public class ContinentCompetitionsPageSection : ChildsSection<HtmlNode, CompetitionPage>
     {
+        public static readonly string SectionName = "Continent - Competitions Section";
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base("Continent - Competitions Section", page, page.Connection)
+        public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base(SectionName, page, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new CompetitionPage();
 
             this.GetUrls = () =>
             {
-                IList<Link> urls = new List<Link>();
+                IList<Link<HtmlNode, CompetitionPage>> urls = new List<Link<HtmlNode, CompetitionPage>>();
 
                 Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
@@ -91,7 +110,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     try
                     {
-                        Link competitionUrl = GetCompetitionLink(cols);
+                        Link<HtmlNode, CompetitionPage> competitionUrl = GetCompetitionLink(cols);
                         competitionUrl.Url = TransformUrl(competitionUrl.Url, BaseURL);
 
                         urls.Add(competitionUrl);
@@ -106,7 +125,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
         }
 
-        private Link GetCompetitionLink(HtmlNodeCollection cols)
+        private Link<HtmlNode, CompetitionPage> GetCompetitionLink(HtmlNodeCollection cols)
         {
             var country = cols[1]
                 .SelectNodes("img")
@@ -117,7 +136,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             var nat = ConvertersConfig.GetNationality(country);
 
-            Link link = new Link { Title = $"{country}-{aLeagueName.InnerText}", Url = aLeagueName.Attributes["href"].Value };
+            Link<HtmlNode, CompetitionPage> link = new Link<HtmlNode, CompetitionPage> { Title = $"{country}-{aLeagueName.InnerText}", Url = aLeagueName.Attributes["href"].Value };
             link.Identifiers.Add("Nationality", ConvertersConfig.GetNationality(country)?.ToString());
             link.Identifiers.Add("League Name", aLeagueName.InnerText);
 

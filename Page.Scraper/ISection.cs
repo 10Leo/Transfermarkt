@@ -11,6 +11,7 @@
         string Name { get; set; }
 
         Children ChildrenType { get; }
+        ParseLevel ParseLevel { get; set; }
 
         void Parse(bool parseChildren);
     }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Page.Scraper.Contracts
 {
+    /// <summary>
+    /// The section of a page that contains the elements that describe/pertain to it.
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
     public abstract class ElementsSection<TNode> : ISection
     {
         private IList<(TNode key, TNode value)> elementsNodes;
@@ -16,6 +18,7 @@ namespace Page.Scraper.Contracts
         public IEnumerable<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, TNode>> Parsers { get; set; }
 
         public Children ChildrenType { get; private set; }
+        public ParseLevel ParseLevel { get; set; }
 
         public ElementsSection(string name, IPage<IDomain, TNode> page)
         {
@@ -27,6 +30,11 @@ namespace Page.Scraper.Contracts
 
         public void Parse(bool parseChildren)
         {
+            if (ParseLevel == ParseLevel.Parsed)
+            {
+                return;
+            }
+
             if (Parsers == null)
             {
                 return;
@@ -50,6 +58,13 @@ namespace Page.Scraper.Contracts
                 }
             }
 
+            // No other state really applies
+            this.ParseLevel = ParseLevel.Parsed;
+
+            Reset();
+        }
+
+        private void Reset() {
             Parsers.ToList().ForEach(p =>
             {
                 //TODO: recreate an instance of the parser? if yes, relocate this logic to the beginning of this method.

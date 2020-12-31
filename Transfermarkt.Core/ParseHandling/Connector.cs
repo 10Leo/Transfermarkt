@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.ParseHandling
             }
             catch (WebException ex)
             {
-                throw new Exception("Error accessing internet. '{url}'", ex);
+                throw new Exception($"Error accessing internet. '{url}'", ex);
             }
             catch (Exception ex)
             {

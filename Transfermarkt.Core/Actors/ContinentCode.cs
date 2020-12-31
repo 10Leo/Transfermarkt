@@ -3,28 +3,20 @@
     public enum ContinentCode
     {
         /// <summary>
-        /// Asia
-        /// </summary>
-        ABB,
-        /// <summary>
         /// Europe
         /// </summary>
-        EEE,
+        EU = 1,
+        /// <summary>
+        /// America
+        /// </summary>
+        A,
+        /// <summary>
+        /// Asia
+        /// </summary>
+        AS,
         /// <summary>
         /// Africa
         /// </summary>
-        FFF,
-        /// <summary>
-        /// North America
-        /// </summary>
-        NNN,
-        /// <summary>
-        /// South America
-        /// </summary>
-        SRR,
-        /// <summary>
-        /// Oceania
-        /// </summary>
-        UUU
+        AF
     }
 }

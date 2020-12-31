@@ -1,18 +1,56 @@
-﻿using System;
+﻿using LJMB.Command;
+using LJMB.Command.Commands;
+using LJMB.Common;
+using LJMB.Logging;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Transfermarkt.Console.Arguments;
+using Transfermarkt.Console.Options;
+using Transfermarkt.Core;
+using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console.Test
 {
     [TestClass]
     public class ConsoleTest
     {
+        protected static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
+        protected static string ContinentFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ContinentFileNameFormat);
+        protected static string CompetitionFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.CompetitionFileNameFormat);
+        protected static string ClubFileNameFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.ClubFileNameFormat); 
+        
+        private readonly static string peekCmd = PeekCommand.KEY;
+        private readonly static string parseCmd = ParseCommand.KEY;
+        private readonly static string exitCmd = ExitCommand.KEY;
+        private const string yearCmdOpt = "-" + YearOption.KEY;
+        private const string indexesCmdOpt = "-" + IndexesOption.KEY;
+        private const int yearValue = 1999;
+
+        protected readonly IList<ICommand> Commands = new List<ICommand>();
+        protected IProcessor context = null;
+        protected TMService TMService { get; private set; }
+
+        [TestInitialize]
+        public void Initialize()
+        {
+            TMService = new TMService
+            {
+                Logger = LoggerFactory.GetLogger(LogLevel.Error),
+                BaseURL = BaseURL,
+                ContinentFileNameFormat = ContinentFileNameFormat,
+                CompetitionFileNameFormat = CompetitionFileNameFormat,
+                ClubFileNameFormat = ClubFileNameFormat
+            };
+
+            context = new TMCommandProcessor(null, null, TMService);
+        }
+
         [TestMethod, TestCategory("CMD Parsing")]
         public void TestCorrectCmdAndArgumentsParsing()
         {
-            var cmdType = "f";
-            var opts = new List<(int i1, int i2)>
+            var indexes = new List<(int i1, int i2)>
             {
                 (1, 1),
                 (1, 2),
@@ -23,36 +61,41 @@ namespace Transfermarkt.Console.Test
             };
             var args = new List<(string k, string v)>
             {
-                ("-y", "1999"),
-                ("-o", FormatIndexes(opts))
+                (yearCmdOpt, yearValue.ToString()),
+                (indexesCmdOpt, FormatIndexes(indexes))
             };
-            
-            string cmdToParse = GenerateCmd(cmdType, args);
-            Command cmd = CommandUtil.ParseCommand(cmdToParse);
-            Validate(cmdToParse, cmd, cmdType, args, opts);
+
+            string cmdToParse = GenerateCmd(peekCmd, args);
+            Command cmd = GetCommand(CommandKey.Peek);
+            Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
+
+            cmd.Parse(cmdToParse);
+            Validate(cmdToParse, cmd, peekCmd, args, indexes);
+
 
 
             //p Y:1999 1.1
-            cmdType = "p";
-            opts = new List<(int i1, int i2)>
+            indexes = new List<(int i1, int i2)>
             {
                 (1, 1)
             };
             args = new List<(string k, string v)>
             {
-                ("-y", "1999"),
-                ("-o", FormatIndexes(opts))
+                (yearCmdOpt, yearValue.ToString()),
+                (indexesCmdOpt, FormatIndexes(indexes))
             };
-            
-            cmdToParse = GenerateCmd(cmdType, args);
-            cmd = CommandUtil.ParseCommand(cmdToParse);
-            Validate(cmdToParse, cmd, cmdType, args, opts);
+
+            cmdToParse = GenerateCmd(parseCmd, args);
+            cmd = GetCommand(CommandKey.Parse);
+            Assert.IsTrue(cmd.CanParse(parseCmd), "Checker wrongly stated that command can not be parsed.");
+
+            cmd.Parse(cmdToParse);
+            Validate(cmdToParse, cmd, parseCmd, args, indexes);
 
 
 
             // P 1.1 1.3 6.2
-            cmdType = "P";
-            opts = new List<(int i1, int i2)>
+            indexes = new List<(int i1, int i2)>
             {
                 (1, 1),
                 (1, 3),
@@ -60,48 +103,73 @@ namespace Transfermarkt.Console.Test
             };
             args = new List<(string k, string v)>
             {
-                ("-o", FormatIndexes(opts))
+                (indexesCmdOpt, FormatIndexes(indexes))
             };
 
-            cmdToParse = GenerateCmd(cmdType, args);
-            cmd = CommandUtil.ParseCommand(cmdToParse);
-            Validate(cmdToParse, cmd, cmdType, args, opts);
+            cmdToParse = GenerateCmd(parseCmd, args);
+            cmd = GetCommand(CommandKey.Parse);
+            Assert.IsTrue(cmd.CanParse(parseCmd), "Checker wrongly stated that command can not be parsed.");
+
+            cmd.Parse(cmdToParse);
+            Validate(cmdToParse, cmd, parseCmd, args, indexes);
 
 
             // F 1.1
-            cmdType = "F";
-            opts = new List<(int i1, int i2)>
+            indexes = new List<(int i1, int i2)>
             {
                 (1, 1)
             };
             args = new List<(string k, string v)>
             {
-                ("-o", FormatIndexes(opts))
+                (indexesCmdOpt, FormatIndexes(indexes))
             };
 
-            cmdToParse = GenerateCmd(cmdType, args);
-            cmd = CommandUtil.ParseCommand(cmdToParse);
-            Validate(cmdToParse, cmd, cmdType, args, opts);
+            cmdToParse = GenerateCmd(peekCmd, args);
+            cmd = GetCommand(CommandKey.Peek);
+            Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
+
+            cmd.Parse(cmdToParse);
+            Validate(cmdToParse, cmd, peekCmd, args, indexes);
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
         public void TestBadlyFormattedButCorrectCmdAndArgumentsParsing()
         {
-            var cmdType = "f  ";
-            var opts = new List<(int i1, int i2)>
+            var cmdType = peekCmd + "  ";
+            var indexes = new List<(int i1, int i2)>
             {
                 (1, 1),
                 (1, 2)
             };
             var args = new List<(string k, string v)>
             {
-                ("-y  ", " 1999"),
-                ("-o ", FormatIndexes(opts))
+                (yearCmdOpt + "  ", " " + yearValue),
+                (indexesCmdOpt + " ", FormatIndexes(indexes))
             };
-            
+
             string cmdToParse = GenerateCmd(cmdType, args);
-            Command cmd = CommandUtil.ParseCommand(cmdToParse);
-            Validate(cmdToParse, cmd, cmdType, args, opts);
+            Command cmd = GetCommand(CommandKey.Peek);
+            Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
+
+            cmd.Parse(cmdToParse);
+            Validate(cmdToParse, cmd, cmdType, args, indexes);
+        }
+
+        [TestMethod, TestCategory("CMD Parsing")]
+        public void TestExceptionIsThrownIfNoIndexPassed()
+        {
+            var args = new List<(string k, string v)>
+            {
+                (yearCmdOpt + "  ", " " + yearValue)
+            };
+
+            string cmdToParse = GenerateCmd(peekCmd, args);
+            Command cmd = GetCommand(CommandKey.Peek);
+            Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
+
+            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
+
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
@@ -110,89 +178,32 @@ namespace Transfermarkt.Console.Test
             var cmdType = "";
             var args = new List<(string k, string v)>();
             var opts = new List<(int i1, int i2)>();
-            string cmdToParse = GenerateCmd(cmdType, args);
+            string cmdToParse = GenerateCmd(peekCmd, args);
 
-            try
-            {
-                Command cmd = CommandUtil.ParseCommand(cmdToParse);
-                Validate(cmdToParse, cmd, cmdType, args, opts);
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(ex.Message == CommandUtil.ErrorMsg.ERROR_MSG_CMD);
-            }
+            Command cmd = GetCommand(CommandKey.Peek);
+            Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
 
-
-            cmdType = "   ";
-            args = new List<(string k, string v)>();
-            opts = new List<(int i1, int i2)>();
-            cmdToParse = GenerateCmd(cmdType, args);
-
-            try
-            {
-                Command cmd = CommandUtil.ParseCommand(cmdToParse);
-                Validate(cmdToParse, cmd, cmdType, args, opts);
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(ex.Message == CommandUtil.ErrorMsg.ERROR_MSG_CMD);
-            }
+            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
-        public void TestEmptyCmdParsing()
+        public void TestFullProcess()
         {
-            var cmdType = "";
-            var opts = new List<(int i1, int i2)>
-            {
-                (1, 1),
-                (1, 2)
-            };
-            var args = new List<(string k, string v)>
-            {
-                ("-y", "1999"),
-                ("-o", FormatIndexes(opts))
-            };
-            
-            string cmdToParse = GenerateCmd(cmdType, args);
+            var indexes = new List<(int i1, int i2)> { (1, 1) };
+            var args = new List<(string k, string v)> { (indexesCmdOpt, FormatIndexes(indexes)) };
+            string cmdToParse = GenerateCmd(peekCmd, args);
 
-            try
-            {
-                Command cmd = CommandUtil.ParseCommand(cmdToParse);
-                Validate(cmdToParse, cmd, cmdType, args, opts);
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(ex.Message == CommandUtil.ErrorMsg.ERROR_MSG_CMD);
-            }
-        }
+            var indexes2 = new List<(int i1, int i2)> { (1, 2) };
+            var args2 = new List<(string k, string v)> { (indexesCmdOpt, FormatIndexes(indexes2)) };
+            string cmdToParse2 = GenerateCmd(peekCmd, args2);
 
-        [TestMethod, TestCategory("CMD Parsing")]
-        public void TestErroneousgCmdParsing()
-        {
-            var cmdType = "fet";
-            var opts = new List<(int i1, int i2)>
-            {
-                (1, 1),
-                (1, 2)
-            };
-            var args = new List<(string k, string v)>
-            {
-                ("-y", "1999"),
-                ("-o", FormatIndexes(opts))
-            };
-            
-            string cmdToParse = GenerateCmd(cmdType, args);
+            string cmdToParse3 = exitCmd;
 
-            try
-            {
-                Command cmd = CommandUtil.ParseCommand(cmdToParse);
-                Validate(cmdToParse, cmd, cmdType, args, opts);
-            }
-            catch (Exception ex)
-            {
-                Assert.IsTrue(ex.Message == CommandUtil.ErrorMsg.ERROR_MSG_CMD);
-            }
+            var cmds = new List<string> { cmdToParse, cmdToParse2, cmdToParse3 };
+
+            context.GetCommands = () => cmds;
+            context.Run();
         }
 
         private string FormatIndexes(List<(int i1, int i2)> opts)
@@ -211,59 +222,67 @@ namespace Transfermarkt.Console.Test
             return cmdToParse;
         }
 
-        private void Validate(string cmdToParse, Command cmd, string cmdType, List<(string k, string v)> args, List<(int i1, int i2)> opts)
+        private void Validate(string cmdToParse, Command cmd, string cmdType, List<(string k, string v)> args, List<(int i1, int i2)> indexes)
         {
-            Action? action = null;
-            if (cmdType.Trim().ToLowerInvariant() == "f")
-            {
-                action = Action.F;
-            }
-            else if (cmdType.Trim().ToLowerInvariant() == "p")
-            {
-                action = Action.P;
-            }
-
-            Assert.IsTrue(cmd.Action == action, "Command Type not parsed correctly.");
-
             if (args?.Count > 0)
             {
-                Assert.IsNotNull(cmd.Parameters, $"There should exist {args.Count} extras args.");
-                Assert.IsTrue(cmd.Parameters.Count == args.Count, $"Number of extra args should be {args.Count} instead of {cmd.Parameters.Count}.");
-                for (int i = 0; i < args.Count; i++)
+                //Assert.IsNotNull(cmd.Options, $"There should exist {args.Count} extras args.");
+                //Assert.IsTrue(cmd.Options.Count == args.Count, $"Number of extra args should be {args.Count} instead of {cmd.Options.Count}.");
+
+                ValidateYear(cmd, args);
+                ValidateIndexes(cmd, args, indexes);
+            }
+        }
+
+        private void ValidateYear(Command cmd, List<(string k, string v)> args)
+        {
+            (string k, string v) yy = args.FirstOrDefault(a => a.k.Trim().ToLowerInvariant() == yearCmdOpt);
+            if (yy.k != null)
+            {
+                // args.Count(a => a.k == yearCmdOpt) == 1
+                var yearOpt = cmd[YearOption.NAME] as YearOption;
+
+                Assert.IsNotNull(yearOpt, $"{YearOption.NAME} option not found");
+                Assert.IsTrue((yearOpt.Args.FirstOrDefault() as StringArgument).Value == yy.v.Trim().ToLowerInvariant());
+            }
+        }
+
+        private void ValidateIndexes(Command cmd, List<(string k, string v)> args, List<(int i1, int i2)> indexes)
+        {
+            (string k, string v) ii = args.FirstOrDefault(a => a.k.Trim().ToLowerInvariant() == indexesCmdOpt);
+            if (ii.k != null)
+            {
+                var indexesOpt = cmd[IndexesOption.NAME] as IndexesOption;
+
+                Assert.IsNotNull(indexesOpt, $"{YearOption.NAME} option not found");
+
+                for (int j = 0; j < indexes.Count; j++)
                 {
-                    ParameterName? arg = null;
-                    if (args[i].k.Trim().ToLowerInvariant() == "-y")
-                    {
-                        arg = ParameterName.Y;
+                    (int i1, int i2) ij = indexes[j];
 
-                        var stringArgType = (StringParameterValue)cmd.Parameters[i].Val;
-                        Assert.IsTrue(
-                            stringArgType.Value == args[i].v.Trim().ToLowerInvariant(),
-                            $"Extra args should be {args[i].k.Trim().ToLowerInvariant()}:{args[i].v.Trim().ToLowerInvariant()} instead of: {cmd.Parameters[i].Cmd}:{stringArgType.Value}."
-                        );
-                    }
-                    else if (args[i].k.Trim().ToLowerInvariant() == "-o")
-                    {
-                        arg = ParameterName.I;
-
-                        if (cmd.Parameters[i].Val is Index2ParameterValue)
-                        {
-                            var indexArgType = (Index2ParameterValue)cmd.Parameters[i].Val;
-
-                            Assert.IsNotNull(indexArgType, $"There should exist {opts.Count} options.");
-                            //Assert.IsTrue(
-                            //    indexArgType.Indexes.Count == opts.Count,
-                            //    $"Number of options should be {opts.Count} instead of {indexArgType.Indexes.Count}."
-                            //);
-                            //for (int j = 0; j < opts.Count; j++)
-                            //{
-                            //    Assert.IsTrue(indexArgType.Indexes[j].Index1 == opts[j].i1 && indexArgType.Indexes[j].Index2 == opts[j].i2, $"Extra args should be {opts[j].i1}:{opts[j].i2} instead of: {indexArgType.Indexes[j].Index1}:{indexArgType.Indexes[j].Index2}.");
-                            //}
-                        }
-                    }
-                    Assert.IsTrue(cmd.Parameters[i].Cmd == arg.Value, $"Extra args should be {args[i].k}:{args[i].v} instead of: {cmd.Parameters[i].Cmd}:{cmd.Parameters[i].Val}.");
+                    var ar = indexesOpt.Args.ElementAt(j) as Index2Argument;
+                    Assert.IsTrue(ar.Index1 == ij.i1 && ar.Index2 == ij.i2);
                 }
             }
+        }
+
+        private Command GetCommand(CommandKey key)
+        {
+            switch (key)
+            {
+                case CommandKey.Peek:
+                    return new PeekCommand(new TMCommandProcessor(null, null, TMService));
+                case CommandKey.Parse:
+                    return new ParseCommand(new TMCommandProcessor(null, null, TMService));
+                default:
+                    return null;
+            }
+        }
+
+        private enum CommandKey
+        {
+            Peek,
+            Parse
         }
     }
 }

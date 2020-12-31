@@ -12,6 +12,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 {
     public class CompetitionPage : Page<IValue, HtmlNode>
     {
+        //TODO: logger should come from the top level layer and not instantiated in here
         public ILogger Logger { get; set; } = LoggerFactory.GetLogger(LogLevel.Milestone);
 
         public int? Year { get; set; }
@@ -45,9 +46,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionPageSection : ElementsSection<HtmlNode>
     {
+        public static readonly string SectionName = "Competition Details";
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition Details", page)
+        public CompetitionPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base(SectionName, page)
         {
             this.Parsers = new List<IElementParser<IElement<IValue, IConverter<IValue>>, IValue, HtmlNode>>() {
                 new Parsers.HtmlAgilityPack.Competition.CountryParser(),
@@ -74,6 +76,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
     class CompetitionClubsPageSection : ChildsSection<HtmlNode, ClubPage>
     {
+        public static readonly string SectionName = "Competition - Clubs Section";
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public string SimpleClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.SimpleClubUrlFormat);
         public string PlusClubUrlFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.PlusClubUrlFormatV2);
@@ -82,14 +85,14 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
-        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base("Competition - Clubs Section", page, page.Connection)
+        public CompetitionClubsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger) : base(SectionName, page, page.Connection)
         {
             this.Season = null;
             this.ChildPage = new ClubPage();
 
             this.GetUrls = () =>
             {
-                IList<Link> urls = new List<Link>();
+                IList<Link<HtmlNode, ClubPage>> urls = new List<Link<HtmlNode, ClubPage>>();
 
                 Conn.GetNodeFunc = () => { return Conn.doc.DocumentNode; };
 
@@ -108,7 +111,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                     try
                     {
-                        Link clubUrl = GetClubLink(cols[2]);
+                        Link<HtmlNode, ClubPage> clubUrl = GetClubLink(cols[2]);
                         clubUrl.Url = TransformUrl(clubUrl.Url, BaseURL, SimpleClubUrlFormat, PlusClubUrlFormat, IdentifiersGetterPattern, IdentifiersSetterPattern);
 
                         urls.Add(clubUrl);
@@ -123,13 +126,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             };
         }
 
-        private Link GetClubLink(HtmlNode node)
+        private Link<HtmlNode, ClubPage> GetClubLink(HtmlNode node)
         {
             var a = node
                 .SelectNodes("a")
                 .FirstOrDefault(n => n.Attributes["class"]?.Value == "vereinprofil_tooltip");
 
-            return new Link
+            return new Link<HtmlNode, ClubPage>
             {
                 Title = a.InnerText,
                 Url = a.Attributes["href"].Value

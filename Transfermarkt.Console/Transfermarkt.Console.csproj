@@ -47,16 +47,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Command.cs" />
+    <Compile Include="Arguments\IndexesArguments.cs" />
+    <Compile Include="CommandUtils.cs" />
+    <Compile Include="Options\IndexesOption.cs" />
+    <Compile Include="Options\YearOption.cs" />
+    <Compile Include="TMCommandProcessor.cs" />
+    <Compile Include="Commands\PeekCommand.cs" />
+    <Compile Include="Commands\ParseCommand.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CommandUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\LJMB.Command\LJMB.Command.csproj">
+      <Project>{db5490d0-a4a6-4bd2-87c5-7fbf528c4dde}</Project>
+      <Name>LJMB.Command</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LJMB.Common\LJMB.Common.csproj">
       <Project>{417AFA74-AD2E-4F9F-8EB1-E177EABA4CE5}</Project>
       <Name>LJMB.Common</Name>

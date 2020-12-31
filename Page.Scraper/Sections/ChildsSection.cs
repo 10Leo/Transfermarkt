@@ -1,44 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Page.Scraper.Contracts
 {
+    /// <summary>
+    /// Pages that contain links to other (child) pages.
+    /// </summary>
+    /// <typeparam name="TNode"></typeparam>
+    /// <typeparam name="TChildPage"></typeparam>
     public abstract class ChildsSection<TNode, TChildPage> : ISection where TChildPage : IPage<IDomain, TNode>, new()
     {
-        public IPage<IDomain, TNode> this[IDictionary<string, string> ids]
+        public TChildPage this[IDictionary<string, string> ids]
         {
             get
             {
-                var index = -1;
-
                 if (ids.ContainsKey("URL"))
                 {
-                    for (int i = 0; i < Children.Count; i++)
-                    {
-                        if (Children[i].Url == ids["URL"].ToString())
-                        {
-                            index = i;
-                            break;
-                        }
-                    }
+                    return Children.FirstOrDefault(c => c.Url == ids["URL"].ToString()).Page;
                 }
                 else if (ids.ContainsKey("Title"))
                 {
-                    for (int i = 0; i < Children.Count; i++)
-                    {
-                        if (Children[i].Title == ids["Title"].ToString())
-                        {
-                            index = i;
-                            break;
-                        }
-                    }
+                    return Children.FirstOrDefault(c => c.Title == ids["Title"].ToString()).Page;
                 }
                 else
                 {
-                    Link child = Children.FirstOrDefault(c =>
+                    Link<TNode, TChildPage> child = Children.FirstOrDefault(c =>
                     {
                         foreach (KeyValuePair<string, string> id in ids)
                         {
@@ -49,38 +36,28 @@ namespace Page.Scraper.Contracts
                                 {
                                     return false;
                                 }
+
                             }
                         }
 
                         return true;
                     });
 
-                    index = Children.IndexOf(child);
+                    return child.Page;
                 }
-
-                if (index == -1)
-                {
-                    return null;
-                }
-
-                return ChildrenPages[pagesParsed[Children[index]]];
             }
         }
 
-        private bool fetched = false;
-        private readonly IDictionary<Link, bool> linksParsed = new Dictionary<Link, bool>();
-        private readonly IDictionary<Link, int> pagesParsed = new Dictionary<Link, int>();
-
         protected IPage<IDomain, TNode> Page { get; set; }
         protected IPage<IDomain, TNode> ChildPage { get; set; }
-        protected Func<IList<Link>> GetUrls { get; set; }
+        protected Func<IList<Link<TNode, TChildPage>>> GetUrls { get; set; }
 
         public string Name { get; set; }
-        public IList<Link> Children { get; set; }
-        public IList<IPage<IDomain, TNode>> ChildrenPages { get; set; }
+        public IList<Link<TNode, TChildPage>> Children { get; set; }
         public Children ChildrenType { get; private set; }
 
         public IConnection<TNode> Connection { get; set; }
+        public ParseLevel ParseLevel { get; set; }
 
         public ChildsSection(string name, IPage<IDomain, TNode> page, IConnection<TNode> connection)
         {
@@ -90,9 +67,9 @@ namespace Page.Scraper.Contracts
             this.Connection = connection;
         }
 
-        public IList<Link> Fetch()
+        public IList<Link<TNode, TChildPage>> Peek()
         {
-            if (fetched)
+            if (this.ParseLevel > ParseLevel.NotYet)
             {
                 return Children;
             }
@@ -103,10 +80,7 @@ namespace Page.Scraper.Contracts
 
             Children = GetUrls?.Invoke();
 
-            fetched = true;
-            Children?.ToList().ForEach(l => linksParsed.Add(l, false));
-            Children?.ToList().ForEach(l => pagesParsed.Add(l, -1));
-            ChildrenPages = new List<IPage<IDomain, TNode>>(Children.Count);
+            this.ParseLevel = ParseLevel.Peeked;
 
             return Children;
         }
@@ -114,27 +88,39 @@ namespace Page.Scraper.Contracts
         public void Parse(bool parseChildren)
         {
             Validate(Children);
-            P(Children, parseChildren, parseChildren);
+            Parse(Children, parseChildren, parseChildren);
         }
 
-        public void Parse(IEnumerable<Link> links, bool parseChildren = false)
+        public void Parse(IEnumerable<Link<TNode, TChildPage>> links, bool parseChildren = false)
         {
             var linksToParse = links?.Where(s => Children.Contains(s));
             
             Validate(linksToParse);
-            P(linksToParse, true, parseChildren);
+            Parse(linksToParse, true, parseChildren);
         }
 
-        private void P(IEnumerable<Link> linksToParse, bool parseChildren, bool child)
+        private void Parse(IEnumerable<Link<TNode, TChildPage>> linksToParse, bool parseChildren, bool child)
         {
+            if (this.ParseLevel == ParseLevel.Parsed)
+            {
+                return;
+            }
+
             if (!parseChildren)// || this.ChildrenType == Contracts.Children.DIFF_PAGE)
             {
                 return;
             }
 
-            foreach (Link pageUrl in linksToParse)
+            foreach (Link<TNode, TChildPage> pageUrl in linksToParse)
             {
-                if (linksParsed.ContainsKey(pageUrl) && linksParsed[pageUrl])
+                Link<TNode, TChildPage> found = Children.FirstOrDefault(c => c == pageUrl);
+                if (found == null)
+                {
+                    // Pretended Link not found
+                    continue;
+                }
+
+                if (found.Page != null)
                 {
                     // Page already parsed
                     continue;
@@ -145,15 +131,15 @@ namespace Page.Scraper.Contracts
                 childPage.Connect(pageUrl.Url);
                 childPage.Parse(parseChildren: child);
 
-                this.ChildrenPages.Add(childPage);
-                this.linksParsed[pageUrl] = true;
-                this.pagesParsed[pageUrl] = ChildrenPages.Count - 1;
+                found.Page = childPage;
 
                 this.Page.Domain?.Children.Add(childPage.Domain);
             }
+
+            this.ParseLevel = CalculateParseLevel();
         }
 
-        private void Validate(IEnumerable<Link> linksToParse)
+        private void Validate(IEnumerable<Link<TNode, TChildPage>> linksToParse)
         {
             if (this.Page == null)
             {
@@ -163,14 +149,24 @@ namespace Page.Scraper.Contracts
             {
                 throw new Exception("No connection to the page made yet.");
             }
-            if (fetched == false)
+            if (this.ParseLevel < ParseLevel.Peeked)
             {
-                Fetch();
+                Peek();
             }
             if (linksToParse == null || linksToParse.Count() == 0)
             {
                 return;
             }
+        }
+
+        private ParseLevel CalculateParseLevel()
+        {
+            if (Children.All(l => l.Page != null && l.Page.ParseLevel == ParseLevel.Parsed))
+            {
+                return ParseLevel.Parsed;
+            }
+
+            return this.ParseLevel;
         }
     }
 }
