@@ -16,10 +16,6 @@ namespace Transfermarkt.Console
         public const string PEEK_NAME_OPTION_ERROR_MSG = "Peek requires the -i option.";
         public const string SEASON_ERROR_MSG = "Season was not defined.";
 
-        //public string ClubFileNameFormat { get; set; }
-        //public string ContinentFileNameFormat { get; set; }
-        //public string CompetitionFileNameFormat { get; set; }
-
         public TMCommandProcessor TMContext
         {
             get

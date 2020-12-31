@@ -34,13 +34,13 @@ namespace LJMB.Command
             var argNameGroup = "ArgName";
             var argValueGroup = "ArgValue";
 
-            var m = Regex.Matches(toParse, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)\s+(?<{argValueGroup}>[^-]+))");
+            MatchCollection m = Regex.Matches(toParse, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)\s+(?<{argValueGroup}>[^-]+))");
 
             if (m.Count > 1)
             {
                 for (int i = 1; i < m.Count; i++)
                 {
-                    var argument = m[i];
+                    Match argument = m[i];
 
                     string a = argument.Groups[argNameGroup]?.Value?.Trim()?.ToLowerInvariant();
                     string v = argument.Groups[argValueGroup]?.Value?.Trim();

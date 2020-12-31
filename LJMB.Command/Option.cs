@@ -6,11 +6,12 @@ namespace LJMB.Command
     {
         public string Name { get; protected set; }
 
+        //TODO: add prop that describes usage
         public ISet<string> AllowedAlias { get; protected set; }
 
         public ISet<IArgument> Args { get; protected set; } = new HashSet<IArgument>();
 
-        public abstract void Parse(string value);
+        public abstract void Parse(string toParse);
 
         public void Reset()
         {

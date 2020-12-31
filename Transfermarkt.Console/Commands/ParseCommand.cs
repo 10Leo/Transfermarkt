@@ -1,6 +1,8 @@
 ﻿using LJMB.Command;
 using Page.Scraper.Contracts;
+using Page.Scraper.Exporter;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Console.Arguments;
 using Transfermarkt.Console.Options;
@@ -17,10 +19,11 @@ namespace Transfermarkt.Console
         public const string PARSE_ERROR_MSG = "Parse requires 1+ indexes passed to proccess.";
         public const string KEY_ERROR_MSG = "Specified key doesn't exist.";
         public const string SEASON_ERROR_MSG = "Season was not defined.";
+        public const string EXPORT_TYPE_NOT_FOUND_ERROR_MSG = "Export option {0} doesn't exist.";
 
-        //public string ClubFileNameFormat { get; set; }
-        //public string ContinentFileNameFormat { get; set; }
-        //public string CompetitionFileNameFormat { get; set; }
+        public string ClubFileNameFormat { get; set; }
+        public string ContinentFileNameFormat { get; set; }
+        public string CompetitionFileNameFormat { get; set; }
 
         public TMCommandProcessor TMContext
         {
@@ -68,10 +71,24 @@ namespace Transfermarkt.Console
                 return int.Parse(((StringArgument)Year.Args.First()).Value);
             }
         }
+        public IOption Export
+        {
+            get
+            {
+                if (export == null)
+                {
+                    export = this[ExportOption.NAME];
+                }
+                return export;
+            }
+        }
+
+        public IDictionary<string, IExporter> Exporters { get; internal set; }
 
         private TMCommandProcessor tmContext = null;
         private IOption year = null;
         private IOption indexes = null;
+        private IOption export = null;
 
         public ParseCommand(IProcessor context)
         {
@@ -82,7 +99,7 @@ namespace Transfermarkt.Console
             //this.Context.RegisterCommand(this);
             this.RegisterOption(new YearOption());
             this.RegisterOption(new IndexesOption());
-            //TODO: add export option
+            this.RegisterOption(new ExportOption());
         }
 
         public override void Validate()
@@ -122,18 +139,36 @@ namespace Transfermarkt.Console
             {
                 (int i1, int i2, int i3) = ind.GetIndexes();
 
+                string template = string.Empty;
                 IDomain domain = null;
                 if (ind is Index1Argument)
                 {
                     domain = TMService.Parse(YearValue.Value, i1);
+                    template = ContinentFileNameFormat;
                 }
                 else if (ind is Index2Argument)
                 {
                     domain = TMService.Parse(YearValue.Value, i1, i2);
+                    template = CompetitionFileNameFormat;
                 }
                 else if (ind is Index3Argument)
                 {
                     domain = TMService.Parse(YearValue.Value, i1, i2, i3);
+                    template = ClubFileNameFormat;
+                }
+
+                if (Export != null)
+                {
+                    if (Export.Args is String2Argument args)
+                    {
+                        if (!Exporters.ContainsKey(args.Value))
+                        {
+                            throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, args.Value));
+                        }
+
+                        var exporter = Exporters[args.Value];
+                        exporter.Extract(domain, template);
+                    }
                 }
             }
 

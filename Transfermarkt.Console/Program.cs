@@ -23,7 +23,7 @@ namespace Transfermarkt.Console
 
         protected static IProcessor Context { get; private set; }
         protected static ILogger Logger { get; private set; }
-        protected static IExporter Exporter { get; private set; }
+        protected static IDictionary<string, IExporter> Exporters { get; private set; }
         protected static TMService TMService { get; private set; }
 
         static void Main(string[] args)
@@ -32,7 +32,10 @@ namespace Transfermarkt.Console
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
             Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
-            Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
+            Exporters = new Dictionary<string, IExporter>
+            {
+                { "JSON", new JsonExporter(OutputFolderPath, Level1FolderFormat) }
+            };
             TMService = new TMService
             {
                 Logger = Logger,
@@ -42,7 +45,7 @@ namespace Transfermarkt.Console
                 ClubFileNameFormat = ClubFileNameFormat
             };
 
-            Context = new TMCommandProcessor(Logger, Exporter, TMService)
+            Context = new TMCommandProcessor(Logger, Exporters, TMService)
             {
                 GetCommands = () => Get()
             };

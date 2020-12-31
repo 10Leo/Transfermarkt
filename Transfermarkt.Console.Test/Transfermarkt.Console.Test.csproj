@@ -69,6 +69,10 @@
       <Project>{3166B876-1387-4469-9B20-7BE12BCD105E}</Project>
       <Name>LJMB.Logging</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Page.Scraper.Exporter\Page.Scraper.Exporter.csproj">
+      <Project>{51E667D6-B895-494F-95DA-EB080DD8EEBB}</Project>
+      <Name>Page.Scraper.Exporter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Page.Scraper\Page.Scraper.csproj">
       <Project>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</Project>
       <Name>Page.Scraper</Name>
