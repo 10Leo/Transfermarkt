@@ -7,6 +7,7 @@ using Page.Scraper.Exporter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Service;
@@ -16,16 +17,16 @@ namespace Transfermarkt.Console
     public class TMCommandProcessor : Processor
     {
         public ILogger Logger { get; }
-        public IDictionary<string, IExporter> Exporters { get; }
+        public IDictionary<ExportType, IExporter> Exporters { get; }
         public TMService TMService { get; set; }
         public string LastSelectedSeason { get; set; }
-        public string ContinentFileNameFormat { get; set; }
-        public string CompetitionFileNameFormat { get; set; }
-        public string ClubFileNameFormat { get; set; }
+        public static string ContinentFileNameFormat { get; set; }
+        public static string CompetitionFileNameFormat { get; set; }
+        public static string ClubFileNameFormat { get; set; }
 
         private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
-        public TMCommandProcessor(ILogger logger, IDictionary<string, IExporter> exporters, TMService tmService)
+        public TMCommandProcessor(ILogger logger, IDictionary<ExportType, IExporter> exporters, TMService tmService)
         {
             this.Logger = logger;
             this.Exporters = exporters;

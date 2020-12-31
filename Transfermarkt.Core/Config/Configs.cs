@@ -64,4 +64,9 @@ namespace Transfermarkt.Core
         COMPETITION,
         CONTINENT
     }
+
+    public enum ExportType
+    {
+        JSON
+    }
 }

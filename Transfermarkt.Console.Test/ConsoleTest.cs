@@ -32,7 +32,6 @@ namespace Transfermarkt.Console.Test
         private const string indexesCmdOpt = "-" + IndexesOption.KEY;
         private const string exportCmdOpt = "-" + ExportOption.KEY;
         private const int yearValue = 1999;
-        private const string jsonExportType = "JSON";
         protected readonly IList<ICommand> Commands = new List<ICommand>();
         protected IProcessor processor = null;
         protected TMService TMService { get; private set; }
@@ -44,24 +43,19 @@ namespace Transfermarkt.Console.Test
             TMService = new TMService
             {
                 Logger = logger,
-                BaseURL = BaseURL,
-                ContinentFileNameFormat = ContinentFileNameFormat,
-                CompetitionFileNameFormat = CompetitionFileNameFormat,
-                ClubFileNameFormat = ClubFileNameFormat
+                BaseURL = BaseURL
             };
 
+            TMCommandProcessor.ContinentFileNameFormat = ContinentFileNameFormat;
+            TMCommandProcessor.CompetitionFileNameFormat = CompetitionFileNameFormat;
+            TMCommandProcessor.ClubFileNameFormat = ClubFileNameFormat;
             processor = new TMCommandProcessor(
                 logger,
-                new Dictionary<string, IExporter> {
-                    { jsonExportType, new JsonExporter(OutputFolderPath, Level1FolderFormat) }
+                new Dictionary<ExportType, IExporter> {
+                    { ExportType.JSON, new JsonExporter(OutputFolderPath, Level1FolderFormat) }
                 },
                 TMService
-            )
-            {
-                ContinentFileNameFormat = ContinentFileNameFormat,
-                CompetitionFileNameFormat = CompetitionFileNameFormat,
-                ClubFileNameFormat = ClubFileNameFormat
-            };
+            );
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
@@ -77,7 +71,7 @@ namespace Transfermarkt.Console.Test
             {
                 (yearCmdOpt, new List<string> { yearValue.ToString() }),
                 (indexesCmdOpt, new List<string> { FormatIndexes(indexes) }),
-                (exportCmdOpt, new List<string> { jsonExportType, OutputFolderPath })
+                (exportCmdOpt, new List<string> { ExportType.JSON.ToString(), OutputFolderPath })
             };
 
             string cmdToParse = GenerateCmd(parseCmd, args);

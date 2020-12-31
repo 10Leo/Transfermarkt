@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Console.Arguments;
 using Transfermarkt.Console.Options;
+using Transfermarkt.Core;
 using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console
@@ -20,6 +21,7 @@ namespace Transfermarkt.Console
         public const string KEY_ERROR_MSG = "Specified key doesn't exist.";
         public const string SEASON_ERROR_MSG = "Season was not defined.";
         public const string EXPORT_TYPE_NOT_FOUND_ERROR_MSG = "Export option {0} doesn't exist.";
+        public const string EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG = "Arguments not found in the Export option.";
 
         public string ClubFileNameFormat { get; set; }
         public string ContinentFileNameFormat { get; set; }
@@ -83,7 +85,7 @@ namespace Transfermarkt.Console
             }
         }
 
-        public IDictionary<string, IExporter> Exporters { get; internal set; }
+        public IDictionary<ExportType, IExporter> Exporters { get; internal set; }
 
         private TMCommandProcessor tmContext = null;
         private IOption year = null;
@@ -159,14 +161,21 @@ namespace Transfermarkt.Console
 
                 if (Export != null)
                 {
-                    if (Export.Args is String2Argument args)
+                    if (Export.Args.Count == 0)
                     {
-                        if (!Exporters.ContainsKey(args.Value))
+                        throw new ArgumentNullException(EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG);
+                    }
+
+                    if (Export.Args.FirstOrDefault() is String2Argument arg)
+                    {
+                        Enum.TryParse(arg.Value, out ExportType exportType);
+
+                        if (!Exporters.ContainsKey(exportType))
                         {
-                            throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, args.Value));
+                            throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, arg.Value));
                         }
 
-                        var exporter = Exporters[args.Value];
+                        var exporter = Exporters[exportType];
                         exporter.Extract(domain, template);
                     }
                 }

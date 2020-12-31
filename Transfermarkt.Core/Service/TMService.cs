@@ -17,9 +17,9 @@ namespace Transfermarkt.Core.Service
         public static readonly string KEY_PATTERN = "{0}.{1}";
 
         public string BaseURL { get; set; }
-        public string ContinentFileNameFormat { get; set; }
-        public string CompetitionFileNameFormat { get; set; }
-        public string ClubFileNameFormat { get; set; }
+        //public string ContinentFileNameFormat { get; set; }
+        //public string CompetitionFileNameFormat { get; set; }
+        //public string ClubFileNameFormat { get; set; }
 
         public ILogger Logger { get; set; }
 

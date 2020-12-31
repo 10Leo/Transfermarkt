@@ -34,10 +34,7 @@ namespace Transfermarkt.Core.Test
             TMService = new TMService
             {
                 Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel),
-                BaseURL = BaseURL,
-                ContinentFileNameFormat = ContinentFileNameFormat,
-                CompetitionFileNameFormat = CompetitionFileNameFormat,
-                ClubFileNameFormat = ClubFileNameFormat
+                BaseURL = BaseURL
             };
         }
 
