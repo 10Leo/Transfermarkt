@@ -44,6 +44,8 @@ namespace Transfermarkt.Console
             this.RegisterCommand(new ListCommand(this));
             this.RegisterCommand(new PeekCommand(this));
             this.RegisterCommand(p);
+
+            GetCommands = () => CollectCommands();
         }
 
         public override void Run()
@@ -118,6 +120,22 @@ namespace Transfermarkt.Console
                         }
                     }
                 }
+            }
+        }
+
+        private string GetInput()
+        {
+            System.Console.WriteLine();
+            System.Console.Write("> ");
+            string input = System.Console.ReadLine();
+            return input;
+        }
+
+        private IEnumerable<string> CollectCommands()
+        {
+            while (!Exit)
+            {
+                yield return GetInput();
             }
         }
     }

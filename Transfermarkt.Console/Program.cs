@@ -45,28 +45,8 @@ namespace Transfermarkt.Console
             TMCommandProcessor.ContinentFileNameFormat = ContinentFileNameFormat;
             TMCommandProcessor.CompetitionFileNameFormat = CompetitionFileNameFormat;
             TMCommandProcessor.ClubFileNameFormat = ClubFileNameFormat;
-            Processor = new TMCommandProcessor(Logger, Exporters, TMService)
-            {
-                GetCommands = () => Get()
-            };
-
+            Processor = new TMCommandProcessor(Logger, Exporters, TMService);
             Processor.Run();
-        }
-
-        private static string GetInput()
-        {
-            System.Console.WriteLine();
-            System.Console.Write("> ");
-            string input = System.Console.ReadLine();
-            return input;
-        }
-
-        public static IEnumerable<string> Get()
-        {
-            while (!Processor.Exit)
-            {
-                yield return GetInput();
-            }
         }
     }
 }
