@@ -23,11 +23,12 @@ namespace Transfermarkt.Console.Options
         {
             Name = NAME;
             AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
+            Usage = $"-{KEY} <{g1}> (<{g2}>)";
         }
 
         public override void Parse(string toParse)
         {
-            var pattern = $@"(?<{g1}>\w+)(?:\s+(?<{g2}>.+))?";//"(?<{g1}>\w+)(?:\s+(?<{g2}>.+))?";
+            var pattern = $@"(?<{g1}>\w+)(?:\s+(?<{g2}>.+))?";
 
             Match splitArguments = Regex.Match(toParse, pattern);
             var splitArgumentss = Regex.Matches(toParse, pattern);

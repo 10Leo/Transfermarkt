@@ -99,9 +99,16 @@ namespace Transfermarkt.Console
             this.AllowedAlias.Add(NAME.ToLower());
             this.Context = context;
             //this.Context.RegisterCommand(this);
-            this.RegisterOption(new YearOption());
-            this.RegisterOption(new IndexesOption());
-            this.RegisterOption(new ExportOption());
+
+            var y = new YearOption();
+            var i = new IndexesOption
+            {
+                Required = true
+            };
+            var e = new ExportOption();
+            this.RegisterOption(y);
+            this.RegisterOption(i);
+            this.RegisterOption(e);
         }
 
         public override void Validate()

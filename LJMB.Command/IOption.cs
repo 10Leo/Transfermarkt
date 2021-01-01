@@ -6,6 +6,8 @@ namespace LJMB.Command
     {
         string Name { get; }
         bool Active { get; set; }
+        bool Required { get; set; }
+        string Usage { get; set; }
 
         ISet<string> AllowedAlias { get; }
         ISet<IArgument> Args { get; }

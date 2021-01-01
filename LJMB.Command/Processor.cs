@@ -52,7 +52,7 @@ namespace LJMB.Command
                 throw new Exception(ErrorMsg.ERROR_MSG_CMD);
             }
 
-            var cmdGroup = "CMD";
+            var cmdGroup = "Command";
             var m = Regex.Matches(inputCmd, $@"^(?<{cmdGroup}>\w)\s*");
 
             if (m == null || m.Count == 0)

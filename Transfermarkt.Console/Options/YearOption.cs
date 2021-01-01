@@ -11,6 +11,7 @@ namespace Transfermarkt.Console.Options
         public YearOption()
         {
             Name = NAME;
+            Usage = $"-{KEY} <y>";
             AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
             Args = new HashSet<IArgument>(1);
         }

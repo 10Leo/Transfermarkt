@@ -41,6 +41,7 @@ namespace Transfermarkt.Console
                 ClubFileNameFormat = ClubFileNameFormat
             };
             this.RegisterCommand(new ExitCommand(this));
+            this.RegisterCommand(new ListCommand(this));
             this.RegisterCommand(new PeekCommand(this));
             this.RegisterCommand(p);
         }
