@@ -24,17 +24,17 @@ namespace Transfermarkt.Core.Service
         public ILogger Logger { get; set; }
 
         //TODO: create Page<Continents> to represent these links
-        public IDictionary<ContinentCode, Link<HtmlNode, ContinentPage>> Continents { get; set; }
+        public IDictionary<ContinentCode, Func<Link<HtmlNode, ContinentPage>>> Continents { get; set; }
         public readonly IDictionary<string, Link<HtmlNode, ContinentPage>> SeasonContinents = null;
 
         public TMService()
         {
-            Continents = new Dictionary<ContinentCode, Link<HtmlNode, ContinentPage>>
+            Continents = new Dictionary<ContinentCode, Func<Link<HtmlNode, ContinentPage>>>
             {
-                [ContinentCode.EU] = (new Link<HtmlNode, ContinentPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }),
-                [ContinentCode.A] = (new Link<HtmlNode, ContinentPage> { Title = "America", Url = $"/wettbewerbe/amerika" }),
-                [ContinentCode.AS] = (new Link<HtmlNode, ContinentPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }),
-                [ContinentCode.AF] = (new Link<HtmlNode, ContinentPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" })
+                [ContinentCode.EU] = (() => new Link<HtmlNode, ContinentPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }),
+                [ContinentCode.A] = (() => new Link<HtmlNode, ContinentPage> { Title = "America", Url = $"/wettbewerbe/amerika" }),
+                [ContinentCode.AS] = (() => new Link<HtmlNode, ContinentPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }),
+                [ContinentCode.AF] = (() => new Link<HtmlNode, ContinentPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" })
             };
             SeasonContinents = new Dictionary<string, Link<HtmlNode, ContinentPage>>();
         }
@@ -133,7 +133,7 @@ namespace Transfermarkt.Core.Service
             var key = GenerateKey(year, i1);
             if (!SeasonContinents.ContainsKey(key))
             {
-                SeasonContinents.Add(key, Continents[i1]);
+                SeasonContinents.Add(key, Continents[i1].Invoke());
             }
         }
 

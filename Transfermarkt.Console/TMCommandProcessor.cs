@@ -63,9 +63,10 @@ namespace Transfermarkt.Console
                 System.Console.WriteLine($"Season: {year}");
             }
 
-            foreach (KeyValuePair<ContinentCode, Link<HtmlNode, ContinentPage>> kvp in TMService.Continents)
+            foreach (KeyValuePair<ContinentCode, Func<Link<HtmlNode, ContinentPage>>> kvp in TMService.Continents)
             {
-                System.Console.WriteLine($"{tabsContinent}{(int)kvp.Key}: {kvp.Value.Title}");
+                //TODO: modify so that the Func.Invoke call isn't used unnecessarily
+                System.Console.WriteLine($"{tabsContinent}{(int)kvp.Key}: {kvp.Value.Invoke().Title}");
 
                 var key = string.Format(TMService.KEY_PATTERN, year, (int)kvp.Key);
                 if (TMService.SeasonContinents.ContainsKey(key))
