@@ -1,4 +1,5 @@
 ﻿using LJMB.Command;
+using System;
 using System.Collections.Generic;
 
 namespace Transfermarkt.Console.Options
@@ -11,18 +12,48 @@ namespace Transfermarkt.Console.Options
         public YearOption()
         {
             Name = NAME;
+            Usage = $"-{KEY} <y>";
             AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
             Args = new HashSet<IArgument>(1);
         }
 
-        public override void Parse(string toParse)
+        protected override void OnParse(string toParse)
         {
-            var year = new StringArgument
+            int y;
+            try
             {
-                Value = int.Parse(toParse).ToString()
-            };
+                y = int.Parse(toParse);
 
-            Args.Add(year);
+                var year = new StringArgument
+                {
+                    Value = y.ToString()
+                };
+
+                Args.Add(year);
+            }
+            catch (Exception)
+            {
+                //throw new Exception($"No argument passed to the {this.Name} option");
+            }
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+
+            if (!Active)
+            {
+                return;
+            }
+
+            if (Args == null || Args.Count == 0)
+            {
+                throw new Exception(string.Format(Exceptions.ARGUMENTS_NOT_FOUND_ERROR_MSG, this.Name));
+            }
+            if (Args.Count > 1)
+            {
+                throw new Exception(string.Format(Exceptions.TOO_MUCH_ARGUMENTS_ERROR_MSG, this.Name));
+            }
         }
     }
 }

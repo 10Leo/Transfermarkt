@@ -5,11 +5,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0B966091-CB8D-45C8-B276-CFA727B50C61}</ProjectGuid>
+    <ProjectGuid>{0D73242C-48B3-47F8-A824-272F3ECB233E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Transfermarkt.Console.Test</RootNamespace>
-    <AssemblyName>Transfermarkt.Console.Test</AssemblyName>
+    <RootNamespace>LJMB.Command.Test</RootNamespace>
+    <AssemblyName>LJMB.Command.Test</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -49,41 +49,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleTest.cs" />
+    <Compile Include="CommandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LJMB.Command\LJMB.Command.csproj">
-      <Project>{DB5490D0-A4A6-4BD2-87C5-7FBF528C4DDE}</Project>
+      <Project>{db5490d0-a4a6-4bd2-87c5-7fbf528c4dde}</Project>
       <Name>LJMB.Command</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LJMB.Common\LJMB.Common.csproj">
-      <Project>{417AFA74-AD2E-4F9F-8EB1-E177EABA4CE5}</Project>
-      <Name>LJMB.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LJMB.Logging\LJMB.Logging.csproj">
-      <Project>{3166B876-1387-4469-9B20-7BE12BCD105E}</Project>
-      <Name>LJMB.Logging</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Page.Scraper.Exporter\Page.Scraper.Exporter.csproj">
-      <Project>{51E667D6-B895-494F-95DA-EB080DD8EEBB}</Project>
-      <Name>Page.Scraper.Exporter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Page.Scraper\Page.Scraper.csproj">
-      <Project>{0E517DC1-76E0-43AD-B593-4BF2FAA344AC}</Project>
-      <Name>Page.Scraper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Transfermarkt.Console\Transfermarkt.Console.csproj">
-      <Project>{ba0bbd16-d971-4936-8697-96db70ba8e52}</Project>
-      <Name>Transfermarkt.Console</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Transfermarkt.Core\Transfermarkt.Core.csproj">
-      <Project>{624D334A-662C-4B28-BB3F-C73E61850C93}</Project>
-      <Name>Transfermarkt.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />

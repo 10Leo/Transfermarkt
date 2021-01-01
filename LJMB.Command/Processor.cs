@@ -7,6 +7,8 @@ namespace LJMB.Command
 {
     public abstract class Processor : IProcessor
     {
+        public const string REPEATED_COMMAND_ERROR_MSG = "Command already registered.";
+
         public IList<ICommand> Commands { get; } = new List<ICommand>();
 
         public Func<IEnumerable<string>> GetCommands { get; set; }
@@ -16,23 +18,20 @@ namespace LJMB.Command
         public virtual void Run()
         {
             //while (!Exit)
+            foreach (var inputCmd in GetCommands?.Invoke())
             {
                 try
                 {
-                    foreach (var inputCmd in GetCommands?.Invoke())
-                    {
-                        //var inputCmd = GetCmd?.Invoke();
+                    //var inputCmd = GetCmd?.Invoke();
 
-                        if (!string.IsNullOrEmpty(inputCmd))
-                        {
-                            ICommand cmd = Find(inputCmd, Commands);
-                            Execute(cmd, inputCmd, Commands);
-                        }
+                    if (!string.IsNullOrEmpty(inputCmd))
+                    {
+                        ICommand cmd = Find(inputCmd, Commands);
+                        Execute(cmd, inputCmd, Commands);
                     }
                 }
                 catch (Exception ex)
                 {
-                    System.Console.WriteLine(ErrorMsg.ERROR_MSG_INTERPRET);
                     System.Console.WriteLine(ex.Message);
                 }
             }
@@ -42,7 +41,7 @@ namespace LJMB.Command
         {
             if (Commands.Any(c => c.Name == command.Name))
             {
-                throw new Exception("Command already registered.");
+                throw new Exception(REPEATED_COMMAND_ERROR_MSG);
             }
             Commands.Add(command);
         }
@@ -54,7 +53,7 @@ namespace LJMB.Command
                 throw new Exception(ErrorMsg.ERROR_MSG_CMD);
             }
 
-            var cmdGroup = "CMD";
+            var cmdGroup = "Command";
             var m = Regex.Matches(inputCmd, $@"^(?<{cmdGroup}>\w)\s*");
 
             if (m == null || m.Count == 0)
@@ -63,7 +62,7 @@ namespace LJMB.Command
             }
 
             var cm = m[0].Groups[cmdGroup];
-            if (cm == null || string.IsNullOrEmpty(cm.Value) || string.IsNullOrWhiteSpace(cm.Value))
+            if (string.IsNullOrEmpty(cm.Value) || string.IsNullOrWhiteSpace(cm.Value))
             {
                 throw new Exception(ErrorMsg.ERROR_MSG_CMD);
             }
@@ -89,10 +88,19 @@ namespace LJMB.Command
                 throw new Exception(ErrorMsg.ERROR_MSG_CMD_NOT_FOUND);
             }
 
-            sentCmd.Parse(inputCmd);
-            sentCmd.Execute();
-
-            sentCmd.Reset();
+            try
+            {
+                sentCmd.Parse(inputCmd);
+                sentCmd.Execute();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                sentCmd.Reset();
+            }
         }
     }
 }

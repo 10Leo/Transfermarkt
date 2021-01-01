@@ -7,6 +7,7 @@ namespace LJMB.Command
         IOption this[string option] { get; }
 
         string Name { get; }
+        string Usage { get; }
 
         IProcessor Context { get; }
         ISet<IOption> Options { get; }

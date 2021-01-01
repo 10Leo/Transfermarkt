@@ -21,9 +21,9 @@ namespace Transfermarkt.Console
         protected static string OutputFolderPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.OutputFolderPath);
         protected static string Level1FolderFormat { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.Level1FolderFormat);
 
-        protected static IProcessor Context { get; private set; }
+        protected static IProcessor Processor { get; private set; }
         protected static ILogger Logger { get; private set; }
-        protected static IExporter Exporter { get; private set; }
+        protected static IDictionary<ExportType, IExporter> Exporters { get; private set; }
         protected static TMService TMService { get; private set; }
 
         static void Main(string[] args)
@@ -32,37 +32,21 @@ namespace Transfermarkt.Console
             System.Console.WriteLine("Transfermarkt Web Scrapper\n");
 
             Logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
-            Exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
+            Exporters = new Dictionary<ExportType, IExporter>
+            {
+                { ExportType.JSON, new JsonExporter(OutputFolderPath, Level1FolderFormat) }
+            };
             TMService = new TMService
             {
                 Logger = Logger,
-                BaseURL = BaseURL,
-                ContinentFileNameFormat = ContinentFileNameFormat,
-                CompetitionFileNameFormat = CompetitionFileNameFormat,
-                ClubFileNameFormat = ClubFileNameFormat
+                BaseURL = BaseURL
             };
 
-            Context = new TMCommandProcessor(Logger, Exporter, TMService)
-            {
-                GetCommands = () => Get()
-            };
-
-            Context.Run();
-        }
-
-        private static string GetInput()
-        {
-            System.Console.Write("> ");
-            string input = System.Console.ReadLine();
-            return input;
-        }
-
-        public static IEnumerable<string> Get()
-        {
-            while (!Context.Exit)
-            {
-                yield return GetInput();
-            }
+            TMCommandProcessor.ContinentFileNameFormat = ContinentFileNameFormat;
+            TMCommandProcessor.CompetitionFileNameFormat = CompetitionFileNameFormat;
+            TMCommandProcessor.ClubFileNameFormat = ClubFileNameFormat;
+            Processor = new TMCommandProcessor(Logger, Exporters, TMService);
+            Processor.Run();
         }
     }
 }

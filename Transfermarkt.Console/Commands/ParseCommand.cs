@@ -1,9 +1,12 @@
 ﻿using LJMB.Command;
 using Page.Scraper.Contracts;
+using Page.Scraper.Exporter;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Transfermarkt.Console.Arguments;
 using Transfermarkt.Console.Options;
+using Transfermarkt.Core;
 using Transfermarkt.Core.Service;
 
 namespace Transfermarkt.Console
@@ -17,10 +20,12 @@ namespace Transfermarkt.Console
         public const string PARSE_ERROR_MSG = "Parse requires 1+ indexes passed to proccess.";
         public const string KEY_ERROR_MSG = "Specified key doesn't exist.";
         public const string SEASON_ERROR_MSG = "Season was not defined.";
+        public const string EXPORT_TYPE_NOT_FOUND_ERROR_MSG = "Export option {0} doesn't exist.";
+        public const string EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG = "Arguments not found in the Export option.";
 
-        //public string ClubFileNameFormat { get; set; }
-        //public string ContinentFileNameFormat { get; set; }
-        //public string CompetitionFileNameFormat { get; set; }
+        public string ClubFileNameFormat { get; set; }
+        public string ContinentFileNameFormat { get; set; }
+        public string CompetitionFileNameFormat { get; set; }
 
         public TMCommandProcessor TMContext
         {
@@ -68,10 +73,24 @@ namespace Transfermarkt.Console
                 return int.Parse(((StringArgument)Year.Args.First()).Value);
             }
         }
+        public IOption Export
+        {
+            get
+            {
+                if (export == null)
+                {
+                    export = this[ExportOption.NAME];
+                }
+                return export;
+            }
+        }
+
+        public IDictionary<ExportType, IExporter> Exporters { get; internal set; }
 
         private TMCommandProcessor tmContext = null;
         private IOption year = null;
         private IOption indexes = null;
+        private IOption export = null;
 
         public ParseCommand(IProcessor context)
         {
@@ -80,13 +99,22 @@ namespace Transfermarkt.Console
             this.AllowedAlias.Add(NAME.ToLower());
             this.Context = context;
             //this.Context.RegisterCommand(this);
-            this.RegisterOption(new YearOption());
-            this.RegisterOption(new IndexesOption());
-            //TODO: add export option
+
+            var y = new YearOption();
+            var i = new IndexesOption
+            {
+                Required = true
+            };
+            var e = new ExportOption();
+            this.RegisterOption(y);
+            this.RegisterOption(i);
+            this.RegisterOption(e);
         }
 
         public override void Validate()
         {
+            base.Validate();
+
             if (Year != null)
             {
                 // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
@@ -101,13 +129,22 @@ namespace Transfermarkt.Console
             }
             TMContext.LastSelectedSeason = YearValue.ToString();
 
-            if (Indexes == null)
+            if (Export.Args.FirstOrDefault() is String2Argument arg)
             {
-                throw new ArgumentException(PARSE_NAME_OPTION_ERROR_MSG);
-            }
-            if (Indexes.Args.Count == 0)
-            {
-                throw new ArgumentException(PARSE_ERROR_MSG);
+                ExportType? exportType;
+                try
+                {
+                    exportType = (ExportType)Enum.Parse(typeof(ExportType), arg.Value);
+                }
+                catch (Exception)
+                {
+                    throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, arg.Value));
+                }
+
+                if (!Exporters.ContainsKey(exportType.Value))
+                {
+                    throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, arg.Value));
+                }
             }
         }
 
@@ -122,18 +159,37 @@ namespace Transfermarkt.Console
             {
                 (int i1, int i2, int i3) = ind.GetIndexes();
 
+                string template = string.Empty;
                 IDomain domain = null;
                 if (ind is Index1Argument)
                 {
                     domain = TMService.Parse(YearValue.Value, i1);
+                    template = ContinentFileNameFormat;
                 }
                 else if (ind is Index2Argument)
                 {
                     domain = TMService.Parse(YearValue.Value, i1, i2);
+                    template = CompetitionFileNameFormat;
                 }
                 else if (ind is Index3Argument)
                 {
                     domain = TMService.Parse(YearValue.Value, i1, i2, i3);
+                    template = ClubFileNameFormat;
+                }
+
+                if (Export != null)
+                {
+                    if (Export.Active && Export.Args.Count == 0)
+                    {
+                        throw new Exception(EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG);
+                    }
+
+                    if (Export.Args.FirstOrDefault() is String2Argument arg)
+                    {
+                        var exportType = (ExportType)Enum.Parse(typeof(ExportType), arg.Value);
+                        var exporter = Exporters[exportType];
+                        exporter.Extract(domain, template);
+                    }
                 }
             }
 

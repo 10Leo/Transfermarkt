@@ -19,18 +19,39 @@ namespace Transfermarkt.Console.Options
         {
             Name = NAME;
             AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
+            Usage = $"-{KEY} <i(.i(.i))> (<i(.i(.i))>)";
         }
 
-        public override void Parse(string toParse)
+        protected override void OnParse(string toParse)
         {
             var pattern = $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))";
 
             MatchCollection splitArguments = Regex.Matches(toParse, pattern);
 
+            //if (splitArguments == null || splitArguments.Count == 0)
+            //{
+            //    throw new Exception(ParseCommand.PARSE_ERROR_MSG);
+            //}
+
             foreach (Match argument in splitArguments)
             {
                 var i = DetermineNumberOfIndexes(argument);
                 Args.Add(i);
+            }
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+
+            if (!Active)
+            {
+                return;
+            }
+
+            if (Args == null || Args.Count == 0)
+            {
+                throw new Exception(string.Format(Exceptions.ARGUMENTS_NOT_FOUND_ERROR_MSG, this.Name));
             }
         }
 

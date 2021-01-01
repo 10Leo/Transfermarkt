@@ -16,10 +16,6 @@ namespace Transfermarkt.Console
         public const string PEEK_NAME_OPTION_ERROR_MSG = "Peek requires the -i option.";
         public const string SEASON_ERROR_MSG = "Season was not defined.";
 
-        //public string ClubFileNameFormat { get; set; }
-        //public string ContinentFileNameFormat { get; set; }
-        //public string CompetitionFileNameFormat { get; set; }
-
         public TMCommandProcessor TMContext
         {
             get
@@ -82,12 +78,20 @@ namespace Transfermarkt.Console
             this.AllowedAlias.Add("fetch");
             this.Context = context;
             //this.Context.RegisterCommand(this);
-            this.RegisterOption(new YearOption());
-            this.RegisterOption(new IndexesOption());
+
+            var y = new YearOption();
+            var i = new IndexesOption
+            {
+                Required = true
+            };
+            this.RegisterOption(y);
+            this.RegisterOption(i);
         }
 
         public override void Validate()
         {
+            base.Validate();
+
             if (Year != null)
             {
                 // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
@@ -101,15 +105,6 @@ namespace Transfermarkt.Console
                 }
             }
             TMContext.LastSelectedSeason = YearValue.ToString();
-
-            if (Indexes == null)
-            {
-                throw new ArgumentException(PEEK_NAME_OPTION_ERROR_MSG);
-            }
-            if (Indexes.Args.Count == 0)
-            {
-                throw new ArgumentException(PEEK_ERROR_MSG);
-            }
         }
 
         public override void Execute()

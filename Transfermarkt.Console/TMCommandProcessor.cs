@@ -7,6 +7,7 @@ using Page.Scraper.Exporter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Transfermarkt.Core;
 using Transfermarkt.Core.Actors;
 using Transfermarkt.Core.ParseHandling.Pages;
 using Transfermarkt.Core.Service;
@@ -16,22 +17,35 @@ namespace Transfermarkt.Console
     public class TMCommandProcessor : Processor
     {
         public ILogger Logger { get; }
-        public IExporter Exporter { get; }
+        public IDictionary<ExportType, IExporter> Exporters { get; }
         public TMService TMService { get; set; }
         public string LastSelectedSeason { get; set; }
+        public static string ContinentFileNameFormat { get; set; }
+        public static string CompetitionFileNameFormat { get; set; }
+        public static string ClubFileNameFormat { get; set; }
 
         private static readonly int currentSeason = (DateTime.Today.Month < 8) ? DateTime.Today.Year - 1 : DateTime.Today.Year;
 
-        public TMCommandProcessor(ILogger logger, IExporter exporter, TMService tmService)
+        public TMCommandProcessor(ILogger logger, IDictionary<ExportType, IExporter> exporters, TMService tmService)
         {
             this.Logger = logger;
-            this.Exporter = exporter;
+            this.Exporters = exporters;
             this.TMService = tmService;
             this.LastSelectedSeason = currentSeason.ToString();
 
+            var p = new ParseCommand(this)
+            {
+                Exporters = exporters,
+                ContinentFileNameFormat = ContinentFileNameFormat,
+                CompetitionFileNameFormat = CompetitionFileNameFormat,
+                ClubFileNameFormat = ClubFileNameFormat
+            };
             this.RegisterCommand(new ExitCommand(this));
+            this.RegisterCommand(new ListCommand(this));
             this.RegisterCommand(new PeekCommand(this));
-            this.RegisterCommand(new ParseCommand(this));
+            this.RegisterCommand(p);
+
+            GetCommands = () => CollectCommands();
         }
 
         public override void Run()
@@ -45,16 +59,17 @@ namespace Transfermarkt.Console
         {
             string tabsContinent = string.Join("", Enumerable.Repeat("\t", 1).ToArray());
 
-            System.Console.WriteLine();
+            //System.Console.WriteLine();
 
             if (year.HasValue)
             {
                 System.Console.WriteLine($"Season: {year}");
             }
 
-            foreach (KeyValuePair<ContinentCode, Link<HtmlNode, ContinentPage>> kvp in TMService.Continents)
+            foreach (KeyValuePair<ContinentCode, Func<Link<HtmlNode, ContinentPage>>> kvp in TMService.Continents)
             {
-                System.Console.WriteLine($"{tabsContinent}{(int)kvp.Key}: {kvp.Value.Title}");
+                //TODO: modify so that the Func.Invoke call isn't used unnecessarily
+                System.Console.WriteLine($"{tabsContinent}{(int)kvp.Key}: {kvp.Value.Invoke().Title}");
 
                 var key = string.Format(TMService.KEY_PATTERN, year, (int)kvp.Key);
                 if (TMService.SeasonContinents.ContainsKey(key))
@@ -105,6 +120,22 @@ namespace Transfermarkt.Console
                         }
                     }
                 }
+            }
+        }
+
+        private string GetInput()
+        {
+            System.Console.WriteLine();
+            System.Console.Write("> ");
+            string input = System.Console.ReadLine();
+            return input;
+        }
+
+        private IEnumerable<string> CollectCommands()
+        {
+            while (!Exit)
+            {
+                yield return GetInput();
             }
         }
     }

@@ -5,7 +5,6 @@ namespace LJMB.Command
 {
     public interface IProcessor
     {
-        //TODO: create a unit test project for this feature
         IList<ICommand> Commands { get; }
 
         Func<IEnumerable<string>> GetCommands { get; set; }
