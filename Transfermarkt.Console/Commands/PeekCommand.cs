@@ -90,6 +90,8 @@ namespace Transfermarkt.Console
 
         public override void Validate()
         {
+            base.Validate();
+
             if (Year != null)
             {
                 // Check if a year was passed by the user as an argument. If not get the last passed one, or the current one, if one was not passed yet. 
@@ -103,15 +105,6 @@ namespace Transfermarkt.Console
                 }
             }
             TMContext.LastSelectedSeason = YearValue.ToString();
-
-            if (Indexes == null)
-            {
-                throw new ArgumentException(PEEK_NAME_OPTION_ERROR_MSG);
-            }
-            if (Indexes.Args.Count == 0)
-            {
-                throw new ArgumentException(PEEK_ERROR_MSG);
-            }
         }
 
         public override void Execute()
