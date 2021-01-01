@@ -17,6 +17,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         private const string performanceFolderPath = @"..\..\..\Tests\Performance\";
 
         private readonly string clubPerformanceFilePath = $@"{performanceFolderPath}club.txt";
+        //TODO: make all UTs test themselves against local files instead of making web calls to the site.
         private readonly string subjectClubPerformanceFile = $@"file://{Path.GetFullPath(@"..\..\..\")}Tests\Performance\club.html";
 
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
