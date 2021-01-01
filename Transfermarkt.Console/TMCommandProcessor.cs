@@ -57,7 +57,7 @@ namespace Transfermarkt.Console
         {
             string tabsContinent = string.Join("", Enumerable.Repeat("\t", 1).ToArray());
 
-            System.Console.WriteLine();
+            //System.Console.WriteLine();
 
             if (year.HasValue)
             {

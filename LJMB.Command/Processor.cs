@@ -33,7 +33,6 @@ namespace LJMB.Command
                 catch (Exception ex)
                 {
                     System.Console.WriteLine(ex.Message);
-                    System.Console.WriteLine();
                 }
             }
         }

@@ -55,6 +55,7 @@ namespace Transfermarkt.Console
 
         private static string GetInput()
         {
+            System.Console.WriteLine();
             System.Console.Write("> ");
             string input = System.Console.ReadLine();
             return input;
