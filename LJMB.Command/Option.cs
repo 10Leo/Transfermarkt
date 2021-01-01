@@ -21,6 +21,9 @@ namespace LJMB.Command
 
         public ISet<IArgument> Args { get; protected set; } = new HashSet<IArgument>();
 
+        public Action<string> BeforeParse { get; set; }
+        public Action<string> AfterParse { get; set; }
+
         public virtual void Validate()
         {
             if (Required)
@@ -32,12 +35,23 @@ namespace LJMB.Command
             }
         }
 
-        public abstract void Parse(string toParse);
+        public void Parse(string toParse)
+        {
+            BeforeParse?.Invoke(toParse);
+
+            Active = true;
+
+            OnParse(toParse);
+
+            AfterParse?.Invoke(toParse);
+        }
 
         public virtual void Reset()
         {
             Active = false;
             Args.Clear();
         }
+
+        protected abstract void OnParse(string toParse);
     }
 }

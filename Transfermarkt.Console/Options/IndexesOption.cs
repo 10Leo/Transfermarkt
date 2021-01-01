@@ -22,10 +22,8 @@ namespace Transfermarkt.Console.Options
             Usage = $"-{KEY} <i(.i(.i))> (<i(.i(.i))>)";
         }
 
-        public override void Parse(string toParse)
+        protected override void OnParse(string toParse)
         {
-            Active = true;
-
             var pattern = $@"((?<{g1}>\d+)\.*(?<{g2}>\d*)\.*(?<{g3}>\d*))";
 
             MatchCollection splitArguments = Regex.Matches(toParse, pattern);

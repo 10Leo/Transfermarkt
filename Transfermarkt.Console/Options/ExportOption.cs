@@ -27,10 +27,8 @@ namespace Transfermarkt.Console.Options
             Args = new HashSet<IArgument>(2);
         }
 
-        public override void Parse(string toParse)
+        protected override void OnParse(string toParse)
         {
-            Active = true;
-
             var pattern = $@"(?<{g1}>\w+)(?:\s+(?<{g2}>.+))?";
 
             Match splitArguments = Regex.Match(toParse, pattern);

@@ -17,11 +17,8 @@ namespace Transfermarkt.Console.Options
             Args = new HashSet<IArgument>(1);
         }
 
-        public override void Parse(string toParse)
+        protected override void OnParse(string toParse)
         {
-            //TODO move Active to the abstract class and create onBeforeParse and onParsed methods that can be overridden
-            Active = true;
-
             int y;
             try
             {
