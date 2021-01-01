@@ -27,14 +27,21 @@ namespace Transfermarkt.Console.Options
 
         public override void Parse(string toParse)
         {
-            var pattern = $@"((?<{g1}>\w+) +(?<{g2}>.*))";
+            var pattern = $@"(?<{g1}>\w+)(?:\s+(?<{g2}>.+))?";//"(?<{g1}>\w+)(?:\s+(?<{g2}>.+))?";
 
             Match splitArguments = Regex.Match(toParse, pattern);
+            var splitArgumentss = Regex.Matches(toParse, pattern);
 
-            string v1 = splitArguments.Groups[g1]?.Value?.Trim()?.ToLowerInvariant();
+            string v1 = splitArguments.Groups[g1]?.Value?.Trim()?.ToUpperInvariant();
             string v2 = splitArguments.Groups[g2]?.Value?.Trim();
 
+            if (string.IsNullOrEmpty(v1))
+            {
+                throw new Exception(ParseCommand.EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG);
+            }
+
             Args.Add(new String2Argument { Value = v1, Value2 = v2});
+            Active = true;
         }
     }
 

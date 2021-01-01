@@ -23,6 +23,8 @@ namespace Transfermarkt.Console.Options
             };
 
             Args.Add(year);
+
+            Active = true;
         }
     }
 }

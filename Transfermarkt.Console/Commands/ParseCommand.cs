@@ -128,6 +128,24 @@ namespace Transfermarkt.Console
             {
                 throw new ArgumentException(PARSE_ERROR_MSG);
             }
+
+            if (Export.Args.FirstOrDefault() is String2Argument arg)
+            {
+                ExportType? exportType;
+                try
+                {
+                    exportType = (ExportType)Enum.Parse(typeof(ExportType), arg.Value);
+                }
+                catch (Exception)
+                {
+                    throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, arg.Value));
+                }
+
+                if (!Exporters.ContainsKey(exportType.Value))
+                {
+                    throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, arg.Value));
+                }
+            }
         }
 
         public override void Execute()
@@ -161,20 +179,14 @@ namespace Transfermarkt.Console
 
                 if (Export != null)
                 {
-                    if (Export.Args.Count == 0)
+                    if (Export.Active && Export.Args.Count == 0)
                     {
-                        throw new ArgumentNullException(EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG);
+                        throw new Exception(EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG);
                     }
 
                     if (Export.Args.FirstOrDefault() is String2Argument arg)
                     {
-                        Enum.TryParse(arg.Value, out ExportType exportType);
-
-                        if (!Exporters.ContainsKey(exportType))
-                        {
-                            throw new KeyNotFoundException(string.Format(EXPORT_TYPE_NOT_FOUND_ERROR_MSG, arg.Value));
-                        }
-
+                        var exportType = (ExportType)Enum.Parse(typeof(ExportType), arg.Value);
                         var exporter = Exporters[exportType];
                         exporter.Extract(domain, template);
                     }

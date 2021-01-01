@@ -27,11 +27,18 @@ namespace Transfermarkt.Console.Options
 
             MatchCollection splitArguments = Regex.Matches(toParse, pattern);
 
+            if (splitArguments == null || splitArguments.Count == 0)
+            {
+                throw new Exception(ParseCommand.PARSE_ERROR_MSG);
+            }
+
             foreach (Match argument in splitArguments)
             {
                 var i = DetermineNumberOfIndexes(argument);
                 Args.Add(i);
             }
+
+            Active = true;
         }
 
         private static IArgument DetermineNumberOfIndexes(Match argument)

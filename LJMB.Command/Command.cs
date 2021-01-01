@@ -11,6 +11,7 @@ namespace LJMB.Command
         protected ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
         public string Name { get; set; }
+
         public IProcessor Context { get; set; }
         public ISet<IOption> Options { get; } = new HashSet<IOption>();
 
@@ -34,7 +35,7 @@ namespace LJMB.Command
             var argNameGroup = "ArgName";
             var argValueGroup = "ArgValue";
 
-            MatchCollection m = Regex.Matches(toParse, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)\s+(?<{argValueGroup}>[^-]+))");
+            MatchCollection m = Regex.Matches(toParse, $@"^(?<{cmdGroup}>\w)\s*|(?<{argsGroup}>(?<{argNameGroup}>-\w+)(\s+(?<{argValueGroup}>[^-]+))*)");
 
             if (m.Count > 1)
             {
@@ -45,15 +46,15 @@ namespace LJMB.Command
                     string a = argument.Groups[argNameGroup]?.Value?.Trim()?.ToLowerInvariant();
                     string v = argument.Groups[argValueGroup]?.Value?.Trim();
 
-                    if (a == null || string.IsNullOrEmpty(a) || string.IsNullOrWhiteSpace(a))
+                    if (string.IsNullOrEmpty(a) || string.IsNullOrWhiteSpace(a))
                     {
                         throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
                     }
 
-                    if (v == null || string.IsNullOrEmpty(v) || string.IsNullOrWhiteSpace(v))
-                    {
-                        throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
-                    }
+                    //if (string.IsNullOrEmpty(v) || string.IsNullOrWhiteSpace(v))
+                    //{
+                    //    throw new Exception(ErrorMsg.ERROR_MSG_ARGS);
+                    //}
 
                     var aa = a.Substring(1);
 
