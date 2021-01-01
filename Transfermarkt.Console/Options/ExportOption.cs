@@ -24,10 +24,13 @@ namespace Transfermarkt.Console.Options
             Name = NAME;
             AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
             Usage = $"-{KEY} <{g1}> (<{g2}>)";
+            Args = new HashSet<IArgument>(2);
         }
 
         public override void Parse(string toParse)
         {
+            Active = true;
+
             var pattern = $@"(?<{g1}>\w+)(?:\s+(?<{g2}>.+))?";
 
             Match splitArguments = Regex.Match(toParse, pattern);
@@ -38,11 +41,30 @@ namespace Transfermarkt.Console.Options
 
             if (string.IsNullOrEmpty(v1))
             {
-                throw new Exception(ParseCommand.EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG);
+                return;
+                //throw new Exception(ParseCommand.EXPORT_ARGUMENTS_NOT_FOUND_ERROR_MSG);
             }
 
             Args.Add(new String2Argument { Value = v1, Value2 = v2});
-            Active = true;
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+
+            if (!Active)
+            {
+                return;
+            }
+
+            if (Args == null || Args.Count == 0)
+            {
+                throw new Exception(string.Format(Exceptions.ARGUMENTS_NOT_FOUND_ERROR_MSG, this.Name));
+            }
+            if (Args.Count > 2)
+            {
+                throw new Exception(string.Format(Exceptions.TOO_MUCH_ARGUMENTS_ERROR_MSG, this.Name));
+            }
         }
     }
 

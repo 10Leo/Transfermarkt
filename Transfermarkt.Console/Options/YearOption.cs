@@ -19,25 +19,44 @@ namespace Transfermarkt.Console.Options
 
         public override void Parse(string toParse)
         {
+            //TODO move Active to the abstract class and create onBeforeParse and onParsed methods that can be overridden
+            Active = true;
+
             int y;
             try
             {
                 y = int.Parse(toParse);
+
+                var year = new StringArgument
+                {
+                    Value = y.ToString()
+                };
+
+                Args.Add(year);
             }
-            catch (System.Exception)
+            catch (Exception)
             {
+                //throw new Exception($"No argument passed to the {this.Name} option");
+            }
+        }
 
-                throw new Exception($"No argument passed to the option {this.Name}");
+        public override void Validate()
+        {
+            base.Validate();
+
+            if (!Active)
+            {
+                return;
             }
 
-            var year = new StringArgument
+            if (Args == null || Args.Count == 0)
             {
-                Value = y.ToString()
-            };
-
-            Args.Add(year);
-
-            Active = true;
+                throw new Exception(string.Format(Exceptions.ARGUMENTS_NOT_FOUND_ERROR_MSG, this.Name));
+            }
+            if (Args.Count > 1)
+            {
+                throw new Exception(string.Format(Exceptions.TOO_MUCH_ARGUMENTS_ERROR_MSG, this.Name));
+            }
         }
     }
 }

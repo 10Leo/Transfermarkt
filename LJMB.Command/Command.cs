@@ -75,17 +75,11 @@ namespace LJMB.Command
             Validate();
         }
 
-        public virtual void Validate() {
-            foreach (var option in Options)
+        public virtual void Validate()
+        {
+            foreach (var option in Options.OrderByDescending(o => o.Required).ThenBy(o => o.Name))
             {
-                if (option.Required)
-                {
-                    //TODO: should the Args.Count be done here or in the option? Does it concern the command? Consider calling option.Validate()
-                    if (option.Args == null || option.Args.Count == 0)
-                    {
-                        throw new Exception($"{this.Name} requires the {option.Name} option.");
-                    }
-                }
+                option.Validate();
             }
         }
 
