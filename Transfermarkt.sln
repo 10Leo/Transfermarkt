@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LJMB.Common", "LJMB.Common\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LJMB.Command", "LJMB.Command\LJMB.Command.csproj", "{DB5490D0-A4A6-4BD2-87C5-7FBF528C4DDE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LJMB.Command.Test", "LJMB.Command.Test\LJMB.Command.Test.csproj", "{0D73242C-48B3-47F8-A824-272F3ECB233E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{DB5490D0-A4A6-4BD2-87C5-7FBF528C4DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB5490D0-A4A6-4BD2-87C5-7FBF528C4DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB5490D0-A4A6-4BD2-87C5-7FBF528C4DDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D73242C-48B3-47F8-A824-272F3ECB233E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D73242C-48B3-47F8-A824-272F3ECB233E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D73242C-48B3-47F8-A824-272F3ECB233E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D73242C-48B3-47F8-A824-272F3ECB233E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,6 +7,8 @@ namespace LJMB.Command
 {
     public abstract class Processor : IProcessor
     {
+        public const string REPEATED_COMMAND_ERROR_MSG = "Command already registered.";
+
         public IList<ICommand> Commands { get; } = new List<ICommand>();
 
         public Func<IEnumerable<string>> GetCommands { get; set; }
@@ -40,7 +42,7 @@ namespace LJMB.Command
         {
             if (Commands.Any(c => c.Name == command.Name))
             {
-                throw new Exception("Command already registered.");
+                throw new Exception(REPEATED_COMMAND_ERROR_MSG);
             }
             Commands.Add(command);
         }
