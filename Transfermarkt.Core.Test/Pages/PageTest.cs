@@ -171,6 +171,38 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         }
 
         [TestMethod, TestCategory("Page Parsing")]
+        public void TestContinentsParsing()
+        {
+            string url = "https://www.transfermarkt.pt";
+
+            ContinentsPage continentsPage = new ContinentsPage(new HAPConnection(), logger, 2010);
+            continentsPage.Connect(url);
+            continentsPage.Parse(parseChildren: false);
+
+            TestingConfigs.AssertParseLevel(false, continentsPage.ParseLevel, continentsPage.Sections, false);
+
+            var domain = continentsPage.Domain;
+            Assert.IsNotNull(domain, "The returned Domain is null.");
+
+
+            var continentsChildSection = (ChildsSection<HtmlAgilityPack.HtmlNode, ContinentPage>)continentsPage[ContinentsCompetitionsPageSection.SectionName];
+
+            Assert.IsTrue(continentsChildSection.Children != null && continentsChildSection.Children.Count > 0, "Children should exist.");
+
+            Link<HtmlAgilityPack.HtmlNode, ContinentPage> continentsChildrenContinentToParse = continentsChildSection.Children.FirstOrDefault(c => c.Title == "Europe");
+            continentsChildSection.Parse(new List<Link<HtmlAgilityPack.HtmlNode, ContinentPage>> { continentsChildrenContinentToParse }, false);
+
+            Assert.IsNotNull(continentsChildrenContinentToParse.Page, $"Page should not be null.");
+
+
+            //TestingConfigs.DomainElementsCheck(domain);
+            //for (int i = 0; i < domain.Children.Count; i++)
+            //{
+            //    TestingConfigs.DomainElementsCheck(domain.Children[i]);
+            //}
+        }
+
+        [TestMethod, TestCategory("Page Parsing")]
         public void TestPartialParsing()
         {
             ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, 2009);
