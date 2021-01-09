@@ -27,6 +27,7 @@ namespace Transfermarkt.Core.Service
 
         public IDomain Parse(int year, int? continentsIndex = null, int? competitionsIndex = null, int? clubsIndex = null, bool peek = false)
         {
+            //TODO: make the ability to parse by continentCode, nationality, division and club - EU, PRT, 1, Benfica
             if (!continentsIndex.HasValue)
             {
                 // Parse all continents - must be careful as it's a very expensive action.
