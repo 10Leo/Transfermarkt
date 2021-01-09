@@ -142,6 +142,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             var nat = ConvertersConfig.GetNationality(country);
 
             Link<HtmlNode, CompetitionPage> link = new Link<HtmlNode, CompetitionPage> { Title = $"{country}-{aLeagueName.InnerText}", Url = aLeagueName.Attributes["href"].Value };
+            //TODO: these values shouldn't be hardcoded in code
             link.Identifiers.Add(nationalityType.Name, nat?.ToString());
             link.Identifiers.Add("League Name", aLeagueName.InnerText);
 
