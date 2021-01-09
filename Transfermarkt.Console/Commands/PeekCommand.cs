@@ -80,6 +80,7 @@ namespace Transfermarkt.Console
             //this.Context.RegisterCommand(this);
 
             var y = new YearOption();
+            //TODO: Peek command should not have any required options. If no Indexes are passed, fetch the entry page.
             var i = new IndexesOption
             {
                 Required = true
