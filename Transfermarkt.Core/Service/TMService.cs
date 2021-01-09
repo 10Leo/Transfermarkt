@@ -15,28 +15,14 @@ namespace Transfermarkt.Core.Service
         private static readonly string KEY_ERROR = "Specified key doesn't exist.";
 
         public static readonly string KEY_PATTERN = "{0}.{1}";
+        public readonly IDictionary<int, ContinentsPage> SeasonContinents;
 
         public string BaseURL { get; set; }
-        //public string ContinentFileNameFormat { get; set; }
-        //public string CompetitionFileNameFormat { get; set; }
-        //public string ClubFileNameFormat { get; set; }
-
         public ILogger Logger { get; set; }
-
-        //TODO: create Page<Continents> to represent these links
-        public IDictionary<ContinentCode, Func<Link<HtmlNode, ContinentPage>>> Continents { get; set; }
-        public readonly IDictionary<string, Link<HtmlNode, ContinentPage>> SeasonContinents = null;
 
         public TMService()
         {
-            Continents = new Dictionary<ContinentCode, Func<Link<HtmlNode, ContinentPage>>>
-            {
-                [ContinentCode.EU] = (() => new Link<HtmlNode, ContinentPage> { Title = "Europe", Url = $"/wettbewerbe/europa" }),
-                [ContinentCode.A] = (() => new Link<HtmlNode, ContinentPage> { Title = "America", Url = $"/wettbewerbe/amerika" }),
-                [ContinentCode.AS] = (() => new Link<HtmlNode, ContinentPage> { Title = "Asia", Url = $"/wettbewerbe/asien" }),
-                [ContinentCode.AF] = (() => new Link<HtmlNode, ContinentPage> { Title = "Africa", Url = $"/wettbewerbe/afrika" })
-            };
-            SeasonContinents = new Dictionary<string, Link<HtmlNode, ContinentPage>>();
+            SeasonContinents = new Dictionary<int, ContinentsPage>();
         }
 
         public IDomain Parse(int year, int? continentsIndex = null, int? competitionsIndex = null, int? clubsIndex = null, bool peek = false)
@@ -56,40 +42,38 @@ namespace Transfermarkt.Core.Service
                 throw new IndexOutOfRangeException("Passed indexes must be all positive numbers");
             }
 
-            var key = GenerateKey(year, (ContinentCode)continentsIndex.Value);
-
-            if (!ContinentExists((ContinentCode)continentsIndex.Value))
+            if (!ContinentExists(year, (ContinentCode)continentsIndex.Value))
             {
                 throw new KeyNotFoundException(Message);
             }
-            AddNewYearContinentIfDoesntExist(year, (ContinentCode)continentsIndex.Value);
 
-            Link<HtmlNode, ContinentPage> choice = GetSeasonContinent(key);
-            if (choice == null)
+            ContinentsPage continentsSeason = GetSeasonContinent(year);
+            if (continentsSeason == null)
             {
                 return null;
             }
-            if (choice.Page == null)
+
+            var chosenContinent = ((ChildsSection<HtmlNode, ContinentPage>)continentsSeason[ContinentsContinentsPageSection.SectionName]).Children[continentsIndex.Value - 1];
+            if (chosenContinent.Page == null)
             {
-                choice.Page = new ContinentPage(new HAPConnection(), Logger, year);
-                SeasonContinents[key] = choice;
+                chosenContinent.Page = new ContinentPage(new HAPConnection(), Logger, year);
             }
 
-            if (!choice.Page.Connection.IsConnected)
+            if (!chosenContinent.Page.Connection.IsConnected)
             {
-                choice.Page.Connect($"{BaseURL}{choice.Url}");
+                chosenContinent.Page.Connect($"{BaseURL}{chosenContinent.Url}");
             }
 
             //TODO: create enum to hold parse and peek values and pass them to the Parse methods
             bool shouldParse = (!peek && !competitionsIndex.HasValue);
-            choice.Page.Parse(parseChildren: shouldParse);
+            chosenContinent.Page.Parse(parseChildren: shouldParse);
 
             if (!competitionsIndex.HasValue)
             {
-                return choice.Page.Domain;
+                return chosenContinent.Page.Domain;
             }
 
-            var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)choice.Page["Continent - Competitions Section"];
+            var continentCompetitionsSection = (ChildsSection<HtmlNode, CompetitionPage>)chosenContinent.Page["Continent - Competitions Section"];
             if (continentCompetitionsSection == null)
             {
                 throw new Exception("Parser was not able to continue as the section was not found.");
@@ -123,32 +107,38 @@ namespace Transfermarkt.Core.Service
             return clubPage.Domain;
         }
 
-        private bool ContinentExists(ContinentCode i1)
+        private bool ContinentExists(int year, ContinentCode i1)
         {
-            return Continents.ContainsKey(i1);
+            if (!SeasonContinents.ContainsKey(year))
+            {
+                var continent = new ContinentsPage(new HAPConnection(), Logger, year);
+                continent.Connect(BaseURL);
+                continent.Parse(parseChildren: false);
+                SeasonContinents.Add(year, continent);
+            }
+
+            var r = ((ChildsSection<HtmlAgilityPack.HtmlNode, ContinentPage>)SeasonContinents[year][ContinentsContinentsPageSection.SectionName]).Children[((int)i1) - 1];
+            return r != null;
         }
 
         private void AddNewYearContinentIfDoesntExist(int year, ContinentCode i1)
         {
-            var key = GenerateKey(year, i1);
-            if (!SeasonContinents.ContainsKey(key))
+            if (!SeasonContinents.ContainsKey(year))
             {
-                SeasonContinents.Add(key, Continents[i1].Invoke());
+                var continent = new ContinentsPage(new HAPConnection(), Logger, year);
+                continent.Parse(parseChildren: false);
+                SeasonContinents.Add(year, continent);
             }
         }
 
-        private Link<HtmlNode, ContinentPage> GetSeasonContinent(string key)
+        private ContinentsPage GetSeasonContinent(int year)
         {
-            if (!SeasonContinents.ContainsKey(key))
+            if (!SeasonContinents.ContainsKey(year))
             {
                 throw new KeyNotFoundException(KEY_ERROR);
             }
-            return SeasonContinents[key];
-        }
 
-        private string GenerateKey(int year, ContinentCode i1)
-        {
-            return string.Format(KEY_PATTERN, year, (int)i1);
+            return SeasonContinents[year];
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.Sections = new List<ISection>
             {
-                new ContinentsCompetitionsPageSection(this, Logger, Year)
+                new ContinentsContinentsPageSection(this, Logger, Year)
             };
 
             this.OnBeforeParse += (o, e) =>
@@ -53,13 +53,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         }
     }
 
-    public class ContinentsCompetitionsPageSection : ChildsSection<HtmlNode, ContinentPage>
+    public class ContinentsContinentsPageSection : ChildsSection<HtmlNode, ContinentPage>
     {
         public static readonly string SectionName = "Continents - Continents Section";
         public string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         public int? Season { get; }
 
-        public ContinentsCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base(SectionName, page, page.Connection)
+        public ContinentsContinentsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base(SectionName, page, page.Connection)
         {
             this.Season = year;
             this.ChildPage = new ContinentPage();
@@ -67,10 +67,10 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             this.GetUrls = () =>
             {
                 IList<Link<HtmlNode, ContinentPage>> urls = new List<Link<HtmlNode, ContinentPage>> {
-                    new Link<HtmlNode, ContinentPage>{ Title = "Europe", Url = string.Format("{0}{1}", BaseURL, "/wettbewerbe/europa") },
-                    new Link<HtmlNode, ContinentPage>{ Title = "America", Url = string.Format("{0}{1}", BaseURL, "/wettbewerbe/amerika") },
-                    new Link<HtmlNode, ContinentPage>{ Title = "Asia", Url = string.Format("{0}{1}", BaseURL, "/wettbewerbe/asien") },
-                    new Link<HtmlNode, ContinentPage>{ Title = "Africa", Url = string.Format("{0}{1}", BaseURL, "/wettbewerbe/afrika") }
+                    new Link<HtmlNode, ContinentPage>{ Title = "Europe", Url = string.Format("{0}", "/wettbewerbe/europa") },
+                    new Link<HtmlNode, ContinentPage>{ Title = "America", Url = string.Format("{0}", "/wettbewerbe/amerika") },
+                    new Link<HtmlNode, ContinentPage>{ Title = "Asia", Url = string.Format("{0}", "/wettbewerbe/asien") },
+                    new Link<HtmlNode, ContinentPage>{ Title = "Africa", Url = string.Format("{0}", "/wettbewerbe/afrika") }
                 };
 
                 return urls;
