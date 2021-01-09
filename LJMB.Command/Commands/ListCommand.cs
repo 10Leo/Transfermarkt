@@ -26,6 +26,7 @@ namespace LJMB.Command.Commands
         {
             foreach (ICommand cmd in Context.Commands)
             {
+                //TODO: each cmd should list itself using all the allowedAlias by using a separator between them. E.g. Exit|e
                 Console.WriteLine($"{cmd.Usage}");
             }
         }

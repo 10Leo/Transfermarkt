@@ -11,17 +11,17 @@ namespace Page.Scraper.Contracts
     /// <typeparam name="TChildPage"></typeparam>
     public abstract class ChildsSection<TNode, TChildPage> : ISection where TChildPage : IPage<IDomain, TNode>, new()
     {
-        public TChildPage this[IDictionary<string, string> ids]
+        public Link<TNode, TChildPage> this[IDictionary<string, string> ids]
         {
             get
             {
                 if (ids.ContainsKey("URL"))
                 {
-                    return Children.FirstOrDefault(c => c.Url == ids["URL"].ToString()).Page;
+                    return Children.FirstOrDefault(c => c.Url == ids["URL"].ToString());
                 }
                 else if (ids.ContainsKey("Title"))
                 {
-                    return Children.FirstOrDefault(c => c.Title == ids["Title"].ToString()).Page;
+                    return Children.FirstOrDefault(c => c.Title == ids["Title"].ToString());
                 }
                 else
                 {
@@ -36,14 +36,13 @@ namespace Page.Scraper.Contracts
                                 {
                                     return false;
                                 }
-
                             }
                         }
 
                         return true;
                     });
 
-                    return child.Page;
+                    return child;
                 }
             }
         }

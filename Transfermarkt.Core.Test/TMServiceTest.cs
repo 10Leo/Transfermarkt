@@ -38,7 +38,8 @@ namespace Transfermarkt.Core.Test
             };
         }
 
-        [TestMethod, TestCategory("TMService"), Priority(3)]
+        [TestMethod, TestCategory("TMService"), Priority(5)]
+        [Ignore]
         public void TMServiceContinentParsingTest()
         {
             // Costly operation as it will parse every club in every competition in every continent
@@ -66,7 +67,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod, TestCategory("TMService")]
+        [TestMethod, TestCategory("TMService"), Priority(3)]
         public void TMServiceCompetitionParsingTest()
         {
             IDomain domain = TMService.Parse(2010, 1, 1);
@@ -87,7 +88,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod, TestCategory("TMService")]
+        [TestMethod, TestCategory("TMService"), Priority(2)]
         public void TMServiceClubParsingTest()
         {
             IDomain domain = TMService.Parse(2010, 1, 1, 1);
@@ -101,11 +102,11 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod, TestCategory("TMService")]
+        [TestMethod, TestCategory("TMService"), Priority(3)]
         public void TMServiceMultipleIterationsTest()
         {
             IDomain domain = null;
-            IDictionary<string, Link<HtmlAgilityPack.HtmlNode, ContinentPage>> seasonContinents = TMService.SeasonContinents;
+            IDictionary<int, ContinentsPage> seasonContinents = TMService.SeasonContinents;
             List<(Option? option, int year, int? i1, int? i2, int? i3)> cmdHistory = new List<(Option? option, int year, int? i1, int? i2, int? i3)>();
             (Option? option, int year, int? i1, int? i2, int? i3) cmd = (null, 2020, null, null, null);
 
@@ -123,6 +124,11 @@ namespace Transfermarkt.Core.Test
             cmdHistory.Add(cmd);
             AssertTMService(cmd, cmdHistory);
 
+            // Peek the same continent again but in a different season
+            cmd = (Option.Peek, 2015, 1, null, null);
+            domain = PassCommand(cmd);
+            cmdHistory.Add(cmd);
+            AssertTMService(cmd, cmdHistory);
 
             // Peek the first competition on the same continent
             cmd = (Option.Peek, 2009, 1, 1, null);
@@ -163,11 +169,11 @@ namespace Transfermarkt.Core.Test
         {
             // validate continent and season
             string key = string.Format(TMService.KEY_PATTERN, cmd.year, cmd.i1);
-            Assert.IsTrue(TMService.SeasonContinents.ContainsKey(key), $"Continent's season {key} not found.");
-            Link<HtmlAgilityPack.HtmlNode, ContinentPage> choice = TMService.SeasonContinents[key];
-            Assert.IsTrue(choice.Page != null, "A page of type ContinentPage should have been created by the Parse command.");
+            Assert.IsTrue(TMService.SeasonContinents.ContainsKey(cmd.year), $"Continent's season {cmd.year} not found.");
+            ContinentsPage choice = TMService.SeasonContinents[cmd.year];
+            Assert.IsTrue(choice != null, "A page of type ContinentPage should have been created by the Parse command.");
 
-            var p = choice.Page;
+            var p = choice;
 
             YearTester(p.Year.Value, cmd.year);
 

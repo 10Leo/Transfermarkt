@@ -27,7 +27,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
             Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
         }
 
-        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Position Converter")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Position Converter"), Priority(1)]
         public void SettingsPositionIsCorrectlyRead()
         {
             IPositionConverter converter;
@@ -38,7 +38,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
             }
         }
 
-        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Position Converter")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Position Converter"), Priority(1)]
         public void PositionStringsAreCorrectlyTransformedIntoDomainObjects()
         {
             IPositionConverter converter;
@@ -60,7 +60,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
             }
         }
 
-        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Position Converter")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Position Converter"), Priority(1)]
         public void IncorrectPositionStringIsNotTransformedIntoDomainObjects()
         {
             IPositionConverter converter = new PositionConverter();

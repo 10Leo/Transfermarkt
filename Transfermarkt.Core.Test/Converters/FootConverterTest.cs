@@ -26,7 +26,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
             Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
         }
 
-        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Foot Converter")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Foot Converter"), Priority(1)]
         public void FootStringsAreCorrectlyTransformedIntoDomainObjects()
         {
             IFootConverter converter;
@@ -48,7 +48,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
             }
         }
 
-        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Foot Converter")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Foot Converter"), Priority(1)]
         public void IncorrectFootStringIsNotTransformedIntoDomainObjects()
         {
             IFootConverter converter = new FootConverter();

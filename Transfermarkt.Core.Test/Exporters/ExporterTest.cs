@@ -41,7 +41,7 @@ namespace Transfermarkt.Core.Test.Exporters
             { "Busquets", MockPlayer("Sergio Busquets", "Busquets", new DateTime(1986, 1, 1), Nationality.ESP, 184, Foot.R, Position.DM, 6, 0, new DateTime(2008, 7, 1), null, 70000000, "http://link", "http://link") }
         };
 
-        [TestMethod, TestCategory("Export")]
+        [TestMethod, TestCategory("Export"), Priority(1)]
         public void SuccessfullyExportsAClubAsJSON()
         {
             IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
@@ -57,7 +57,7 @@ namespace Transfermarkt.Core.Test.Exporters
             exporter.Extract(club, ClubFileNameFormat);
         }
 
-        [TestMethod, TestCategory("Export")]
+        [TestMethod, TestCategory("Export"), Priority(1)]
         public void SuccessfullyExportsAClubAsJSONWhoseConfigContainsInvalidElementName()
         {
             ConfigurationManager.AppSettings[Keys.Config.ClubFileNameFormat] = "{COUNTRY}-{NAME}_{Y}_{IMGURL}_{NOT}";
@@ -75,7 +75,7 @@ namespace Transfermarkt.Core.Test.Exporters
             exporter.Extract(club, ClubFileNameFormat);
         }
 
-        [TestMethod, TestCategory("Export")]
+        [TestMethod, TestCategory("Export"), Priority(1)]
         public void SuccessfullyExportsACompetitionAsJSON()
         {
             IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);
@@ -101,7 +101,7 @@ namespace Transfermarkt.Core.Test.Exporters
             exporter.Extract(competition, CompetitionFileNameFormat);
         }
 
-        [TestMethod, TestCategory("Export")]
+        [TestMethod, TestCategory("Export"), Priority(1)]
         public void SuccessfullyExportsAContinentAsJSON()
         {
             IExporter exporter = new JsonExporter(OutputFolderPath, Level1FolderFormat);

@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actors\Club.cs" />
+    <Compile Include="Actors\Continents.cs" />
     <Compile Include="Config\Configs.cs" />
     <Compile Include="Config\ConvertersConfig.cs" />
     <Compile Include="Config\ParsersConfig.cs" />
@@ -74,11 +75,13 @@
     <Compile Include="ParseHandling\Converters\DecimalConverter.cs" />
     <Compile Include="ParseHandling\Converters\INationalityConverter.cs" />
     <Compile Include="ParseHandling\Converters\IntConverter.cs" />
+    <Compile Include="ParseHandling\Elements\Continents\ContinentsElements.cs" />
     <Compile Include="ParseHandling\Elements\Player\PlayerElements.cs" />
     <Compile Include="ParseHandling\HAPConnection.cs" />
     <Compile Include="ParseHandling\Pages\CompetitionPage.cs" />
     <Compile Include="ParseHandling\Pages\ContinentPage.cs" />
     <Compile Include="ParseHandling\Pages\ClubPage.cs" />
+    <Compile Include="ParseHandling\Pages\ContinentsPage.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\CountryImgParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\CountryParser.cs" />
     <Compile Include="ParseHandling\Parsers\HtmlAgilityPack\Club\ImgUrlParser.cs" />
@@ -126,5 +129,6 @@
       <Name>LJMB.Logging</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

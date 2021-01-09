@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.Test
     [TestClass]
     public class SettingsTest
     {
-        [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures")]
+        [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures"), Priority(1)]
         public void ConfigKeysHaveCorrespondentEnumEntry()
         {
             FieldInfo[] fi = typeof(Keys.Config).GetFields();

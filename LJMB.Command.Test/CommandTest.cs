@@ -24,7 +24,7 @@ namespace LJMB.Command.Test
             }
         }
 
-        [TestMethod, TestCategory("CommandProcessor")]
+        [TestMethod, TestCategory("CommandProcessor"), Priority(1)]
         public void TestCommandCount()
         {
             Assert.IsTrue(processor.Commands.Count == commands.Count, $"{commands.Count} commands expected, {processor.Commands.Count} found.");
@@ -36,14 +36,14 @@ namespace LJMB.Command.Test
             }
         }
 
-        [TestMethod, TestCategory("CommandProcessor")]
+        [TestMethod, TestCategory("CommandProcessor"), Priority(1)]
         public void TestRepeatedCommand()
         {
             var ex = Assert.ThrowsException<Exception>(() => processor.RegisterCommand(new ExitCommand(processor)));
             Assert.IsTrue(ex.Message == Processor.REPEATED_COMMAND_ERROR_MSG, "Unexpected error msg");
         }
 
-        [TestMethod, TestCategory("CommandProcessor")]
+        [TestMethod, TestCategory("CommandProcessor"), Priority(1)]
         public void TestProcessor()
         {
             Assert.IsTrue(ListCommand.KEY == Util.ListCmd, $"{ListCommand.NAME} has an unexpected key {ListCommand.KEY}");

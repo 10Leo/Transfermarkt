@@ -85,6 +85,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
         public int? Season { get; }
         public HAPConnection Conn => (HAPConnection)this.Page.Connection;
 
+        private Type nationalityType;
+
         public ContinentCompetitionsPageSection(IPage<IDomain, HtmlNode> page, ILogger logger, int? year) : base(SectionName, page, page.Connection)
         {
             this.Season = year;
@@ -104,6 +106,9 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
                 var rows = table.SelectNodes(".//tbody/tr[@class='odd']|.//tbody/tr[@class='even']");
                 // each row is a Competiton
+
+                nationalityType = typeof(Actors.Nationality);
+
                 foreach (var row in rows)
                 {
                     HtmlNodeCollection cols = row.SelectNodes("td");
@@ -137,7 +142,8 @@ namespace Transfermarkt.Core.ParseHandling.Pages
             var nat = ConvertersConfig.GetNationality(country);
 
             Link<HtmlNode, CompetitionPage> link = new Link<HtmlNode, CompetitionPage> { Title = $"{country}-{aLeagueName.InnerText}", Url = aLeagueName.Attributes["href"].Value };
-            link.Identifiers.Add("Nationality", ConvertersConfig.GetNationality(country)?.ToString());
+            //TODO: these values shouldn't be hardcoded in code
+            link.Identifiers.Add(nationalityType.Name, nat?.ToString());
             link.Identifiers.Add("League Name", aLeagueName.InnerText);
 
             return link;

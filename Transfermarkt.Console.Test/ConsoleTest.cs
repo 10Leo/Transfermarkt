@@ -58,7 +58,7 @@ namespace Transfermarkt.Console.Test
             );
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestParseCommand()
         {
             var indexes = new List<(int i1, int i2)>
@@ -71,7 +71,7 @@ namespace Transfermarkt.Console.Test
             {
                 (yearCmdOpt, new List<string> { yearValue.ToString() }),
                 (indexesCmdOpt, new List<string> { FormatIndexes(indexes) }),
-                (exportCmdOpt, new List<string> { ExportType.JSON.ToString(), OutputFolderPath })
+                //(exportCmdOpt, new List<string> { ExportType.JSON.ToString(), OutputFolderPath })
             };
 
             string cmdToParse = GenerateCmd(parseCmd, args);
@@ -86,7 +86,7 @@ namespace Transfermarkt.Console.Test
             Validate(cmdToParse, cmd, parseCmd, args, indexes);
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestCorrectCmdAndArgumentsParsing()
         {
             var indexes = new List<(int i1, int i2)>
@@ -171,7 +171,7 @@ namespace Transfermarkt.Console.Test
             Validate(cmdToParse, cmd, peekCmd, args, indexes);
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestBadlyFormattedButCorrectCmdAndArgumentsParsing()
         {
             var cmdType = peekCmd + "  ";
@@ -194,7 +194,7 @@ namespace Transfermarkt.Console.Test
             Validate(cmdToParse, cmd, cmdType, args, indexes);
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestExceptionIsThrownIfNoIndexPassed()
         {
             var args = new List<(string k, List<string> v)>
@@ -206,12 +206,12 @@ namespace Transfermarkt.Console.Test
             Command cmd = GetCommand(CommandKey.Peek);
             Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
 
-            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
-            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
+            var ex = Assert.ThrowsException<Exception>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == string.Format(LJMB.Command.Option.Exceptions.OPTION_NOT_FOUND_ERROR_MSG, new IndexesOption().Name), "Unexpected error msg");
 
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestEmptyParsing()
         {
             var cmdType = "";
@@ -222,11 +222,11 @@ namespace Transfermarkt.Console.Test
             Command cmd = GetCommand(CommandKey.Peek);
             Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
 
-            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
-            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
+            var ex = Assert.ThrowsException<Exception>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == string.Format(LJMB.Command.Option.Exceptions.OPTION_NOT_FOUND_ERROR_MSG, new IndexesOption().Name), "Unexpected error msg");
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(2)]
         public void TestFullProcess()
         {
             var indexes = new List<(int i1, int i2)> { (1, 1) };
