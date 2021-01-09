@@ -27,6 +27,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
         private static readonly ILogger logger = LoggerFactory.GetLogger((LogLevel)MinimumLoggingLevel);
 
+        //TODO: remove the code that is searching for Children using these vars instead of using the section indexer.
         private readonly string ptComp = "Portugal-Liga NOS", engComp = "Inglaterra-Premier League", spaComp = "Espanha-LaLiga", itaComp = "Itália-Serie A";
 
         private readonly string append = "/wettbewerbe?plus=1";
