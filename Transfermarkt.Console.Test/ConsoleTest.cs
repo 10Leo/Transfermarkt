@@ -71,7 +71,7 @@ namespace Transfermarkt.Console.Test
             {
                 (yearCmdOpt, new List<string> { yearValue.ToString() }),
                 (indexesCmdOpt, new List<string> { FormatIndexes(indexes) }),
-                (exportCmdOpt, new List<string> { ExportType.JSON.ToString(), OutputFolderPath })
+                //(exportCmdOpt, new List<string> { ExportType.JSON.ToString(), OutputFolderPath })
             };
 
             string cmdToParse = GenerateCmd(parseCmd, args);
@@ -206,8 +206,8 @@ namespace Transfermarkt.Console.Test
             Command cmd = GetCommand(CommandKey.Peek);
             Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
 
-            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
-            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
+            var ex = Assert.ThrowsException<Exception>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == string.Format(LJMB.Command.Option.Exceptions.OPTION_NOT_FOUND_ERROR_MSG, new IndexesOption().Name), "Unexpected error msg");
 
         }
 
@@ -222,8 +222,8 @@ namespace Transfermarkt.Console.Test
             Command cmd = GetCommand(CommandKey.Peek);
             Assert.IsTrue(cmd.CanParse(peekCmd), "Checker wrongly stated that command can not be parsed.");
 
-            var ex = Assert.ThrowsException<ArgumentException>(() => cmd.Parse(cmdToParse));
-            Assert.IsTrue(ex.Message == PeekCommand.PEEK_ERROR_MSG, "Unexpected error msg");
+            var ex = Assert.ThrowsException<Exception>(() => cmd.Parse(cmdToParse));
+            Assert.IsTrue(ex.Message == string.Format(LJMB.Command.Option.Exceptions.OPTION_NOT_FOUND_ERROR_MSG, new IndexesOption().Name), "Unexpected error msg");
         }
 
         [TestMethod, TestCategory("CMD Parsing")]
