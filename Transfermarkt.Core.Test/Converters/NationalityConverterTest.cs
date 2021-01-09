@@ -27,7 +27,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
             Assert.IsTrue(languages.Count > 0, "At least one language must exist.");
         }
 
-        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Nationality Converter")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Nationality Converter"), Priority(1)]
         public void NationalityStringsAreCorrectlyTransformedIntoDomainObjects()
         {
             INationalityConverter converter;
@@ -49,7 +49,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Converters
             }
         }
 
-        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Nationality Converter")]
+        [TestMethod, TestCategory("Settings"), TestCategory("Converter"), TestCategory("Nationality Converter"), Priority(1)]
         public void IncorrectNationalityStringIsNotTransformedIntoDomainObjects()
         {
             INationalityConverter converter = new NationalityConverter();

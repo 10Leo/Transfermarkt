@@ -12,7 +12,7 @@ namespace Transfermarkt.Core.Test.Parsers
     [TestClass]
     public class ParserTest
     {
-        [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures")]
+        [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures"), Priority(1)]
         public void ParsersClassNameEndsWithSuffix()
         {
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -25,7 +25,7 @@ namespace Transfermarkt.Core.Test.Parsers
             }
         }
 
-        [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures")]
+        [TestMethod, TestCategory("Core"), TestCategory("Nomenclatures"), Priority(1)]
         public void ParsersClassNameEndsWithSuffix2()
         {
             //TODO: not working yet.

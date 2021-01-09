@@ -38,7 +38,8 @@ namespace Transfermarkt.Core.Test
             };
         }
 
-        [TestMethod, TestCategory("TMService"), Priority(3)]
+        [TestMethod, TestCategory("TMService"), Priority(5)]
+        [Ignore]
         public void TMServiceContinentParsingTest()
         {
             // Costly operation as it will parse every club in every competition in every continent
@@ -66,7 +67,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod, TestCategory("TMService")]
+        [TestMethod, TestCategory("TMService"), Priority(3)]
         public void TMServiceCompetitionParsingTest()
         {
             IDomain domain = TMService.Parse(2010, 1, 1);
@@ -87,7 +88,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod, TestCategory("TMService")]
+        [TestMethod, TestCategory("TMService"), Priority(2)]
         public void TMServiceClubParsingTest()
         {
             IDomain domain = TMService.Parse(2010, 1, 1, 1);
@@ -101,7 +102,7 @@ namespace Transfermarkt.Core.Test
             }
         }
 
-        [TestMethod, TestCategory("TMService")]
+        [TestMethod, TestCategory("TMService"), Priority(3)]
         public void TMServiceMultipleIterationsTest()
         {
             IDomain domain = null;

@@ -10,6 +10,14 @@ using Transfermarkt.Core.ParseHandling.Pages;
 
 namespace Transfermarkt.Core.Test.ParseHandling.Pages
 {
+    /// <summary>
+    /// Priority
+    /// 1 = <1s
+    /// 2 = 1 - 10s
+    /// 3 = 10s - 60s
+    /// 4 = 1min - 5min
+    /// 5 = +5min
+    /// </summary>
     [TestClass]
     public class PageTest
     {
@@ -23,7 +31,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
 
         private readonly string append = "/wettbewerbe?plus=1";
 
-        [TestMethod, TestCategory("Page Parsing")]
+        [TestMethod, TestCategory("Page Parsing"), Priority(1)]
         public void TestClubParsing()
         {
             string url = "https://www.transfermarkt.pt/fc-barcelona/kader/verein/131/plus/1/galerie/0?saison_id=2011";
@@ -44,7 +52,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             }
         }
 
-        [TestMethod, TestCategory("Page Parsing")]
+        [TestMethod, TestCategory("Page Parsing"), Priority(3)]
         public void TestCompetitionParsing()
         {
             string url = "https://www.transfermarkt.pt/serie-a/startseite/wettbewerb/IT1";
@@ -74,7 +82,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             }
         }
 
-        [TestMethod, TestCategory("Page Parsing")]
+        [TestMethod, TestCategory("Page Parsing"), Priority(3)]
         public void TestContinentParsing()
         {
             //foreach (KeyValuePair<Actors.ContinentCode, string> url in urls)
@@ -174,7 +182,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             }
         }
 
-        [TestMethod, TestCategory("Page Parsing")]
+        [TestMethod, TestCategory("Page Parsing"), Priority(1)]
         public void TestContinentsParsing()
         {
             string url = "https://www.transfermarkt.pt";
@@ -205,7 +213,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             //}
         }
 
-        [TestMethod, TestCategory("Page Parsing")]
+        [TestMethod, TestCategory("Page Parsing"), Priority(3)]
         public void TestPartialParsing()
         {
             ContinentsPage continentsPage = new ContinentsPage(new HAPConnection(), logger, 2008);

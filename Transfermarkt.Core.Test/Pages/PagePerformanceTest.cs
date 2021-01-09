@@ -37,7 +37,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             }
         }
 
-        [TestMethod, TestCategory("Page Parsing"), TestCategory("Performance")]
+        [TestMethod, TestCategory("Page Parsing"), TestCategory("Performance"), Priority(2)]
         public void TestClubParsing()
         {
             IDomain domain = null;

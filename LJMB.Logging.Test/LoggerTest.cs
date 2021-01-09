@@ -8,7 +8,7 @@ namespace Transfermarkt.Logging.Test
     [TestClass]
     public class LoggerTest
     {
-        [TestMethod, TestCategory("Logger")]
+        [TestMethod, TestCategory("Logger"), Priority(1)]
         public void LogsAnException()
         {
             var logger = LoggerFactory.GetLogger(LogLevel.Info);
@@ -18,7 +18,7 @@ namespace Transfermarkt.Logging.Test
             }
         }
 
-        [TestMethod, TestCategory("Logger")]
+        [TestMethod, TestCategory("Logger"), Priority(1)]
         public void LogsAMessage()
         {
             var logger = LoggerFactory.GetLogger(LogLevel.Info);

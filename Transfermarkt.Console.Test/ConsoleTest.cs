@@ -58,7 +58,7 @@ namespace Transfermarkt.Console.Test
             );
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestParseCommand()
         {
             var indexes = new List<(int i1, int i2)>
@@ -86,7 +86,7 @@ namespace Transfermarkt.Console.Test
             Validate(cmdToParse, cmd, parseCmd, args, indexes);
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestCorrectCmdAndArgumentsParsing()
         {
             var indexes = new List<(int i1, int i2)>
@@ -171,7 +171,7 @@ namespace Transfermarkt.Console.Test
             Validate(cmdToParse, cmd, peekCmd, args, indexes);
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestBadlyFormattedButCorrectCmdAndArgumentsParsing()
         {
             var cmdType = peekCmd + "  ";
@@ -194,7 +194,7 @@ namespace Transfermarkt.Console.Test
             Validate(cmdToParse, cmd, cmdType, args, indexes);
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestExceptionIsThrownIfNoIndexPassed()
         {
             var args = new List<(string k, List<string> v)>
@@ -211,7 +211,7 @@ namespace Transfermarkt.Console.Test
 
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(1)]
         public void TestEmptyParsing()
         {
             var cmdType = "";
@@ -226,7 +226,7 @@ namespace Transfermarkt.Console.Test
             Assert.IsTrue(ex.Message == string.Format(LJMB.Command.Option.Exceptions.OPTION_NOT_FOUND_ERROR_MSG, new IndexesOption().Name), "Unexpected error msg");
         }
 
-        [TestMethod, TestCategory("CMD Parsing")]
+        [TestMethod, TestCategory("CMD Parsing"), Priority(2)]
         public void TestFullProcess()
         {
             var indexes = new List<(int i1, int i2)> { (1, 1) };
