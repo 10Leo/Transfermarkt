@@ -84,8 +84,8 @@ namespace Transfermarkt.Core.Service
             shouldParse = (!peek && !clubsIndex.HasValue);
             continentCompetitionsSection.Parse(new[] { chosenCompetitionLink }, parseChildren: shouldParse);
 
-            IPage<IDomain, HtmlNode> competitionPage = continentCompetitionsSection[new Dictionary<string, string> { { "Title", chosenCompetitionLink.Title } }];
-            var clubsSection = (ChildsSection<HtmlNode, ClubPage>)competitionPage["Competition - Clubs Section"];
+            var competitionLink = continentCompetitionsSection[new Dictionary<string, string> { { "Title", chosenCompetitionLink.Title } }];
+            var clubsSection = (ChildsSection<HtmlNode, ClubPage>)competitionLink.Page["Competition - Clubs Section"];
             if (clubsSection == null)
             {
                 throw new Exception("Parser was not able to continue as the section was not found.");
@@ -93,7 +93,7 @@ namespace Transfermarkt.Core.Service
 
             if (!clubsIndex.HasValue)
             {
-                return competitionPage.Domain;
+                return competitionLink.Page.Domain;
             }
 
 
@@ -102,10 +102,10 @@ namespace Transfermarkt.Core.Service
             shouldParse = (!peek);
             clubsSection.Parse(new[] { chosenClubLink }, parseChildren: shouldParse);
 
-            IPage<IDomain, HtmlNode> clubPage = clubsSection[new Dictionary<string, string> { { "Title", chosenClubLink.Title } }];
-            var playersSection = (ChildsSamePageSection<Player, HtmlNode>)clubPage["Club - Players Section"];
+            var clubLink = clubsSection[new Dictionary<string, string> { { "Title", chosenClubLink.Title } }];
+            var playersSection = (ChildsSamePageSection<Player, HtmlNode>)clubLink.Page["Club - Players Section"];
 
-            return clubPage.Domain;
+            return clubLink.Page.Domain;
         }
 
         private bool ContinentExists(int year, ContinentCode i1)
