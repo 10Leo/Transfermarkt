@@ -66,11 +66,13 @@ namespace Transfermarkt.Core.ParseHandling.Pages
 
             this.GetUrls = () =>
             {
+                var continentCodeType = typeof(ContinentCode);
+
                 IList<Link<HtmlNode, ContinentPage>> urls = new List<Link<HtmlNode, ContinentPage>> {
-                    new Link<HtmlNode, ContinentPage>{ Title = "Europe", Url = string.Format("{0}", "/wettbewerbe/europa") },
-                    new Link<HtmlNode, ContinentPage>{ Title = "America", Url = string.Format("{0}", "/wettbewerbe/amerika") },
-                    new Link<HtmlNode, ContinentPage>{ Title = "Asia", Url = string.Format("{0}", "/wettbewerbe/asien") },
-                    new Link<HtmlNode, ContinentPage>{ Title = "Africa", Url = string.Format("{0}", "/wettbewerbe/afrika") }
+                    new Link<HtmlNode, ContinentPage>{ Title = "Europe", Url = string.Format("{0}", BaseURL + "/wettbewerbe/europa"), Identifiers = new Dictionary<string, string> { { continentCodeType.Name, Actors.ContinentCode.EU.ToString() } } },
+                    new Link<HtmlNode, ContinentPage>{ Title = "America", Url = string.Format("{0}", BaseURL + "/wettbewerbe/amerika"), Identifiers = new Dictionary<string, string> { { continentCodeType.Name, Actors.ContinentCode.A.ToString() } } },
+                    new Link<HtmlNode, ContinentPage>{ Title = "Asia", Url = string.Format("{0}", BaseURL + "/wettbewerbe/asien"), Identifiers = new Dictionary<string, string> { { continentCodeType.Name, Actors.ContinentCode.AS.ToString() } } },
+                    new Link<HtmlNode, ContinentPage>{ Title = "Africa", Url = string.Format("{0}", BaseURL + "/wettbewerbe/afrika"), Identifiers = new Dictionary<string, string> { { continentCodeType.Name, Actors.ContinentCode.AF.ToString() } } }
                 };
 
                 return urls;

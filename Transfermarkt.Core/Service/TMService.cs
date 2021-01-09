@@ -61,7 +61,7 @@ namespace Transfermarkt.Core.Service
 
             if (!chosenContinent.Page.Connection.IsConnected)
             {
-                chosenContinent.Page.Connect($"{BaseURL}{chosenContinent.Url}");
+                chosenContinent.Page.Connect($"{chosenContinent.Url}");
             }
 
             //TODO: create enum to hold parse and peek values and pass them to the Parse methods

@@ -13,6 +13,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
     [TestClass]
     public class PageTest
     {
+        protected static string BaseURL { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.BaseURL);
         private static int MinimumLoggingLevel { get; } = ConfigManager.GetAppSetting<int>(Keys.Config.MinimumLoggingLevel);
         private static string LogPath { get; } = ConfigManager.GetAppSetting<string>(Keys.Config.LogPath);
 
@@ -21,13 +22,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         private readonly string ptComp = "Portugal-Liga NOS", engComp = "Inglaterra-Premier League", spaComp = "Espanha-LaLiga", itaComp = "Itália-Serie A";
 
         private readonly string append = "/wettbewerbe?plus=1";
-        private readonly IDictionary<Actors.ContinentCode, string> urls = new Dictionary<Actors.ContinentCode, string>
-        {
-            { Actors.ContinentCode.EU, "https://www.transfermarkt.pt/wettbewerbe/europa" },
-            { Actors.ContinentCode.A, "https://www.transfermarkt.pt/wettbewerbe/amerika" },
-            { Actors.ContinentCode.AS, "https://www.transfermarkt.pt/wettbewerbe/asien" },
-            { Actors.ContinentCode.AF, "https://www.transfermarkt.pt/wettbewerbe/afrika" }
-        };
 
         [TestMethod, TestCategory("Page Parsing")]
         public void TestClubParsing()
@@ -90,8 +84,18 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             //    page.Parse();
             //}
 
-            ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, 2008);
-            continentPage.Connect(urls[Actors.ContinentCode.EU]);
+            ContinentsPage continentsPage = new ContinentsPage(new HAPConnection(), logger, 2008);
+            continentsPage.Connect(BaseURL);
+            continentsPage.Parse(parseChildren: false);
+
+            var continentsSection = (ContinentsContinentsPageSection)continentsPage[ContinentsContinentsPageSection.SectionName];
+
+            var continentCodeType = typeof(Actors.ContinentCode);
+            ContinentPage continentPage = continentsSection[new Dictionary<string, string> { { continentCodeType.Name, Actors.ContinentCode.EU.ToString() } }];
+            Link<HtmlAgilityPack.HtmlNode, ContinentPage> link = continentsSection.Children.FirstOrDefault(c => c.Identifiers.ContainsKey(continentCodeType.Name) && c.Identifiers[continentCodeType.Name] == Actors.ContinentCode.EU.ToString());
+            
+            continentPage = new ContinentPage(new HAPConnection(), logger, 2008);
+            continentPage.Connect(link.Url);
 
             var continentSectionsToParse = new List<ISection> { continentPage["Continent Details"] };
             continentPage.Parse(continentSectionsToParse);
@@ -185,7 +189,7 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             Assert.IsNotNull(domain, "The returned Domain is null.");
 
 
-            var continentsChildSection = (ChildsSection<HtmlAgilityPack.HtmlNode, ContinentPage>)continentsPage[ContinentsCompetitionsPageSection.SectionName];
+            var continentsChildSection = (ChildsSection<HtmlAgilityPack.HtmlNode, ContinentPage>)continentsPage[ContinentsContinentsPageSection.SectionName];
 
             Assert.IsTrue(continentsChildSection.Children != null && continentsChildSection.Children.Count > 0, "Children should exist.");
 
@@ -193,7 +197,6 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
             continentsChildSection.Parse(new List<Link<HtmlAgilityPack.HtmlNode, ContinentPage>> { continentsChildrenContinentToParse }, false);
 
             Assert.IsNotNull(continentsChildrenContinentToParse.Page, $"Page should not be null.");
-
 
             //TestingConfigs.DomainElementsCheck(domain);
             //for (int i = 0; i < domain.Children.Count; i++)
@@ -205,10 +208,19 @@ namespace Transfermarkt.Core.Test.ParseHandling.Pages
         [TestMethod, TestCategory("Page Parsing")]
         public void TestPartialParsing()
         {
-            ContinentPage continentPage = new ContinentPage(new HAPConnection(), logger, 2009);
+            ContinentsPage continentsPage = new ContinentsPage(new HAPConnection(), logger, 2008);
+            continentsPage.Connect(BaseURL);
+            continentsPage.Parse(parseChildren: false);
 
+            var continentsSection = (ContinentsContinentsPageSection)continentsPage[ContinentsContinentsPageSection.SectionName];
+
+            var continentCodeType = typeof(Actors.ContinentCode);
+            ContinentPage continentPage = continentsSection[new Dictionary<string, string> { { continentCodeType.Name, Actors.ContinentCode.EU.ToString() } }];
+            Link<HtmlAgilityPack.HtmlNode, ContinentPage> link = continentsSection.Children.FirstOrDefault(c => c.Identifiers.ContainsKey(continentCodeType.Name) && c.Identifiers[continentCodeType.Name] == Actors.ContinentCode.EU.ToString());
+
+            continentPage = new ContinentPage(new HAPConnection(), logger, 2008);
             //TODO: consider passing url in constructor making it a required param and as a result, always available to the functions.
-            continentPage.Connect(urls[Actors.ContinentCode.EU]);
+            continentPage.Connect(link.Url);
 
             var sectionsToParse = new List<ISection> { continentPage["Continent Details"] };
             continentPage.Parse(sectionsToParse);

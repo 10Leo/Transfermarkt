@@ -85,7 +85,7 @@ namespace Transfermarkt.Console
             }
         }
 
-        public IDictionary<ExportType, IExporter> Exporters { get; internal set; }
+        public IDictionary<ExportType, IExporter> Exporters { get; internal set; } = new Dictionary<ExportType, IExporter>();
 
         private TMCommandProcessor tmContext = null;
         private IOption year = null;

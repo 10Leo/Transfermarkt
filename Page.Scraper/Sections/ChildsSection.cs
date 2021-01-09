@@ -36,7 +36,6 @@ namespace Page.Scraper.Contracts
                                 {
                                     return false;
                                 }
-
                             }
                         }
 
