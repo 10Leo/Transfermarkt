@@ -80,11 +80,7 @@ namespace Transfermarkt.Console
             //this.Context.RegisterCommand(this);
 
             var y = new YearOption();
-            //TODO: Peek command should not have any required options. If no Indexes are passed, fetch the entry page.
-            var i = new IndexesOption
-            {
-                Required = true
-            };
+            var i = new IndexesOption();
             this.RegisterOption(y);
             this.RegisterOption(i);
         }
@@ -115,21 +111,28 @@ namespace Transfermarkt.Console
 
         private void Process()
         {
-            foreach (IArgument ind in Indexes.Args)
+            if (Indexes.Args == null || Indexes.Args.Count == 0)
             {
-                (int i1, int i2, int i3) = ind.GetIndexes();
+                TMService.Parse(YearValue.Value, peek: true);
+            }
+            else
+            {
+                foreach (IArgument ind in Indexes.Args)
+                {
+                    (int i1, int i2, int i3) = ind.GetIndexes();
 
-                if (ind is Index1Argument)
-                {
-                    TMService.Parse(YearValue.Value, i1, peek: true);
-                }
-                else if (ind is Index2Argument)
-                {
-                    TMService.Parse(YearValue.Value, i1, i2, peek: true);
-                }
-                else if (ind is Index3Argument)
-                {
-                    TMService.Parse(YearValue.Value, i1, i2, i3, peek: true);
+                    if (ind is Index1Argument)
+                    {
+                        TMService.Parse(YearValue.Value, i1, peek: true);
+                    }
+                    else if (ind is Index2Argument)
+                    {
+                        TMService.Parse(YearValue.Value, i1, i2, peek: true);
+                    }
+                    else if (ind is Index3Argument)
+                    {
+                        TMService.Parse(YearValue.Value, i1, i2, i3, peek: true);
+                    }
                 }
             }
 

@@ -49,8 +49,11 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleTest.cs" />
+    <Compile Include="Commands\PeekCommandTest.cs" />
+    <Compile Include="Commands\ParseCommandTest.cs" />
+    <Compile Include="Commands\ConsoleTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
