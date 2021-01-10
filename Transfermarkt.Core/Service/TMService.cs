@@ -28,30 +28,34 @@ namespace Transfermarkt.Core.Service
         public IDomain Parse(int year, int? continentsIndex = null, int? competitionsIndex = null, int? clubsIndex = null, bool peek = false)
         {
             //TODO: make the ability to parse by continentCode, nationality, division and club - EU, PRT, 1, Benfica
-            if (!continentsIndex.HasValue)
+            if (!continentsIndex.HasValue && !peek)
             {
-                // Parse all continents - must be careful as it's a very expensive action.
-                return null;
+                throw new Exception("All Continents parsing not allowed - very expensive operation");
             }
 
-            bool allPassedIndexesAreValid =
-                (continentsIndex.HasValue && continentsIndex.Value > 0)
-                || (competitionsIndex.HasValue && competitionsIndex.Value > 0)
-                || (clubsIndex.HasValue && clubsIndex.Value > 0);
+            bool allPassedIndexesAreValid = !continentsIndex.HasValue
+                || ((continentsIndex.HasValue && continentsIndex.Value > 0)
+                || (competitionsIndex.HasValue && competitionsIndex.Value > 0 && continentsIndex.HasValue)
+                || (clubsIndex.HasValue && clubsIndex.Value > 0 && competitionsIndex.HasValue));
             if (!allPassedIndexesAreValid)
             {
                 throw new IndexOutOfRangeException("Passed indexes must be all positive numbers");
             }
 
-            if (!ContinentExists(year, (ContinentCode)continentsIndex.Value))
-            {
-                throw new KeyNotFoundException(Message);
-            }
+            UpsertSeason(year);
+
+
+            //var r = ((ChildsSection<HtmlAgilityPack.HtmlNode, ContinentPage>)SeasonContinents[year][ContinentsContinentsPageSection.SectionName]).Children[((int)i1) - 1];
+            //if (!ContinentExists(year, (ContinentCode)continentsIndex.Value))
+            //{
+            //    throw new KeyNotFoundException(Message);
+            //}
 
             ContinentsPage continentsSeason = GetSeasonContinent(year);
-            if (continentsSeason == null)
+
+            if (!continentsIndex.HasValue && peek)
             {
-                return null;
+                return continentsSeason.Domain;
             }
 
             var chosenContinent = ((ChildsSection<HtmlNode, ContinentPage>)continentsSeason[ContinentsContinentsPageSection.SectionName]).Children[continentsIndex.Value - 1];
@@ -108,7 +112,7 @@ namespace Transfermarkt.Core.Service
             return clubLink.Page.Domain;
         }
 
-        private bool ContinentExists(int year, ContinentCode i1)
+        private void UpsertSeason(int year)
         {
             if (!SeasonContinents.ContainsKey(year))
             {
@@ -117,9 +121,6 @@ namespace Transfermarkt.Core.Service
                 continent.Parse(parseChildren: false);
                 SeasonContinents.Add(year, continent);
             }
-
-            var r = ((ChildsSection<HtmlAgilityPack.HtmlNode, ContinentPage>)SeasonContinents[year][ContinentsContinentsPageSection.SectionName]).Children[((int)i1) - 1];
-            return r != null;
         }
 
         private void AddNewYearContinentIfDoesntExist(int year, ContinentCode i1)
