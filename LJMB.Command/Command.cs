@@ -15,7 +15,7 @@ namespace LJMB.Command
             get
             {
                 var req = string.Join(" ", Options.Where(o => o.Required).OrderBy(o => o.Name).Select(o => o.Usage));
-                var nreq = string.Join(" ", Options.Where(o => !o.Required).OrderBy(o => o.Name).Select(o => o.Usage));
+                var nreq = string.Join(" ", Options.Where(o => !o.Required).OrderBy(o => o.Name).Select(o => "(" + o.Usage + ")"));
                 return $"{Name} {req} {nreq}";
             }
         }
