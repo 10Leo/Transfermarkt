@@ -8,8 +8,8 @@
         public ExitCommand(IProcessor context)
         {
             this.Name = NAME.ToLower();
-            this.AllowedAlias.Add(KEY);
             this.AllowedAlias.Add(NAME.ToLower());
+            this.AllowedAlias.Add(KEY);
             this.Context = context;
             //this.Context.RegisterCommand(this);
         }

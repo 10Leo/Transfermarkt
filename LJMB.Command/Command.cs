@@ -7,6 +7,10 @@ namespace LJMB.Command
 {
     public abstract class Command : ICommand
     {
+        private const string Separator = "|";
+        private const string OptionalOpen = "[";
+        private const string OptionalClose = "]";
+
         public ISet<string> AllowedAlias { get; private set; } = new HashSet<string>();
 
         public string Name { get; set; }
@@ -14,9 +18,10 @@ namespace LJMB.Command
         {
             get
             {
+                var alias = string.Join(Separator, AllowedAlias);
                 var req = string.Join(" ", Options.Where(o => o.Required).OrderBy(o => o.Name).Select(o => o.Usage));
-                var nreq = string.Join(" ", Options.Where(o => !o.Required).OrderBy(o => o.Name).Select(o => "(" + o.Usage + ")"));
-                return $"{Name} {req} {nreq}";
+                var nreq = string.Join(" ", Options.Where(o => !o.Required).OrderBy(o => o.Name).Select(o => OptionalOpen + o.Usage + OptionalClose));
+                return $"{alias}{(req != "" ? " " + req : req)}{(nreq != "" ? " " + nreq : nreq)}";
             }
         }
 

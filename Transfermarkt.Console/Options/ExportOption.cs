@@ -23,7 +23,7 @@ namespace Transfermarkt.Console.Options
         {
             Name = NAME;
             AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
-            Usage = $"-{KEY} <{g1}> (<{g2}>)";
+            Usage = $"-{KEY} {g1} [{g2}]";
             Args = new HashSet<IArgument>(2);
         }
 
