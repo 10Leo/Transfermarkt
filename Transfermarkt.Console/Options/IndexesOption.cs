@@ -19,7 +19,7 @@ namespace Transfermarkt.Console.Options
         {
             Name = NAME;
             AllowedAlias = new HashSet<string> { KEY, NAME.ToLower() };
-            Usage = $"-{KEY} <i(.i(.i))> (<i(.i(.i))>)";
+            Usage = $"-{KEY} i[.i][.i] [i[.i][.i]]";
         }
 
         protected override void OnParse(string toParse)

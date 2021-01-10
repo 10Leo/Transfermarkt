@@ -8,6 +8,7 @@ namespace LJMB.Command
 
         string Name { get; }
         string Usage { get; }
+        ISet<string> AllowedAlias { get; }
 
         IProcessor Context { get; }
         ISet<IOption> Options { get; }

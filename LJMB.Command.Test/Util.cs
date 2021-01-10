@@ -7,14 +7,22 @@ using System.Threading.Tasks;
 
 namespace LJMB.Command.Test
 {
-    public class Util {
+    public class Util
+    {
         public const string ExitCmd = "e";
         public const string ListCmd = "l";
     }
 
-    public class MockProcessor: Processor
+    public class MockProcessor : Processor
     {
         public MockProcessor()
+        {
+        }
+    }
+
+    public class MockOption : Option
+    {
+        protected override void OnParse(string toParse)
         {
         }
     }
